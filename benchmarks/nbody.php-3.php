@@ -1,8 +1,6 @@
 <?php
 /* The Computer Language Benchmarks Game
 https://salsa.debian.org/benchmarksgame-team/benchmarksgame/
-https://benchmarksgame-team.pages.debian.net/benchmarksgame/description/nbody.html#nbody
-
 contributed by anon
 modified by Sergey Khripunov
 */

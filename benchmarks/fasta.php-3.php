@@ -1,7 +1,6 @@
 <?php
 /* The Computer Language Benchmarks Game
    https://salsa.debian.org/benchmarksgame-team/benchmarksgame/
-   https://benchmarksgame-team.pages.debian.net/benchmarksgame/program/fasta-php-3.html
 
    contributed by Wing-Chung Leung
    modified by Isaac Gouy
