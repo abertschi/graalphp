@@ -1,7 +1,8 @@
 * Benchmarks
 ** binarytrees.php-1.php
 - https://benchmarksgame-team.pages.debian.net/benchmarksgame/program/binarytrees-php-1.html
-- php -n -d memory_limit=4096M binarytrees.php 21
+- php -n -d memory_limit=4096M binarytrees.php 21 (increase memory
+  limit due to too low default)
 *** comments
 - argc/ argc
 - Classes
