@@ -11,7 +11,7 @@
 - bit shifting
 
 ** nbody.php-3.php
-- https://benchmarksgame-team.pages.debian.net/benchmarksgame/description/nbody.html#nbody
+- https://benchmarksgame-team.pages.debian.net/benchmarksgame/program/nbody-php-3.html
 - php nbody.php-3.php 50000000
 *** comments
 - ob_implicit_flush(1);
