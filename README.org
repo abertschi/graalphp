@@ -1,10 +1,10 @@
-#+TITLE A PHP implementation for the GraalVM
+#+TITLE: A PHP implementation built on GraalVM
 
 /WORK IN PROGRESS/
 
 Thesis project at ETH Zurich
 
-** Benchmarksgame
+** Benchmarks
 - ./docs/benchmarks/
 - https://benchmarksgame-team.pages.debian.net/benchmarksgame/index.html
 
