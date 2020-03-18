@@ -1,5 +1,7 @@
 #+TITLE: A PHP implementation built on GraalVM
 
+[[https://travis-ci.org/abertschi/graalphp.svg?branch=master]]
+    
 /WORK IN PROGRESS/
 
 Thesis project at ETH Zurich
