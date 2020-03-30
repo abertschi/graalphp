@@ -1,0 +1,16 @@
+#+TITLE: A PHP implementation built on GraalVM
+
+[[https://travis-ci.org/abertschi/graalphp.svg?branch=master]]
+    
+/WORK IN PROGRESS/
+
+Thesis project at ETH Zurich
+
+** Benchmarks
+- ./docs/benchmarks/
+- https://benchmarksgame-team.pages.debian.net/benchmarksgame/index.html
+
+** Resources
+- Graal Github Issue :: https://github.com/oracle/graal/issues/361
+- PHP specification :: https://github.com/php/php-langspec/tree/master/spec
+- truffle simplelanguage :: https://www.graalvm.org/docs/graalvm-as-a-platform/implement-language/
