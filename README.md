@@ -3,7 +3,7 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/abertschi/graalphp/badge)](https://www.codefactor.io/repository/github/abertschi/graalphp)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/f5767388f2e24f4f9dbc1acc3e132f7c)](https://www.codacy.com/manual/abertschi/graalphp?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=abertschi/graalphp&amp;utm_campaign=Badge_Grade)
 [![codecov](https://codecov.io/gh/abertschi/graalphp/branch/master/graph/badge.svg)](https://codecov.io/gh/abertschi/graalphp)
-
+[![last commit](https://img.shields.io/github/last-commit/abertschi/graalphp)]()
 
 # A PHP implementation built on GraalVM
     
