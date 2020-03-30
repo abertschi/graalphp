@@ -21,6 +21,7 @@ install:
 
 script:
   - ./generate_parser
+#   - mvn cobertura:cobertura TODO
   - mvn package
   # graal native tests
 #  - ./graalphp ./graalphp-language/tests/Add.sl
@@ -33,4 +34,6 @@ script:
   # test scripts
   - shellcheck graalphp;
   # - (find . -name '*.sh' | grep -v graalvm | xargs shellcheck);
+
+after_success:
   - bash <(curl -s https://codecov.io/bash)
