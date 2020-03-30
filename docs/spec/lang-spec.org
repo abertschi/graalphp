@@ -1,12 +1,13 @@
 * PHP Language Specification
 ** About
-This file references the PHP Language Spec based on https://www.php.net/manual/en/.
+This file references the PHP Language Specification based on PHP.net
+(https://www.php.net/manual/en/)
 A copy of the specification was downloaded and resides in the same directory.
 For convenience the links refer to the online version which may be subject to change.
 
 There is also an attempt by Facebook to specify PHP. It is hosted here:
 https://github.com/php/php-langspec/tree/master/spec. It comes with a test suite for
-feature compliance.
+feature compliance. However, it is not versioned by PHP version.
 
 ** TODO [[file:https://www.php.net/manual/en/language.basic-syntax.php][Basic syntax]]
 + [ ] [[file:https://www.php.net/manual/en/language.basic-syntax.phptags.php][PHP tags]]
