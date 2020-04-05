@@ -18,13 +18,10 @@ install:
     - echo $JAVA_HOME
     - export JAVA_HOME
     - $JAVA_HOME/bin/gu install native-image
-
 script:
-  # - ./generate_parser
+# - ./generate_parser
 #   - mvn cobertura:cobertura TODO
-
-  - mvn package
-
+- mvn package
 # graal native tests
  - ./graalphp $TEST
  - if [[ "GRAALPHP_BUILD_NATIVE" == "true" ]]; then  ./graalphp-native/graalphp-native $TEST; fi;
@@ -33,10 +30,8 @@ script:
  - if [[ "GRAALPHP_BUILD_NATIVE" == "true" ]]; then  $JAVA_HOME/bin/graalphp-native $TEST;  fi;
  - if [[ "GRAALPHP_BUILD_NATIVE" == "true" ]]; then  $JAVA_HOME/bin/polyglot --jvm --language graalphp --file $TEST; fi;
  - if [[ "GRAALPHP_BUILD_NATIVE" == "true" ]]; then  $JAVA_HOME/bin/gu remove org.graalphp; fi;
-
 # test scripts
   - shellcheck graalphp;
-  # - (find . -name '*.sh' | grep -v graalvm | xargs shellcheck);
-
+# - (find . -name '*.sh' | grep -v graalvm | xargs shellcheck);
 after_success:
   - bash <(curl -s https://codecov.io/bash)
