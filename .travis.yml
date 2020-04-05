@@ -8,7 +8,7 @@ jdk:
     - openjdk11
 
 env:
-    - GRAALVM_VERSION="20.0.0" GRAALVM_JAVA_VERSION="11" GRAALPHP_BUILD_NATIVE="false"
+    - GRAALVM_VERSION="20.0.0" GRAALVM_JAVA_VERSION="11" GRAALPHP_BUILD_NATIVE="false" TEST="./graalphp-language/tests/dummy.php"
 
 install:
     - GRAAL_VM="https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-20.0.0/graalvm-ce-java11-linux-amd64-20.0.0.tar.gz"
@@ -20,18 +20,21 @@ install:
     - $JAVA_HOME/bin/gu install native-image
 
 script:
-  - ./generate_parser
+  # - ./generate_parser
 #   - mvn cobertura:cobertura TODO
+
   - mvn package
-  # graal native tests
-#  - ./graalphp ./graalphp-language/tests/Add.sl
-#  - if [[ "GRAALPHP_BUILD_NATIVE" == "true" ]]; then  ./native/graalphp-native ./graalphp-language/tests/Add.sl; fi;
-#  - if [[ "GRAALPHP_BUILD_NATIVE" == "true" ]]; then  $JAVA_HOME/bin/gu install -L ./graalphp-component/graalphp-component.jar; fi;
-#  - if [[ "GRAALPHP_BUILD_NATIVE" == "true" ]]; then  $JAVA_HOME/bin/graalphp ./graalphp-language/tests/Add.sl; fi;
-#  - if [[ "GRAALPHP_BUILD_NATIVE" == "true" ]]; then  $JAVA_HOME/bin/graalphp-native ./graalphp-language/tests/Add.sl; fi;
-#  - if [[ "GRAALPHP_BUILD_NATIVE" == "true" ]]; then  $JAVA_HOME/bin/polyglot --jvm --language graalphp --file graalphp-language/tests/Add.sl; fi;
-#  - if [[ "GRAALPHP_BUILD_NATIVE" == "true" ]]; then  $JAVA_HOME/bin/gu remove org.graalphp; fi;
-  # test scripts
+
+# graal native tests
+ - ./graalphp $TEST
+ - if [[ "GRAALPHP_BUILD_NATIVE" == "true" ]]; then  ./graalphp-native/graalphp-native $TEST; fi;
+ - if [[ "GRAALPHP_BUILD_NATIVE" == "true" ]]; then  $JAVA_HOME/bin/gu install -L ./graalphp-component/graalphp-component.jar; fi;
+ - if [[ "GRAALPHP_BUILD_NATIVE" == "true" ]]; then  $JAVA_HOME/bin/graalphp $TEST; fi;
+ - if [[ "GRAALPHP_BUILD_NATIVE" == "true" ]]; then  $JAVA_HOME/bin/graalphp-native $TEST;  fi;
+ - if [[ "GRAALPHP_BUILD_NATIVE" == "true" ]]; then  $JAVA_HOME/bin/polyglot --jvm --language graalphp --file $TEST; fi;
+ - if [[ "GRAALPHP_BUILD_NATIVE" == "true" ]]; then  $JAVA_HOME/bin/gu remove org.graalphp; fi;
+
+# test scripts
   - shellcheck graalphp;
   # - (find . -name '*.sh' | grep -v graalvm | xargs shellcheck);
 

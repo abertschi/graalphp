@@ -98,6 +98,7 @@ public final class GraalPhpMain {
 
         try {
             Value result = context.eval(source);
+            // TODO: do we need this check?
 //            if (context.getBindings(PHP).getMember("main") == null) {
 //                err.println("No function main() defined in SL source file.");
 //                return 1;
