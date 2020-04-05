@@ -3,7 +3,7 @@
 cd ..
 
 mvn package
-./graalphp ./graalphp-language/tests/Add.sl
+./graalphp ./graalphp-language/tests/dummy.php
 ./native/graalphp-native ./graalphp-language/tests/Add.sl;
 
 "$JAVA_HOME/bin/gu" install -L ./graalphp-component/graalphp-component.jar;

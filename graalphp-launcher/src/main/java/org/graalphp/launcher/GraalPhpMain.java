@@ -98,13 +98,13 @@ public final class GraalPhpMain {
 
         try {
             Value result = context.eval(source);
-            if (context.getBindings(PHP).getMember("main") == null) {
-                err.println("No function main() defined in SL source file.");
-                return 1;
-            }
-            if (!result.isNull()) {
-                out.println(result.toString());
-            }
+//            if (context.getBindings(PHP).getMember("main") == null) {
+//                err.println("No function main() defined in SL source file.");
+//                return 1;
+//            }
+//            if (!result.isNull()) {
+            out.println(result.toString());
+//            }
             return 0;
         } catch (PolyglotException ex) {
             if (ex.isInternalError()) {

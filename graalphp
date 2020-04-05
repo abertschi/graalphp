@@ -2,7 +2,7 @@
 
 VERSION="20.0.0"
 
-MAIN_CLASS="SLMain"
+MAIN_CLASS="org.graalphp.launcher.GraalPhpMain"
 SCRIPT_HOME="$(cd "$(dirname "$0")" && pwd -P)"
 
 function extractGraalVMVersion() {
@@ -59,6 +59,7 @@ fi
 #######################################################################
 # Parse arguments, prepare Java command and execute
 #######################################################################
+
 if [[ "$GRAALVM_VERSION" != "" ]]; then
     PROGRAM_ARGS=()
     JAVA_ARGS=()
@@ -79,7 +80,10 @@ if [[ "$GRAALVM_VERSION" != "" ]]; then
             PROGRAM_ARGS+=("$opt") ;;
       esac
     done
+    set -x
     "$JAVACMD" "${JAVA_ARGS[@]}" -Dtruffle.class.path.append="$LANGUAGE_PATH" -cp "$LAUNCHER_PATH" "$MAIN_CLASS" "${PROGRAM_ARGS[@]}"
+    set +x
+
 else
     echo "Warning: Could not find GraalVM on $JAVA_HOME. Running on JDK without support for compilation."
     echo
@@ -108,5 +112,7 @@ else
     fi
     GRAAL_SDK_PATH="$HOME/.m2/repository/org/graalvm/sdk/graal-sdk/$VERSION/graal-sdk-$VERSION.jar"
     TRUFFLE_API_PATH="$HOME/.m2/repository/org/graalvm/truffle/truffle-api/$VERSION/truffle-api-$VERSION.jar"
+    set -x
     "$JAVACMD" "${JAVA_ARGS[@]}" -cp "$GRAAL_SDK_PATH":"$LAUNCHER_PATH":"$LANGUAGE_PATH":"$TRUFFLE_API_PATH" "$MAIN_CLASS" "${PROGRAM_ARGS[@]}"
+    set +x
 fi

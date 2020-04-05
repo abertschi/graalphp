@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+// Simple test which evaluates nothing
 public class PhpDummyTest {
 
     private Context ctx;
