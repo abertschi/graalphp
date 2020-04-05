@@ -30,7 +30,7 @@ script:
 #  - if [[ "GRAALPHP_BUILD_NATIVE" == "true" ]]; then  $JAVA_HOME/bin/graalphp ./graalphp-language/tests/Add.sl; fi;
 #  - if [[ "GRAALPHP_BUILD_NATIVE" == "true" ]]; then  $JAVA_HOME/bin/graalphp-native ./graalphp-language/tests/Add.sl; fi;
 #  - if [[ "GRAALPHP_BUILD_NATIVE" == "true" ]]; then  $JAVA_HOME/bin/polyglot --jvm --language graalphp --file graalphp-language/tests/Add.sl; fi;
-#  - if [[ "GRAALPHP_BUILD_NATIVE" == "true" ]]; then  $JAVA_HOME/bin/gu remove com.oracle.truffle.sl; fi;
+#  - if [[ "GRAALPHP_BUILD_NATIVE" == "true" ]]; then  $JAVA_HOME/bin/gu remove org.graalphp; fi;
   # test scripts
   - shellcheck graalphp;
   # - (find . -name '*.sh' | grep -v graalvm | xargs shellcheck);

@@ -2,7 +2,7 @@
 
 VERSION="20.0.0"
 
-MAIN_CLASS="com.oracle.truffle.sl.launcher.SLMain"
+MAIN_CLASS="SLMain"
 SCRIPT_HOME="$(cd "$(dirname "$0")" && pwd -P)"
 
 function extractGraalVMVersion() {

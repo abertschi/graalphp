@@ -12,5 +12,5 @@ fi
 "$JAVA_HOME"/bin/native-image \
     --macro:truffle --no-fallback --initialize-at-build-time \
     -cp ../graalphp-language/target/graalphp.jar:../graalphp-launcher/target/graalphp-launcher.jar \
-    com.oracle.truffle.sl.launcher.SLMain \
+    org.graalphp.launcher.SLMain \
     graalphp-native

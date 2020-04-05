@@ -12,7 +12,7 @@ mvn package
 
 
 "$JAVA_HOME/bin/polyglot" --jvm --language graalphp --file graalphp-language/tests/Add.sl;
-"$JAVA_HOME/bin/gu" remove com.oracle.truffle.sl;
+"$JAVA_HOME/bin/gu" remove org.graalphp;
 
 ./generate_parser
 
