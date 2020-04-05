@@ -107,14 +107,14 @@ public class SLException extends RuntimeException implements TruffleException {
             result.append(sep);
             sep = ", ";
             if (value == null || InteropLibrary.getFactory().getUncached().isNull(value)) {
-                result.append(SLLanguage.toString(value));
+                result.append(PhpLanguage.toString(value));
             } else {
-                result.append(SLLanguage.getMetaObject(value));
+                result.append(PhpLanguage.getMetaObject(value));
                 result.append(" ");
                 if (InteropLibrary.getFactory().getUncached().isString(value)) {
                     result.append("\"");
                 }
-                result.append(SLLanguage.toString(value));
+                result.append(PhpLanguage.toString(value));
                 if (InteropLibrary.getFactory().getUncached().isString(value)) {
                     result.append("\"");
                 }

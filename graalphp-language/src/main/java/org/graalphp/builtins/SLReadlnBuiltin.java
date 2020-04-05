@@ -47,8 +47,8 @@ import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.dsl.CachedContext;
 import com.oracle.truffle.api.dsl.Specialization;
 import com.oracle.truffle.api.nodes.NodeInfo;
+import org.graalphp.PhpLanguage;
 import org.graalphp.SLException;
-import org.graalphp.SLLanguage;
 import org.graalphp.runtime.SLContext;
 
 /**
@@ -58,7 +58,7 @@ import org.graalphp.runtime.SLContext;
 public abstract class SLReadlnBuiltin extends SLBuiltinNode {
 
     @Specialization
-    public String readln(@CachedContext(SLLanguage.class) SLContext context) {
+    public String readln(@CachedContext(PhpLanguage.class) SLContext context) {
         String result = doRead(context.getInput());
         if (result == null) {
             /*

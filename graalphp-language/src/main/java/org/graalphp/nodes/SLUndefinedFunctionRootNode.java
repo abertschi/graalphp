@@ -42,7 +42,7 @@ package org.graalphp.nodes;
 
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.RootNode;
-import org.graalphp.SLLanguage;
+import org.graalphp.PhpLanguage;
 import org.graalphp.runtime.SLFunction;
 import org.graalphp.runtime.SLUndefinedNameException;
 
@@ -52,7 +52,7 @@ import org.graalphp.runtime.SLUndefinedNameException;
  * {@link SLUndefinedNameException#undefinedFunction exception}.
  */
 public class SLUndefinedFunctionRootNode extends SLRootNode {
-    public SLUndefinedFunctionRootNode(SLLanguage language, String name) {
+    public SLUndefinedFunctionRootNode(PhpLanguage language, String name) {
         super(language, null, null, null, name);
     }
 

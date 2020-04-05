@@ -47,8 +47,8 @@ import com.oracle.truffle.api.interop.UnknownIdentifierException;
 import com.oracle.truffle.api.interop.UnsupportedMessageException;
 import com.oracle.truffle.api.library.CachedLibrary;
 import com.oracle.truffle.api.nodes.NodeInfo;
+import org.graalphp.PhpLanguage;
 import org.graalphp.SLException;
-import org.graalphp.SLLanguage;
 import org.graalphp.runtime.SLContext;
 import org.graalphp.runtime.SLNull;
 
@@ -61,7 +61,7 @@ public abstract class SLImportBuiltin extends SLBuiltinNode {
     @Specialization
     public Object importSymbol(String symbol,
                     @CachedLibrary(limit = "3") InteropLibrary arrays,
-                    @CachedContext(SLLanguage.class) SLContext context) {
+                    @CachedContext(PhpLanguage.class) SLContext context) {
         try {
             return arrays.readMember(context.getPolyglotBindings(), symbol);
         } catch (UnsupportedMessageException | UnknownIdentifierException e) {

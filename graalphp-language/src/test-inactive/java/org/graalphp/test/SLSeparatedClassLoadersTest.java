@@ -41,7 +41,7 @@
 package org.graalphp.test;
 
 import com.oracle.truffle.api.Truffle;
-import org.graalphp.SLLanguage;
+import org.graalphp.PhpLanguage;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.security.ProtectionDomain;
@@ -72,7 +72,7 @@ public class SLSeparatedClassLoadersTest {
         URL truffleURL = Truffle.class.getProtectionDomain().getCodeSource().getLocation();
         Assume.assumeNotNull(truffleURL);
 
-        URL slURL = SLLanguage.class.getProtectionDomain().getCodeSource().getLocation();
+        URL slURL = PhpLanguage.class.getProtectionDomain().getCodeSource().getLocation();
         Assume.assumeNotNull(slURL);
 
         ClassLoader parent = Engine.class.getClassLoader().getParent();

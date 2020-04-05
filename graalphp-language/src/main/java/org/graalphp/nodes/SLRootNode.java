@@ -46,7 +46,7 @@ import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.NodeInfo;
 import com.oracle.truffle.api.nodes.RootNode;
 import com.oracle.truffle.api.source.SourceSection;
-import org.graalphp.SLLanguage;
+import org.graalphp.PhpLanguage;
 import org.graalphp.builtins.SLBuiltinNode;
 import org.graalphp.nodes.controlflow.SLFunctionBodyNode;
 
@@ -68,7 +68,7 @@ public class SLRootNode extends RootNode {
 
     private final SourceSection sourceSection;
 
-    public SLRootNode(SLLanguage language, FrameDescriptor frameDescriptor, SLExpressionNode bodyNode, SourceSection sourceSection, String name) {
+    public SLRootNode(PhpLanguage language, FrameDescriptor frameDescriptor, SLExpressionNode bodyNode, SourceSection sourceSection, String name) {
         super(language, frameDescriptor);
         this.bodyNode = bodyNode;
         this.name = name;
@@ -82,7 +82,7 @@ public class SLRootNode extends RootNode {
 
     @Override
     public Object execute(VirtualFrame frame) {
-        assert lookupContextReference(SLLanguage.class).get() != null;
+        assert lookupContextReference(PhpLanguage.class).get() != null;
         return bodyNode.executeGeneric(frame);
     }
 

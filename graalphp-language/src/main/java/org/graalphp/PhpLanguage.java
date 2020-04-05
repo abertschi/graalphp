@@ -64,142 +64,45 @@ import com.oracle.truffle.api.interop.TruffleObject;
 import com.oracle.truffle.api.interop.UnsupportedMessageException;
 import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.nodes.RootNode;
-import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.api.source.Source;
 import com.oracle.truffle.api.source.SourceSection;
 import org.graalphp.builtins.SLBuiltinNode;
-import org.graalphp.builtins.SLDefineFunctionBuiltin;
-import org.graalphp.builtins.SLNanoTimeBuiltin;
-import org.graalphp.builtins.SLPrintlnBuiltin;
-import org.graalphp.builtins.SLReadlnBuiltin;
-import org.graalphp.builtins.SLStackTraceBuiltin;
 import org.graalphp.nodes.SLEvalRootNode;
-import org.graalphp.nodes.SLTypes;
-import org.graalphp.nodes.controlflow.SLBlockNode;
-import org.graalphp.nodes.controlflow.SLBreakNode;
-import org.graalphp.nodes.controlflow.SLContinueNode;
-import org.graalphp.nodes.controlflow.SLDebuggerNode;
-import org.graalphp.nodes.controlflow.SLIfNode;
-import org.graalphp.nodes.controlflow.SLReturnNode;
-import org.graalphp.nodes.controlflow.SLWhileNode;
-import org.graalphp.nodes.expression.SLAddNode;
-import org.graalphp.nodes.expression.SLBigIntegerLiteralNode;
-import org.graalphp.nodes.expression.SLDivNode;
-import org.graalphp.nodes.expression.SLEqualNode;
-import org.graalphp.nodes.expression.SLFunctionLiteralNode;
-import org.graalphp.nodes.expression.SLInvokeNode;
-import org.graalphp.nodes.expression.SLLessOrEqualNode;
-import org.graalphp.nodes.expression.SLLessThanNode;
-import org.graalphp.nodes.expression.SLLogicalAndNode;
-import org.graalphp.nodes.expression.SLLogicalOrNode;
-import org.graalphp.nodes.expression.SLMulNode;
-import org.graalphp.nodes.expression.SLReadPropertyNode;
-import org.graalphp.nodes.expression.SLStringLiteralNode;
-import org.graalphp.nodes.expression.SLSubNode;
-import org.graalphp.nodes.expression.SLWritePropertyNode;
 import org.graalphp.nodes.local.SLLexicalScope;
-import org.graalphp.nodes.local.SLReadLocalVariableNode;
-import org.graalphp.nodes.local.SLWriteLocalVariableNode;
-import org.graalphp.parser.SLNodeFactory;
-import org.graalphp.parser.SimpleLanguageLexer;
 import org.graalphp.parser.SimpleLanguageParser;
 import org.graalphp.runtime.SLBigNumber;
 import org.graalphp.runtime.SLContext;
 import org.graalphp.runtime.SLFunction;
-import org.graalphp.runtime.SLFunctionRegistry;
 import org.graalphp.runtime.SLNull;
 
-/**
- * SL is a simple language to demonstrate and showcase features of Truffle. The implementation is as
- * simple and clean as possible in order to help understanding the ideas and concepts of Truffle.
- * The language has first class functions, and objects are key-value stores.
- * <p>
- * SL is dynamically typed, i.e., there are no type names specified by the programmer. SL is
- * strongly typed, i.e., there is no automatic conversion between types. If an operation is not
- * available for the types encountered at run time, a type error is reported and execution is
- * stopped. For example, {@code 4 - "2"} results in a type error because subtraction is only defined
- * for numbers.
- *
- * <p>
- * <b>Types:</b>
- * <ul>
- * <li>Number: arbitrary precision integer numbers. The implementation uses the Java primitive type
- * {@code long} to represent numbers that fit into the 64 bit range, and {@link SLBigNumber} for
- * numbers that exceed the range. Using a primitive type such as {@code long} is crucial for
- * performance.
- * <li>Boolean: implemented as the Java primitive type {@code boolean}.
- * <li>String: implemented as the Java standard type {@link String}.
- * <li>Function: implementation type {@link SLFunction}.
- * <li>Object: efficient implementation using the object model provided by Truffle. The
- * implementation type of objects is a subclass of {@link DynamicObject}.
- * <li>Null (with only one value {@code null}): implemented as the singleton
- * {@link SLNull#SINGLETON}.
- * </ul>
- * The class {@link SLTypes} lists these types for the Truffle DSL, i.e., for type-specialized
- * operations that are specified using Truffle DSL annotations.
- *
- * <p>
- * <b>Language concepts:</b>
- * <ul>
- * <li>Literals for {@link SLBigIntegerLiteralNode numbers} , {@link SLStringLiteralNode strings},
- * and {@link SLFunctionLiteralNode functions}.
- * <li>Basic arithmetic, logical, and comparison operations: {@link SLAddNode +}, {@link SLSubNode
- * -}, {@link SLMulNode *}, {@link SLDivNode /}, {@link SLLogicalAndNode logical and},
- * {@link SLLogicalOrNode logical or}, {@link SLEqualNode ==}, !=, {@link SLLessThanNode &lt;},
- * {@link SLLessOrEqualNode &le;}, &gt;, &ge;.
- * <li>Local variables: local variables must be defined (via a {@link SLWriteLocalVariableNode
- * write}) before they can be used (by a {@link SLReadLocalVariableNode read}). Local variables are
- * not visible outside of the block where they were first defined.
- * <li>Basic control flow statements: {@link SLBlockNode blocks}, {@link SLIfNode if},
- * {@link SLWhileNode while} with {@link SLBreakNode break} and {@link SLContinueNode continue},
- * {@link SLReturnNode return}.
- * <li>Debugging control: {@link SLDebuggerNode debugger} statement uses
- * {@link DebuggerTags#AlwaysHalt} tag to halt the execution when run under the debugger.
- * <li>Function calls: {@link SLInvokeNode invocations} are efficiently implemented with
- * {@link SLDispatchNode polymorphic inline caches}.
- * <li>Object access: {@link SLReadPropertyNode} uses {@link SLReadPropertyCacheNode} as the
- * polymorphic inline cache for property reads. {@link SLWritePropertyNode} uses
- * {@link SLWritePropertyCacheNode} as the polymorphic inline cache for property writes.
- * </ul>
- *
- * <p>
- * <b>Syntax and parsing:</b><br>
- * The syntax is described as an attributed grammar. The {@link SimpleLanguageParser} and
- * {@link SimpleLanguageLexer} are automatically generated by ANTLR 4. The grammar contains semantic
- * actions that build the AST for a method. To keep these semantic actions short, they are mostly
- * calls to the {@link SLNodeFactory} that performs the actual node creation. All functions found in
- * the SL source are added to the {@link SLFunctionRegistry}, which is accessible from the
- * {@link SLContext}.
- *
- * <p>
- * <b>Builtin functions:</b><br>
- * Library functions that are available to every SL source without prior definition are called
- * builtin functions. They are added to the {@link SLFunctionRegistry} when the {@link SLContext} is
- * created. Some of the current builtin functions are
- * <ul>
- * <li>{@link SLReadlnBuiltin readln}: Read a String from the {@link SLContext#getInput() standard
- * input}.
- * <li>{@link SLPrintlnBuiltin println}: Write a value to the {@link SLContext#getOutput() standard
- * output}.
- * <li>{@link SLNanoTimeBuiltin nanoTime}: Returns the value of a high-resolution time, in
- * nanoseconds.
- * <li>{@link SLDefineFunctionBuiltin defineFunction}: Parses the functions provided as a String
- * argument and adds them to the function registry. Functions that are already defined are replaced
- * with the new version.
- * <li>{@link SLStackTraceBuiltin stckTrace}: Print all function activations with all local
- * variables.
- * </ul>
- */
-@TruffleLanguage.Registration(id = SLLanguage.ID, name = "SL", defaultMimeType = SLLanguage.MIME_TYPE, characterMimeTypes = SLLanguage.MIME_TYPE, contextPolicy = ContextPolicy.SHARED, fileTypeDetectors = SLFileDetector.class)
-@ProvidedTags({StandardTags.CallTag.class, StandardTags.StatementTag.class, StandardTags.RootTag.class, StandardTags.RootBodyTag.class, StandardTags.ExpressionTag.class, DebuggerTags.AlwaysHalt.class,
-                StandardTags.ReadVariableTag.class, StandardTags.WriteVariableTag.class})
-public final class SLLanguage extends TruffleLanguage<SLContext> {
+
+@TruffleLanguage.Registration(
+        id = PhpLanguage.ID,
+        name = "graalphp",
+        defaultMimeType = PhpLanguage.MIME_TYPE,
+        characterMimeTypes = PhpLanguage.MIME_TYPE,
+        contextPolicy = ContextPolicy.SHARED,
+        fileTypeDetectors = SLFileDetector.class)
+
+
+@ProvidedTags({
+        StandardTags.CallTag.class,
+        StandardTags.StatementTag.class,
+        StandardTags.RootTag.class,
+        StandardTags.RootBodyTag.class,
+        StandardTags.ExpressionTag.class,
+        DebuggerTags.AlwaysHalt.class,
+        StandardTags.ReadVariableTag.class,
+        StandardTags.WriteVariableTag.class
+})
+
+public final class PhpLanguage extends TruffleLanguage<SLContext> {
     public static volatile int counter;
 
     public static final String ID = "sl";
     public static final String MIME_TYPE = "application/x-sl";
 
-    public SLLanguage() {
+    public PhpLanguage() {
         counter++;
     }
 
@@ -403,7 +306,7 @@ public final class SLLanguage extends TruffleLanguage<SLContext> {
     }
 
     public static SLContext getCurrentContext() {
-        return getCurrentContext(SLLanguage.class);
+        return getCurrentContext(PhpLanguage.class);
     }
 
     private static final List<NodeFactory<? extends SLBuiltinNode>> EXTERNAL_BUILTINS = Collections.synchronizedList(new ArrayList<>());

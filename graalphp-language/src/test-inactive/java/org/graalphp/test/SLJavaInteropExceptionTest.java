@@ -53,6 +53,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.function.Supplier;
 
+import org.graalphp.PhpLanguage;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.PolyglotException;
 import org.graalvm.polyglot.Source;
@@ -60,7 +61,6 @@ import org.graalvm.polyglot.Value;
 import org.junit.Assert;
 import org.junit.Test;
 
-import org.graalphp.SLLanguage;
 import org.graalvm.polyglot.HostAccess;
 
 public class SLJavaInteropExceptionTest {
@@ -75,9 +75,9 @@ public class SLJavaInteropExceptionTest {
             String sourceText = "function test(validator) {\n" +
                             "  return validator.validateException();\n" +
                             "}";
-            try (Context context = Context.newBuilder(SLLanguage.ID).build()) {
-                context.eval(Source.newBuilder(SLLanguage.ID, sourceText, "Test").build());
-                Value test = context.getBindings(SLLanguage.ID).getMember("test");
+            try (Context context = Context.newBuilder(PhpLanguage.ID).build()) {
+                context.eval(Source.newBuilder(PhpLanguage.ID, sourceText, "Test").build());
+                Value test = context.getBindings(PhpLanguage.ID).getMember("test");
                 test.execute(Validator.this);
             }
         }
@@ -98,9 +98,9 @@ public class SLJavaInteropExceptionTest {
         String sourceText = "function test(validator) {\n" +
                         "  return validator.validateException();\n" +
                         "}";
-        try (Context context = Context.newBuilder(SLLanguage.ID).build()) {
-            context.eval(Source.newBuilder(SLLanguage.ID, sourceText, "Test").build());
-            Value test = context.getBindings(SLLanguage.ID).getMember("test");
+        try (Context context = Context.newBuilder(PhpLanguage.ID).build()) {
+            context.eval(Source.newBuilder(PhpLanguage.ID, sourceText, "Test").build());
+            Value test = context.getBindings(PhpLanguage.ID).getMember("test");
             try {
                 test.execute(new Validator());
                 fail("expected a PolyglotException but did not throw");
@@ -117,9 +117,9 @@ public class SLJavaInteropExceptionTest {
         String sourceText = "function test(validator) {\n" +
                         "  return validator.validateNested();\n" +
                         "}";
-        try (Context context = Context.newBuilder(SLLanguage.ID).build()) {
-            context.eval(Source.newBuilder(SLLanguage.ID, sourceText, "Test").build());
-            Value test = context.getBindings(SLLanguage.ID).getMember("test");
+        try (Context context = Context.newBuilder(PhpLanguage.ID).build()) {
+            context.eval(Source.newBuilder(PhpLanguage.ID, sourceText, "Test").build());
+            Value test = context.getBindings(PhpLanguage.ID).getMember("test");
             try {
                 test.execute(new Validator());
                 fail("expected a PolyglotException but did not throw");
@@ -146,9 +146,9 @@ public class SLJavaInteropExceptionTest {
                         "function test(validator) {\n" +
                         "  return validator." + javaMethod + "(supplier);\n" +
                         "}";
-        try (Context context = Context.newBuilder(SLLanguage.ID).build()) {
-            context.eval(Source.newBuilder(SLLanguage.ID, sourceText, "Test").build());
-            Value test = context.getBindings(SLLanguage.ID).getMember("test");
+        try (Context context = Context.newBuilder(PhpLanguage.ID).build()) {
+            context.eval(Source.newBuilder(PhpLanguage.ID, sourceText, "Test").build());
+            Value test = context.getBindings(PhpLanguage.ID).getMember("test");
             try {
                 test.execute(new Validator());
                 fail("expected a PolyglotException but did not throw");
@@ -176,9 +176,9 @@ public class SLJavaInteropExceptionTest {
                         "function test(validator) {\n" +
                         "  return validator." + javaMethod + "(new());\n" +
                         "}";
-        try (Context context = Context.newBuilder(SLLanguage.ID).build()) {
-            context.eval(Source.newBuilder(SLLanguage.ID, sourceText, "Test").build());
-            Value test = context.getBindings(SLLanguage.ID).getMember("test");
+        try (Context context = Context.newBuilder(PhpLanguage.ID).build()) {
+            context.eval(Source.newBuilder(PhpLanguage.ID, sourceText, "Test").build());
+            Value test = context.getBindings(PhpLanguage.ID).getMember("test");
             test.execute(new Validator());
         }
     }

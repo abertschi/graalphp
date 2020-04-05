@@ -50,7 +50,7 @@ final class SLEvaluateLocalNode extends RootNode {
     private final String variable;
     private final MaterializedFrame inspectFrame;
 
-    SLEvaluateLocalNode(SLLanguage language, String variableName, MaterializedFrame frame) {
+    SLEvaluateLocalNode(PhpLanguage language, String variableName, MaterializedFrame frame) {
         super(language);
         this.variable = variableName;
         this.inspectFrame = frame;

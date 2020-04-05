@@ -50,7 +50,7 @@ import java.util.Map;
 
 import com.oracle.truffle.api.source.Source;
 import com.oracle.truffle.api.RootCallTarget;
-import org.graalphp.SLLanguage;
+import org.graalphp.PhpLanguage;
 import org.graalphp.nodes.SLExpressionNode;
 import org.graalphp.nodes.SLStatementNode;
 
@@ -176,7 +176,7 @@ public class SimpleLanguageParser extends Parser {
 	    throw new SLParseError(source, line, col, length, String.format("Error(s) parsing script:%n" + location + message));
 	}
 
-	public static Map<String, RootCallTarget> parseSL(SLLanguage language, Source source) {
+	public static Map<String, RootCallTarget> parseSL(PhpLanguage language, Source source) {
 	    SimpleLanguageLexer lexer = new SimpleLanguageLexer(CharStreams.fromString(source.getCharacters().toString()));
 	    SimpleLanguageParser parser = new SimpleLanguageParser(new CommonTokenStream(lexer));
 	    lexer.removeErrorListeners();

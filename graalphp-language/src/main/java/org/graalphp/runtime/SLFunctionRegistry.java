@@ -49,7 +49,7 @@ import java.util.Map;
 import com.oracle.truffle.api.RootCallTarget;
 import com.oracle.truffle.api.interop.TruffleObject;
 import com.oracle.truffle.api.source.Source;
-import org.graalphp.SLLanguage;
+import org.graalphp.PhpLanguage;
 import org.graalphp.parser.SimpleLanguageParser;
 
 /**
@@ -57,10 +57,10 @@ import org.graalphp.parser.SimpleLanguageParser;
  */
 public final class SLFunctionRegistry {
 
-    private final SLLanguage language;
+    private final PhpLanguage language;
     private final FunctionsObject functionsObject = new FunctionsObject();
 
-    public SLFunctionRegistry(SLLanguage language) {
+    public SLFunctionRegistry(PhpLanguage language) {
         this.language = language;
     }
 

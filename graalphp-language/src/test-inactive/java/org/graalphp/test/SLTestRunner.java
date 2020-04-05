@@ -64,6 +64,7 @@ import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import org.graalphp.PhpLanguage;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.PolyglotException;
 import org.graalvm.polyglot.Source;
@@ -81,7 +82,6 @@ import org.junit.runners.ParentRunner;
 import org.junit.runners.model.InitializationError;
 
 import com.oracle.truffle.api.dsl.NodeFactory;
-import org.graalphp.SLLanguage;
 import org.graalphp.builtins.SLBuiltinNode;
 import org.graalphp.test.SLTestRunner.TestCase;
 
@@ -298,7 +298,7 @@ public class SLTestRunner extends ParentRunner<TestCase> {
         try {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             for (NodeFactory<? extends SLBuiltinNode> builtin : builtins) {
-                SLLanguage.installBuiltin(builtin);
+                PhpLanguage.installBuiltin(builtin);
             }
 
             Context.Builder builder = Context.newBuilder().allowExperimentalOptions(true).in(new ByteArrayInputStream(testCase.testInput.getBytes("UTF-8"))).out(out);
@@ -325,7 +325,7 @@ public class SLTestRunner extends ParentRunner<TestCase> {
     private static void run(Context context, Path path, PrintWriter out) throws IOException {
         try {
             /* Parse the SL source file. */
-            Source source = Source.newBuilder(SLLanguage.ID, path.toFile()).interactive(true).build();
+            Source source = Source.newBuilder(PhpLanguage.ID, path.toFile()).interactive(true).build();
 
             /* Call the main entry point, without any arguments. */
             context.eval(source);

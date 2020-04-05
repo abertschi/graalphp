@@ -50,7 +50,7 @@ import com.oracle.truffle.api.interop.UnsupportedMessageException;
 import com.oracle.truffle.api.interop.UnsupportedTypeException;
 import com.oracle.truffle.api.library.CachedLibrary;
 import com.oracle.truffle.api.nodes.NodeInfo;
-import org.graalphp.SLLanguage;
+import org.graalphp.PhpLanguage;
 import org.graalphp.runtime.SLContext;
 import org.graalphp.runtime.SLNull;
 import org.graalphp.runtime.SLUndefinedNameException;
@@ -63,7 +63,7 @@ public abstract class SLNewObjectBuiltin extends SLBuiltinNode {
 
     @Specialization
     @SuppressWarnings("unused")
-    public Object newObject(SLNull o, @CachedContext(SLLanguage.class) SLContext context,
+    public Object newObject(SLNull o, @CachedContext(PhpLanguage.class) SLContext context,
                             @Cached("context.getAllocationReporter()") AllocationReporter reporter) {
         return context.createObject(reporter);
     }

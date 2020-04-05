@@ -62,7 +62,7 @@ import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.api.object.Layout;
 import com.oracle.truffle.api.object.Shape;
 import com.oracle.truffle.api.source.Source;
-import org.graalphp.SLLanguage;
+import org.graalphp.PhpLanguage;
 import org.graalphp.builtins.SLBuiltinNode;
 import org.graalphp.builtins.SLDefineFunctionBuiltinFactory;
 import org.graalphp.builtins.SLEvalBuiltinFactory;
@@ -85,7 +85,7 @@ import org.graalphp.nodes.SLRootNode;
 import org.graalphp.nodes.local.SLReadArgumentNode;
 
 /**
- * The run-time state of SL during execution. The context is created by the {@link SLLanguage}. It
+ * The run-time state of SL during execution. The context is created by the {@link PhpLanguage}. It
  * is used, for example, by {@link SLBuiltinNode#getContext() builtin functions}.
  * <p>
  * It would be an error to have two different context instances during the execution of one script.
@@ -94,7 +94,7 @@ import org.graalphp.nodes.local.SLReadArgumentNode;
  */
 public final class SLContext {
 
-    private static final Source BUILTIN_SOURCE = Source.newBuilder(SLLanguage.ID, "", "SL builtin").build();
+    private static final Source BUILTIN_SOURCE = Source.newBuilder(PhpLanguage.ID, "", "SL builtin").build();
     static final Layout LAYOUT = Layout.createLayout();
 
     private final Env env;
@@ -102,11 +102,11 @@ public final class SLContext {
     private final PrintWriter output;
     private final SLFunctionRegistry functionRegistry;
     private final Shape emptyShape;
-    private final SLLanguage language;
+    private final PhpLanguage language;
     private final AllocationReporter allocationReporter;
     private final Iterable<Scope> topScopes; // Cache the top scopes
 
-    public SLContext(SLLanguage language, TruffleLanguage.Env env, List<NodeFactory<? extends SLBuiltinNode>> externalBuiltins) {
+    public SLContext(PhpLanguage language, TruffleLanguage.Env env, List<NodeFactory<? extends SLBuiltinNode>> externalBuiltins) {
         this.env = env;
         this.input = new BufferedReader(new InputStreamReader(env.in()));
         this.output = new PrintWriter(env.out(), true);
@@ -284,7 +284,7 @@ public final class SLContext {
     }
 
     public static SLContext getCurrent() {
-        return SLLanguage.getCurrentContext();
+        return PhpLanguage.getCurrentContext();
     }
 
 }

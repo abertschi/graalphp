@@ -50,7 +50,7 @@ public final class SLFileDetector implements TruffleFile.FileTypeDetector {
     public String findMimeType(TruffleFile file) throws IOException {
         String name = file.getName();
         if (name != null && name.endsWith(".sl")) {
-            return SLLanguage.MIME_TYPE;
+            return PhpLanguage.MIME_TYPE;
         }
         return null;
     }

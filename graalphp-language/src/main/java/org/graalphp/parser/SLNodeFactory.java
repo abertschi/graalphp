@@ -56,7 +56,7 @@ import com.oracle.truffle.api.frame.FrameSlot;
 import com.oracle.truffle.api.frame.FrameSlotKind;
 import com.oracle.truffle.api.source.Source;
 import com.oracle.truffle.api.source.SourceSection;
-import org.graalphp.SLLanguage;
+import org.graalphp.PhpLanguage;
 import org.graalphp.nodes.SLExpressionNode;
 import org.graalphp.nodes.SLRootNode;
 import org.graalphp.nodes.SLStatementNode;
@@ -133,9 +133,9 @@ public class SLNodeFactory {
 
     /* State while parsing a block. */
     private LexicalScope lexicalScope;
-    private final SLLanguage language;
+    private final PhpLanguage language;
 
-    public SLNodeFactory(SLLanguage language, Source source) {
+    public SLNodeFactory(PhpLanguage language, Source source) {
         this.language = language;
         this.source = source;
         this.allFunctions = new HashMap<>();

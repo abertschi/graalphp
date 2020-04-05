@@ -48,7 +48,7 @@ import com.oracle.truffle.api.dsl.Specialization;
 import com.oracle.truffle.api.nodes.DirectCallNode;
 import com.oracle.truffle.api.nodes.NodeInfo;
 import com.oracle.truffle.api.source.Source;
-import org.graalphp.SLLanguage;
+import org.graalphp.PhpLanguage;
 import org.graalphp.runtime.SLContext;
 
 /**
@@ -66,14 +66,14 @@ public abstract class SLEvalBuiltin extends SLBuiltinNode {
     public Object evalCached(String id, String code,
                     @Cached("id") String cachedId,
                     @Cached("code") String cachedCode,
-                    @CachedContext(SLLanguage.class) SLContext context,
+                    @CachedContext(PhpLanguage.class) SLContext context,
                     @Cached("create(parse(id, code, context))") DirectCallNode callNode) {
         return callNode.call(new Object[]{});
     }
 
     @TruffleBoundary
     @Specialization(replaces = "evalCached")
-    public Object evalUncached(String id, String code, @CachedContext(SLLanguage.class) SLContext context) {
+    public Object evalUncached(String id, String code, @CachedContext(PhpLanguage.class) SLContext context) {
         return parse(id, code, context).call();
     }
 

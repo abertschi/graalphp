@@ -57,7 +57,7 @@ import com.oracle.truffle.api.nodes.DirectCallNode;
 import com.oracle.truffle.api.nodes.IndirectCallNode;
 import com.oracle.truffle.api.source.SourceSection;
 import com.oracle.truffle.api.utilities.CyclicAssumption;
-import org.graalphp.SLLanguage;
+import org.graalphp.PhpLanguage;
 import org.graalphp.nodes.SLUndefinedFunctionRootNode;
 
 /**
@@ -82,7 +82,7 @@ public final class SLFunction implements TruffleObject {
 
     public static final int INLINE_CACHE_SIZE = 2;
 
-    private static final TruffleLogger LOG = TruffleLogger.getLogger(SLLanguage.ID, SLFunction.class);
+    private static final TruffleLogger LOG = TruffleLogger.getLogger(PhpLanguage.ID, SLFunction.class);
 
     /** The name of the function. */
     private final String name;
@@ -97,7 +97,7 @@ public final class SLFunction implements TruffleObject {
      */
     private final CyclicAssumption callTargetStable;
 
-    protected SLFunction(SLLanguage language, String name) {
+    protected SLFunction(PhpLanguage language, String name) {
         this.name = name;
         this.callTarget = Truffle.getRuntime().createCallTarget(new SLUndefinedFunctionRootNode(language, name));
         this.callTargetStable = new CyclicAssumption(name);

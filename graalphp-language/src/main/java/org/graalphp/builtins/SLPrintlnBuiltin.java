@@ -46,7 +46,7 @@ import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.dsl.CachedContext;
 import com.oracle.truffle.api.dsl.Specialization;
 import com.oracle.truffle.api.nodes.NodeInfo;
-import org.graalphp.SLLanguage;
+import org.graalphp.PhpLanguage;
 import org.graalphp.runtime.SLContext;
 
 /**
@@ -62,7 +62,7 @@ import org.graalphp.runtime.SLContext;
 public abstract class SLPrintlnBuiltin extends SLBuiltinNode {
 
     @Specialization
-    public long println(long value, @CachedContext(SLLanguage.class) SLContext context) {
+    public long println(long value, @CachedContext(PhpLanguage.class) SLContext context) {
         doPrint(context.getOutput(), value);
         return value;
     }
@@ -73,7 +73,7 @@ public abstract class SLPrintlnBuiltin extends SLBuiltinNode {
     }
 
     @Specialization
-    public boolean println(boolean value, @CachedContext(SLLanguage.class) SLContext context) {
+    public boolean println(boolean value, @CachedContext(PhpLanguage.class) SLContext context) {
         doPrint(context.getOutput(), value);
         return value;
     }
@@ -84,7 +84,7 @@ public abstract class SLPrintlnBuiltin extends SLBuiltinNode {
     }
 
     @Specialization
-    public String println(String value, @CachedContext(SLLanguage.class) SLContext context) {
+    public String println(String value, @CachedContext(PhpLanguage.class) SLContext context) {
         doPrint(context.getOutput(), value);
         return value;
     }
@@ -95,7 +95,7 @@ public abstract class SLPrintlnBuiltin extends SLBuiltinNode {
     }
 
     @Specialization
-    public Object println(Object value, @CachedContext(SLLanguage.class) SLContext context) {
+    public Object println(Object value, @CachedContext(PhpLanguage.class) SLContext context) {
         doPrint(context.getOutput(), value);
         return value;
     }
