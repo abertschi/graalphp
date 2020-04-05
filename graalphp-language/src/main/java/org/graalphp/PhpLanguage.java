@@ -18,7 +18,7 @@ import org.graalphp.types.PhpNull;
 
 @TruffleLanguage.Registration(
         id = PhpLanguage.ID,
-        name = "php",
+        name = "graalphpphp",
         defaultMimeType = PhpLanguage.MIME_TYPE,
         characterMimeTypes = PhpLanguage.MIME_TYPE,
         contextPolicy = ContextPolicy.SHARED,
@@ -27,14 +27,14 @@ import org.graalphp.types.PhpNull;
 
 // No tags supported
 @ProvidedTags({
-        //        StandardTags.CallTag.class,
-        //        StandardTags.StatementTag.class,
-        //        StandardTags.RootTag.class,
-        //        StandardTags.RootBodyTag.class,
-        //        StandardTags.ExpressionTag.class,
-        //        DebuggerTags.AlwaysHalt.class,
-        //        StandardTags.ReadVariableTag.class,
-        //        StandardTags.WriteVariableTag.class
+//                StandardTags.CallTag.class,
+//                StandardTags.StatementTag.class,
+//                StandardTags.RootTag.class,
+//                StandardTags.RootBodyTag.class,
+//                StandardTags.ExpressionTag.class,
+//                DebuggerTags.AlwaysHalt.class,
+//                StandardTags.ReadVariableTag.class,
+//                StandardTags.WriteVariableTag.class
 })
 
 public final class PhpLanguage extends TruffleLanguage<PhpContext> {
@@ -178,7 +178,6 @@ public final class PhpLanguage extends TruffleLanguage<PhpContext> {
         throw new UnsupportedOperationException();
 //        EXTERNAL_BUILTINS.add(builtin);
     }
-
 }
 
 
