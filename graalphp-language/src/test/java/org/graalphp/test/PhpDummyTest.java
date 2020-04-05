@@ -26,9 +26,9 @@ public class PhpDummyTest {
 
     @Test
     public void testDummy() {
-        obj.execute();
-        assertTrue(true);
+        assertNotNull(this.obj);
         assertNotNull(ctx);
-//        assertNull(obj);
+        assertTrue(obj.isNull());
+        System.out.println("dummy evaluation returned: " + obj.toString());
     }
 }

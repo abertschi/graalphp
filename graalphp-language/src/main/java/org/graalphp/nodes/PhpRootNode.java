@@ -5,15 +5,13 @@ import com.oracle.truffle.api.RootCallTarget;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.RootNode;
 import org.graalphp.PhpLanguage;
+import org.graalphp.types.PhpNull;
 
 import java.util.Map;
 
 public final class PhpRootNode extends RootNode {
 
     private final Map<String, RootCallTarget> functions;
-
-    @CompilerDirectives.CompilationFinal
-    private boolean registered;
 
     public PhpRootNode(PhpLanguage language, RootCallTarget rootFunction, Map<String, RootCallTarget> functions) {
         super(language);
@@ -42,7 +40,6 @@ public final class PhpRootNode extends RootNode {
 
     @Override
     public Object execute(VirtualFrame frame) {
-        System.out.println("public Object execute(VirtualFrame frame) {");
-        return null;
+        return PhpNull.SINGLETON;
     }
 }

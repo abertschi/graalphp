@@ -1,20 +1,19 @@
 package org.graalphp;
 
-;
-import java.util.HashMap;
-import java.util.Map;
 
-import com.oracle.truffle.api.CallTarget;
-import com.oracle.truffle.api.RootCallTarget;
-import com.oracle.truffle.api.Truffle;
-import com.oracle.truffle.api.TruffleLanguage;
+import java.util.*;
+
+import com.oracle.truffle.api.*;
 import com.oracle.truffle.api.TruffleLanguage.ContextPolicy;
+import com.oracle.truffle.api.dsl.NodeFactory;
 import com.oracle.truffle.api.instrumentation.ProvidedTags;
 import com.oracle.truffle.api.interop.InteropLibrary;
-import com.oracle.truffle.api.source.Source;
+import com.oracle.truffle.api.interop.TruffleObject;
+import com.oracle.truffle.api.interop.UnsupportedMessageException;
 import com.oracle.truffle.api.source.SourceSection;
 import org.graalphp.nodes.PhpRootNode;
 import org.graalphp.runtime.PhpContext;
+import org.graalphp.types.PhpNull;
 
 
 @TruffleLanguage.Registration(
@@ -53,11 +52,20 @@ public final class PhpLanguage extends TruffleLanguage<PhpContext> {
 
     @Override
     protected CallTarget parse(ParsingRequest request) throws Exception {
-        Source source = request.getSource();
         Map<String, RootCallTarget> functions = new HashMap<>();
         PhpRootNode evalMain = new PhpRootNode(this, null, functions);
         return Truffle.getRuntime().createCallTarget(evalMain);
     }
+
+//    /*
+//     * Still necessary for the old SL TCK to pass. We should remove with the old TCK. New language
+//     * should not override this.
+//     */
+//    @SuppressWarnings("deprecation")
+//    @Override
+//    protected Object findExportedSymbol(PhpContext context, String globalName, boolean onlyExplicit) {
+//        return context.getFunctionRegistry().lookup(globalName, false);
+//    }
 
     @Override
     protected boolean isVisible(PhpContext context, Object value) {
@@ -66,7 +74,15 @@ public final class PhpLanguage extends TruffleLanguage<PhpContext> {
 
     @Override
     protected boolean isObjectOfLanguage(Object object) {
-        return false;
+        if (!(object instanceof TruffleObject)) {
+            return false;
+        } else if (object instanceof PhpNull) {
+            return true;
+//        } else if (PhpContext.isSLObject(object)) {
+//            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
@@ -75,7 +91,36 @@ public final class PhpLanguage extends TruffleLanguage<PhpContext> {
     }
 
     public static String toString(Object value) {
-        return "Unsupported";
+        try {
+            if (value == null) {
+                return "ANY";
+            }
+            InteropLibrary interop = InteropLibrary.getFactory().getUncached(value);
+            if (interop.fitsInLong(value)) {
+                return Long.toString(interop.asLong(value));
+            } else if (interop.isBoolean(value)) {
+                return Boolean.toString(interop.asBoolean(value));
+            } else if (interop.isString(value)) {
+                return interop.asString(value);
+            } else if (interop.isNull(value)) {
+                return "NULL";
+            } else if (interop.isExecutable(value)) {
+//                if (value instanceof SLFunction) {
+//                    return ((SLFunction) value).getName();
+//                } else {
+                    return "Function";
+//                }
+            } else if (interop.hasMembers(value)) {
+                return "Object";
+//            } else if (value instanceof SLBigNumber) {
+//                return value.toString();
+            } else {
+                return "Unsupported";
+            }
+        } catch (UnsupportedMessageException e) {
+            CompilerDirectives.transferToInterpreter();
+            throw new AssertionError();
+        }
     }
 
     @Override
@@ -88,7 +133,7 @@ public final class PhpLanguage extends TruffleLanguage<PhpContext> {
             return "ANY";
         }
         InteropLibrary interop = InteropLibrary.getFactory().getUncached(value);
-        if (interop.isNumber(value)) { // more types
+        if (interop.isNumber(value)) {
             return "Number";
         } else if (interop.isBoolean(value)) {
             return "Boolean";
@@ -107,10 +152,33 @@ public final class PhpLanguage extends TruffleLanguage<PhpContext> {
 
     @Override
     protected SourceSection findSourceLocation(PhpContext context, Object value) {
+//        if (value instanceof SLFunction) {
+//            return ((SLFunction) value).getDeclaredLocation();
+//        }
         return null;
     }
+
+// TODO
+//    @Override
+//    public Iterable<Scope> findLocalScopes(SLContext context, Node node, Frame frame) {
+//    }
+
+//    @Override
+//    protected Iterable<Scope> findTopScopes(PhpContext context) {
+//        return context.getTopScopes();
+//    }
 
     public static PhpContext getCurrentContext() {
         return getCurrentContext(PhpLanguage.class);
     }
+
+    private static final List<NodeFactory<?>> EXTERNAL_BUILTINS = Collections.synchronizedList(new ArrayList<>());
+
+    public static void installBuiltin(NodeFactory<? extends Object> builtin) {
+        throw new UnsupportedOperationException();
+//        EXTERNAL_BUILTINS.add(builtin);
+    }
+
 }
+
+
