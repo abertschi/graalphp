@@ -53,7 +53,7 @@ import org.graalvm.polyglot.PolyglotException;
 import org.graalvm.polyglot.Source;
 import org.graalvm.polyglot.Value;
 
-public final class SLMain {
+public final class GraalPhpMain {
 
     private static final String PHP = "php";
 

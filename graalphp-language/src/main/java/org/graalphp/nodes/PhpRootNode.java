@@ -42,7 +42,8 @@ public final class PhpRootNode extends RootNode {
 
     @Override
     public Object execute(VirtualFrame frame) {
+        System.out.println("public Object execute(VirtualFrame frame) {");
         // dummy impl, we return nothing
-        return null;
+        return 1;
     }
 }

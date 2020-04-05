@@ -38,43 +38,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package org.graalphp.test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import org.graalvm.polyglot.Context;
-import org.graalvm.polyglot.Value;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface GraalPhpTestSuite {
 
-public class ToStringOfEvalTest {
-    Context context;
+    /**
+     * Defines the base path of the test suite. Multiple base paths can be specified. However only
+     * the first base that exists is used to lookup the test cases.
+     */
+    String[] value();
 
-    @Before
-    public void initialize() {
-        context = Context.create();
-    }
+    /**
+     * A class in the same project (or .jar file) that contains the {@link #value test case
+     * directory}. If the property is not specified, the class that declares the annotation is used,
+     * i.e., the test cases must be in the same project as the test class.
+     */
+    Class<?> testCaseDirectory() default GraalPhpTestSuite.class;
 
-    @After
-    public void dispose() {
-        context.close();
-    }
-
-    @Test
-    public void checkToStringOnAFunction() {
-        context.eval("php", "function checkName() {}");
-        Value value1 = context.getBindings("php").getMember("checkName");
-        Value value2 = context.getBindings("php").getMember("checkName");
-
-        assertNotNull("Symbol is not null", value1);
-        assertNotNull("Symbol is not null either", value2);
-
-        assertFalse("Symbol is not null", value1.isNull());
-        assertFalse("Symbol is not null either", value2.isNull());
-
-        assertTrue("Contans checkName text: " + value2, value2.toString().contains("checkName"));
-    }
+    /**
+     * The options passed to {@code Context.Builder} to configure the {@code Context} executing the
+     * tests. The options are given as an string array containing an option name followed by an
+     * option value.
+     *
+     * @since 20.0.0
+     */
+    String[] options() default {};
 }

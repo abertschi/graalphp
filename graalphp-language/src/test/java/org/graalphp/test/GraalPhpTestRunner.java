@@ -82,12 +82,16 @@ import org.junit.runners.ParentRunner;
 import org.junit.runners.model.InitializationError;
 
 import com.oracle.truffle.api.dsl.NodeFactory;
-import org.graalphp.builtins.SLBuiltinNode;
-import org.graalphp.test.SLTestRunner.TestCase;
+import org.graalphp.test.GraalPhpTestRunner.TestCase;
 
-public class SLTestRunner extends ParentRunner<TestCase> {
 
-    private static final String SOURCE_SUFFIX = ".sl";
+/**
+ * A JUnit Parent runner to execute php source files and compare their result
+ * with predefined values. Borrowed and adapted from SimpleLanguage.
+ */
+public class GraalPhpTestRunner extends ParentRunner<TestCase> {
+
+    private static final String SOURCE_SUFFIX = ".php";
     private static final String INPUT_SUFFIX = ".input";
     private static final String OUTPUT_SUFFIX = ".output";
 
@@ -102,7 +106,8 @@ public class SLTestRunner extends ParentRunner<TestCase> {
         protected final Map<String, String> options;
         protected String actualOutput;
 
-        protected TestCase(Class<?> testClass, String baseName, String sourceName, Path path, String testInput, String expectedOutput, Map<String, String> options) {
+        protected TestCase(Class<?> testClass, String baseName, String sourceName, Path path,
+                           String testInput, String expectedOutput, Map<String, String> options) {
             this.name = Description.createTestDescription(testClass, baseName);
             this.sourceName = sourceName;
             this.path = path;
@@ -114,7 +119,7 @@ public class SLTestRunner extends ParentRunner<TestCase> {
 
     private final List<TestCase> testCases;
 
-    public SLTestRunner(Class<?> runningClass) throws InitializationError {
+    public GraalPhpTestRunner(Class<?> runningClass) throws InitializationError {
         super(runningClass);
         try {
             testCases = createTests(runningClass);
@@ -134,9 +139,13 @@ public class SLTestRunner extends ParentRunner<TestCase> {
     }
 
     protected static List<TestCase> createTests(final Class<?> c) throws IOException, InitializationError {
-        SLTestSuite suite = c.getAnnotation(SLTestSuite.class);
+        GraalPhpTestSuite suite = c.getAnnotation(GraalPhpTestSuite.class);
         if (suite == null) {
-            throw new InitializationError(String.format("@%s annotation required on class '%s' to run with '%s'.", SLTestSuite.class.getSimpleName(), c.getName(), SLTestRunner.class.getSimpleName()));
+            throw new InitializationError(
+                    String.format("@%s annotation required on class '%s' to run with '%s'.",
+                            GraalPhpTestSuite.class.getSimpleName(),
+                            c.getName(),
+                            GraalPhpTestRunner.class.getSimpleName()));
         }
 
         String[] paths = suite.value();
@@ -147,7 +156,7 @@ public class SLTestRunner extends ParentRunner<TestCase> {
         }
 
         Class<?> testCaseDirectory = c;
-        if (suite.testCaseDirectory() != SLTestSuite.class) {
+        if (suite.testCaseDirectory() != GraalPhpTestSuite.class) {
             testCaseDirectory = suite.testCaseDirectory();
         }
         Path root = getRootViaResourceURL(testCaseDirectory, paths);
@@ -186,7 +195,6 @@ public class SLTestRunner extends ParentRunner<TestCase> {
                     if (Files.exists(outputFile)) {
                         expectedOutput = readAllLines(outputFile);
                     }
-
                     foundCases.add(new TestCase(c, baseName, sourceName, sourceFile, testInput, expectedOutput, options));
                 }
                 return FileVisitResult.CONTINUE;
@@ -284,10 +292,11 @@ public class SLTestRunner extends ParentRunner<TestCase> {
         return outFile.toString();
     }
 
-    private static final List<NodeFactory<? extends SLBuiltinNode>> builtins = new ArrayList<>();
 
-    public static void installBuiltin(NodeFactory<? extends SLBuiltinNode> builtin) {
-        builtins.add(builtin);
+    private static final List<NodeFactory<?>> builtins = new ArrayList<>();
+
+    public static void installBuiltin(NodeFactory<?> builtin) {
+        // TODO: install a builtin
     }
 
     @Override
@@ -297,11 +306,15 @@ public class SLTestRunner extends ParentRunner<TestCase> {
         Context context = null;
         try {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
-            for (NodeFactory<? extends SLBuiltinNode> builtin : builtins) {
-                PhpLanguage.installBuiltin(builtin);
+            for (NodeFactory<?> builtin : builtins) {
+//                PhpLanguage.installBuiltin(builtin);
             }
 
-            Context.Builder builder = Context.newBuilder().allowExperimentalOptions(true).in(new ByteArrayInputStream(testCase.testInput.getBytes("UTF-8"))).out(out);
+            Context.Builder builder = Context.newBuilder().
+                    allowExperimentalOptions(true)
+                    .in(new ByteArrayInputStream(testCase.testInput.getBytes("UTF-8")))
+                    .out(out);
+
             for (Map.Entry<String, String> e : testCase.options.entrySet()) {
                 builder.option(e.getKey(), e.getValue());
             }
@@ -324,7 +337,7 @@ public class SLTestRunner extends ParentRunner<TestCase> {
 
     private static void run(Context context, Path path, PrintWriter out) throws IOException {
         try {
-            /* Parse the SL source file. */
+            /* Parse the source file. */
             Source source = Source.newBuilder(PhpLanguage.ID, path.toFile()).interactive(true).build();
 
             /* Call the main entry point, without any arguments. */
@@ -341,7 +354,7 @@ public class SLTestRunner extends ParentRunner<TestCase> {
     public static void runInMain(Class<?> testClass, String[] args) throws InitializationError, NoTestsRemainException {
         JUnitCore core = new JUnitCore();
         core.addListener(new TextListener(System.out));
-        SLTestRunner suite = new SLTestRunner(testClass);
+        GraalPhpTestRunner suite = new GraalPhpTestRunner(testClass);
         if (args.length > 0) {
             suite.filter(new NameFilter(args[0]));
         }
@@ -368,5 +381,4 @@ public class SLTestRunner extends ParentRunner<TestCase> {
             return "Filter contains " + pattern;
         }
     }
-
 }

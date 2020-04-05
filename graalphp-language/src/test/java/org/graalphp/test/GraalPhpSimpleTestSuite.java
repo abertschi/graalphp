@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2018, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2018, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * The Universal Permissive License (UPL), Version 1.0
@@ -40,41 +40,22 @@
  */
 package org.graalphp.test;
 
-import static org.junit.Assert.assertNull;
-
-import org.graalvm.polyglot.Context;
-import org.graalvm.polyglot.Value;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
-public class SLReadPropertyTest {
+@RunWith(GraalPhpTestRunner.class)
+@GraalPhpTestSuite({"tests"})
+public class GraalPhpSimpleTestSuite {
 
-    private Context ctx;
-    private Value slObject;
-
-    @Before
-    public void setUp() {
-        this.ctx = Context.create("php");
-        this.slObject = ctx.eval("php", "function createObject() {\n" +
-                        "obj1 = new();\n" +
-                        "obj1.number = 42;\n" +
-                        "return obj1;\n" +
-                        "}\n" +
-                        "function main() {\n" +
-                        "return createObject;\n" +
-                        "}").execute();
+    public static void main(String[] args) throws Exception {
+        GraalPhpTestRunner.runInMain(GraalPhpSimpleTestSuite.class, args);
     }
 
-    @After
-    public void tearDown() {
-        this.ctx.close();
-    }
-
+    /*
+     * Our "mx unittest" command looks for methods that are annotated with @Test. By just defining
+     * an empty method, this class gets included and the test suite is properly executed.
+     */
     @Test
-    public void testRead() {
-        Assert.assertEquals(42, slObject.getMember("number").asInt());
-        assertNull(slObject.getMember("nonexistent"));
+    public void unittest() {
     }
 }

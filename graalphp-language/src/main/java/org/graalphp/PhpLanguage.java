@@ -19,7 +19,7 @@ import org.graalphp.runtime.PhpContext;
 
 @TruffleLanguage.Registration(
         id = PhpLanguage.ID,
-        name = "graalphp",
+        name = "php",
         defaultMimeType = PhpLanguage.MIME_TYPE,
         characterMimeTypes = PhpLanguage.MIME_TYPE,
         contextPolicy = ContextPolicy.SHARED,
@@ -53,9 +53,12 @@ public final class PhpLanguage extends TruffleLanguage<PhpContext> {
 
     @Override
     protected CallTarget parse(ParsingRequest request) throws Exception {
+        System.out.println("CallTarget parse(ParsingRequest request) ");
         Source source = request.getSource();
+        System.out.println("source: " + source.toString());
         Map<String, RootCallTarget> functions = new HashMap<>();
         PhpRootNode evalMain = new PhpRootNode(this, null, functions);
+
         return Truffle.getRuntime().createCallTarget(evalMain);
     }
 
