@@ -53,12 +53,9 @@ public final class PhpLanguage extends TruffleLanguage<PhpContext> {
 
     @Override
     protected CallTarget parse(ParsingRequest request) throws Exception {
-        System.out.println("CallTarget parse(ParsingRequest request) ");
         Source source = request.getSource();
-        System.out.println("source: " + source.toString());
         Map<String, RootCallTarget> functions = new HashMap<>();
         PhpRootNode evalMain = new PhpRootNode(this, null, functions);
-
         return Truffle.getRuntime().createCallTarget(evalMain);
     }
 

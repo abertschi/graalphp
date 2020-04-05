@@ -16,7 +16,7 @@ public class PhpDummyTest {
     @Before
     public void setUp() {
         this.ctx = Context.create("php");
-//        this.obj = ctx.eval("php", "").execute();
+        this.obj = ctx.eval("php", "");
     }
 
     @After
@@ -26,6 +26,7 @@ public class PhpDummyTest {
 
     @Test
     public void testDummy() {
+        obj.execute();
         assertTrue(true);
         assertNotNull(ctx);
 //        assertNull(obj);
