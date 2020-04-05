@@ -38,43 +38,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.graalphp.builtins;
+package org.graalphp;
 
-import com.oracle.truffle.api.dsl.Cached;
-import com.oracle.truffle.api.dsl.CachedContext;
-import com.oracle.truffle.api.dsl.Specialization;
-import com.oracle.truffle.api.instrumentation.AllocationReporter;
-import com.oracle.truffle.api.interop.ArityException;
-import com.oracle.truffle.api.interop.InteropLibrary;
-import com.oracle.truffle.api.interop.UnsupportedMessageException;
-import com.oracle.truffle.api.interop.UnsupportedTypeException;
-import com.oracle.truffle.api.library.CachedLibrary;
-import com.oracle.truffle.api.nodes.NodeInfo;
-import org.graalphp.PhpLanguage;
-import org.graalphp.runtime.SLContext;
-import org.graalphp.runtime.SLNull;
-import org.graalphp.runtime.SLUndefinedNameException;
+import com.oracle.truffle.api.TruffleFile;
+import java.io.IOException;
+import java.nio.charset.Charset;
 
-/**
- * Built-in function to create a new object. Objects in SL are simply made up of name/value pairs.
- */
-@NodeInfo(shortName = "new")
-public abstract class SLNewObjectBuiltin extends SLBuiltinNode {
+public final class PhpFileDetector implements TruffleFile.FileTypeDetector {
 
-    @Specialization
-    @SuppressWarnings("unused")
-    public Object newObject(SLNull o, @CachedContext(PhpLanguage.class) SLContext context,
-                            @Cached("context.getAllocationReporter()") AllocationReporter reporter) {
-        return context.createObject(reporter);
+    @Override
+    public String findMimeType(TruffleFile file) throws IOException {
+        String name = file.getName();
+        if (name != null && name.endsWith(".php")) {
+            return PhpLanguage.MIME_TYPE;
+        }
+        return null;
     }
 
-    @Specialization(guards = "!values.isNull(obj)", limit = "3")
-    public Object newObject(Object obj, @CachedLibrary("obj") InteropLibrary values) {
-        try {
-            return values.instantiate(obj);
-        } catch (UnsupportedTypeException | ArityException | UnsupportedMessageException e) {
-            /* Foreign access was not successful. */
-            throw SLUndefinedNameException.undefinedFunction(this, obj);
-        }
+    @Override
+    public Charset findEncoding(TruffleFile file) throws IOException {
+        return null;
     }
 }

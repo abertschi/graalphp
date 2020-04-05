@@ -73,7 +73,7 @@ public class SLExceptionTest {
 
     @Before
     public void setUp() {
-        this.ctx = Context.create("sl");
+        this.ctx = Context.create("php");
     }
 
     @After
@@ -107,7 +107,7 @@ public class SLExceptionTest {
     private void assertException(boolean failImmediately, String source, String... expectedFrames) {
         boolean initialExecute = true;
         try {
-            Value value = ctx.eval("sl", source);
+            Value value = ctx.eval("php", source);
             initialExecute = false;
             if (failImmediately) {
                 Assert.fail("Should not reach here.");
@@ -128,7 +128,7 @@ public class SLExceptionTest {
         for (StackFrame frame : e.getPolyglotStackTrace()) {
             if (i < expectedFrames.length && expectedFrames[i] != null) {
                 Assert.assertTrue(frame.isGuestFrame());
-                Assert.assertEquals("sl", frame.getLanguage().getId());
+                Assert.assertEquals("php", frame.getLanguage().getId());
                 Assert.assertEquals(expectedFrames[i], frame.getRootName());
                 Assert.assertTrue(frame.getSourceLocation() != null);
                 firstHostFrame = true;
@@ -147,7 +147,7 @@ public class SLExceptionTest {
         boolean initialExecute = true;
         RuntimeException[] exception = new RuntimeException[1];
         try {
-            Value value = ctx.eval("sl", source);
+            Value value = ctx.eval("php", source);
             initialExecute = false;
             ProxyExecutable proxy = (args) -> {
                 throw exception[0] = new RuntimeException();
@@ -167,15 +167,15 @@ public class SLExceptionTest {
             String source = "function bar() { x = 1 / \"asdf\"; }\n" +
                             "function foo() { return bar(); }\n" +
                             "function main() { foo(); }";
-            ctx.eval(Source.newBuilder("sl", source, "script.sl").buildLiteral());
+            ctx.eval(Source.newBuilder("php", source, "script.sl").buildLiteral());
             fail();
         } catch (PolyglotException e) {
             assertTrue(e.isGuestException());
 
             Iterator<StackFrame> frames = e.getPolyglotStackTrace().iterator();
-            assertGuestFrame(frames, "sl", "bar", "script.sl", 21, 31);
-            assertGuestFrame(frames, "sl", "foo", "script.sl", 59, 64);
-            assertGuestFrame(frames, "sl", "main", "script.sl", 86, 91);
+            assertGuestFrame(frames, "php", "bar", "script.sl", 21, 31);
+            assertGuestFrame(frames, "php", "foo", "script.sl", 59, 64);
+            assertGuestFrame(frames, "php", "main", "script.sl", 86, 91);
             assertHostFrame(frames, Context.class.getName(), "eval");
             assertHostFrame(frames, SLExceptionTest.class.getName(), "testGuestLanguageError");
 
@@ -217,7 +217,7 @@ public class SLExceptionTest {
 
     @Test
     public void testProxyGuestLanguageStack() {
-        Value bar = ctx.eval("sl", "function foo(f) { f(); } function bar(f) { return foo(f); } function main() { return bar; }");
+        Value bar = ctx.eval("php", "function foo(f) { f(); } function bar(f) { return foo(f); } function main() { return bar; }");
 
         TestProxy proxy = new TestProxy(3, bar);
         try {
@@ -244,15 +244,15 @@ public class SLExceptionTest {
         Iterator<StackFrame> frames = e.getPolyglotStackTrace().iterator();
         assertHostFrame(frames, TestProxy.class.getName(), "execute");
         for (int i = 0; i < 2; i++) {
-            assertGuestFrame(frames, "sl", "foo", "Unnamed", 18, 21);
-            assertGuestFrame(frames, "sl", "bar", "Unnamed", 50, 56);
+            assertGuestFrame(frames, "php", "foo", "Unnamed", 18, 21);
+            assertGuestFrame(frames, "php", "bar", "Unnamed", 50, 56);
 
             assertHostFrame(frames, Value.class.getName(), "execute");
             assertHostFrame(frames, TestProxy.class.getName(), "execute");
         }
 
-        assertGuestFrame(frames, "sl", "foo", "Unnamed", 18, 21);
-        assertGuestFrame(frames, "sl", "bar", "Unnamed", 50, 56);
+        assertGuestFrame(frames, "php", "foo", "Unnamed", 18, 21);
+        assertGuestFrame(frames, "php", "bar", "Unnamed", 50, 56);
 
         assertHostFrame(frames, Value.class.getName(), "execute");
         assertHostFrame(frames, SLExceptionTest.class.getName(), "testProxyGuestLanguageStack");
@@ -311,7 +311,7 @@ public class SLExceptionTest {
 
     @Test
     public void testGuestOverHostPropagation() {
-        Context context = Context.newBuilder("sl").allowAllAccess(true).build();
+        Context context = Context.newBuilder("php").allowAllAccess(true).build();
         String code = "" +
                         "function other(x) {" +
                         "   return invalidFunction();" +
@@ -321,19 +321,19 @@ public class SLExceptionTest {
                         "test.methodThatTakesFunction(other);" +
                         "}";
 
-        context.eval("sl", code);
+        context.eval("php", code);
         try {
-            context.getBindings("sl").getMember("f").execute(this);
+            context.getBindings("php").getMember("f").execute(this);
             fail();
         } catch (PolyglotException e) {
             assertFalse(e.isHostException());
             assertTrue(e.isGuestException());
             Iterator<StackFrame> frames = e.getPolyglotStackTrace().iterator();
             assertTrue(frames.next().isGuestFrame());
-            assertGuestFrame(frames, "sl", "other", "Unnamed", 29, 46);
+            assertGuestFrame(frames, "php", "other", "Unnamed", 29, 46);
             assertHostFrame(frames, "com.oracle.truffle.polyglot.PolyglotFunction", "apply");
             assertHostFrame(frames, "SLExceptionTest", "methodThatTakesFunction");
-            assertGuestFrame(frames, "sl", "f", "Unnamed", 66, 101);
+            assertGuestFrame(frames, "php", "f", "Unnamed", 66, 101);
 
             // rest is just unit test host frames
             while (frames.hasNext()) {

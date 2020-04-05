@@ -77,7 +77,7 @@ public class SLJavaInteropTest {
     @Test
     public void asFunction() throws Exception {
         String scriptText = "function test() {\n" + "    println(\"Called!\");\n" + "}\n";
-        context.eval("sl", scriptText);
+        context.eval("php", scriptText);
         Value main = lookup("test");
         Runnable runnable = main.as(Runnable.class);
         runnable.run();
@@ -86,7 +86,7 @@ public class SLJavaInteropTest {
     }
 
     private Value lookup(String symbol) {
-        return context.getBindings("sl").getMember(symbol);
+        return context.getBindings("php").getMember(symbol);
     }
 
     @Test
@@ -94,7 +94,7 @@ public class SLJavaInteropTest {
         String scriptText = "function values(a, b) {\n" + //
                         "  println(\"Called with \" + a + \" and \" + b);\n" + //
                         "}\n"; //
-        context.eval("sl", scriptText);
+        context.eval("php", scriptText);
         Value fn = lookup("values");
         PassInValues valuesIn = fn.as(PassInValues.class);
         valuesIn.call("OK", "Fine");
@@ -120,7 +120,7 @@ public class SLJavaInteropTest {
         String scriptText = "function values(a, b) {\n" + //
                         "  println(\"Called with \" + a[0] + a[1] + \" and \" + b);\n" + //
                         "}\n"; //
-        context.eval("sl", scriptText);
+        context.eval("php", scriptText);
         Value fn = lookup("values");
         PassInArray valuesIn = fn.as(PassInArray.class);
         valuesIn.call(new Object[]{"OK", "Fine"});
@@ -132,7 +132,7 @@ public class SLJavaInteropTest {
         String scriptText = "function values(a, b) {\n" + //
                         "  println(\"Called with \" + a + \" and \" + b);\n" + //
                         "}\n"; //
-        context.eval("sl", scriptText);
+        context.eval("php", scriptText);
         Value fn = lookup("values");
         PassInVarArg valuesIn = fn.as(PassInVarArg.class);
 
@@ -145,7 +145,7 @@ public class SLJavaInteropTest {
         String scriptText = "function values(a, b, c) {\n" + //
                         "  println(\"Called with \" + a + \" and \" + b + c);\n" + //
                         "}\n"; //
-        context.eval("sl", scriptText);
+        context.eval("php", scriptText);
         Value fn = lookup("values");
         PassInArgAndVarArg valuesIn = fn.as(PassInArgAndVarArg.class);
 
@@ -161,7 +161,7 @@ public class SLJavaInteropTest {
                         "  obj.value = v;\n" + //
                         "  return sum.sum(obj);\n" + //
                         "}\n"; //
-        context.eval("sl", scriptText);
+        context.eval("php", scriptText);
         Value fn = lookup("values");
 
         Sum javaSum = new Sum();
@@ -184,7 +184,7 @@ public class SLJavaInteropTest {
                         "  obj.value = v;\n" + //
                         "  return sum.sum(obj);\n" + //
                         "}\n"; //
-        context.eval("sl", scriptText);
+        context.eval("php", scriptText);
         Values fn = lookup("values").as(Values.class);
 
         Sum sum = new Sum();
@@ -206,7 +206,7 @@ public class SLJavaInteropTest {
                         "  obj.value = v;\n" + //
                         "  return sum.sum(obj);\n" + //
                         "}\n"; //
-        context.eval("sl", scriptText);
+        context.eval("php", scriptText);
         ValuesRaw fn = lookup("values").as(ValuesRaw.class);
 
         Sum sum = new Sum();
@@ -234,7 +234,7 @@ public class SLJavaInteropTest {
                         "  obj.doSum2 = values;\n" + //
                         "  return obj;\n" + //
                         "}\n"; //
-        context.eval("sl", scriptText);
+        context.eval("php", scriptText);
         DoSums fn = lookup("create").execute().as(DoSums.class);
 
         Sum sum = new Sum();
@@ -253,7 +253,7 @@ public class SLJavaInteropTest {
         String scriptText = "function values(sum, arr) {\n" + //
                         "  sum.sumArray(arr);\n" + //
                         "}\n"; //
-        context.eval("sl", scriptText);
+        context.eval("php", scriptText);
         Value fn = lookup("values");
 
         Sum javaSum = new Sum();
@@ -272,7 +272,7 @@ public class SLJavaInteropTest {
         String scriptText = "function values(sum, arr) {\n" + //
                         "  sum.sumArrayArray(arr);\n" + //
                         "}\n"; //
-        context.eval("sl", scriptText);
+        context.eval("php", scriptText);
         Value fn = lookup("values");
 
         Sum javaSum = new Sum();
@@ -295,7 +295,7 @@ public class SLJavaInteropTest {
         String scriptText = "function values(sum, arr) {\n" + //
                         "  sum.sumArrayMap(arr);\n" + //
                         "}\n"; //
-        context.eval("sl", scriptText);
+        context.eval("php", scriptText);
         Value fn = lookup("values");
 
         Sum javaSum = new Sum();
@@ -318,7 +318,7 @@ public class SLJavaInteropTest {
         String scriptText = "function values(sum, arr) {\n" + //
                         "  sum.sumMapArray(arr);\n" + //
                         "}\n"; //
-        context.eval("sl", scriptText);
+        context.eval("php", scriptText);
         Value fn = lookup("values");
 
         Sum javaSum = new Sum();
@@ -343,7 +343,7 @@ public class SLJavaInteropTest {
                         "function read(map, key) {\n" +
                         "  return map.get(key);\n" +
                         "}\n";
-        context.eval("sl", scriptText);
+        context.eval("php", scriptText);
         Value read = lookup("read");
         Value write = lookup("write");
 

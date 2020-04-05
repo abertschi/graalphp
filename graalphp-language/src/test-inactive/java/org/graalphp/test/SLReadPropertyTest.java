@@ -56,8 +56,8 @@ public class SLReadPropertyTest {
 
     @Before
     public void setUp() {
-        this.ctx = Context.create("sl");
-        this.slObject = ctx.eval("sl", "function createObject() {\n" +
+        this.ctx = Context.create("php");
+        this.slObject = ctx.eval("php", "function createObject() {\n" +
                         "obj1 = new();\n" +
                         "obj1.number = 42;\n" +
                         "return obj1;\n" +

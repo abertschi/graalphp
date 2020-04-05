@@ -53,7 +53,7 @@ import org.junit.Test;
  */
 public class SLDebugALot {
 
-    private final Source slCode = Source.create("sl", "function main() {\n" +
+    private final Source slCode = Source.create("php", "function main() {\n" +
                     "  n = 2;\n" +
                     "  return types(n);\n" +
                     "}\n" +

@@ -53,7 +53,7 @@ public class SLInteropControlFlowTest {
 
     @Before
     public void setUp() {
-        context = Context.create("sl");
+        context = Context.create("php");
     }
 
     @After
@@ -63,7 +63,7 @@ public class SLInteropControlFlowTest {
 
     @Test
     public void testWhile() {
-        final Source src = Source.newBuilder("sl", "function testWhile(a) {while(a) {break;}} function main() {return testWhile;}", "testWhile.sl").buildLiteral();
+        final Source src = Source.newBuilder("php", "function testWhile(a) {while(a) {break;}} function main() {return testWhile;}", "testWhile.sl").buildLiteral();
         final Value fnc = context.eval(src);
         Assert.assertTrue(fnc.canExecute());
         fnc.execute(false);
@@ -71,7 +71,7 @@ public class SLInteropControlFlowTest {
 
     @Test
     public void testIf() {
-        final Source src = Source.newBuilder("sl", "function testIf(a) {if(a) {return 1;} else {return 0;}} function main() {return testIf;}", "testIf.sl").buildLiteral();
+        final Source src = Source.newBuilder("php", "function testIf(a) {if(a) {return 1;} else {return 0;}} function main() {return testIf;}", "testIf.sl").buildLiteral();
         final Value fnc = context.eval(src);
         fnc.execute(false);
     }

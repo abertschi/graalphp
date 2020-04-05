@@ -101,7 +101,7 @@ public class SLDebugTest {
     }
 
     private static Source slCode(String code) {
-        return Source.create("sl", code);
+        return Source.create("php", code);
     }
 
     private DebuggerSession startSession() {
@@ -436,7 +436,7 @@ public class SLDebugTest {
                         "  return i; \n" +
                         "}\n");
 
-        final Context context = Context.create("sl");
+        final Context context = Context.create("php");
         Debugger debugger = context.getEngine().getInstruments().get("debugger").lookup(Debugger.class);
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
@@ -789,9 +789,9 @@ public class SLDebugTest {
                         "  return multiply.multiply(n, fac, n - 1);\n" +
                         "}\n");
 
-        Context context = Context.create("sl");
+        Context context = Context.create("php");
         context.eval(stackSource);
-        Value fac = context.getBindings("sl").getMember("fac");
+        Value fac = context.getBindings("php").getMember("fac");
         Object multiply = new Multiply();
         Debugger debugger = context.getEngine().getInstruments().get("debugger").lookup(Debugger.class);
         boolean[] done = new boolean[1];
@@ -976,7 +976,7 @@ public class SLDebugTest {
             public boolean testLineColumn(int line, int column) {
                 return testLine(line);
             }
-        }, "R", "sl");
+        }, "R", "php");
     }
 
     @Test
@@ -1013,7 +1013,7 @@ public class SLDebugTest {
                         "  return invocable(1) + invocable(2);\n" +
                         "}\n" +
                         "\n";
-        tester.assertColumnBreakpointsResolution(sourceStr, "B", "R", "sl");
+        tester.assertColumnBreakpointsResolution(sourceStr, "B", "R", "php");
     }
 
     @Test
@@ -1050,7 +1050,7 @@ public class SLDebugTest {
                         "  return invocable(1) + invocable(2);\n" +
                         "}\n" +
                         "\n";
-        Source source = Source.newBuilder("sl", sourceCode, "testBreakpointsAnywhere.sl").build();
+        Source source = Source.newBuilder("php", sourceCode, "testBreakpointsAnywhere.sl").build();
         tester.assertBreakpointsBreakEverywhere(source, new DebuggerTester.PositionPredicate() {
             @Override
             public boolean testLine(int line) {

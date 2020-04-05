@@ -53,7 +53,7 @@ public class SLInteropPrimitiveTest {
 
     @Before
     public void setUp() {
-        context = Context.create("sl");
+        context = Context.create("php");
     }
 
     @After
@@ -63,7 +63,7 @@ public class SLInteropPrimitiveTest {
 
     @Test
     public void testBoolean() {
-        final Source src = Source.newBuilder("sl", "function testBoolean(a,b) {return a == b;} function main() {return testBoolean;}", "testBoolean.sl").buildLiteral();
+        final Source src = Source.newBuilder("php", "function testBoolean(a,b) {return a == b;} function main() {return testBoolean;}", "testBoolean.sl").buildLiteral();
         final Value fnc = context.eval(src);
         Assert.assertTrue(fnc.canExecute());
         fnc.execute(true, false);
@@ -71,7 +71,7 @@ public class SLInteropPrimitiveTest {
 
     @Test
     public void testChar() {
-        final Source src = Source.newBuilder("sl", "function testChar(a,b) {return a == b;} function main() {return testChar;}", "testChar.sl").buildLiteral();
+        final Source src = Source.newBuilder("php", "function testChar(a,b) {return a == b;} function main() {return testChar;}", "testChar.sl").buildLiteral();
         final Value fnc = context.eval(src);
         Assert.assertTrue(fnc.canExecute());
         fnc.execute('a', 'b');

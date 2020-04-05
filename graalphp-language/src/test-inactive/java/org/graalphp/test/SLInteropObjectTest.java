@@ -55,7 +55,7 @@ public class SLInteropObjectTest {
 
     @Before
     public void setUp() {
-        context = Context.create("sl");
+        context = Context.create("php");
     }
 
     @After
@@ -66,7 +66,7 @@ public class SLInteropObjectTest {
 
     @Test
     public void testObject() {
-        final Source src = Source.newBuilder("sl", "function main() {o = new(); o.a = 10; o.b = \"B\"; return o;}", "testObject.sl").buildLiteral();
+        final Source src = Source.newBuilder("php", "function main() {o = new(); o.a = 10; o.b = \"B\"; return o;}", "testObject.sl").buildLiteral();
         final Value obj = context.eval(src);
         Assert.assertTrue(obj.hasMembers());
 
@@ -93,9 +93,9 @@ public class SLInteropObjectTest {
 
     @Test
     public void testNewForeign() {
-        final Source src = Source.newBuilder("sl", "function getValue(type) {o = new(type); o.a = 10; return o.value;}", "testObject.sl").buildLiteral();
+        final Source src = Source.newBuilder("php", "function getValue(type) {o = new(type); o.a = 10; return o.value;}", "testObject.sl").buildLiteral();
         context.eval(src);
-        Value getValue = context.getBindings("sl").getMember("getValue");
+        Value getValue = context.getBindings("php").getMember("getValue");
         Value ret = getValue.execute(new TestType());
         Assert.assertEquals(20, ret.asLong());
     }

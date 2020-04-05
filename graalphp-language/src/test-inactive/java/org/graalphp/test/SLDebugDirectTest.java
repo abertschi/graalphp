@@ -109,7 +109,7 @@ public class SLDebugDirectTest {
     }
 
     private static Source createFactorial() {
-        return Source.newBuilder("sl", "function test() {\n" +
+        return Source.newBuilder("php", "function test() {\n" +
                         "  res = fac(2);\n" + "  println(res);\n" +
                         "  return res;\n" +
                         "}\n" +
@@ -123,7 +123,7 @@ public class SLDebugDirectTest {
     }
 
     private static Source createFactorialWithDebugger() {
-        return Source.newBuilder("sl", "function test() {\n" +
+        return Source.newBuilder("php", "function test() {\n" +
                         "  res = fac(2);\n" +
                         "  println(res);\n" +
                         "  return res;\n" +
@@ -141,7 +141,7 @@ public class SLDebugDirectTest {
     }
 
     private static Source createInteropComputation() {
-        return Source.newBuilder("sl", "function test() {\n" +
+        return Source.newBuilder("php", "function test() {\n" +
                         "}\n" +
                         "function interopFunction(notifyHandler) {\n" +
                         "  executing = true;\n" +
@@ -179,7 +179,7 @@ public class SLDebugDirectTest {
                         UNASSIGNED, "res", UNASSIGNED);
         continueExecution();
 
-        Value value = context.getBindings("sl").getMember("test").execute();
+        Value value = context.getBindings("php").getMember("test").execute();
         assertExecutedOK();
         Assert.assertEquals("2\n", getOut());
         Assert.assertTrue(value.isNumber());
@@ -201,7 +201,7 @@ public class SLDebugDirectTest {
                         "1", "res", UNASSIGNED);
         continueExecution();
 
-        Value value = context.getBindings("sl").getMember("test").execute();
+        Value value = context.getBindings("php").getMember("test").execute();
         assertExecutedOK();
         Assert.assertEquals("2\n", getOut());
         Assert.assertTrue(value.isNumber());
@@ -252,7 +252,7 @@ public class SLDebugDirectTest {
         assertLocation("test", 3, true, "println(res)", "res", "2");
         stepOut();
 
-        Value value = context.getBindings("sl").getMember("test");
+        Value value = context.getBindings("php").getMember("test");
         assertTrue(value.canExecute());
         Value resultValue = value.execute();
         String resultStr = resultValue.toString();
@@ -299,7 +299,7 @@ public class SLDebugDirectTest {
             nh.pauseDone();
         });
 
-        Value value = context.getBindings("sl").getMember("interopFunction").execute(nh);
+        Value value = context.getBindings("php").getMember("interopFunction").execute(nh);
 
         assertExecutedOK();
         assertTrue(value.isBoolean());
@@ -308,7 +308,7 @@ public class SLDebugDirectTest {
     }
 
     private static Source createNull() {
-        return Source.newBuilder("sl", "function nullTest() {\n" +
+        return Source.newBuilder("php", "function nullTest() {\n" +
                         "  res = doNull();\n" +
                         "  return res;\n" +
                         "}\n" +
@@ -328,7 +328,7 @@ public class SLDebugDirectTest {
         assertLocation("nullTest", 3, true, "return res", "res", "NULL");
         continueExecution();
 
-        Value value = context.getBindings("sl").getMember("nullTest").execute();
+        Value value = context.getBindings("php").getMember("nullTest").execute();
         assertExecutedOK();
 
         String val = value.toString();

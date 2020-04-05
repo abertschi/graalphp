@@ -53,7 +53,7 @@ public class SLParseErrorTest {
 
     @Before
     public void setUp() {
-        context = Context.create("sl");
+        context = Context.create("php");
     }
 
     @After
@@ -64,7 +64,7 @@ public class SLParseErrorTest {
     @Test
     public void testParseError() {
         try {
-            final Source src = Source.newBuilder("sl", "function testSyntaxError(a) {break;} function main() {return testSyntaxError;}", "testSyntaxError.sl").buildLiteral();
+            final Source src = Source.newBuilder("php", "function testSyntaxError(a) {break;} function main() {return testSyntaxError;}", "testSyntaxError.sl").buildLiteral();
             context.eval(src);
             Assert.assertTrue("Should not reach here.", false);
         } catch (PolyglotException e) {
@@ -76,7 +76,7 @@ public class SLParseErrorTest {
     @Test
     public void testParseErrorEmpty() {
         try {
-            final Source src = Source.newBuilder("sl", "", "testSyntaxErrorEmpty.sl").buildLiteral();
+            final Source src = Source.newBuilder("php", "", "testSyntaxErrorEmpty.sl").buildLiteral();
             context.eval(src);
             Assert.assertTrue("Should not reach here.", false);
         } catch (PolyglotException e) {
@@ -88,7 +88,7 @@ public class SLParseErrorTest {
     @Test
     public void testParseErrorEOF1() {
         try {
-            final Source src = Source.newBuilder("sl", "function main", "testSyntaxErrorEOF1.sl").buildLiteral();
+            final Source src = Source.newBuilder("php", "function main", "testSyntaxErrorEOF1.sl").buildLiteral();
             context.eval(src);
             Assert.assertTrue("Should not reach here.", false);
         } catch (PolyglotException e) {
@@ -100,7 +100,7 @@ public class SLParseErrorTest {
     @Test
     public void testParseErrorEOF2() {
         try {
-            final Source src = Source.newBuilder("sl", "function\n", "testSyntaxErrorEOF2.sl").buildLiteral();
+            final Source src = Source.newBuilder("php", "function\n", "testSyntaxErrorEOF2.sl").buildLiteral();
             context.eval(src);
             Assert.assertTrue("Should not reach here.", false);
         } catch (PolyglotException e) {

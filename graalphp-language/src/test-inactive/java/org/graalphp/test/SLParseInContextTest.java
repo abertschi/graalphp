@@ -111,7 +111,7 @@ public class SLParseInContextTest {
                         CompilerDirectives.transferToInterpreterAndInvalidate();
                         this.reference = lookupContextReference(EvalLang.class);
                     }
-                    Source aPlusB = Source.newBuilder("sl", "a + b", "plus.sl").build();
+                    Source aPlusB = Source.newBuilder("php", "a + b", "plus.sl").build();
                     return reference.get().parsePublic(aPlusB, "a", "b").call(30, 12);
                 }
             });

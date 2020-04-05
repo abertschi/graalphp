@@ -65,8 +65,8 @@ public class SLLoggerTest {
     private static final Source ADD_SL;
     private static final Source MUL_SL;
     static {
-        ADD_SL = Source.newBuilder("sl", "function add(a,b) {return a + b;} function main() {return add(1,1);}", "add.sl").buildLiteral();
-        MUL_SL = Source.newBuilder("sl", "function mul(a,b) {return a * b;} function main() {return mul(1,1);}", "mul.sl").buildLiteral();
+        ADD_SL = Source.newBuilder("php", "function add(a,b) {return a + b;} function main() {return add(1,1);}", "add.sl").buildLiteral();
+        MUL_SL = Source.newBuilder("php", "function mul(a,b) {return a * b;} function main() {return mul(1,1);}", "mul.sl").buildLiteral();
     }
 
     private TestHandler testHandler;
@@ -89,7 +89,7 @@ public class SLLoggerTest {
         if (currentContext != null) {
             throw new IllegalStateException("Context already created");
         }
-        currentContext = Context.newBuilder("sl").options(options).logHandler(testHandler).build();
+        currentContext = Context.newBuilder("php").options(options).logHandler(testHandler).build();
         return currentContext;
     }
 
@@ -102,21 +102,21 @@ public class SLLoggerTest {
 
     @Test
     public void testLoggerSlFunctionLevelFine() {
-        final Context context = createContext(createLoggingOptions("sl", "SLFunction", "FINE"));
+        final Context context = createContext(createLoggingOptions("php", "SLFunction", "FINE"));
         executeSlScript(context);
         Assert.assertFalse(functionNames(testHandler.getRecords()).isEmpty());
     }
 
     @Test
     public void testLoggerSlFunctionParentLevelFine() {
-        final Context context = createContext(createLoggingOptions("sl", "org.graalphp.runtime", "FINE"));
+        final Context context = createContext(createLoggingOptions("php", "org.graalphp.runtime", "FINE"));
         executeSlScript(context);
         Assert.assertFalse(functionNames(testHandler.getRecords()).isEmpty());
     }
 
     @Test
     public void testLoggerSlFunctionSiblingLevelFine() {
-        final Context context = createContext(createLoggingOptions("sl", "SLContext", "FINE"));
+        final Context context = createContext(createLoggingOptions("php", "SLContext", "FINE"));
         executeSlScript(context);
         Assert.assertTrue(functionNames(testHandler.getRecords()).isEmpty());
     }
@@ -124,15 +124,15 @@ public class SLLoggerTest {
     @Test
     public void testMultipleContextsExclusiveFineLevel() {
         final TestHandler handler1 = new TestHandler();
-        try (Context ctx = Context.newBuilder("sl").options(createLoggingOptions("sl", "SLFunction", "FINE")).logHandler(handler1).build()) {
+        try (Context ctx = Context.newBuilder("php").options(createLoggingOptions("php", "SLFunction", "FINE")).logHandler(handler1).build()) {
             executeSlScript(ctx, ADD_SL, 2);
         }
         final TestHandler handler2 = new TestHandler();
-        try (Context ctx = Context.newBuilder("sl").options(createLoggingOptions("sl", "SLFunction", "FINE")).logHandler(handler2).build()) {
+        try (Context ctx = Context.newBuilder("php").options(createLoggingOptions("php", "SLFunction", "FINE")).logHandler(handler2).build()) {
             executeSlScript(ctx, MUL_SL, 1);
         }
         final TestHandler handler3 = new TestHandler();
-        try (Context ctx = Context.newBuilder("sl").options(createLoggingOptions("sl", "SLFunction", "FINE")).logHandler(handler3).build()) {
+        try (Context ctx = Context.newBuilder("php").options(createLoggingOptions("php", "SLFunction", "FINE")).logHandler(handler3).build()) {
             executeSlScript(ctx, ADD_SL, 2);
         }
         Set<String> functionNames = functionNames(handler1.getRecords());
@@ -149,15 +149,15 @@ public class SLLoggerTest {
     @Test
     public void testMultipleContextsExclusiveDifferentLogLevel() {
         final TestHandler handler1 = new TestHandler();
-        try (Context ctx = Context.newBuilder("sl").options(createLoggingOptions("sl", "SLFunction", "FINE")).logHandler(handler1).build()) {
+        try (Context ctx = Context.newBuilder("php").options(createLoggingOptions("php", "SLFunction", "FINE")).logHandler(handler1).build()) {
             executeSlScript(ctx, ADD_SL, 2);
         }
         final TestHandler handler2 = new TestHandler();
-        try (Context ctx = Context.newBuilder("sl").logHandler(handler2).build()) {
+        try (Context ctx = Context.newBuilder("php").logHandler(handler2).build()) {
             executeSlScript(ctx, MUL_SL, 1);
         }
         final TestHandler handler3 = new TestHandler();
-        try (Context ctx = Context.newBuilder("sl").options(createLoggingOptions("sl", "SLFunction", "FINE")).logHandler(handler3).build()) {
+        try (Context ctx = Context.newBuilder("php").options(createLoggingOptions("php", "SLFunction", "FINE")).logHandler(handler3).build()) {
             executeSlScript(ctx, ADD_SL, 2);
         }
         Set<String> functionNames = functionNames(handler1.getRecords());
@@ -175,9 +175,9 @@ public class SLLoggerTest {
         final TestHandler handler1 = new TestHandler();
         final TestHandler handler2 = new TestHandler();
         final TestHandler handler3 = new TestHandler();
-        try (Context ctx1 = Context.newBuilder("sl").options(createLoggingOptions("sl", "SLFunction", "FINE")).logHandler(handler1).build()) {
-            try (Context ctx2 = Context.newBuilder("sl").options(createLoggingOptions("sl", "SLFunction", "FINE")).logHandler(handler2).build()) {
-                try (Context ctx3 = Context.newBuilder("sl").options(createLoggingOptions("sl", "SLFunction", "FINE")).logHandler(handler3).build()) {
+        try (Context ctx1 = Context.newBuilder("php").options(createLoggingOptions("php", "SLFunction", "FINE")).logHandler(handler1).build()) {
+            try (Context ctx2 = Context.newBuilder("php").options(createLoggingOptions("php", "SLFunction", "FINE")).logHandler(handler2).build()) {
+                try (Context ctx3 = Context.newBuilder("php").options(createLoggingOptions("php", "SLFunction", "FINE")).logHandler(handler3).build()) {
                     executeSlScript(ctx1, ADD_SL, 2);
                     executeSlScript(ctx2, MUL_SL, 1);
                     executeSlScript(ctx3, ADD_SL, 2);
@@ -200,9 +200,9 @@ public class SLLoggerTest {
         final TestHandler handler1 = new TestHandler();
         final TestHandler handler2 = new TestHandler();
         final TestHandler handler3 = new TestHandler();
-        try (Context ctx1 = Context.newBuilder("sl").options(createLoggingOptions("sl", "SLFunction", "FINE")).logHandler(handler1).build()) {
-            try (Context ctx2 = Context.newBuilder("sl").options(createLoggingOptions("sl", "SLFunction", "FINE")).logHandler(handler2).build()) {
-                try (Context ctx3 = Context.newBuilder("sl").logHandler(handler3).build()) {
+        try (Context ctx1 = Context.newBuilder("php").options(createLoggingOptions("php", "SLFunction", "FINE")).logHandler(handler1).build()) {
+            try (Context ctx2 = Context.newBuilder("php").options(createLoggingOptions("php", "SLFunction", "FINE")).logHandler(handler2).build()) {
+                try (Context ctx3 = Context.newBuilder("php").logHandler(handler3).build()) {
                     executeSlScript(ctx1, ADD_SL, 2);
                     executeSlScript(ctx2, MUL_SL, 1);
                     executeSlScript(ctx3, ADD_SL, 2);

@@ -95,7 +95,7 @@ public class SLSeparatedClassLoadersTest {
         assertNotNull("Engine has been created", engine);
 
         Map<?, ?> languages = (Map<?, ?>) engineClass.getMethod("getLanguages").invoke(engine);
-        Object lang = languages.get("sl");
+        Object lang = languages.get("php");
         assertNotNull("SL language found: " + languages, lang);
     }
 
