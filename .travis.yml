@@ -27,5 +27,3 @@ script:
   - if [[ "GRAALPHP_BUILD_NATIVE" == "true" ]]; then  $JAVA_HOME/bin/graalphp-native $TEST;  fi;
   - if [[ "GRAALPHP_BUILD_NATIVE" == "true" ]]; then  $JAVA_HOME/bin/polyglot --jvm --language graalphp --file $TEST; fi;
   - if [[ "GRAALPHP_BUILD_NATIVE" == "true" ]]; then  $JAVA_HOME/bin/gu remove org.graalphp; fi;
-  - shellcheck graalphp;
-  - (find . -name '*.sh' | grep -v graalvm | xargs shellcheck);
