@@ -29,10 +29,9 @@ public class ParserTest {
         long a, b = 0;
         a = System.currentTimeMillis();
         ASTParser parser = ASTParser.newParser(PHPVersion.PHP7_4, false, true);
-        parser.setSource(readFile("arrays.phpt").toCharArray());
-        Program p = parser.createAST();
-        p.getSourceModule().getNameRange();
-        b = System.currentTimeMillis();
+//        parser.setSource(readFile("arrays.phpt").toCharArray());
+//        Program p = parser.createAST();
+//        b = System.currentTimeMillis();
 //        HierarchicalVisitor v = new HierarchicalVisitor() {
 //            @Override
 //            public boolean visit(ASTNode node) {
@@ -41,10 +40,6 @@ public class ParserTest {
 //            }
 //        };
 //        p.accept(v);
-        System.out.println(p.toString());
-
-        System.out.println("--------------------------------------- \n\n");
-        System.out.println(b - a);
 
     }
 }

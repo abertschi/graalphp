@@ -13,8 +13,13 @@ public class RunPhpSpecParsingTests {
     public static Test suite() {
         TestSuite suite = new TestSuite(
                 "compare output with upstream php parser");
-        // TODO: enable this on CI
-//        suite.addTest(new FileTestSuite(new File(TEST_FOLDER)));
+
+        // run parsing tests only on travis
+        String tests = System.getenv("CI_PARSING_TESTS");
+        if (tests != null && tests.toLowerCase().equals("true")) {
+            suite.addTest(new FileTestSuite(new File(TEST_FOLDER)));
+        }
+
         return suite;
     }
 }

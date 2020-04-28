@@ -1,3 +1,7 @@
+env:
+   global:
+  - CI_PARSING_TESTS=true
+
 os: linux
 
 dist: xenial
