@@ -1,0 +1,70 @@
+<!--
+	Copyright (c) 2009 IBM Corporation and others.
+
+	This program and the accompanying materials are made
+	available under the terms of the Eclipse Public License 2.0
+	which is available at https://www.eclipse.org/legal/epl-2.0/
+
+	SPDX-License-Identifier: EPL-2.0
+
+	Contributors:
+		IBM Corporation - initial API and implementation
+		Zend Technologies
+ -->
+<project name="Builds all parser classes" default="main">
+
+	<target name="main">
+		<dirname property="antfile.dir" file="${ant.file}"/>
+
+<!--		&lt;!&ndash; PHP 5 AST &ndash;&gt;-->
+<!--		<ant dir="${antfile.dir}/parser/php5/" antfile="generateAstParser.xml" />-->
+<!--		<ant dir="${antfile.dir}/parser/php5/" antfile="generateAstScanner.xml" />-->
+
+
+<!--		&lt;!&ndash; PHP 5.3 AST &ndash;&gt;-->
+<!--		<ant dir="${antfile.dir}/parser/php53/" antfile="generateAstParser.xml" />-->
+<!--		<ant dir="${antfile.dir}/parser/php53/" antfile="generateAstScanner.xml" />-->
+
+
+<!--		&lt;!&ndash; PHP 5.4 AST &ndash;&gt;-->
+<!--		<ant dir="${antfile.dir}/parser/php54/" antfile="generateAstParser.xml" />-->
+<!--		<ant dir="${antfile.dir}/parser/php54/" antfile="generateAstScanner.xml" />-->
+
+
+<!--		&lt;!&ndash; PHP 5.5 AST &ndash;&gt;-->
+<!--		<ant dir="${antfile.dir}/parser/php55/" antfile="generateAstParser.xml" />-->
+<!--		<ant dir="${antfile.dir}/parser/php55/" antfile="generateAstScanner.xml" />-->
+
+
+<!--		&lt;!&ndash; PHP 5.6 AST &ndash;&gt;-->
+<!--		<ant dir="${antfile.dir}/parser/php56/" antfile="generateAstParser.xml" />-->
+<!--		<ant dir="${antfile.dir}/parser/php56/" antfile="generateAstScanner.xml" />-->
+
+
+<!--		&lt;!&ndash; PHP 7 AST &ndash;&gt;-->
+<!--		<ant dir="${antfile.dir}/parser/php7/" antfile="generateAstParser.xml" />-->
+<!--		<ant dir="${antfile.dir}/parser/php7/" antfile="generateAstScanner.xml" />-->
+
+
+<!--		&lt;!&ndash; PHP 7.1 AST &ndash;&gt;-->
+<!--		<ant dir="${antfile.dir}/parser/php71/" antfile="generateAstParser.xml" />-->
+<!--		<ant dir="${antfile.dir}/parser/php71/" antfile="generateAstScanner.xml" />-->
+
+
+<!--		&lt;!&ndash; PHP 7.2 AST &ndash;&gt;-->
+<!--		<ant dir="${antfile.dir}/parser/php72/" antfile="generateAstParser.xml" />-->
+<!--		<ant dir="${antfile.dir}/parser/php72/" antfile="generateAstScanner.xml" />-->
+
+
+<!--		&lt;!&ndash; PHP 7.3 AST &ndash;&gt;-->
+<!--		<ant dir="${antfile.dir}/parser/php73/" antfile="generateAstParser.xml" />-->
+<!--		<ant dir="${antfile.dir}/parser/php73/" antfile="generateAstScanner.xml" />-->
+
+
+		<!-- PHP 7.4 AST -->
+		<ant dir="${antfile.dir}/parser/php74/" antfile="generateAstParser.xml" />
+		<ant dir="${antfile.dir}/parser/php74/" antfile="generateAstScanner.xml" />
+
+	</target>
+
+</project>

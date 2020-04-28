@@ -1,0 +1,1 @@
+This directory contains various PHP source code used to test correct parsing behavior.

@@ -1,0 +1,56 @@
+#+TITLE: PHP Parser for Java
+
+WORK IN PROGRESS
+
+This piece of software provides the PHP Parser used by the [[https://projects.eclipse.org/projects/tools.pdt][Eclipse PHP
+Development Tools (PDT)]] project as a dependency-free standalone binary.
+
+It's a fast, [[http://www2.cs.tum.edu/projects/cup/][java-cup]] and [[https://jflex.de/][JFlex]] based, LALR parser supporting PHP 7+ grammar.
+
+** Features
+- PHP 7.4
+- Fast and lightweight
+- AST with Visitor for tree transformation
+- Testsuite which compares parsing output with upstream parser
+
+** Getting Started
+#+begin_src 
+<dependency>
+    <groupId>org.graalphp.parser</groupId>
+    <artifactId>php-parser</artifactId>
+    <version>${project.version}</version>
+</dependency>
+#+end_src
+
+** API
+#+begin_src java
+String code = TestUtils.readFileInClassPath("benchmarkgame/binarytrees.php-1.php");
+        
+ASTParser parser = ASTParser.newParser(PHPVersion.PHP7_4, false, true);
+parser.setSource(code.toCharArray());
+Program ast = parser.createAST();
+System.out.println(ast.toString());
+
+#+end_src
+** Benchmarks
+
+** Upstream
+https://github.com/eclipse/pdt
+
+** Current Status/ TODOs
+- [X] Factor out dependencies used by eclipse PDT, eclipse dltk
+- [X] cup parser is currently not built on maven install, bin files are used instead
+  - integration ant into maven to build cup on each mvn install
+- [X] Write tests which compare parsing results with upstream
+- [ ] Setup Travis
+- [ ] Compare parsing benchmarks with native php, JPHP, Antrl
+- [ ] Add support for previous PHP versions (5 - 7.3)
+
+
+** Licence
+EPL license
+
+CUP Parser Generator Copyright Notice, License, and Disclaimer
+Copyright 1996-2015 by Scott Hudson, Frank Flannery, C. Scott Ananian, Michael Petter
+
+

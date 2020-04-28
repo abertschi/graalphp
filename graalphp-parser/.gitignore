@@ -1,3 +1,5 @@
+/.idea/
+/README.html
 *~
 *.cfg
 *.iml
@@ -25,4 +27,12 @@ graalphp-native/graalphp-native
 /graalphp-language/src/main/java/com/oracle/truffle/sl/parser/SimpleLanguage.tokens
 /graalphp-language/src/main/java/com/oracle/truffle/sl/parser/SimpleLanguageLexer.interp
 /graalphp-language/src/main/java/com/oracle/truffle/sl/parser/SimpleLanguageLexer.tokens
-graalvm.tar.gz
+target/
+bin/
+classes/
+dist/
+gen2/
+# cup-bin
+/org.eclipse.php.core.parser/src-gen/
+eclipse-pdt-fatjar.jar
+.#*

@@ -1,0 +1,44 @@
+<!--
+	Copyright (c) 2010 IBM Corporation and others.
+
+	This program and the accompanying materials are made
+	available under the terms of the Eclipse Public License 2.0
+	which is available at https://www.eclipse.org/legal/epl-2.0/
+
+	SPDX-License-Identifier: EPL-2.0
+
+	Contributors:
+		IBM Corporation - initial API and implementation
+		Zend Technologies
+ -->
+<project name="Downloading JFlex from www.jflex.de" default="getJFlexJar">
+
+	<target name="init">
+		<property name="jflexVersion" value="1.6.1" />
+
+		<!-- if dir exists, then it'll be used to get jflex -->
+		<available file="/shared/tools/php" property="jflex.work.dir" value="/shared/tools/php"/>
+		<!-- otherwise, tmpdir will be used. -->
+		<property name="jflex.work.dir" value="${java.io.tmpdir}/PDT_JFlex_files"/>
+
+		<mkdir dir="${jflex.work.dir}" />
+		<property name="jflexJar" value="${jflex.work.dir}/jflex-${jflexVersion}/lib/jflex-${jflexVersion}.jar" />
+	</target>
+
+	<target name="getJFlexJar" depends="init">
+			<available property="jarExists" file="${jflexJar}" />
+			<antcall target="setHttpProxy" />
+			<antcall target="downloadAndUnpack" />
+		</target>
+
+	<target name="setHttpProxy" if="http.proxyHost">
+		<echo message="proxy: - ${http.proxyHost}:${http.proxyPort}" />
+		<setproxy proxyhost="${http.proxyHost}" proxyport="${http.proxyPort}" />
+	</target>
+
+	<target name="downloadAndUnpack" unless="jarExists">
+		<get src="http://jflex.de/jflex-${jflexVersion}.zip" dest="${jflex.work.dir}/jflex-${jflexVersion}.zip" verbose="true" usetimestamp="true" />
+		<unzip src="${jflex.work.dir}/jflex-${jflexVersion}.zip" dest="${jflex.work.dir}" />
+	</target>
+
+</project>

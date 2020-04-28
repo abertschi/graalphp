@@ -1,0 +1,39 @@
+<!--
+	Copyright (c) 2019 IBM Corporation and others.
+
+	This program and the accompanying materials are made
+	available under the terms of the Eclipse Public License 2.0
+	which is available at https://www.eclipse.org/legal/epl-2.0/
+
+	SPDX-License-Identifier: EPL-2.0
+
+	Contributors:
+		IBM Corporation - initial API and implementation
+		Zend Technologies
+ -->
+<project name="Generates DOM AST Scanner for PHP 7.4" default="generateScanner" basedir=".">
+
+	<import file="../../jflex/build.xml" />
+
+	<target name="checkUpToDate">
+		<uptodate
+			property="upToDate"
+			targetfile="../../../../src/main/java/org/eclipse/php/core/ast/scanner/php74/PhpAstLexer.java">
+			<srcfiles dir="." includes="ast_scanner.flex" />
+			<srcfiles dir="../../jflex" includes="common.skeleton" />
+		</uptodate>
+	</target>
+
+	<target name="generateScanner" depends="checkUpToDate, getJFlexJar" unless="upToDate">
+		<java jar="${jflexJar}" fork="true">
+			<arg value="--legacydot" />
+			<arg value="-d" />
+			<arg value="../../../../src/main/java/org/eclipse/php/core/ast/scanner/php74" />
+			<arg value="-skel" />
+			<arg value="../../jflex/common.skeleton" />
+			<arg value="-nobak" />
+			<arg value="ast_scanner.flex" />
+		</java>
+	</target>
+
+</project>

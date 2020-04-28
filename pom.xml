@@ -11,6 +11,7 @@
   </properties>
   <packaging>pom</packaging>
   <modules>
+    <module>graalphp-parser</module>
     <module>graalphp-language</module>
     <module>graalphp-launcher</module>
     <module>graalphp-native</module>

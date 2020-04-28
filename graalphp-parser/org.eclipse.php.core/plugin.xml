@@ -1,0 +1,550 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?><!--
+    Copyright (c) 2009, 2015 IBM Corporation and others.
+
+    This program and the accompanying materials are made
+    available under the terms of the Eclipse Public License 2.0
+    which is available at https://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+        Zend Technologies
+        Yannick de Lange <yannickl88@gmail.com>
+-->
+
+<plugin>
+	<extension-point id="goalEvaluatorFactories" name="PHP Evaluator Factory" schema="schema/goalEvaluatorFactories.exsd" />
+	<extension-point id="phpSourceElementRequestors" name="PHP Source Element Requestor" schema="schema/phpSourceElementRequestors.exsd" />
+ 	<extension-point id="phpIndexingVisitors" name="PHP Indexing Visitor" schema="schema/phpIndexingVisitors.exsd"/>
+	<extension-point id="completionStrategyFactories" name="PHP Completion Strategy Factory" schema="schema/completionStrategyFactories.exsd" />
+	<extension-point id="completionContextResolvers" name="PHP Completion Context Resolver" schema="schema/completionContextResolvers.exsd" />
+ 	<extension-point id="languageModelProviders" name="PHP Language Model Provider" schema="schema/languageModelProviders.exsd"/>
+ 	<extension-point id="phpFormatterCommonPreferences" name="PHP Code Formatter Common Preferences" schema="schema/phpFormatterCommonPreferences.exsd"/>
+	<extension-point id="indentationStrategy" name="Indentation Strategy Extension" schema="schema/indentationStrategy.exsd"/>
+ 	<extension-point id="libraryFolderNameProviders" name="Library Folder Name Providers" schema="schema/libraryFolderNameProviders.exsd"/>
+ 	<extension-point id="validatorExtension" name="PHP Validator Extension" schema="schema/validatorExtension.exsd"/>
+ 	<extension-point id="namespaceResolver" name="PHP Namespace Resolver Extension" schema="schema/namespaceResolver.exsd"/>
+	<extension
+		point="org.eclipse.core.runtime.adapters" id="org.eclipse.php.core.adapters">
+		<factory
+			adaptableType="org.eclipse.dltk.core.IMember"
+			class="org.eclipse.php.internal.core.adapters.MemberResourceAdapterFactory">
+			<adapter
+				type="org.eclipse.core.resources.IResource">
+			</adapter>
+			<adapter
+				type="org.eclipse.core.resources.IFile">
+			</adapter>
+		</factory>
+		<factory
+			adaptableType="org.eclipse.php.internal.core.documentModel.dom.ElementImplForPHP"
+			class="org.eclipse.php.internal.core.adapters.PHPElementResourceAdapterFactory">
+			<adapter
+				type="org.eclipse.core.resources.IResource">
+			</adapter>
+			<adapter
+				type="org.eclipse.core.resources.IFile">
+			</adapter>
+		</factory>
+	</extension>
+	<!-- PHP Model Handler -->
+	<extension
+		point="org.eclipse.wst.sse.core.modelHandler">
+		<modelHandler
+			default="yes"
+			class="org.eclipse.php.internal.core.documentModel.handler.PHPModelHandler"
+			associatedContentTypeId="org.eclipse.php.core.phpsource"
+			id="org.eclipse.php.core.documentModel.handler">
+		</modelHandler>
+	</extension>
+	
+
+	<!--
+		DocumentFactory extension for PHP: This is needed in order to
+		bootstrap the lookup of the ModelHandler
+	-->
+	<extension
+		point="org.eclipse.core.filebuffers.documentCreation"
+		id="org.eclipse.php.core.documentfactories"
+		name="PHP Document Creation Factory">
+		<!-- This is a base factory class included in WST -->
+		<factory
+			contentTypeId="org.eclipse.php.core.phpsource"
+			class="org.eclipse.wst.sse.core.internal.filebuffers.BasicStructuredDocumentFactory" />
+	</extension>
+
+	<!-- PHP Content Type declaration -->
+	<extension
+		point="org.eclipse.core.contenttype.contentTypes">
+		<content-type
+			base-type="org.eclipse.core.runtime.text"
+			file-extensions="php,php3,php4,php5,php7,phtml,inc,phps"
+			id="phpsource"
+			name="%content-type.name.0"
+			priority="high">
+
+			<!-- Not used for now -->
+			<!--
+				<describer
+				class="org.eclipse.php.internal.core.documentModel.ContentDescriberForPHP"/>
+			-->
+		</content-type>
+	</extension>
+
+	<!-- Adding default "Eclipse text editor" for *.[ini,cfg] files -->
+	<extension
+		point="org.eclipse.core.contenttype.contentTypes">
+		<content-type
+			base-type="org.eclipse.core.runtime.text"
+			file-extensions="ini,cfg"
+			id="org.eclipse.ui.texteditor"
+			name="%content-type.name"
+			priority="high">
+		</content-type>
+	</extension>
+
+	<extension
+		id="PHPNature"
+		name="PHP Properties"
+		point="org.eclipse.core.resources.natures">
+		<runtime>
+			<run
+				class="org.eclipse.php.internal.core.project.PHPNature">
+			</run>
+		</runtime>
+	</extension>
+
+	<extension
+		id="PHPDocumentSetupParticipant"
+		name="PHPDocumentSetupParticipant"
+		point="org.eclipse.core.filebuffers.documentSetup">
+		<participant
+			contentTypeId="org.eclipse.php.core.phpsource"
+			class="org.eclipse.php.internal.core.documentModel.PHPDocumentSetupParticipant">
+		</participant>
+	</extension>
+
+	<!-- Preferences initialization -->
+	<extension
+		point="org.eclipse.core.runtime.preferences">
+		<initializer
+			class="org.eclipse.php.internal.core.preferences.PHPCorePreferenceInitializer" />
+	</extension>
+
+	<extension
+		id="phpproblemmarker"
+		name="PHP Problem"
+		point="org.eclipse.core.resources.markers">
+		<persistent
+			value="true" />
+		<super
+			type="org.eclipse.dltk.core.problem" />
+	</extension>
+
+	<!-- DLTK -->
+	<extension
+		point="org.eclipse.dltk.core.language">
+		<language
+			class="org.eclipse.php.internal.core.PHPLanguageToolkit"
+			nature="org.eclipse.php.core.PHPNature"
+			priority="0">
+		</language>
+	</extension>
+
+	<extension
+		point="org.eclipse.dltk.core.sourceParsers">
+		<parserContribution
+			natureId="org.eclipse.php.core.PHPNature">
+			<parser
+				class="org.eclipse.php.internal.core.compiler.ast.parser.PHPSourceParserFactory"
+				description="Creates PHP source parser"
+				id="org.eclipse.php.core.phpSourceParserFactory"
+				name="PHP source parser factory"
+				priority="0">
+			</parser>
+		</parserContribution>
+	</extension>
+
+	<extension
+		point="org.eclipse.dltk.core.sourceElementParsers">
+		<parser
+			class="org.eclipse.php.internal.core.compiler.ast.parser.PHPSourceElementParser"
+			nature="org.eclipse.php.core.PHPNature"
+			priority="0">
+		</parser>
+	</extension>
+
+	<extension
+		point="org.eclipse.dltk.core.buildParticipant">
+		<buildParticipant
+			class="org.eclipse.php.internal.core.builder.ParserBuildParticipantFactory"
+			id="org.eclipse.php.core.buildParticipant.parser"
+			name="%parserBuildParticipant.name"
+			nature="org.eclipse.php.core.PHPNature">
+		</buildParticipant>
+		<buildParticipant
+			class="org.eclipse.php.internal.core.builder.ValidatorBuildParticipantFactory"
+			id="org.eclipse.php.core.buildParticipant.validator"
+			name="%validatorBuildParticipant.name"
+			nature="org.eclipse.php.core.PHPNature">
+			<requires id="org.eclipse.php.core.buildParticipant.parser" />
+		</buildParticipant>
+		<buildParticipant
+			class="org.eclipse.php.internal.core.builder.TaskTagBuildParticipantFactory"
+			id="org.eclipse.php.core.buildParticipant.findTaskTags"
+			name="%organizeBuildParticipant.name"
+			nature="org.eclipse.php.core.PHPNature">
+			<requires id="org.eclipse.php.core.buildParticipant.parser" />
+		</buildParticipant>
+	</extension>
+
+	<extension
+		point="org.eclipse.dltk.core.search">
+		<searchFactory
+			class="org.eclipse.php.internal.core.search.PHPSearchFactory"
+			nature="org.eclipse.php.core.PHPNature"
+			priority="0">
+		</searchFactory>
+		<matchLocator
+			class="org.eclipse.php.internal.core.search.PHPMatchLocator"
+			nature="org.eclipse.php.core.PHPNature">
+		</matchLocator>
+	</extension>
+
+	<extension
+		point="org.eclipse.dltk.core.typeEvaluators">
+		<evaluator
+			evaluator="org.eclipse.php.internal.core.typeinference.PHPTypeInferencer"
+			nature="org.eclipse.php.core.PHPNature">
+		</evaluator>
+	</extension>
+
+	<extension
+		point="org.eclipse.php.core.goalEvaluatorFactories">
+		<factory
+			class="org.eclipse.php.internal.core.typeinference.evaluators.DefaultPHPGoalEvaluatorFactory"
+			priority="10">
+		</factory>
+	</extension>
+
+	<extension
+		point="org.eclipse.dltk.core.buildpathContainerInitializer">
+		<buildpathContainerInitializer
+			class="org.eclipse.php.internal.core.language.LanguageModelInitializer"
+			id="org.eclipse.php.core.LANGUAGE">
+		</buildpathContainerInitializer>
+	</extension>
+
+	<extension
+		point="org.eclipse.dltk.core.completionEngine">
+		<completionEngine
+			class="org.eclipse.php.internal.core.codeassist.PHPCompletionEngine"
+			nature="org.eclipse.php.core.PHPNature"
+			priority="0">
+		</completionEngine>
+	</extension>
+
+	<extension
+		point="org.eclipse.dltk.core.selectionEngine">
+		<selectionEngine
+			class="org.eclipse.php.internal.core.codeassist.PHPSelectionEngine"
+			nature="org.eclipse.php.core.PHPNature"
+			priority="0">
+		</selectionEngine>
+	</extension>
+
+<!--
+	<extension
+		point="org.eclipse.dltk.core.fileHierarchyResolvers">
+		<fileHierarchyResolver
+			class="org.eclipse.php.internal.core.filenetwork.PHPFileHierarchyResolver"
+			nature="org.eclipse.php.core.PHPNature"
+			priority="0">
+		</fileHierarchyResolver>
+	</extension>
+-->
+
+	<!-- TASK validation -->
+	<extension
+		id="phpTaskMarker"
+		name="%PHPTaskMarker.label"
+		point="org.eclipse.core.resources.markers">
+		<persistent
+			value="true" />
+		<attribute
+			name="lineNumber" />
+		<attribute
+			name="charStart" />
+		<attribute
+			name="charEnd" />
+		<attribute
+			name="message" />
+		<attribute
+			name="priority" />
+		<attribute
+			name="severity" />
+		<attribute
+			name="userEditable" />
+		<super
+			type="org.eclipse.dltk.core.task" />
+	</extension>
+
+<!--
+	<extension
+		id="org.eclipse.php.core.PHPTaskValidator"
+		name="PHPTaskValidator"
+		point="org.eclipse.wst.validation.validatorV2">
+		<validator
+			build="true"
+			class="org.eclipse.php.internal.core.validation.PHPTodoTaskValidator"
+			manual="true"
+			sourceid="org.eclipse.php.core.phpsource"
+			version="1"
+			markerId="org.eclipse.php.core.phpTaskMarker">
+			<include>
+				<rules>
+					<contentType
+						id="org.eclipse.php.core.phpsource"></contentType>
+				</rules>
+			</include>
+			<group
+				id="org.eclipse.wst.sse.core.structuredModelGroup" />
+		</validator>
+	</extension>
+-->
+
+	<!-- DLTK SQL-based index -->
+	<extension
+         point="org.eclipse.dltk.core.indexerParticipant">
+      <indexerParticipant
+            class="org.eclipse.php.internal.core.index.PHPIndexerParticipant"
+            nature="org.eclipse.php.core.PHPNature"
+            targetId="">
+      </indexerParticipant>
+   </extension>
+
+   <extension
+         point="org.eclipse.dltk.core.projectIndexer">
+      <disable
+      		nature="org.eclipse.php.core.PHPNature"
+            indexer="org.eclipse.dltk.core.indexer.structure">
+      </disable>
+      <disable
+      		nature="org.eclipse.php.core.PHPNature"
+            indexer="org.eclipse.dltk.core.indexer.mixin">
+      </disable>
+      <enable
+            indexer="org.eclipse.dltk.core.indexer.index2"
+            nature="org.eclipse.php.core.PHPNature">
+      </enable>
+   </extension>
+   <extension
+         point="org.eclipse.wst.common.project.facet.core.facets">
+      <project-facet
+            id="php.core.component">
+         <label>PHP Core Facet</label>
+         <description>PHP Core Facet</description>
+      </project-facet>
+      <project-facet-version facet="php.core.component" version="1">
+      </project-facet-version>
+      <project-facet
+            id="php.component">
+         <label>PHP Facet</label>
+         <description>PHP Facet</description>
+      </project-facet>
+      <project-facet-version facet="php.component" version="5">
+         <constraint>
+             <and>
+                <requires facet="php.core.component" />
+             </and>
+         </constraint>
+      </project-facet-version>
+      <project-facet-version facet="php.component" version="5.3">
+         <constraint>
+             <and>
+                <requires facet="php.core.component" />
+             </and>
+         </constraint>
+      </project-facet-version>
+      <project-facet-version facet="php.component" version="5.4">
+         <constraint>
+             <and>
+                <requires facet="php.core.component" />
+             </and>
+         </constraint>
+      </project-facet-version>
+      <project-facet-version facet="php.component" version="5.5">
+         <constraint>
+             <and>
+                <requires facet="php.core.component" />
+             </and>
+         </constraint>
+      </project-facet-version>
+      <project-facet-version facet="php.component" version="5.6">
+         <constraint>
+             <and>
+                <requires facet="php.core.component" />
+             </and>
+         </constraint>
+      </project-facet-version>
+      <project-facet-version facet="php.component" version="7">
+         <constraint>
+             <and>
+                <requires facet="php.core.component" />
+             </and>
+         </constraint>
+      </project-facet-version>
+      <project-facet-version facet="php.component" version="7.1">
+         <constraint>
+             <and>
+                <requires facet="php.core.component" />
+             </and>
+         </constraint>
+      </project-facet-version>
+      <project-facet-version facet="php.component" version="7.2">
+         <constraint>
+             <and>
+                <requires facet="php.core.component" />
+             </and>
+         </constraint>
+      </project-facet-version>
+      <project-facet-version facet="php.component" version="7.3">
+         <constraint>
+             <and>
+                <requires facet="php.core.component" />
+             </and>
+         </constraint>
+      </project-facet-version>
+      <project-facet-version facet="php.component" version="7.4">
+         <constraint>
+             <and>
+                <requires facet="php.core.component" />
+             </and>
+         </constraint>
+      </project-facet-version>
+      
+      <action facet="php.core.component" version="1" type="install">
+         <delegate class="org.eclipse.php.internal.core.facet.InstallActionDelegate" />
+      </action>
+      <action facet="php.component" version="5" type="install">
+         <delegate class="org.eclipse.php.internal.core.facet.InstallActionDelegate" />
+      </action>
+      <action facet="php.component" version="5.3" type="install">
+         <delegate class="org.eclipse.php.internal.core.facet.InstallActionDelegate" />
+      </action>
+      <action facet="php.component" version="5.4" type="install">
+         <delegate class="org.eclipse.php.internal.core.facet.InstallActionDelegate" />
+      </action>
+      <action facet="php.component" version="5.5" type="install">
+         <delegate class="org.eclipse.php.internal.core.facet.InstallActionDelegate" />
+      </action>
+      <action facet="php.component" version="5.6" type="install">
+         <delegate class="org.eclipse.php.internal.core.facet.InstallActionDelegate" />
+      </action>
+      <action facet="php.component" version="7" type="install">
+         <delegate class="org.eclipse.php.internal.core.facet.InstallActionDelegate" />
+      </action>
+      <action facet="php.component" version="7.1" type="install">
+         <delegate class="org.eclipse.php.internal.core.facet.InstallActionDelegate" />
+      </action>
+      <action facet="php.component" version="7.2" type="install">
+         <delegate class="org.eclipse.php.internal.core.facet.InstallActionDelegate" />
+      </action>
+      <action facet="php.component" version="7.3" type="install">
+         <delegate class="org.eclipse.php.internal.core.facet.InstallActionDelegate" />
+      </action>
+      <action facet="php.component" version="7.4" type="install">
+         <delegate class="org.eclipse.php.internal.core.facet.InstallActionDelegate" />
+      </action>
+      <action facet="php.component" version="5" type="version-change">
+         <delegate class="org.eclipse.php.internal.core.facet.VersionChangeActionDelegate" />
+      </action>
+      <action facet="php.component" version="5.3" type="version-change">
+         <delegate class="org.eclipse.php.internal.core.facet.VersionChangeActionDelegate" />
+      </action>
+      <action facet="php.component" version="5.4" type="version-change">
+         <delegate class="org.eclipse.php.internal.core.facet.VersionChangeActionDelegate" />
+      </action>
+      <action facet="php.component" version="5.5" type="version-change">
+         <delegate class="org.eclipse.php.internal.core.facet.VersionChangeActionDelegate" />
+      </action>
+      <action facet="php.component" version="5.6" type="version-change">
+         <delegate class="org.eclipse.php.internal.core.facet.VersionChangeActionDelegate" />
+      </action>
+      <action facet="php.component" version="7" type="version-change">
+         <delegate class="org.eclipse.php.internal.core.facet.VersionChangeActionDelegate" />
+      </action>
+      <action facet="php.component" version="7.1" type="version-change">
+         <delegate class="org.eclipse.php.internal.core.facet.VersionChangeActionDelegate" />
+      </action>
+      <action facet="php.component" version="7.2" type="version-change">
+         <delegate class="org.eclipse.php.internal.core.facet.VersionChangeActionDelegate" />
+      </action>
+      <action facet="php.component" version="7.3" type="version-change">
+         <delegate class="org.eclipse.php.internal.core.facet.VersionChangeActionDelegate" />
+      </action>
+      <action facet="php.component" version="7.4" type="version-change">
+         <delegate class="org.eclipse.php.internal.core.facet.VersionChangeActionDelegate" />
+      </action>
+   </extension>
+   <extension
+         point="org.eclipse.ltk.core.refactoring.renameParticipants">
+      <renameParticipant
+            class="org.eclipse.php.internal.core.libfolders.LibraryFolderRenameParticipant"
+            name="%libraryFolderRenameParticipant.name"
+            id="org.eclipse.php.core.refactoring.libraryFolderRename"> 
+         <enablement>
+            <with variable="affectedNatures">
+               <iterate operator="or">
+                  <equals value="org.eclipse.php.core.PHPNature"/>
+               </iterate>
+            </with>
+            <with variable="element">
+               <or>
+                  <instanceof value="org.eclipse.dltk.core.IProjectFragment"/>
+                  <instanceof value="org.eclipse.dltk.core.IScriptFolder"/>
+                  <instanceof value="org.eclipse.core.resources.IFolder"/>
+               </or>
+            </with>
+         </enablement>
+      </renameParticipant>
+   </extension>
+   <extension
+         point="org.eclipse.dltk.core.callHierarchy">
+      <callHerarchiesFactory
+            class=" org.eclipse.php.internal.core.PHPCallHierarchyFactory"
+            nature="org.eclipse.php.core.PHPNature"
+            priority="0">
+      </callHerarchiesFactory>
+   </extension>
+   <extension
+         point="org.eclipse.dltk.core.problemFactory">
+      <problemIdentifierFactory
+            class="org.eclipse.php.internal.core.compiler.ast.parser.PHPProblemIdentifierFactory"
+            namespace="org.eclipse.php.internal.core.compiler.ast.parser.PHPProblemIdentifier">
+      </problemIdentifierFactory>
+      <problemFactory
+             class="org.eclipse.php.internal.core.validation.ProblemFactory"
+             nature="org.eclipse.php.core.PHPNature"
+             priority="0">
+       </problemFactory>
+   </extension>
+   <extension
+         point="org.eclipse.php.core.validatorExtension">
+      <validator
+            class="org.eclipse.php.internal.core.compiler.ast.validator.VariableValidator">
+      </validator>
+   </extension>
+   <extension
+         point="org.eclipse.core.expressions.propertyTesters">
+      <propertyTester
+            class="org.eclipse.php.internal.core.expressions.BuildpathPropertyTester"
+            id="org.eclipse.php.core.buildpathPropertyTester"
+            namespace="org.eclipse.php"
+            properties="isOnBuildpath"
+            type="org.eclipse.core.resources.IResource">
+      </propertyTester>
+   </extension>
+</plugin>

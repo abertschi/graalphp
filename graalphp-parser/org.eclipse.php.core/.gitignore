@@ -1,0 +1,11 @@
+target/
+bin/
+/.idea/libraries/
+/gen2/
+/gen/
+/org.eclipse.php.core-8.0.0-SNAPSHOT.jar
+/tmp-src/
+.externalToolBuilders
+org.eclipse.php.core-8.0.0-SNAPSHOT.jar/
+tmp-src
+.settings
