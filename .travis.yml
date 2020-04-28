@@ -1,3 +1,11 @@
+env:
+  global:
+  - CI_PARSING_TESTS=true
+  - GRAALVM_VERSION="20.0.0"
+  - GRAALVM_JAVA_VERSION="11"
+  - GRAALPHP_BUILD_NATIVE="false"
+  - TEST="./graalphp-language/tests/dummy.php"
+
 os: linux
 
 dist: xenial
@@ -6,9 +14,6 @@ language: java
 
 jdk:
   - openjdk11
-
-env:
-  - GRAALVM_VERSION="20.0.0" GRAALVM_JAVA_VERSION="11" GRAALPHP_BUILD_NATIVE="false" TEST="./graalphp-language/tests/dummy.php"
 
 install:
   - GRAAL_VM="https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-20.0.0/graalvm-ce-java11-linux-amd64-20.0.0.tar.gz"
