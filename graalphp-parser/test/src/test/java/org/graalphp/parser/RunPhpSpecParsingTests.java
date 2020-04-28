@@ -18,8 +18,8 @@ public class RunPhpSpecParsingTests {
                 "compare output with upstream php parser");
 
         // run parsing tests only on travis
-        String tests = System.getenv("CI_PARSING_TESTS");
-        if (tests != null && tests.toLowerCase().equals("true")) {
+        String tests = System.getenv("CI");
+        if (tests != null && tests.toLowerCase().equals("true") || tests.equals("1")) {
             suite.addTest(new FileTestSuite(new File(getDirectory())));
         }
 
