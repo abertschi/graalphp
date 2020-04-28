@@ -3,21 +3,21 @@
 cd ..
 
 mvn package
-./graalphp ./graalphp-language/tests/Add.sl
-./native/graalphp-native ./graalphp-language/tests/Add.sl;
+./graalphp ./graalphp-language/tests/dummy.php
+./native/graalphp-native ./graalphp-language/tests/dummy.php
 
 "$JAVA_HOME/bin/gu" install -L ./graalphp-component/graalphp-component.jar;
-"$JAVA_HOME/bin/graalphp" ./graalphp-language/tests/Add.sl;
-"$JAVA_HOME/bin/graalphp-native" ./graalphp-language/tests/Add.sl;
+"$JAVA_HOME/bin/graalphp" ./graalphp-language/tests/dummy.php
+"$JAVA_HOME/bin/graalphp-native" ./graalphp-language/tests/dummy.php
 
 
-"$JAVA_HOME/bin/polyglot" --jvm --language graalphp --file graalphp-language/tests/Add.sl;
-"$JAVA_HOME/bin/gu" remove com.oracle.truffle.sl;
+"$JAVA_HOME/bin/polyglot" --jvm --language graalphp --file graalphp-language/tests/dummy.php
+"$JAVA_HOME/bin/gu" remove org.graalphp;
 
-./generate_parser
+# ./generate_parser
 
 mvn package
-./graalphp graalphp-language/tests/Add.sl
+./graalphp graalphp-language/tests/dummy.php
 
 shellcheck graalphp;
 

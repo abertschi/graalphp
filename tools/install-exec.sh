@@ -23,10 +23,10 @@ export GRAALPHP_BUILD_NATIVE="true"
 
 cd $dir/../
 
-./generate_parser
+# ./generate_parser
 
 mvn package
-./graalphp graalphp-language/tests/Add.sl
+./graalphp graalphp-language/tests/dummy.php
 
 shellcheck graalphp;
 
