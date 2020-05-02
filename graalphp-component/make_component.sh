@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 
+set -x
+
 readonly JAVA_VERSION="${1}"
+echo $JAVA_VERSION
 if [[ $JAVA_VERSION == 1.8* ]]; then
     JRE="jre/"
 elif [[ $JAVA_VERSION == 11* ]]; then
@@ -11,7 +14,8 @@ else
 fi
 readonly COMPONENT_DIR="component_temp_dir"
 readonly LANGUAGE_PATH="$COMPONENT_DIR/$JRE/languages/graalphp"
-if [[ -f ../native/graalphp-native ]]; then
+if [[ -f ../graalphp-native/graalphp-native ]]; then
+    echo "including graal native"
     INCLUDE_GRAALPHP_NATIVE="TRUE"
 fi
 
@@ -26,7 +30,7 @@ cp ../graalphp-launcher/target/graalphp-launcher.jar "$LANGUAGE_PATH/launcher/"
 mkdir -p "$LANGUAGE_PATH/bin"
 cp ../graalphp $LANGUAGE_PATH/bin/
 if [[ $INCLUDE_GRAALPHP_NATIVE = "TRUE" ]]; then
-    cp ../native/graalphp-native $LANGUAGE_PATH/bin/
+    cp ../graalphp-native/graalphp-native $LANGUAGE_PATH/bin/
 fi
 
 touch "$LANGUAGE_PATH/native-image.properties"
