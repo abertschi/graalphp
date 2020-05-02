@@ -15,7 +15,7 @@ Thesis project at ETH Zurich, work in progress
 $ mvn package
 
 # native image
-# JAVA_HOME=/path/to/graalvm
+$ export JAVA_HOME=/path/to/graalvm
 $ ./tools/build-local.sh
 ```
 
