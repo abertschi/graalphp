@@ -90,6 +90,7 @@
                     <!--                    <parallel>all</parallel>-->
                     <!--                    <threadCount>3</threadCount>-->
                     <forkCount>5</forkCount>
+                    <testFailureIgnore>true</testFailureIgnore>
                     <reuseForks>true</reuseForks>
                     <skipTests>${skip.parser.tests}</skipTests>
                     <redirectTestOutputToFile>false</redirectTestOutputToFile>
