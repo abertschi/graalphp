@@ -1,0 +1,3247 @@
+package org.eclipse.php.internal.core.ast.scanner.php54;
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////    $Id: php_ast_parser.cup,v 1.5 2012/05/16 05:48:46 zzhongwei Exp $
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+import java.util.*;
+import org.eclipse.dltk.core.DLTKCore;
+import org.eclipse.php.core.ast.nodes.*;
+import org.eclipse.dltk.ast.Modifiers;
+
+parser code {:
+	protected final static Integer PUBLIC = Integer.valueOf(Modifiers.AccPublic);
+	protected final static Integer PRIVATE = Integer.valueOf(Modifiers.AccPrivate);
+	protected final static Integer PROTECTED = Integer.valueOf(Modifiers.AccProtected);
+	protected final static Integer ABSTRACT = Integer.valueOf(Modifiers.AccAbstract);
+	protected final static Integer FINAL = Integer.valueOf(Modifiers.AccFinal);
+	protected final static Integer STATIC = Integer.valueOf(Modifiers.AccStatic);
+
+	AST ast;
+
+	public final void setAST (AST ast) {
+		this.ast = ast;
+	}
+
+	public Dispatch createDispatch(VariableBase dispatcher, VariableBase property) {
+		Dispatch dispatch = null;
+		if (property instanceof Variable) {
+			dispatch = new FieldAccess(dispatcher.getStart(), property.getEnd(), ast, dispatcher, (Variable) property);
+		} else if (property instanceof FunctionInvocation) {
+			dispatch = new MethodInvocation(dispatcher.getStart(), property.getEnd(), ast, dispatcher, (FunctionInvocation) property);
+		} else {
+			throw new IllegalArgumentException();
+		}
+		return dispatch;
+	}
+
+	protected VariableBase createDispatch(VariableBase dispatcher, ObjectDimList dimList) {
+		return resolveDimList(this.createDispatch(dispatcher, dimList.variable), dimList.list);
+	}
+
+	protected VariableBase resolveDimList(VariableBase variable, DimList list) {
+		if (list == null) {
+			return variable;
+		}
+		for (DimList.Element el : list) {
+			variable = new ArrayAccess(variable.getStart(), el.right, ast, variable, el.index, el.type);
+		}
+		return variable;
+	}
+
+	/** Report a non fatal error (or warning).  This method takes a message
+	 *  string and an additional object (to be used by specializations
+	 *  implemented in subclasses). Here in the base class a very simple
+	 *  implementation is provided which simply prints the message to
+	 *  System.err.
+	 *
+	 * @param message an error message.
+	 * @param info    an extra object reserved for use by specialized subclasses.
+	 */
+	@Override
+	public void report_error(String message, Object info)
+	{
+		if (DLTKCore.DEBUG) {
+			super.report_error(message, info);
+		}
+	}
+
+	@Override
+	protected void report_expected_token_ids()
+	{
+		// XXX : really verbose, disable it completely for now
+		// if (DLTKCore.DEBUG) {
+		//     super.report_expected_token_ids();
+		// }
+	}
+
+	@Override
+	public void report_fatal_error(
+	String message,
+	Object info)
+	throws java.lang.Exception
+	{
+		/* stop parsing (not really necessary since we throw an exception, but) */
+		done_parsing();
+
+		/* use the normal error message reporting to put out the message */
+		report_error(message, info);
+
+		/* throw an exception */
+		// throw new Exception("Can't recover from previous error(s)");
+	}
+:}
+
+/* terminals */
+
+terminal String T_EXIT;
+terminal T_IF;
+terminal String T_LNUMBER;
+terminal String T_DNUMBER;
+terminal String T_BNUMBER;
+terminal String T_STRING;
+terminal String T_STRING_VARNAME;
+terminal String T_VARIABLE;
+terminal String T_NUM_STRING;
+terminal T_INLINE_HTML;
+terminal String T_CHARACTER;
+terminal String T_ENCAPSED_AND_WHITESPACE;
+terminal String T_CONSTANT_ENCAPSED_STRING;
+terminal T_OPEN_TAG_WITH_ECHO;
+terminal T_ECHO;
+terminal T_DO;
+terminal T_WHILE;
+terminal T_ENDWHILE;
+terminal T_FOR;
+terminal T_ENDFOR;
+terminal T_FOREACH;
+terminal T_ENDFOREACH;
+terminal T_DECLARE;
+terminal T_ENDDECLARE;
+terminal T_INSTANCEOF;
+terminal T_CLONE;
+terminal T_AS;
+terminal T_SWITCH;
+terminal T_ENDSWITCH;
+terminal T_CASE;
+terminal T_DEFAULT;
+terminal T_BREAK;
+terminal T_CONTINUE;
+terminal T_GOTO;
+terminal T_FUNCTION;
+terminal T_CONST;
+terminal T_RETURN;
+terminal T_TRY;
+terminal T_CATCH;
+terminal T_THROW;
+terminal T_USE;
+terminal T_GLOBAL;
+terminal T_VAR;
+terminal String T_UNSET;
+terminal String T_ISSET;
+terminal String T_EMPTY;
+terminal T_HALT_COMPILER;
+terminal T_CLASS;
+terminal T_INTERFACE;
+terminal T_EXTENDS;
+terminal T_IMPLEMENTS;
+terminal T_OBJECT_OPERATOR;
+terminal T_DOUBLE_ARROW;
+terminal T_LIST;
+terminal T_ARRAY;
+terminal T_CLASS_C;
+terminal T_METHOD_C;
+terminal T_FUNC_C;
+terminal T_LINE;
+terminal String T_FILE;
+terminal String T_START_HEREDOC;
+terminal T_END_HEREDOC;
+terminal T_DOLLAR_OPEN_CURLY_BRACES;
+terminal T_CURLY_OPEN_WITH_DOLAR;
+terminal T_CURLY_OPEN;
+terminal T_CURLY_CLOSE;
+terminal T_PAAMAYIM_NEKUDOTAYIM;
+terminal T_NAMESPACE;
+terminal T_NS_C;
+terminal T_DIR;
+terminal T_NS_SEPARATOR;
+terminal String T_VAR_COMMENT;
+terminal String T_DEFINE;
+
+terminal String T_INCLUDE,T_INCLUDE_ONCE,T_EVAL,T_REQUIRE,T_REQUIRE_ONCE;
+terminal T_COMMA;
+terminal String T_LOGICAL_OR,T_LOGICAL_XOR,T_LOGICAL_AND,T_PRINT;
+terminal T_EQUAL;
+terminal T_PLUS_EQUAL,T_MINUS_EQUAL,T_MUL_EQUAL,T_DIV_EQUAL,T_CONCAT_EQUAL,T_MOD_EQUAL,T_AND_EQUAL,T_OR_EQUAL,T_XOR_EQUAL,T_SL_EQUAL,T_SR_EQUAL;
+terminal T_QUESTION_MARK;
+terminal T_SEMICOLON;
+terminal T_BOOLEAN_OR, T_BOOLEAN_AND;
+terminal T_OR;
+terminal T_KOVA;
+terminal T_REFERENCE;
+terminal T_IS_EQUAL,T_IS_NOT_EQUAL,T_IS_IDENTICAL,T_IS_NOT_IDENTICAL;
+terminal T_IS_SMALLER_OR_EQUAL,T_IS_GREATER_OR_EQUAL;
+terminal T_RGREATER;
+terminal T_LGREATER;
+terminal T_SL,T_SR;
+terminal T_PLUS;
+terminal T_MINUS;
+terminal T_TIMES;
+terminal T_DIV;
+terminal T_PRECENT;
+terminal T_NOT;
+terminal T_TILDA;
+terminal T_NEKUDA;
+terminal T_INC,T_DEC,T_INT_CAST,T_DOUBLE_CAST,T_STRING_CAST,T_ARRAY_CAST,T_OBJECT_CAST,T_BOOL_CAST,T_UNSET_CAST;
+terminal T_AT;
+terminal T_OPEN_RECT,T_CLOSE_RECT;
+terminal T_NEW;
+terminal T_ENDIF;
+terminal T_ELSEIF;
+terminal T_ELSE;
+terminal T_STATIC, T_ABSTRACT, T_FINAL, T_PRIVATE, T_PROTECTED, T_PUBLIC;
+terminal T_OPEN_PARENTHESE,T_CLOSE_PARENTHESE;
+terminal T_NEKUDOTAIM;
+terminal T_DOLLAR;
+terminal T_QUATE,T_BACKQUATE,T_SINGLE_QUATE;
+
+
+terminal T_INSTEADOF;
+terminal T_TRAIT;
+terminal T_CALLABLE;
+terminal T_TRAIT_C;
+
+/* Non terminals */
+
+non terminal Program thestart;
+non terminal List namespace_name;
+non terminal UseStatementPart use_declaration;
+non terminal List use_declarations;
+non terminal List top_statement_list;
+non terminal Statement top_statement;
+non terminal Statement statement;
+non terminal List inner_statement_list;
+non terminal Statement inner_statement;
+non terminal Statement unticked_statement;
+non terminal List unset_variables;
+non terminal VariableBase unset_variable;
+non terminal Expression use_filename;
+non terminal Expression foreach_optional_arg;
+non terminal Expression foreach_variable;
+non terminal Statement for_statement;
+non terminal Statement foreach_statement;
+non terminal Statement declare_statement;
+non terminal List[] declare_list;
+non terminal Block switch_case_list;
+non terminal List case_list;
+non terminal case_separator;
+non terminal Statement while_statement;
+non terminal List[] elseif_list;
+non terminal List[] new_elseif_list;
+non terminal Statement else_single;
+non terminal Statement new_else_single;
+non terminal List parameter_list;
+non terminal List lexical_vars;
+non terminal List lexical_var_list;
+non terminal List non_empty_parameter_list;
+non terminal FormalParameter parameter;
+non terminal List function_call_parameter_list;
+non terminal List non_empty_function_call_parameter_list;
+non terminal List global_var_list;
+non terminal VariableBase global_var;
+non terminal List static_var_list;
+non terminal List class_statement_list;
+non terminal Statement class_statement;
+non terminal Boolean is_reference;
+non terminal List echo_expr_list;
+non terminal List for_expr;
+non terminal List non_empty_for_expr;
+non terminal Expression expr_without_variable;
+non terminal VariableBase function_call;
+non terminal Expression exit_expr;
+non terminal List ctor_arguments;
+non terminal Expression common_scalar;
+non terminal Expression static_scalar;
+non terminal Expression scalar;
+non terminal List static_array_pair_list;
+non terminal String possible_comma;
+non terminal List non_empty_static_array_pair_list;
+non terminal Expression expr;
+non terminal Variable reference_variable;
+non terminal Variable variable_class_name;
+non terminal Variable compound_variable;
+non terminal Expression dim_offset;
+non terminal ObjectDimList object_dim_list;
+non terminal ObjectDimList field_access_dim_list;
+non terminal ObjectDimList field_access_dim_list_indirect_reference;
+non terminal DimList dim_list;
+non terminal VariableBase variable_name;
+non terminal Integer simple_indirect_reference;
+non terminal List assignment_list;
+non terminal VariableBase assignment_list_element;
+non terminal List array_pair_list;
+non terminal List non_empty_array_pair_list;
+non terminal List encaps_list;
+non terminal List backticks_expr;
+non terminal VariableBase encaps_var;
+non terminal Expression encaps_var_offset;
+non terminal Expression internal_functions_in_yacc;
+non terminal String string_st;
+non terminal Integer interface_entry;
+non terminal List interface_extends_list;
+
+non terminal VariableBase w_variable;
+non terminal Expression class_name;
+non terminal NamespaceName fully_qualified_class_name;
+non terminal List class_variable_declaration;
+non terminal List constant_declaration;
+non terminal Integer method_modifiers;
+non terminal Block method_body;
+non terminal List non_empty_member_modifiers;
+non terminal Integer member_modifier;
+non terminal FunctionDeclaration function_declaration_statement;
+non terminal Statement class_declaration_statement;
+non terminal VariableBase variable;
+non terminal List additional_catches;
+non terminal List non_empty_additional_catches;
+non terminal CatchClause additional_catch;
+non terminal FunctionDeclaration unticked_function_declaration_statement;
+non terminal Statement unticked_class_declaration_statement;
+non terminal Integer class_entry_type;
+non terminal Expression extends_from;
+non terminal List implements_list;
+non terminal List interface_list;
+non terminal Expression optional_class_type;
+non terminal VariableBase r_variable;
+non terminal Integer variable_modifiers;
+non terminal VariableBase rw_variable;
+non terminal Variable variable_without_objects;
+non terminal VariableBase static_member;
+non terminal List isset_variables;
+non terminal Variable tracked_variable;
+
+non terminal ClassName class_name_reference;
+non terminal StaticConstantAccess class_constant;
+non terminal ClassName dynamic_class_name_reference;
+non terminal VariableBase base_variable;
+non terminal VariableBase dynamic_class_name_variable_property;
+non terminal StaticConstantAccess static_class_constant;
+non terminal VariableBase base_variable_with_function_calls;
+
+//php5.4
+non terminal TraitUseStatement trait_use_statement;
+non terminal List trait_list;
+non terminal List trait_adaptations;
+non terminal List trait_adaptation_list;
+non terminal List non_empty_trait_adaptation_list;
+non terminal TraitStatement trait_adaptation_statement;
+non terminal TraitPrecedence trait_precedence;
+non terminal List trait_reference_list;
+non terminal Expression trait_method_reference;
+non terminal FullyQualifiedTraitMethodReference trait_method_reference_fully_qualified;
+non terminal TraitAlias trait_alias;
+non terminal Integer trait_modifiers;
+
+non terminal VariableBase chain_instance_call;
+non terminal ClassInstanceCreation new_expr;
+
+precedence left T_OPEN_PARENTHESE, T_CLOSE_PARENTHESE;
+precedence left T_INCLUDE, T_INCLUDE_ONCE, T_EVAL, T_REQUIRE, T_REQUIRE_ONCE;
+precedence left T_COMMA;
+precedence left T_LOGICAL_OR;
+precedence left T_LOGICAL_XOR;
+precedence left T_LOGICAL_AND;
+precedence right T_PRINT;
+precedence left T_EQUAL, T_PLUS_EQUAL,T_MINUS_EQUAL,T_MUL_EQUAL,T_DIV_EQUAL,T_CONCAT_EQUAL,T_MOD_EQUAL,T_AND_EQUAL,T_OR_EQUAL,T_XOR_EQUAL,T_SL_EQUAL,T_SR_EQUAL;
+precedence left T_QUESTION_MARK,T_SEMICOLON;
+precedence left T_BOOLEAN_OR;
+precedence left T_BOOLEAN_AND;
+precedence left T_OR;
+precedence left T_KOVA;
+precedence left T_REFERENCE;
+
+precedence nonassoc T_IS_EQUAL,T_IS_NOT_EQUAL,T_IS_IDENTICAL,T_IS_NOT_IDENTICAL;
+precedence nonassoc T_RGREATER,T_IS_SMALLER_OR_EQUAL,T_LGREATER,T_IS_GREATER_OR_EQUAL;
+precedence left T_SL,T_SR;
+precedence left T_PLUS,T_MINUS,T_NEKUDA;
+precedence left T_TIMES,T_DIV,T_PRECENT;
+precedence right T_NOT;
+precedence nonassoc T_INSTANCEOF;
+precedence right T_TILDA,T_INC,T_DEC,T_INT_CAST,T_DOUBLE_CAST,T_STRING_CAST,T_ARRAY_CAST,T_OBJECT_CAST,T_BOOL_CAST,T_UNSET_CAST,T_AT;
+precedence right T_OPEN_RECT;
+precedence nonassoc T_NEW, T_CLONE;
+precedence left T_ELSEIF;
+precedence left T_ELSE;
+precedence left T_ENDIF;
+precedence right T_STATIC, T_ABSTRACT, T_FINAL, T_PRIVATE, T_PROTECTED, T_PUBLIC;
+
+thestart ::=
+top_statement_list:sList
+{:
+	PHPAstLexer phpAstLexer = (PHPAstLexer) parser.getScanner();
+	List commentList = phpAstLexer.getCommentList();
+	RESULT = new Program(sListleft, sListright, parser.ast, sList, commentList);
+:}
+;
+
+namespace_name ::=
+T_STRING:n
+{:
+	List list = new LinkedList();
+	list.add(new Identifier(nleft, nright, parser.ast, n));
+	RESULT = list;
+:}
+
+|
+namespace_name:list T_NS_SEPARATOR T_STRING:n
+{:
+	list.add(new Identifier(nleft, nright, parser.ast, n));
+	RESULT = list;
+:}
+
+| T_DEFINE:n
+{:
+	List list = new LinkedList();
+	list.add(new Identifier(nleft, nright, parser.ast, n));
+	RESULT = list;
+:}
+;
+
+top_statement_list ::=
+top_statement_list:sList top_statement:statement
+{:
+	if (statement != null) {
+		if (!(statement instanceof NamespaceDeclaration) && sList.size() > 0) {
+			Statement lastStatement = (Statement) ((LinkedList) sList).getLast();
+			// EmptyStatement length == 2 means it is "?>",
+			// equals to 1 means it is ";"
+			if (!(statement instanceof EmptyStatement && statement.getLength() >= 2) && lastStatement instanceof NamespaceDeclaration && !((NamespaceDeclaration) lastStatement).isBracketed()) {
+				((NamespaceDeclaration) lastStatement).addStatement(statement);
+			} else {
+				sList.add(statement);
+			}
+		} else {
+			sList.add(statement);
+		}
+	}
+	RESULT = sList;
+:}
+
+| /* empty */
+{:
+	RESULT = new LinkedList();
+:}
+;
+
+top_statement ::=
+statement:statement
+{:
+	RESULT = statement;
+:}
+
+| function_declaration_statement:statement
+{:
+	RESULT = statement;
+:}
+
+| class_declaration_statement:statement
+{:
+	RESULT = statement;
+:}
+
+| T_NAMESPACE:s namespace_name:list T_SEMICOLON:e
+{:
+	RESULT = new NamespaceDeclaration(sleft, eright, parser.ast,
+		new NamespaceName(listleft, listright, parser.ast, list, false, false), null);
+:}
+
+| T_NAMESPACE:s namespace_name:list T_CURLY_OPEN:token top_statement_list:sList T_CURLY_CLOSE:e
+{:
+	RESULT = new NamespaceDeclaration(sleft, eright, parser.ast,
+		new NamespaceName(listleft, listright, parser.ast, list, false, false),
+		new Block(tokenleft, eright, parser.ast, sList));
+:}
+
+| T_NAMESPACE:s T_CURLY_OPEN:token top_statement_list:sList T_CURLY_CLOSE:e
+{:
+	RESULT = new NamespaceDeclaration(sleft, eright, parser.ast, null,
+		new Block(tokenleft, eright, parser.ast, sList));
+:}
+
+| T_USE:s use_declarations:list T_SEMICOLON:e
+{:
+	RESULT = new UseStatement(sleft, eright, parser.ast, list);
+:}
+
+| constant_declaration:list T_SEMICOLON:e
+{:
+	RESULT = new ConstantDeclaration(listleft, eright, parser.ast, list);
+:}
+;
+
+use_declarations ::=
+use_declarations:list T_COMMA use_declaration:useDecl
+{:
+	list.add(useDecl);
+	RESULT = list;
+:}
+
+| use_declaration:useDecl
+{:
+	List list = new LinkedList();
+	list.add(useDecl);
+	RESULT = list;
+:}
+;
+
+use_declaration ::=
+namespace_name:list
+{:
+	RESULT = new UseStatementPart(listleft, listright, parser.ast,
+		new NamespaceName(listleft, listright, parser.ast, list, false, false), null);
+:}
+
+| namespace_name:list T_AS T_STRING:aliasName
+{:
+	RESULT = new UseStatementPart(listleft, aliasNameright, parser.ast,
+		new NamespaceName(listleft, listright, parser.ast, list, false, false),
+		new Identifier(aliasNameleft, aliasNameright, parser.ast, aliasName));
+:}
+
+| T_NS_SEPARATOR:s namespace_name:list
+{:
+	RESULT = new UseStatementPart(sleft, listright, parser.ast,
+		new NamespaceName(sright, listright, parser.ast, list, false, false), null);
+:}
+
+| T_NS_SEPARATOR:s namespace_name:list T_AS T_STRING:aliasName
+{:
+	RESULT = new UseStatementPart(sleft, aliasNameright, parser.ast,
+		new NamespaceName(sright, listright, parser.ast, list, false, false),
+		new Identifier(aliasNameleft, aliasNameright, parser.ast, aliasName));
+:}
+;
+
+inner_statement_list ::=
+inner_statement_list:sList inner_statement:statement
+{:
+	// Ignore null statements
+	if (statement != null) {
+		sList.add(statement);
+	}
+	RESULT = sList;
+:}
+
+| /* empty */
+{:
+	RESULT = new LinkedList();
+:}
+;
+
+inner_statement ::=
+statement:statement
+{:
+	RESULT = statement;
+:}
+
+| function_declaration_statement:statement
+{:
+	RESULT = statement;
+:}
+
+| class_declaration_statement:statement
+{:
+	RESULT = statement;
+:}
+;
+
+statement ::=
+unticked_statement:statement
+{:
+	RESULT = statement;
+:}
+| T_STRING:label T_NEKUDOTAIM:e
+{:
+	RESULT = new GotoLabel(labelleft, eright, parser.ast, new Identifier(labelleft, labelright, parser.ast, label));
+:}
+;
+
+unticked_statement ::=
+T_CURLY_OPEN:token inner_statement_list:sList T_CURLY_CLOSE:e
+{:
+	RESULT = new Block(tokenleft, eright, parser.ast, sList);
+:}
+
+| T_IF:token T_OPEN_PARENTHESE expr:cond T_CLOSE_PARENTHESE statement:iftrue elseif_list:elseif else_single:iffalse
+{:
+	Expression innerCondition = null;
+	Statement trueStatement = null;
+	Statement falseStatement = iffalse;
+
+	for (int i = 0; i < elseif[0].size(); i++) {
+		innerCondition = (Expression) elseif[0].get(i);
+		trueStatement = (Statement) elseif[1].get(i);
+		int s = ((Integer) elseif[2].get(i)).intValue();
+		falseStatement = new IfStatement(s, iffalseright, parser.ast, innerCondition, trueStatement, falseStatement);
+	}
+	RESULT = new IfStatement(tokenleft, iffalseright, parser.ast, cond, iftrue, falseStatement);
+:}
+
+| T_IF:token T_OPEN_PARENTHESE expr:cond T_CLOSE_PARENTHESE T_NEKUDOTAIM:colon inner_statement_list:ifTrueStatementList new_elseif_list:elseif new_else_single:iffalse T_ENDIF T_SEMICOLON:e
+{:
+	Expression innerCondition = null;
+	Statement trueStatement = null;
+	Statement falseStatement = iffalse;
+
+	for (int i = 0; i < elseif[0].size(); i++) {
+		innerCondition = (Expression) elseif[0].get(i);
+		trueStatement = (Statement) elseif[1].get(i);
+		int s = ((Integer) elseif[2].get(i)).intValue();
+		falseStatement = new IfStatement(s, iffalseright, parser.ast, innerCondition, trueStatement, falseStatement);
+	}
+	Block block = new Block(colonleft, ifTrueStatementListright, parser.ast, ifTrueStatementList, false);
+	RESULT = new IfStatement(tokenleft, eright, parser.ast, cond, block, falseStatement);
+:}
+
+| T_WHILE:token T_OPEN_PARENTHESE expr:expr T_CLOSE_PARENTHESE while_statement:statement
+{:
+	RESULT = new WhileStatement(tokenleft, statementright, parser.ast, expr, statement);
+:}
+
+| T_DO:token statement:statement T_WHILE T_OPEN_PARENTHESE expr:expr T_CLOSE_PARENTHESE T_SEMICOLON:e
+{:
+	RESULT = new DoStatement(tokenleft, eright, parser.ast, expr, statement);
+:}
+
+| T_FOR:token T_OPEN_PARENTHESE for_expr:initializations T_SEMICOLON for_expr:conds T_SEMICOLON for_expr:increasements T_CLOSE_PARENTHESE for_statement:statement
+{:
+	RESULT = new ForStatement(tokenleft, statementright, parser.ast, initializations, conds, increasements, statement);
+:}
+
+| T_SWITCH:token T_OPEN_PARENTHESE expr:expr T_CLOSE_PARENTHESE switch_case_list:caseBlock
+{:
+	RESULT = new SwitchStatement(tokenleft, caseBlockright, parser.ast, expr, caseBlock);
+:}
+
+| T_BREAK:token T_SEMICOLON:e
+{:
+	RESULT = new BreakStatement(tokenleft, eright, parser.ast);
+:}
+
+| T_BREAK:token expr:expr T_SEMICOLON:e
+{:
+	RESULT = new BreakStatement(tokenleft, eright, parser.ast, expr);
+:}
+
+| T_CONTINUE:token T_SEMICOLON:e
+{:
+	RESULT = new ContinueStatement(tokenleft, eright, parser.ast);
+:}
+
+| T_CONTINUE:token expr:expr T_SEMICOLON:e
+{:
+	RESULT = new ContinueStatement(tokenleft, eright, parser.ast, expr);
+:}
+
+| T_RETURN:token T_SEMICOLON:e
+{:
+	RESULT = new ReturnStatement(tokenleft, eright, parser.ast);
+:}
+
+| T_RETURN:token expr_without_variable:expr T_SEMICOLON:e
+{:
+	RESULT = new ReturnStatement(tokenleft, eright, parser.ast, expr);
+:}
+
+| T_RETURN:token variable:expr T_SEMICOLON:e
+{:
+	RESULT = new ReturnStatement(tokenleft, eright, parser.ast, expr);
+:}
+
+| T_GLOBAL:s global_var_list:list T_SEMICOLON:e
+{:
+	RESULT = new GlobalStatement(sleft, eright, parser.ast, list);
+:}
+
+| T_STATIC:s static_var_list:list T_SEMICOLON:e
+{:
+	RESULT = new StaticStatement(sleft, eright, parser.ast, list);
+:}
+
+| T_ECHO:s echo_expr_list:exprList T_SEMICOLON:e
+{:
+	RESULT = new EchoStatement(sleft, eright, parser.ast, exprList);
+:}
+
+| T_INLINE_HTML:html
+{:
+	RESULT = new InLineHtml(htmlleft, htmlright, parser.ast);
+:}
+
+| expr:expr T_SEMICOLON:e
+{:
+	RESULT = new ExpressionStatement(exprleft, eright, parser.ast, expr);
+:}
+
+| T_USE:s use_filename:expr T_SEMICOLON:e
+{:
+	List list = new LinkedList();
+	list.add(expr);
+	RESULT = new ExpressionStatement(sleft, eright, parser.ast,
+		new FunctionInvocation(sleft, exprright, parser.ast,
+			new FunctionName(sleft, sright, parser.ast,
+				new Identifier(sleft, sright, parser.ast, "use")), list));
+:}
+
+| T_UNSET:s T_OPEN_PARENTHESE unset_variables:list T_CLOSE_PARENTHESE:closePar T_SEMICOLON:e
+{:
+	RESULT = new ExpressionStatement(sleft, eright, parser.ast,
+		new FunctionInvocation(sleft, closeParright, parser.ast,
+			new FunctionName(sleft, sright, parser.ast,
+				new Identifier(sleft, sright, parser.ast, "unset")), list));
+:}
+
+| T_FOREACH:token T_OPEN_PARENTHESE variable:expr T_AS foreach_variable:var foreach_optional_arg:arg T_CLOSE_PARENTHESE foreach_statement:statement
+{:
+	ForEachStatement s = null;
+	if (arg == null) {
+		s = new ForEachStatement(tokenleft, statementright, parser.ast, expr, var, statement);
+	} else {
+		s = new ForEachStatement(tokenleft, statementright, parser.ast, expr, var, arg, statement);
+	}
+	RESULT = s;
+:}
+
+| T_FOREACH:token T_OPEN_PARENTHESE expr_without_variable:expr T_AS variable:var foreach_optional_arg:arg T_CLOSE_PARENTHESE foreach_statement:statement
+{:
+	ForEachStatement s = null;
+	if (arg == null) {
+		s = new ForEachStatement(tokenleft, statementright, parser.ast, expr, var, statement);
+	} else {
+		s = new ForEachStatement(tokenleft, statementright, parser.ast, expr, var, arg, statement);
+	}
+	RESULT = s;
+:}
+
+| T_DECLARE:s T_OPEN_PARENTHESE declare_list:lists T_CLOSE_PARENTHESE declare_statement:statement
+{:
+	RESULT = new DeclareStatement(sleft, statementright, parser.ast, lists[0], lists[1], statement);
+:}
+
+| T_SEMICOLON:token /* empty statement */
+{:
+	RESULT = new EmptyStatement(tokenleft, tokenright, parser.ast);
+:}
+
+| T_TRY:s T_CURLY_OPEN:tryBlockStart inner_statement_list:tryList T_CURLY_CLOSE:tryBlockEnd T_CATCH:catch_word T_OPEN_PARENTHESE fully_qualified_class_name:className tracked_variable:var T_CLOSE_PARENTHESE
+T_CURLY_OPEN:catchBlockStart inner_statement_list:catchList T_CURLY_CLOSE:catchBlockEnd additional_catches:catchesList
+{:
+	Block tryBlock = new Block(tryBlockStartleft, tryBlockEndright, parser.ast, tryList);
+	Block catchBlock = new Block(catchBlockStartleft, catchBlockEndright, parser.ast, catchList);
+	CatchClause catchClause = new CatchClause(catch_wordleft, catchBlockEndright, parser.ast, className, var, catchBlock);
+	((LinkedList) catchesList).addFirst(catchClause);
+	RESULT = new TryStatement(sleft, catchesListright, parser.ast, tryBlock, catchesList);
+:}
+
+| T_THROW:token expr:expr T_SEMICOLON:e
+{:
+	RESULT = new ThrowStatement(tokenleft, eright, parser.ast, expr);
+:}
+
+| T_GOTO:s T_STRING:label T_SEMICOLON:e
+{:
+	RESULT = new GotoStatement(sleft, eright, parser.ast, new Identifier(labelleft, labelright, parser.ast, label));
+:}
+
+| error:theError /* error statement */
+{:
+	ASTError error = new ASTError(theErrorleft, theErrorright, parser.ast);
+	RESULT = error;
+:}
+
+| T_VAR_COMMENT:varComment unticked_statement:statement
+{:
+	RESULT = statement;
+:}
+
+| T_OPEN_TAG_WITH_ECHO:s echo_expr_list:exprList T_SEMICOLON:e
+{:
+	RESULT = new EchoStatement(exprListleft, eright, parser.ast, exprList);
+:}
+;
+
+additional_catches ::=
+non_empty_additional_catches:list
+{:
+	RESULT = list;
+:}
+
+| /* empty */
+{:
+	List list = new LinkedList();
+	RESULT = list;
+:}
+;
+
+non_empty_additional_catches ::=
+additional_catch:catch_statement
+{:
+	List list = new LinkedList();
+	list.add(catch_statement);
+	RESULT = list;
+:}
+| non_empty_additional_catches:list additional_catch:catch_statement
+{:
+	list.add(catch_statement);
+	RESULT = list;
+:}
+;
+
+additional_catch ::=
+T_CATCH:catch_word T_OPEN_PARENTHESE fully_qualified_class_name:className T_VARIABLE:var T_CLOSE_PARENTHESE
+ T_CURLY_OPEN:catchBlockStart inner_statement_list:catchList T_CURLY_CLOSE:catchBlockEnd
+{:
+	RESULT = new CatchClause(catch_wordleft, catchBlockEndright, parser.ast, className,
+		new Variable(varleft, varright, parser.ast, var),
+		new Block(catchBlockStartleft, catchBlockEndright, parser.ast, catchList));
+:}
+;
+
+unset_variables ::=
+unset_variable:var
+{:
+	List list = new LinkedList();
+	list.add(var);
+	RESULT = list;
+:}
+
+| unset_variables:list T_COMMA unset_variable:var
+{:
+	list.add(var);
+	RESULT = list;
+:}
+;
+
+unset_variable ::=
+variable:var
+{:
+	RESULT = var;
+:}
+;
+
+use_filename ::=
+T_CONSTANT_ENCAPSED_STRING:scalar
+{:
+	RESULT = new Scalar(scalarleft, scalarright, parser.ast, scalar, Scalar.TYPE_STRING);
+:}
+
+| T_OPEN_PARENTHESE:s T_CONSTANT_ENCAPSED_STRING:scalar T_CLOSE_PARENTHESE:e
+{:
+	RESULT = new Scalar(scalarleft, scalarright, parser.ast, scalar, Scalar.TYPE_STRING);
+:}
+;
+
+function_declaration_statement ::=
+unticked_function_declaration_statement:functionDeclaration
+{:
+	RESULT = functionDeclaration;
+:}
+;
+
+class_declaration_statement ::=
+unticked_class_declaration_statement:classDeclaration
+{:
+	RESULT = classDeclaration;
+:}
+;
+
+is_reference ::=
+/* empty */
+{:
+	RESULT = Boolean.FALSE;
+:}
+
+| T_REFERENCE
+{:
+	RESULT = Boolean.TRUE;
+:}
+;
+
+unticked_function_declaration_statement ::=
+T_FUNCTION:s is_reference:isReference string_st:fn
+T_OPEN_PARENTHESE parameter_list:paramList T_CLOSE_PARENTHESE
+T_CURLY_OPEN:blockStart inner_statement_list:sList T_CURLY_CLOSE:blockEnd
+{:
+	RESULT = new FunctionDeclaration(sleft, blockEndright, parser.ast,
+		new Identifier(fnleft, fnright, parser.ast, fn), paramList,
+		new Block(blockStartleft, blockEndright, parser.ast, sList), isReference.booleanValue());
+:}
+;
+
+unticked_class_declaration_statement ::=
+class_entry_type:modifier T_STRING:className
+extends_from:superClass implements_list:interfaces
+T_CURLY_OPEN:blockStart class_statement_list:sList T_CURLY_CLOSE:blockEnd
+{:
+	if (modifier.intValue() == ClassDeclaration.MODIFIER_TRAIT) {
+		RESULT = new TraitDeclaration(modifierleft, blockEndright, parser.ast, ClassDeclaration.MODIFIER_NONE,
+			new Identifier(classNameleft, classNameright, parser.ast, className), superClass, interfaces,
+			new Block(blockStartleft, blockEndright, parser.ast, sList));
+	}else{
+		RESULT = new ClassDeclaration(modifierleft, blockEndright, parser.ast, modifier.intValue(),
+			new Identifier(classNameleft, classNameright, parser.ast, className), superClass, interfaces,
+			new Block(blockStartleft, blockEndright, parser.ast, sList));
+	}
+:}
+
+|
+interface_entry:s T_STRING:className
+interface_extends_list:interfaces
+T_CURLY_OPEN:blockStart class_statement_list:sList T_CURLY_CLOSE:blockEnd
+{:
+	RESULT = new InterfaceDeclaration(sleft, blockEndright, parser.ast,
+		new Identifier(classNameleft, classNameright, parser.ast, className), interfaces,
+		new Block(blockStartleft, blockEndright, parser.ast, sList));
+:}
+;
+
+class_entry_type ::=
+T_CLASS
+{:
+	RESULT = Integer.valueOf(ClassDeclaration.MODIFIER_NONE);
+:}
+
+| T_ABSTRACT T_CLASS
+{:
+	RESULT = Integer.valueOf(ClassDeclaration.MODIFIER_ABSTRACT);
+:}
+
+| T_FINAL T_CLASS
+{:
+	RESULT = Integer.valueOf(ClassDeclaration.MODIFIER_FINAL);
+:}
+
+| T_TRAIT
+{:
+	RESULT = Integer.valueOf(ClassDeclaration.MODIFIER_TRAIT);
+:}
+;
+
+extends_from ::=
+/* empty */
+{:
+	RESULT = null;
+:}
+
+| T_EXTENDS fully_qualified_class_name:className
+{:
+	RESULT = className;
+:}
+;
+
+/* do nothing */
+interface_entry ::=
+	T_INTERFACE
+;
+
+interface_extends_list ::=
+/* empty */
+{:
+	List list = new LinkedList();
+	RESULT = list;
+:}
+
+| T_EXTENDS interface_list:list
+{:
+	RESULT = list;
+:}
+;
+
+implements_list ::=
+/* empty */
+{:
+	List list = new LinkedList();
+	RESULT = list;
+:}
+
+| T_IMPLEMENTS interface_list:list
+{:
+	RESULT = list;
+:}
+;
+
+interface_list ::=
+fully_qualified_class_name:className
+{:
+	List list = new LinkedList();
+	list.add(className);
+	RESULT = list;
+:}
+
+| interface_list:list T_COMMA fully_qualified_class_name:className
+{:
+	list.add(className);
+	RESULT = list;
+:}
+;
+
+foreach_optional_arg ::=
+/* empty */
+{:
+	RESULT = null;
+:}
+
+|	T_DOUBLE_ARROW foreach_variable:var
+{:
+	RESULT = var;
+:}
+;
+
+foreach_variable ::=
+variable:var
+{:
+	RESULT = var;
+:}
+
+| T_REFERENCE:s variable:var
+{:
+	RESULT = new Reference (sleft, varright, parser.ast, var);
+:}
+;
+
+for_statement ::=
+statement:statement
+{:
+	RESULT = statement;
+:}
+
+| T_NEKUDOTAIM:start inner_statement_list:statementList T_ENDFOR:end
+{:
+	Block block = new Block(startleft, endright, parser.ast, statementList, false);
+	RESULT = block;
+:}
+;
+
+foreach_statement ::=
+statement:statement
+{:
+	RESULT = statement;
+:}
+
+| T_NEKUDOTAIM:start inner_statement_list:statementList T_ENDFOREACH:end
+{:
+	Block block = new Block(startleft, endright, parser.ast, statementList, false);
+	RESULT = block;
+:}
+;
+
+declare_statement ::=
+statement:statement
+{:
+	RESULT = statement;
+:}
+
+| T_NEKUDOTAIM:start inner_statement_list:statementList T_ENDDECLARE:end
+{:
+	Block block = new Block(startleft, endright, parser.ast, statementList, false);
+	RESULT = block;
+:}
+;
+
+// this rule returns a pair of keys and values of directives to the declare statement
+declare_list ::=
+string_st:key T_EQUAL static_scalar:value
+{:
+	List listKeys = new LinkedList();
+	List listValues = new LinkedList();
+
+	listKeys.add(new Identifier(keyleft, keyright, parser.ast, key));
+	listValues.add(value);
+
+	RESULT = new List[] { listKeys, listValues };
+:}
+
+| declare_list:lists T_COMMA string_st:key T_EQUAL static_scalar:value
+{:
+	lists[0].add(new Identifier(keyleft, keyright, parser.ast, key));
+	lists[1].add(value);
+	RESULT = lists;
+:}
+;
+
+switch_case_list ::=
+T_CURLY_OPEN:s case_list:caseList T_CURLY_CLOSE:e
+{:
+	RESULT = new Block(sleft, eright, parser.ast, caseList);
+:}
+
+| T_CURLY_OPEN:s T_SEMICOLON case_list:caseList T_CURLY_CLOSE:e
+{:
+	RESULT = new Block(sleft, eright, parser.ast, caseList);
+:}
+
+| T_NEKUDOTAIM:start case_list:caseList T_ENDSWITCH:end
+{:
+	Block block = new Block(startleft, endright, parser.ast, caseList, false);
+	RESULT = block;
+:}
+
+| T_NEKUDOTAIM:start T_SEMICOLON case_list:caseList T_ENDSWITCH:end
+{:
+	Block block = new Block(startleft, endright, parser.ast, caseList, false);
+	RESULT = block;
+:}
+;
+
+case_list ::=
+/* empty */
+{:
+	RESULT = new LinkedList(); // of SwitchCase
+:}
+
+| case_list:caseList T_CASE:token expr:expr case_separator inner_statement_list:statements
+{:
+	SwitchCase switchCase = new SwitchCase(tokenleft, statementsright, parser.ast, expr, statements, false);
+	if (caseList == null) {
+		caseList = new LinkedList(); // of switchCase
+	}
+	caseList.add(switchCase);
+	RESULT = caseList;
+:}
+
+| case_list:caseList T_DEFAULT:token case_separator inner_statement_list:statements
+{:
+	SwitchCase switchCase = new SwitchCase(tokenleft, statementsright, parser.ast, null, statements, true);
+	if (caseList == null) {
+		caseList = new LinkedList(); // of SwitchCase
+	}
+	caseList.add(switchCase);
+	RESULT = caseList;
+:}
+;
+
+/* Note: we don't capture seperator type */
+case_separator ::=
+T_NEKUDOTAIM
+| T_SEMICOLON
+;
+
+while_statement ::=
+statement:statement
+{:
+	RESULT = statement;
+:}
+
+| T_NEKUDOTAIM:colon inner_statement_list:statementList T_ENDWHILE:end
+{:
+	Block block = new Block(colonleft, endright, parser.ast, statementList, false);
+	RESULT = block;
+:}
+;
+
+elseif_list ::=
+/* empty */
+{:
+	List listConditions = new LinkedList();
+	List listStatements = new LinkedList();
+	List listTokens = new LinkedList();
+	RESULT = new List[] { listConditions, listStatements, listTokens };
+:}
+
+| elseif_list:elseifList T_ELSEIF:token T_OPEN_PARENTHESE expr:cond T_CLOSE_PARENTHESE statement:iftrue
+{:
+	((LinkedList) elseifList[0]).addFirst(cond);
+	((LinkedList) elseifList[1]).addFirst(iftrue);
+	((LinkedList) elseifList[2]).addFirst(Integer.valueOf(tokenleft));
+	RESULT = elseifList;
+:}
+;
+
+new_elseif_list ::=
+/* empty */
+{:
+	List listConditions = new LinkedList();
+	List listStatements = new LinkedList();
+	List listTokens = new LinkedList();
+	RESULT = new List[] { listConditions, listStatements, listTokens };
+:}
+
+| new_elseif_list:elseifList T_ELSEIF:token T_OPEN_PARENTHESE expr:cond T_CLOSE_PARENTHESE T_NEKUDOTAIM:colon inner_statement_list:sList
+{:
+	Block block = new Block(colonleft, sListright, parser.ast, sList, false);
+	((LinkedList) elseifList[0]).addFirst(cond);
+	((LinkedList) elseifList[1]).addFirst(block);
+	((LinkedList) elseifList[2]).addFirst(Integer.valueOf(tokenleft));
+	RESULT = elseifList;
+:}
+;
+
+else_single ::=
+/* empty */
+{:
+	RESULT = null;
+:}
+
+| T_ELSE statement:statement
+{:
+	RESULT = statement;
+:}
+;
+
+new_else_single ::=
+/* empty */
+{:
+	RESULT = null;
+:}
+
+| T_ELSE T_NEKUDOTAIM:colon inner_statement_list:list
+{:
+	RESULT = new Block(colonleft, listright, parser.ast, list, false);
+:}
+;
+
+parameter_list ::=
+non_empty_parameter_list:list
+{:
+	RESULT = list;
+:}
+
+| /* empty */
+{:
+	RESULT = new LinkedList();
+:}
+;
+
+non_empty_parameter_list ::=
+parameter:parameter
+{:
+	List list = new LinkedList();
+	list.add(parameter);
+	RESULT = list;
+:}
+
+| non_empty_parameter_list:list T_COMMA parameter:parameter
+{:
+	list.add(parameter);
+	RESULT = list;
+:}
+;
+
+parameter ::=
+optional_class_type:classType T_VARIABLE:var
+{:
+	int s = classType == null ? varleft : classTypeleft;
+	Variable v = new Variable(varleft, varright, parser.ast, var);
+	RESULT = new FormalParameter(s, varright, parser.ast, classType, v);
+:}
+
+| optional_class_type:classType T_REFERENCE:ref T_VARIABLE:var
+{:
+	int s = classType == null ? refleft : classTypeleft;
+	Variable v = new Variable(varleft, varright, parser.ast, var);
+	Reference ref_var = new Reference (refleft, varright, parser.ast, v);
+	RESULT = new FormalParameter(s, varright, parser.ast, classType, ref_var);
+:}
+
+| optional_class_type:classType T_VARIABLE:var T_EQUAL static_scalar:scalar
+{:
+	int s = classType == null ? varleft : classTypeleft;
+	Variable v = new Variable(varleft, varright, parser.ast, var);
+	RESULT = new FormalParameter(s, scalarright, parser.ast, classType, v, scalar);
+:}
+
+| optional_class_type:classType T_REFERENCE:ref T_VARIABLE:var T_EQUAL static_scalar:scalar
+{:
+	int s = classType == null ? refleft : classTypeleft;
+	Variable v = new Variable(varleft, varright, parser.ast, var);
+	Reference ref_var = new Reference (refleft, varright, parser.ast, v);
+	RESULT = new FormalParameter(s, scalarright, parser.ast, classType, ref_var, scalar);
+:}
+;
+
+optional_class_type ::=
+/* empty */
+{:
+	RESULT = null;
+:}
+
+| fully_qualified_class_name:className
+{:
+	RESULT = className;
+:}
+
+| T_ARRAY:array
+{:
+	RESULT = new Identifier(arrayleft, arrayright, parser.ast, "array");
+:}
+
+| T_CALLABLE:callable
+{:
+	RESULT = new Identifier(callableleft, callableright, parser.ast, "callable");
+:}
+;
+
+function_call_parameter_list ::=
+non_empty_function_call_parameter_list:paramsList
+{:
+	RESULT = paramsList;
+:}
+
+| /* empty */
+{:
+	RESULT = new LinkedList();
+:}
+;
+
+non_empty_function_call_parameter_list ::=
+expr_without_variable:var
+{:
+	List paramsList = new LinkedList();
+	paramsList.add(var);
+	RESULT = paramsList;
+:}
+
+| variable:var
+{:
+	List paramsList = new LinkedList();
+	paramsList.add(var);
+	RESULT = paramsList;
+:}
+
+| T_REFERENCE:s w_variable:var
+{:
+	List paramsList = new LinkedList();
+	Expression var_ref = new Reference(sleft, varright, parser.ast, var);
+	paramsList.add(var_ref);
+	RESULT = paramsList;
+:}
+
+| non_empty_function_call_parameter_list:paramsList T_COMMA expr_without_variable:var
+{:
+	paramsList.add(var);
+	RESULT = paramsList;
+:}
+
+| non_empty_function_call_parameter_list:paramsList T_COMMA variable:var
+{:
+	paramsList.add(var);
+	RESULT = paramsList;
+:}
+
+| non_empty_function_call_parameter_list:paramsList T_COMMA T_REFERENCE:s w_variable:var
+{:
+	Expression var_ref = new Reference(sleft, varright, parser.ast, var);
+	paramsList.add(var_ref);
+	RESULT = paramsList;
+:}
+;
+
+global_var_list ::=
+global_var_list:list T_COMMA global_var:var
+{:
+	list.add(var);
+	RESULT = list;
+:}
+
+| global_var:var
+{:
+	List list = new LinkedList();
+	list.add(var);
+	RESULT = list;
+:}
+;
+
+global_var ::=
+T_VARIABLE:var
+{:
+	RESULT = new Variable(varleft, varright, parser.ast, var);
+:}
+
+| T_DOLLAR:s r_variable:var
+{:
+	RESULT = new ReflectionVariable(sleft, varright, parser.ast, var);
+:}
+
+| T_DOLLAR:s T_CURLY_OPEN expr:varName T_CURLY_CLOSE:e
+{:
+	RESULT = new ReflectionVariable(sleft, eright, parser.ast, varName);
+:}
+;
+
+static_var_list ::=
+static_var_list:list T_COMMA T_VARIABLE:var
+{:
+	Variable v = new Variable(varleft, varright, parser.ast, var);
+	list.add(v);
+	RESULT = list;
+:}
+
+| static_var_list:list T_COMMA T_VARIABLE:var T_EQUAL static_scalar:expr
+{:
+	Variable v = new Variable(varleft, varright, parser.ast, var);
+	Assignment assignment = new Assignment(varleft, exprright, parser.ast, v, Assignment.OP_EQUAL, expr);
+	list.add(assignment);
+	RESULT = list;
+:}
+
+| T_VARIABLE:var
+{:
+	Variable v = new Variable(varleft, varright, parser.ast, var);
+	List list = new LinkedList();
+	list.add(v);
+	RESULT = list;
+:}
+
+| T_VARIABLE:var T_EQUAL static_scalar:expr
+{:
+	Variable v = new Variable(varleft, varright, parser.ast, var);
+	Assignment assignment = new Assignment(varleft, exprright, parser.ast, v, Assignment.OP_EQUAL, expr);
+	List list = new LinkedList();
+	list.add(assignment);
+	RESULT = list;
+:}
+;
+
+class_statement_list ::=
+class_statement_list:list class_statement:classStatement
+{:
+	list.add(classStatement);
+	RESULT = list;
+:}
+
+| /* empty */
+{:
+	RESULT = new LinkedList();
+:}
+;
+
+class_statement ::=
+variable_modifiers:modifier class_variable_declaration:decList T_SEMICOLON:e
+{:
+	RESULT = new FieldsDeclaration(modifierleft, eright, parser.ast, modifier.intValue(), decList);
+:}
+
+| constant_declaration:list T_SEMICOLON:e
+{:
+	RESULT = new ConstantDeclaration(listleft, eright, parser.ast, list);
+:}
+
+| method_modifiers:modifier T_FUNCTION:s is_reference:isReference string_st:fn
+T_OPEN_PARENTHESE parameter_list:paramList T_CLOSE_PARENTHESE
+method_body:body
+{:
+	int methodStart = modifier == null ? sleft : modifierleft;
+	modifier = modifier == null ? PHPAstParser.PUBLIC : modifier;
+	Identifier functionId = new Identifier(fnleft, fnright, parser.ast, fn);
+	FunctionDeclaration functionDeclaration = new FunctionDeclaration(sleft, bodyright, parser.ast, functionId, paramList, body, isReference.booleanValue());
+	RESULT = new MethodDeclaration(methodStart, bodyright, parser.ast, modifier.intValue(), functionDeclaration, true);
+:}
+
+| T_VAR_COMMENT:varComment unticked_statement:statement
+{:
+	RESULT = statement;
+:}
+
+| trait_use_statement:statement
+{:
+	RESULT = statement;
+:}
+;
+
+trait_use_statement ::=
+		T_USE:start trait_list:list trait_adaptations:adaptations
+{:
+	TraitUseStatement traitUseStatement = new TraitUseStatement(startleft, adaptationsright, parser.ast, list, adaptations);
+	RESULT = traitUseStatement;
+:}
+;
+
+trait_list ::=
+		fully_qualified_class_name:name
+{:
+	List<NamespaceName> traitList = new LinkedList<NamespaceName>();
+	traitList.add(name);
+	RESULT = traitList;
+:}
+|	trait_list:traitList T_COMMA fully_qualified_class_name:name
+{:
+	traitList.add(name);
+	RESULT = traitList;
+:}
+;
+
+trait_adaptations ::=
+		T_SEMICOLON
+{:
+	RESULT = null;
+:}
+|	T_CURLY_OPEN trait_adaptation_list:list T_CURLY_CLOSE
+{:
+	RESULT = list;
+:}
+;
+
+trait_adaptation_list ::=
+/* empty */
+{:
+	RESULT = null;
+:}
+|	non_empty_trait_adaptation_list:list
+{:
+	RESULT = list;
+:}
+;
+
+non_empty_trait_adaptation_list ::=
+		trait_adaptation_statement:statement
+{:
+	List<TraitStatement> taList = new LinkedList<TraitStatement>();
+	taList.add(statement);
+	RESULT = taList;
+:}
+|	non_empty_trait_adaptation_list:taList trait_adaptation_statement:statement
+{:
+	taList.add(statement);
+	RESULT = taList;
+:}
+;
+
+trait_adaptation_statement ::=
+		trait_precedence:precedence T_SEMICOLON:end
+{:
+	TraitPrecedenceStatement traitPrecedenceStatement = new TraitPrecedenceStatement(precedenceleft, endright, parser.ast, precedence);
+	RESULT = traitPrecedenceStatement;
+:}
+|	trait_alias:alias T_SEMICOLON:end
+{:
+	TraitAliasStatement traitAliasStatement = new TraitAliasStatement(aliasleft, endright, parser.ast, alias);
+	RESULT = traitAliasStatement;
+:}
+;
+
+trait_precedence ::=
+	trait_method_reference_fully_qualified:methodReference T_INSTEADOF trait_reference_list:trList
+{:
+	TraitPrecedence traitPrecedence = new TraitPrecedence(methodReferenceleft, trListright, parser.ast, methodReference, trList);
+	RESULT = traitPrecedence;
+:}
+;
+
+trait_reference_list ::=
+		fully_qualified_class_name:className
+{:
+	List<NamespaceName> trList = new LinkedList<NamespaceName>();
+	trList.add(className);
+	RESULT = trList;
+:}
+|	trait_reference_list:trList T_COMMA fully_qualified_class_name:className
+{:
+	trList.add(className);
+	RESULT = trList;
+:}
+;
+
+trait_method_reference ::=
+T_STRING:s
+{:
+	//FunctionName name = new FunctionName(sleft, sright, parser.ast,
+	//		new Identifier(sleft, sright, parser.ast, s));
+	//SimpleReference name = new SimpleReference(functionNameleft, functionNameright, functionName);
+	RESULT = new Identifier(sleft, sright, parser.ast, s);
+:}
+| trait_method_reference_fully_qualified:className
+{:
+	RESULT = className;
+:}
+;
+
+trait_method_reference_fully_qualified ::=
+	fully_qualified_class_name:className T_PAAMAYIM_NEKUDOTAYIM T_STRING:functionName
+{:
+	//FunctionName name = new FunctionName(functionNameleft, functionNameright, parser.ast,
+	//		new Identifier(functionNameleft, functionNameright, parser.ast, s));
+	//SimpleReference name = new SimpleReference(functionNameleft, functionNameright, functionName);
+	Identifier name = new Identifier(functionNameleft, functionNameright, parser.ast, functionName);
+	FullyQualifiedTraitMethodReference methodReference = new FullyQualifiedTraitMethodReference(classNameleft, functionNameright, parser.ast, className, name);
+	RESULT = methodReference;
+:}
+;
+
+trait_alias ::=
+		trait_method_reference:reference T_AS trait_modifiers:modifier T_STRING:functionName
+{:
+	int modifierValue = modifier == null ? Modifiers.AccPublic : modifier.intValue();
+	int modifierOffset = modifier == null ? functionNameleft : modifierleft;
+	//SimpleReference name = new SimpleReference(functionNameleft, functionNameright, functionName);
+	Identifier name = new Identifier(functionNameleft, functionNameright, parser.ast, functionName);
+	TraitAlias alias = new TraitAlias(referenceleft, functionNameright, parser.ast, reference, modifierValue, modifierOffset, name);
+	RESULT = alias;
+:}
+|	trait_method_reference:reference T_AS:as member_modifier:modifier
+{:
+	int modifierValue = modifier == null ? Modifiers.AccPublic : modifier.intValue();
+	int modifierOffset = modifier == null ? asright + 1 : modifierleft;
+	TraitAlias alias = new TraitAlias(referenceleft, modifierright, parser.ast, reference, modifierValue, modifierOffset, null);
+	RESULT = alias;
+:}
+;
+
+trait_modifiers ::=
+/* empty */
+{:
+	RESULT = null;
+:}
+| member_modifier:modifier
+{:
+	RESULT = modifier;
+:}
+;
+
+method_body ::=
+T_SEMICOLON /* abstract method */
+{:
+	RESULT = null;
+:}
+
+| T_CURLY_OPEN:s inner_statement_list:list T_CURLY_CLOSE:e
+{:
+	Block block = new Block(sleft, eright, parser.ast, list);
+	RESULT = block;
+:}
+;
+
+variable_modifiers ::=
+non_empty_member_modifiers:list
+{:
+	int result = 0;
+	for (Iterator it = list.iterator(); it.hasNext();) {
+		Integer modifier = (Integer) it.next();
+		result |= modifier.intValue();
+	}
+	RESULT = Integer.valueOf(result);
+:}
+
+| T_VAR
+{:
+	RESULT = PHPAstParser.PUBLIC;
+:}
+;
+
+method_modifiers ::=
+/* empty */
+{:
+	RESULT = null;
+:}
+
+| non_empty_member_modifiers:list
+{:
+	int result = 0;
+	for (Iterator it = list.iterator(); it.hasNext();) {
+		Integer modifier = (Integer) it.next();
+		result |= modifier.intValue();
+	}
+	RESULT = Integer.valueOf(result);
+:}
+;
+
+non_empty_member_modifiers ::=
+member_modifier:modifier
+{:
+	List list = new LinkedList();
+	list.add(modifier);
+	RESULT = list;
+:}
+
+| non_empty_member_modifiers:list member_modifier:modifier
+{:
+	list.add(modifier);
+	RESULT = list;
+:}
+;
+
+member_modifier ::=
+T_PUBLIC
+{:
+	RESULT = PHPAstParser.PUBLIC;
+:}
+
+| T_PROTECTED
+{:
+	RESULT = PHPAstParser.PROTECTED;
+:}
+
+| T_PRIVATE
+{:
+	RESULT = PHPAstParser.PRIVATE;
+:}
+
+| T_STATIC
+{:
+	RESULT = PHPAstParser.STATIC;
+:}
+
+| T_ABSTRACT
+{:
+	RESULT = PHPAstParser.ABSTRACT;
+:}
+
+| T_FINAL
+{:
+	RESULT = PHPAstParser.FINAL;
+:}
+;
+
+class_variable_declaration ::=
+class_variable_declaration:list T_COMMA T_VARIABLE:var
+{:
+	Variable varId = new Variable(varleft, varright, parser.ast, var);
+	list.add(new ASTNode[] {varId, null});
+	RESULT = list;
+:}
+
+| class_variable_declaration:list T_COMMA T_VARIABLE:var T_EQUAL static_scalar:expr
+{:
+	Variable varId = new Variable(varleft, varright, parser.ast, var);
+	list.add(new ASTNode[] {varId, expr});
+	RESULT = list;
+:}
+
+| T_VARIABLE:var
+{:
+	List list = new LinkedList();
+	Variable varId = new Variable(varleft, varright, parser.ast, var);
+	list.add(new ASTNode[] {varId, null});
+	RESULT = list;
+:}
+
+| T_VARIABLE:var T_EQUAL static_scalar:expr
+{:
+	List list = new LinkedList();
+	Variable varId = new Variable(varleft, varright, parser.ast, var);
+	list.add(new ASTNode[] {varId, expr});
+	RESULT = list;
+:}
+;
+
+constant_declaration ::=
+constant_declaration:list T_COMMA T_STRING:constName T_EQUAL static_scalar:expr
+{:
+	Identifier constId = new Identifier(constNameleft, constNameright, parser.ast, constName);
+	list.add(new ASTNode[] {constId, expr});
+	RESULT = list;
+:}
+
+| T_CONST T_STRING:constName T_EQUAL static_scalar:expr
+{:
+	List list = new LinkedList();
+	Identifier constId = new Identifier(constNameleft, constNameright, parser.ast, constName);
+	list.add(new ASTNode[] {constId, expr});
+	RESULT = list;
+:}
+;
+
+echo_expr_list ::=
+echo_expr_list:exprList T_COMMA expr:expr
+{:
+	exprList.add(expr);
+	RESULT = exprList;
+:}
+| expr:expr
+{:
+	List exprList = new LinkedList();
+	exprList.add(expr);
+	RESULT = exprList;
+:}
+;
+
+for_expr ::=
+/* empty */
+{:
+	RESULT = new LinkedList();
+:}
+
+| non_empty_for_expr:exprList
+{:
+	RESULT = exprList;
+:}
+;
+
+non_empty_for_expr ::=
+non_empty_for_expr:exprList T_COMMA expr:expr
+{:
+	exprList.add(expr);
+	RESULT = exprList;
+:}
+
+| expr:expr
+{:
+	List exprList = new LinkedList();
+	exprList.add(expr);
+	RESULT = exprList;
+:}
+;
+
+chain_instance_call ::=
+T_OPEN_PARENTHESE:open new_expr:expr T_CLOSE_PARENTHESE:end
+{:
+	RESULT = new ParenthesisExpression(openleft, endright, parser.ast, expr);
+:}
+| chain_instance_call:ch T_OBJECT_OPERATOR variable_without_objects:var
+{:
+	RESULT = parser.createDispatch(ch, var);
+:}
+
+| chain_instance_call:ch T_OBJECT_OPERATOR object_dim_list:var
+{:
+	RESULT = parser.createDispatch(ch, var);
+:}
+
+| chain_instance_call:ch T_OBJECT_OPERATOR variable_without_objects:memberProperty T_OPEN_PARENTHESE:start function_call_parameter_list:paramsList T_CLOSE_PARENTHESE:end dim_list:list
+{:
+	RESULT = parser.resolveDimList(new MethodInvocation(chleft, endright, parser.ast, ch, new FunctionInvocation(memberPropertyleft, endright, parser.ast,
+				new FunctionName(memberPropertyleft, memberPropertyright, parser.ast, memberProperty), paramsList)), list);
+:}
+
+| chain_instance_call:ch T_OBJECT_OPERATOR object_dim_list:memberProperty T_OPEN_PARENTHESE:start function_call_parameter_list:paramsList T_CLOSE_PARENTHESE:end dim_list:list
+{:
+	if (memberProperty.list != null) {
+		RESULT = new FunctionInvocation(chleft, endright, parser.ast,
+				new FunctionName(chleft, memberPropertyright, parser.ast, parser.createDispatch(ch, memberProperty)), paramsList);
+	} else {
+		RESULT = new MethodInvocation(chleft, endright, parser.ast, ch, new FunctionInvocation(memberPropertyleft, endright, parser.ast,
+				new FunctionName(memberPropertyleft, memberPropertyright, parser.ast, memberProperty.variable), paramsList));
+	}
+	RESULT = parser.resolveDimList(RESULT, list);
+:}
+;
+
+new_expr ::=
+T_NEW:s class_name_reference:className ctor_arguments:ctor
+{:
+	RESULT = new ClassInstanceCreation(sleft, ctorright, parser.ast, className, ctor);
+:}
+;
+
+expr_without_variable ::=
+T_LIST:s T_OPEN_PARENTHESE assignment_list:varList T_CLOSE_PARENTHESE:close T_EQUAL expr:expr
+{:
+	ListVariable vars = new ListVariable(sleft, closeright, parser.ast, varList);
+	RESULT = new Assignment(sleft, exprright, parser.ast, vars, Assignment.OP_EQUAL, expr);
+:}
+
+| variable:var T_EQUAL expr:expr
+{:
+	RESULT = new Assignment(varleft, exprright, parser.ast, var, Assignment.OP_EQUAL, expr);
+:}
+
+| variable:var T_EQUAL T_REFERENCE:reftoken variable:refvar
+{:
+	RESULT = new Assignment(varleft, refvarright, parser.ast, var, Assignment.OP_EQUAL, new Reference(reftokenleft, refvarright, parser.ast, refvar));
+:}
+
+| variable:var T_EQUAL T_REFERENCE:reftoken T_NEW:s class_name_reference:className ctor_arguments:ctor
+{:
+	RESULT = new Assignment(varleft, ctorright, parser.ast, var, Assignment.OP_EQUAL,
+		new Reference(reftokenleft, ctorright, parser.ast,
+			new ClassInstanceCreation(sleft, ctorright, parser.ast, className, ctor)));
+:}
+
+| T_CLONE:s expr:expr
+{:
+	RESULT = new CloneExpression(sleft, exprright, parser.ast, expr);
+:}
+
+| variable:var T_PLUS_EQUAL expr:expr
+{:
+	RESULT = new Assignment(varleft, exprright, parser.ast, var, Assignment.OP_PLUS_EQUAL, expr);
+:}
+
+| variable:var T_MINUS_EQUAL expr:expr
+{:
+	RESULT = new Assignment(varleft, exprright, parser.ast, var, Assignment.OP_MINUS_EQUAL, expr);
+:}
+
+| variable:var T_MUL_EQUAL expr:expr
+{:
+	RESULT = new Assignment(varleft, exprright, parser.ast, var, Assignment.OP_MUL_EQUAL, expr);
+:}
+
+| variable:var T_DIV_EQUAL expr:expr
+{:
+	RESULT = new Assignment(varleft, exprright, parser.ast, var, Assignment.OP_DIV_EQUAL, expr);
+:}
+
+| variable:var T_CONCAT_EQUAL expr:expr
+{:
+	RESULT = new Assignment(varleft, exprright, parser.ast, var, Assignment.OP_CONCAT_EQUAL, expr);
+:}
+
+| variable:var T_MOD_EQUAL expr:expr
+{:
+	RESULT = new Assignment(varleft, exprright, parser.ast, var, Assignment.OP_MOD_EQUAL, expr);
+:}
+
+| variable:var T_AND_EQUAL expr:expr
+{:
+	RESULT = new Assignment(varleft, exprright, parser.ast, var, Assignment.OP_AND_EQUAL, expr);
+:}
+
+| variable:var T_OR_EQUAL expr:expr
+{:
+	RESULT = new Assignment(varleft, exprright, parser.ast, var, Assignment.OP_OR_EQUAL, expr);
+:}
+
+| variable:var T_XOR_EQUAL expr:expr
+{:
+	RESULT = new Assignment(varleft, exprright, parser.ast, var, Assignment.OP_XOR_EQUAL, expr);
+:}
+
+| variable:var T_SL_EQUAL expr:expr
+{:
+	RESULT = new Assignment(varleft, exprright, parser.ast, var, Assignment.OP_SL_EQUAL, expr);
+:}
+
+| variable:var T_SR_EQUAL expr:expr
+{:
+	RESULT = new Assignment(varleft, exprright, parser.ast, var, Assignment.OP_SR_EQUAL, expr);
+:}
+
+| rw_variable:var T_INC:token
+{:
+	RESULT = new PostfixExpression(varleft, tokenright, parser.ast, var, PostfixExpression.OP_INC);
+:}
+
+| T_INC:token rw_variable:var
+{:
+	RESULT = new PrefixExpression(tokenleft, varright, parser.ast, var, PrefixExpression.OP_INC);
+:}
+
+| rw_variable:var T_DEC:token
+{:
+	RESULT = new PostfixExpression(varleft, tokenright, parser.ast, var, PostfixExpression.OP_DEC);
+:}
+
+| T_DEC:token rw_variable:var
+{:
+	RESULT = new PrefixExpression(tokenleft, varright, parser.ast, var, PrefixExpression.OP_DEC);
+:}
+
+| expr:expr1 T_BOOLEAN_OR expr:expr2
+{:
+	RESULT = new InfixExpression(expr1left, expr2right, parser.ast, expr1, InfixExpression.OP_BOOL_OR, expr2);
+:}
+
+| expr:expr1 T_BOOLEAN_AND expr:expr2
+{:
+	RESULT = new InfixExpression(expr1left, expr2right, parser.ast, expr1, InfixExpression.OP_BOOL_AND, expr2);
+:}
+
+| expr:expr1 T_LOGICAL_OR expr:expr2
+{:
+	RESULT = new InfixExpression(expr1left, expr2right, parser.ast, expr1, InfixExpression.OP_STRING_OR, expr2);
+:}
+
+| expr:expr1 T_LOGICAL_AND expr:expr2
+{:
+	RESULT = new InfixExpression(expr1left, expr2right, parser.ast, expr1, InfixExpression.OP_STRING_AND, expr2);
+:}
+
+| expr:expr1 T_LOGICAL_XOR expr:expr2
+{:
+	RESULT = new InfixExpression(expr1left, expr2right, parser.ast, expr1, InfixExpression.OP_STRING_XOR, expr2);
+:}
+
+| expr:expr1 T_OR expr:expr2
+{:
+	RESULT = new InfixExpression(expr1left, expr2right, parser.ast, expr1, InfixExpression.OP_OR, expr2);
+:}
+
+| expr:expr1 T_REFERENCE expr:expr2
+{:
+	RESULT = new InfixExpression(expr1left, expr2right, parser.ast, expr1, InfixExpression.OP_AND, expr2);
+:}
+
+| expr:expr1 T_KOVA expr:expr2
+{:
+	RESULT = new InfixExpression(expr1left, expr2right, parser.ast, expr1, InfixExpression.OP_XOR, expr2);
+:}
+
+| expr:expr1 T_NEKUDA expr:expr2
+{:
+	RESULT = new InfixExpression(expr1left, expr2right, parser.ast, expr1, InfixExpression.OP_CONCAT, expr2);
+:}
+
+| expr:expr1 T_PLUS expr:expr2
+{:
+	RESULT = new InfixExpression(expr1left, expr2right, parser.ast, expr1, InfixExpression.OP_PLUS, expr2);
+:}
+
+| expr:expr1 T_MINUS expr:expr2
+{:
+	RESULT = new InfixExpression(expr1left, expr2right, parser.ast, expr1, InfixExpression.OP_MINUS, expr2);
+:}
+
+| expr:expr1 T_TIMES expr:expr2
+{:
+	RESULT = new InfixExpression(expr1left, expr2right, parser.ast, expr1, InfixExpression.OP_MUL, expr2);
+:}
+
+| expr:expr1 T_DIV expr:expr2
+{:
+	RESULT = new InfixExpression(expr1left, expr2right, parser.ast, expr1, InfixExpression.OP_DIV, expr2);
+:}
+
+| expr:expr1 T_PRECENT expr:expr2
+{:
+	RESULT = new InfixExpression(expr1left, expr2right, parser.ast, expr1, InfixExpression.OP_MOD, expr2);
+:}
+
+| expr:expr1 T_SL expr:expr2
+{:
+	RESULT = new InfixExpression(expr1left, expr2right, parser.ast, expr1, InfixExpression.OP_SL, expr2);
+:}
+
+| expr:expr1 T_SR expr:expr2
+{:
+	RESULT = new InfixExpression(expr1left, expr2right, parser.ast, expr1, InfixExpression.OP_SR, expr2);
+:}
+
+| T_PLUS:token expr:expr
+{:
+	RESULT = new UnaryOperation(tokenleft, exprright, parser.ast, expr, UnaryOperation.OP_PLUS);
+:}
+
+| T_MINUS:token expr:expr
+{:
+	RESULT = new UnaryOperation(tokenleft, exprright, parser.ast, expr, UnaryOperation.OP_MINUS);
+:}
+
+| T_NOT:token expr:expr
+{:
+	RESULT = new UnaryOperation(tokenleft, exprright, parser.ast, expr, UnaryOperation.OP_NOT);
+:}
+
+| T_TILDA:token expr:expr
+{:
+	RESULT = new UnaryOperation(tokenleft, exprright, parser.ast, expr, UnaryOperation.OP_TILDA);
+:}
+
+| expr:expr1 T_IS_IDENTICAL expr:expr2
+{:
+	RESULT = new InfixExpression(expr1left, expr2right, parser.ast, expr1, InfixExpression.OP_IS_IDENTICAL, expr2);
+:}
+
+| expr:expr1 T_IS_NOT_IDENTICAL expr:expr2
+{:
+	RESULT = new InfixExpression(expr1left, expr2right, parser.ast, expr1, InfixExpression.OP_IS_NOT_IDENTICAL, expr2);
+:}
+
+| expr:expr1 T_IS_EQUAL expr:expr2
+{:
+	RESULT = new InfixExpression(expr1left, expr2right, parser.ast, expr1, InfixExpression.OP_IS_EQUAL, expr2);
+:}
+
+| expr:expr1 T_IS_NOT_EQUAL expr:expr2
+{:
+	RESULT = new InfixExpression(expr1left, expr2right, parser.ast, expr1, InfixExpression.OP_IS_NOT_EQUAL, expr2);
+:}
+
+| expr:expr1 T_RGREATER expr:expr2
+{:
+	RESULT = new InfixExpression(expr1left, expr2right, parser.ast, expr1, InfixExpression.OP_RGREATER, expr2);
+:}
+
+| expr:expr1 T_IS_SMALLER_OR_EQUAL expr:expr2
+{:
+	RESULT = new InfixExpression(expr1left, expr2right, parser.ast, expr1, InfixExpression.OP_IS_SMALLER_OR_EQUAL, expr2);
+:}
+
+| expr:expr1 T_LGREATER expr:expr2
+{:
+	RESULT = new InfixExpression(expr1left, expr2right, parser.ast, expr1, InfixExpression.OP_LGREATER, expr2);
+:}
+
+| expr:expr1 T_IS_GREATER_OR_EQUAL expr:expr2
+{:
+	RESULT = new InfixExpression(expr1left, expr2right, parser.ast, expr1, InfixExpression.OP_IS_GREATER_OR_EQUAL, expr2);
+:}
+
+| expr:expr T_INSTANCEOF class_name_reference:className
+{:
+	RESULT = new InstanceOfExpression(exprleft, classNameright, parser.ast, expr, className);
+:}
+
+| T_OPEN_PARENTHESE:s expr:expr T_CLOSE_PARENTHESE:e
+{:
+	RESULT = new ParenthesisExpression(sleft, eright, parser.ast, expr);
+:}
+
+| new_expr:expr
+{:
+	RESULT = expr;
+:}
+
+| chain_instance_call:chain
+{:
+	RESULT = chain;
+:}
+
+| expr:cond T_QUESTION_MARK expr:ifTrue T_NEKUDOTAIM expr:ifFalse
+{:
+	RESULT = new ConditionalExpression(condleft, ifFalseright, parser.ast, cond, ifTrue, ifFalse);
+:}
+
+| expr:cond T_QUESTION_MARK T_NEKUDOTAIM expr:ifFalse
+{:
+	RESULT = new ConditionalExpression(condleft, ifFalseright, parser.ast, cond, null, ifFalse);
+:}
+
+| internal_functions_in_yacc:expr
+{:
+	RESULT = expr;
+:}
+
+| T_INT_CAST:token expr:expr
+{:
+	RESULT = new CastExpression(tokenleft, exprright, parser.ast, expr, CastExpression.TYPE_INT);
+:}
+
+| T_DOUBLE_CAST:token expr:expr
+{:
+	RESULT = new CastExpression(tokenleft, exprright, parser.ast, expr, CastExpression.TYPE_REAL);
+:}
+
+| T_STRING_CAST:token expr:expr
+{:
+	RESULT = new CastExpression(tokenleft, exprright, parser.ast, expr, CastExpression.TYPE_STRING);
+:}
+
+| T_ARRAY_CAST:token expr:expr
+{:
+	RESULT = new CastExpression(tokenleft, exprright, parser.ast, expr, CastExpression.TYPE_ARRAY);
+:}
+
+| T_OBJECT_CAST:token expr:expr
+{:
+	RESULT = new CastExpression(tokenleft, exprright, parser.ast, expr, CastExpression.TYPE_OBJECT);
+:}
+
+| T_BOOL_CAST:token expr:expr
+{:
+	RESULT = new CastExpression(tokenleft, exprright, parser.ast, expr, CastExpression.TYPE_BOOL);
+:}
+
+| T_UNSET_CAST:token expr:expr
+{:
+	RESULT = new CastExpression(tokenleft, exprright, parser.ast, expr, CastExpression.TYPE_UNSET);
+:}
+
+| T_EXIT:s exit_expr:expr
+{:
+	List expList = new LinkedList();
+	if (expr != null) {
+		expList.add(expr);
+	}
+	RESULT = new FunctionInvocation(sleft, exprright, parser.ast,
+		new FunctionName(sleft, sright, parser.ast,
+			new Identifier(sleft, sright, parser.ast, s)), expList);
+:}
+
+| T_AT:s expr:expr
+{:
+	RESULT = new IgnoreError(sleft, exprright, parser.ast, expr);
+:}
+
+| scalar:scalar
+{:
+	RESULT = scalar;
+:}
+
+| T_ARRAY:s T_OPEN_PARENTHESE array_pair_list:list T_CLOSE_PARENTHESE:e
+{:
+	RESULT = new ArrayCreation(sleft, eright, parser.ast, list);
+:}
+
+| T_OPEN_RECT:s array_pair_list:list T_CLOSE_RECT:e
+{:
+	RESULT = new ArrayCreation(sleft, eright, parser.ast, list, false);
+:}
+
+| T_BACKQUATE:s backticks_expr:list T_BACKQUATE:e
+{:
+	RESULT = new BackTickExpression(sleft, eright, parser.ast, list);
+:}
+
+| T_PRINT:s expr:expr
+{:
+	List expList = new LinkedList();
+	if (expr != null) {
+		expList.add(expr);
+	}
+	RESULT = new FunctionInvocation(sleft, exprright, parser.ast,
+		new FunctionName(sleft, sright, parser.ast,
+			new Identifier(sleft, sright, parser.ast, "print")), expList);
+:}
+
+| T_FUNCTION:s is_reference:isReference
+T_OPEN_PARENTHESE parameter_list:paramList T_CLOSE_PARENTHESE lexical_vars:varsList
+T_CURLY_OPEN:blockStart inner_statement_list:list T_CURLY_CLOSE:blockEnd
+{:
+	RESULT = new LambdaFunctionDeclaration(sleft, blockEndright, parser.ast, paramList, varsList,
+		new Block(blockStartleft, blockEndright, parser.ast, list), isReference.booleanValue());
+:}
+
+| T_STATIC:modifier T_FUNCTION:s is_reference:isReference
+T_OPEN_PARENTHESE parameter_list:paramList T_CLOSE_PARENTHESE lexical_vars:varsList
+T_CURLY_OPEN:blockStart inner_statement_list:list T_CURLY_CLOSE:blockEnd
+{:
+	RESULT = new LambdaFunctionDeclaration(modifierleft, blockEndright, parser.ast, paramList, varsList,
+		new Block(blockStartleft, blockEndright, parser.ast, list), isReference.booleanValue(), true);
+:}
+;
+
+lexical_vars ::=
+/* empty */
+{:
+	RESULT = null;
+:}
+
+| T_USE:s T_OPEN_PARENTHESE lexical_var_list:list T_CLOSE_PARENTHESE:e
+{:
+	RESULT = list;
+:}
+;
+
+lexical_var_list ::=
+lexical_var_list:list T_COMMA T_VARIABLE:var
+{:
+	Variable v = new Variable(varleft, varright, parser.ast, var);
+	list.add(v);
+	RESULT = list;
+:}
+
+| lexical_var_list:list T_COMMA T_REFERENCE:ref T_VARIABLE:var
+{:
+	list.add(new Reference (refleft, varright, parser.ast, new Variable(varleft, varright, parser.ast, var)));
+	RESULT = list;
+:}
+
+| T_VARIABLE:var
+{:
+	List list = new LinkedList();
+	list.add(new Variable(varleft, varright, parser.ast, var));
+	RESULT = list;
+:}
+
+| T_REFERENCE:ref T_VARIABLE:var
+{:
+	List list = new LinkedList();
+	list.add(new Reference (refleft, varright, parser.ast, new Variable(varleft, varright, parser.ast, var)));
+	RESULT = list;
+:}
+;
+
+function_call ::=
+namespace_name:list T_OPEN_PARENTHESE function_call_parameter_list:parameters T_CLOSE_PARENTHESE:e
+{:
+	RESULT = new FunctionInvocation(listleft, eright, parser.ast,
+		new FunctionName(listleft, listright, parser.ast,
+			new NamespaceName(listleft, listright, parser.ast, list, false, false)), parameters);
+:}
+
+| T_NAMESPACE:s T_NS_SEPARATOR namespace_name:list T_OPEN_PARENTHESE function_call_parameter_list:parameters T_CLOSE_PARENTHESE:e
+{:
+	RESULT = new FunctionInvocation(sleft, eright, parser.ast,
+		new FunctionName(sleft, listright, parser.ast,
+			new NamespaceName(sleft, listright, parser.ast, list, false, true)), parameters);
+:}
+
+| T_NS_SEPARATOR:s namespace_name:list T_OPEN_PARENTHESE function_call_parameter_list:parameters T_CLOSE_PARENTHESE:e
+{:
+	RESULT = new FunctionInvocation(sleft, eright, parser.ast,
+		new FunctionName(sleft, listright, parser.ast,
+			new NamespaceName(sleft, listright, parser.ast, list, true, false)), parameters);
+:}
+
+| class_name:className T_PAAMAYIM_NEKUDOTAYIM variable_name:fn T_OPEN_PARENTHESE function_call_parameter_list:parameters T_CLOSE_PARENTHESE:e
+{:
+	RESULT = new StaticMethodInvocation(classNameleft, eright, parser.ast, className,
+		new FunctionInvocation(fnleft, eright, parser.ast,
+			new FunctionName(fnleft, fnright, parser.ast,
+				fn), parameters));
+:}
+
+| class_name:className T_PAAMAYIM_NEKUDOTAYIM field_access_dim_list_indirect_reference:reflectionName T_OPEN_PARENTHESE function_call_parameter_list:parameters T_CLOSE_PARENTHESE:e
+{:
+	Expression finalVar = reflectionName.variable;
+	finalVar = parser.resolveDimList((VariableBase) finalVar, reflectionName.list);
+	for (int i = 0; i<reflectionName.refCount; i++) {
+		finalVar = new ReflectionVariable(reflectionNameleft + reflectionName.refCount - i - 1, reflectionNameright, parser.ast, finalVar);
+	}
+	RESULT = new StaticMethodInvocation(classNameleft, eright, parser.ast, className,
+		new FunctionInvocation(reflectionNameleft, eright, parser.ast,
+			new FunctionName(reflectionNameleft, reflectionNameright, parser.ast, finalVar), parameters));
+:}
+
+| variable_class_name:className T_PAAMAYIM_NEKUDOTAYIM field_access_dim_list_indirect_reference:reflectionName T_OPEN_PARENTHESE function_call_parameter_list:parameters T_CLOSE_PARENTHESE:e
+{:
+	Expression finalVar = reflectionName.variable;
+	finalVar = parser.resolveDimList((VariableBase) finalVar, reflectionName.list);
+	for (int i = 0; i<reflectionName.refCount; i++) {
+		finalVar = new ReflectionVariable(reflectionNameleft + reflectionName.refCount - i - 1, reflectionNameright, parser.ast, finalVar);
+	}
+	RESULT = new StaticMethodInvocation(classNameleft, eright, parser.ast, className,
+		new FunctionInvocation(reflectionNameleft, eright, parser.ast,
+			new FunctionName(reflectionNameleft, reflectionNameright, parser.ast, finalVar), parameters));
+:}
+
+| variable_class_name:className T_PAAMAYIM_NEKUDOTAYIM variable_name:fn T_OPEN_PARENTHESE function_call_parameter_list:parameters T_CLOSE_PARENTHESE:e
+{:
+	RESULT = new StaticMethodInvocation(classNameleft, eright, parser.ast, className,
+		new FunctionInvocation(fnleft, eright, parser.ast,
+			new FunctionName(fnleft, fnright, parser.ast,
+				fn), parameters));
+:}
+
+| variable_without_objects:reflectionName T_OPEN_PARENTHESE function_call_parameter_list:parameters T_CLOSE_PARENTHESE:e
+{:
+	RESULT = new FunctionInvocation(reflectionNameleft, eright, parser.ast,
+		new FunctionName(reflectionNameleft, reflectionNameright, parser.ast, reflectionName), parameters);
+:}
+
+| function_call:call T_OPEN_RECT dim_offset:expr T_CLOSE_RECT:e
+{:
+	RESULT = new ArrayAccess(callleft, eright, parser.ast, call, expr, ArrayAccess.VARIABLE_ARRAY);
+:}
+;
+
+class_name ::=
+T_STATIC:s
+{:
+	RESULT = new Identifier(sleft, sright, parser.ast, "static");
+:}
+
+| namespace_name:list
+{:
+	RESULT = new NamespaceName(listleft, listright, parser.ast, list, false, false);
+:}
+
+| T_NAMESPACE:s T_NS_SEPARATOR namespace_name:list
+{:
+	RESULT = new NamespaceName(sleft, listright, parser.ast, list, false, true);
+:}
+
+| T_NS_SEPARATOR:s namespace_name:list
+{:
+	RESULT = new NamespaceName(sleft, listright, parser.ast, list, true, false);
+:}
+;
+
+fully_qualified_class_name ::=
+namespace_name:list
+{:
+	RESULT = new NamespaceName(listleft, listright, parser.ast, list, false, false);
+:}
+
+| T_NAMESPACE:s T_NS_SEPARATOR namespace_name:list
+{:
+	RESULT = new NamespaceName(sleft, listright, parser.ast, list, false, true);
+:}
+
+| T_NS_SEPARATOR:s namespace_name:list
+{:
+	RESULT = new NamespaceName(sleft, listright, parser.ast, list, true, false);
+:}
+;
+
+class_name_reference ::=
+class_name:className
+{:
+	RESULT = new ClassName(classNameleft, classNameright, parser.ast, className);
+:}
+
+| dynamic_class_name_reference:className
+{:
+	RESULT = className;
+:}
+;
+
+dynamic_class_name_reference ::=
+dynamic_class_name_variable_property:var
+{:
+	RESULT = new ClassName(varleft, varright, parser.ast, var);
+:}
+;
+
+dynamic_class_name_variable_property ::=
+base_variable:var
+{:
+	RESULT = var;
+:}
+
+| dynamic_class_name_variable_property:ch T_OBJECT_OPERATOR variable_without_objects:var
+{:
+	RESULT = parser.createDispatch(ch, var);
+:}
+
+| dynamic_class_name_variable_property:ch T_OBJECT_OPERATOR object_dim_list:var
+{:
+	RESULT = parser.createDispatch(ch, var);
+:}
+;
+
+exit_expr ::=
+/* empty */
+{:
+	RESULT = null;
+:}
+
+| T_OPEN_PARENTHESE T_CLOSE_PARENTHESE
+{:
+	RESULT = null;
+:}
+
+| T_OPEN_PARENTHESE expr:expr T_CLOSE_PARENTHESE
+{:
+	RESULT = expr;
+:}
+;
+
+backticks_expr ::=
+/* empty */
+{:
+	RESULT = new LinkedList();
+:}
+
+| T_ENCAPSED_AND_WHITESPACE:string
+{:
+	List list = new LinkedList();
+	Scalar scalar = new Scalar(stringleft, stringright, parser.ast, string == null ? "" : string, string == null ? Scalar.TYPE_UNKNOWN : Scalar.TYPE_STRING);
+	list.add(scalar);
+	RESULT = list;
+:}
+
+| encaps_list:list
+{:
+	RESULT = list;
+:}
+;
+
+ctor_arguments ::=
+/* empty */
+{:
+	RESULT = new LinkedList();
+:}
+
+| T_OPEN_PARENTHESE function_call_parameter_list:paramsList T_CLOSE_PARENTHESE
+{:
+	RESULT = paramsList;
+:}
+;
+
+common_scalar ::=
+T_LNUMBER:scalar
+{:
+	RESULT = new Scalar(scalarleft, scalarright, parser.ast, scalar, Scalar.TYPE_INT);
+:}
+
+| T_DNUMBER:scalar
+{:
+	RESULT = new Scalar(scalarleft, scalarright, parser.ast, scalar, Scalar.TYPE_REAL);
+:}
+
+| T_BNUMBER:scalar
+{:
+	RESULT = new Scalar(scalarleft, scalarright, parser.ast, scalar, Scalar.TYPE_BIN);
+:}
+
+| T_CONSTANT_ENCAPSED_STRING:scalar
+{:
+	RESULT = new Scalar(scalarleft, scalarright, parser.ast, scalar, Scalar.TYPE_STRING);
+:}
+
+| T_LINE:scalar
+{:
+	RESULT = new Scalar(scalarleft, scalarright, parser.ast, "__LINE__", Scalar.TYPE_SYSTEM);
+:}
+
+| T_FILE:scalar
+{:
+	RESULT = new Scalar(scalarleft, scalarright, parser.ast, "__FILE__", Scalar.TYPE_SYSTEM);
+:}
+
+| T_DIR:scalar
+{:
+	RESULT = new Scalar(scalarleft, scalarright, parser.ast, "__DIR__", Scalar.TYPE_SYSTEM);
+:}
+
+| T_CLASS_C:scalar
+{:
+	RESULT = new Scalar(scalarleft, scalarright, parser.ast, "__CLASS__", Scalar.TYPE_SYSTEM);
+:}
+
+| T_TRAIT_C:scalar
+{:
+	RESULT = new Scalar(scalarleft, scalarright, parser.ast, "__TRAIT__", Scalar.TYPE_SYSTEM);
+:}
+
+| T_METHOD_C:scalar
+{:
+	RESULT = new Scalar(scalarleft, scalarright, parser.ast, "__METHOD__", Scalar.TYPE_SYSTEM);
+:}
+
+| T_FUNC_C:scalar
+{:
+	RESULT = new Scalar(scalarleft, scalarright, parser.ast, "__FUNCTION__", Scalar.TYPE_SYSTEM);
+:}
+
+| T_NS_C:scalar
+{:
+	RESULT = new Scalar(scalarleft, scalarright, parser.ast, "__NAMESPACE__", Scalar.TYPE_SYSTEM);
+:}
+
+| T_START_HEREDOC:label T_ENCAPSED_AND_WHITESPACE:string T_END_HEREDOC:e
+{:
+	List list = new LinkedList();
+	list.add(new Scalar(stringleft, stringright, parser.ast, string == null ? "" : string, string == null ? Scalar.TYPE_UNKNOWN : Scalar.TYPE_STRING));
+	RESULT = new Quote(labelleft, eright, parser.ast, list, label.charAt(0) == '\'' ? Quote.QT_NOWDOC : Quote.QT_HEREDOC);
+:}
+
+| T_START_HEREDOC:label T_END_HEREDOC:e
+{:
+	RESULT = new Quote(labelleft, eright, parser.ast, new LinkedList(), label.charAt(0) == '\'' ? Quote.QT_NOWDOC : Quote.QT_HEREDOC);
+:}
+;
+
+static_scalar ::= /* compile-time evaluated scalars */
+common_scalar:scalar
+{:
+	RESULT = scalar;
+:}
+
+| namespace_name:list
+{:
+	if (list.size() == 1) {
+		RESULT = new Scalar(listleft, listright, parser.ast, ((Identifier) list.get(0)).getName(), Scalar.TYPE_STRING);
+	} else {
+		RESULT = new NamespaceName(listleft, listright, parser.ast, list, false, false);
+	}
+:}
+
+| T_NAMESPACE:s T_NS_SEPARATOR namespace_name:list
+{:
+	RESULT = new NamespaceName(sleft, listright, parser.ast, list, false, true);
+:}
+
+| T_NS_SEPARATOR:s namespace_name:list
+{:
+	RESULT = new NamespaceName(sleft, listright, parser.ast, list, true, false);
+:}
+
+| T_PLUS:s static_scalar:expr
+{:
+	RESULT = new UnaryOperation(sleft, exprright, parser.ast, expr, UnaryOperation.OP_PLUS);
+:}
+
+| T_MINUS:s static_scalar:expr
+{:
+	RESULT = new UnaryOperation(sleft, exprright, parser.ast, expr, UnaryOperation.OP_MINUS);
+:}
+
+| T_ARRAY:s T_OPEN_PARENTHESE static_array_pair_list:list T_CLOSE_PARENTHESE:e
+{:
+	RESULT = new ArrayCreation(sleft, eright, parser.ast, list);
+:}
+
+| T_OPEN_RECT:s static_array_pair_list:list T_CLOSE_RECT:e
+{:
+	RESULT = new ArrayCreation(sleft, eright, parser.ast, list, false);
+:}
+
+| static_class_constant:classConstant
+{:
+	RESULT = classConstant;
+:}
+;
+
+static_class_constant ::=
+class_name:className T_PAAMAYIM_NEKUDOTAYIM T_STRING:varName
+{:
+	RESULT = new StaticConstantAccess(classNameleft, varNameright, parser.ast, className,
+		new Identifier(varNameleft, varNameright, parser.ast, varName));
+:}
+;
+
+scalar ::=
+class_constant:classConstant
+{:
+	RESULT = classConstant;
+:}
+
+| namespace_name:list
+{:
+	if (list.size() == 1) {
+		RESULT = new Scalar(listleft, listright, parser.ast, ((Identifier) list.get(0)).getName(), Scalar.TYPE_STRING);
+	} else {
+		RESULT = new NamespaceName(listleft, listright, parser.ast, list, false, false);
+	}
+:}
+
+| T_NAMESPACE:s T_NS_SEPARATOR namespace_name:list
+{:
+	RESULT = new NamespaceName(sleft, listright, parser.ast, list, false, true);
+:}
+
+| T_NS_SEPARATOR:s namespace_name:list
+{:
+	RESULT = new NamespaceName(sleft, listright, parser.ast, list, true, false);
+:}
+
+| common_scalar:scalar
+{:
+	RESULT = scalar;
+:}
+
+| T_QUATE:s encaps_list:list T_QUATE:e
+{:
+	RESULT = new Quote(sleft, eright, parser.ast, list, Quote.QT_QUOTE);
+:}
+
+| T_SINGLE_QUATE:s encaps_list:list T_SINGLE_QUATE:e
+{:
+	RESULT = new Quote(sleft, eright, parser.ast, list, Quote.QT_SINGLE);
+:}
+
+| T_START_HEREDOC:s encaps_list:list T_END_HEREDOC:e
+{:
+	RESULT = new Quote(sleft, eright, parser.ast, list, Quote.QT_HEREDOC);
+:}
+;
+
+static_array_pair_list ::=
+/* empty */
+{:
+	RESULT = new LinkedList();
+:}
+
+| non_empty_static_array_pair_list:list possible_comma:comma
+{:
+	if (comma != null) {
+		list.add(new EmptyExpression(commaright, parser.ast));
+	}
+	RESULT = list;
+:}
+;
+
+/* do nothing */
+possible_comma ::=
+/* empty */
+{:
+	RESULT = null;
+:}
+
+| T_COMMA
+{:
+	RESULT = "";
+:}
+;
+
+non_empty_static_array_pair_list ::=
+non_empty_static_array_pair_list:list T_COMMA static_scalar:key T_DOUBLE_ARROW static_scalar:value
+{:
+	list.add(new ArrayElement(keyleft, valueright, parser.ast, key, value));
+	RESULT = list;
+:}
+
+| non_empty_static_array_pair_list:list T_COMMA static_scalar:value
+{:
+	list.add(new ArrayElement(valueleft, valueright, parser.ast, value));
+	RESULT = list;
+:}
+
+| static_scalar:key T_DOUBLE_ARROW static_scalar:value
+{:
+	List list = new LinkedList();
+	list.add(new ArrayElement(keyleft, valueright, parser.ast, key, value));
+	RESULT = list;
+:}
+
+| static_scalar:value
+{:
+	List list = new LinkedList();
+	list.add(new ArrayElement(valueleft, valueright, parser.ast, value));
+	RESULT = list;
+:}
+;
+
+expr ::=
+r_variable:var
+{: RESULT = var; :}
+
+| expr_without_variable:ewv
+{: RESULT = ewv; :}
+;
+
+r_variable ::=
+variable:var
+{: RESULT = var; :}
+;
+
+w_variable ::=
+variable:var
+{: RESULT = var; :}
+;
+
+rw_variable ::=
+variable:var
+{: RESULT = var; :}
+;
+
+variable ::=
+base_variable_with_function_calls:var
+{:
+	RESULT = var;
+:}
+
+| variable:ch T_OBJECT_OPERATOR variable_without_objects:var
+{:
+	RESULT = parser.createDispatch(ch, var);
+:}
+
+| variable:ch T_OBJECT_OPERATOR object_dim_list:var
+{:
+	RESULT = parser.createDispatch(ch, var);
+:}
+
+| variable:ch T_OBJECT_OPERATOR variable_without_objects:memberProperty T_OPEN_PARENTHESE:start function_call_parameter_list:paramsList T_CLOSE_PARENTHESE:end dim_list:list
+{:
+	RESULT = parser.resolveDimList(new MethodInvocation(chleft, endright, parser.ast, ch, new FunctionInvocation(memberPropertyleft, endright, parser.ast,
+				new FunctionName(memberPropertyleft, memberPropertyright, parser.ast, memberProperty), paramsList)), list);
+:}
+
+| variable:ch T_OBJECT_OPERATOR object_dim_list:memberProperty T_OPEN_PARENTHESE:start function_call_parameter_list:paramsList T_CLOSE_PARENTHESE:end dim_list:list
+{:
+	if (memberProperty.list != null) {
+		RESULT = new FunctionInvocation(chleft, endright, parser.ast,
+				new FunctionName(chleft, memberPropertyright, parser.ast, parser.createDispatch(ch, memberProperty)), paramsList);
+	} else {
+		RESULT = new MethodInvocation(chleft, endright, parser.ast, ch, new FunctionInvocation(memberPropertyleft, endright, parser.ast,
+				new FunctionName(memberPropertyleft, memberPropertyright, parser.ast, memberProperty.variable), paramsList));
+	}
+	RESULT = parser.resolveDimList(RESULT, list);
+:}
+;
+
+variable_without_objects ::=
+reference_variable:var
+{:
+	RESULT = var;
+:}
+
+| simple_indirect_reference:ref_count reference_variable:var
+{:
+	// the ref_count counts the number of reflection (DOLLAR sign) so now we should
+	// accomulate the dolars into reflection variables
+	Variable finalVar = var;
+	for (int i = 0; i<ref_count.intValue(); i++) {
+		finalVar = new ReflectionVariable(ref_countright - i - 1, varright, parser.ast, finalVar);
+	}
+	RESULT = finalVar;
+:}
+;
+
+field_access_dim_list_indirect_reference ::=
+field_access_dim_list:var
+{:
+	RESULT = var;
+:}
+
+| simple_indirect_reference:ref_count field_access_dim_list:var
+{:
+	var.refCount = ref_count;
+	RESULT = var;
+:}
+;
+
+field_access_dim_list ::=
+field_access_dim_list:var T_OPEN_RECT dim_offset:index T_CLOSE_RECT:e
+{:
+	var.add(index, ArrayAccess.VARIABLE_ARRAY, eright);
+	RESULT = var;
+:}
+
+| field_access_dim_list:var T_CURLY_OPEN expr:index T_CURLY_CLOSE:e
+{:
+	var.add(index, ArrayAccess.VARIABLE_HASHTABLE, eright);
+	RESULT = var;
+:}
+
+| compound_variable:var
+{:
+	RESULT = new ObjectDimList(var);
+:}
+;
+
+static_member ::=
+class_name:className T_PAAMAYIM_NEKUDOTAYIM field_access_dim_list_indirect_reference:var
+{:
+	Variable finalVar = (Variable) var.variable;
+	int end = var.variable.getEnd();
+	if (var.refCount > 0) {
+		finalVar = (Variable) parser.resolveDimList(finalVar, var.list);
+		for (int i = 0; i<var.refCount; i++) {
+			finalVar = new ReflectionVariable(varleft + var.refCount - i - 1, varright, parser.ast, finalVar);
+		}
+		var.list = null;
+		end = varright;
+	}
+	RESULT = parser.resolveDimList(new StaticFieldAccess(classNameleft, end, parser.ast, className, finalVar), var.list);
+:}
+
+| variable_class_name:className T_PAAMAYIM_NEKUDOTAYIM field_access_dim_list_indirect_reference:var
+{:
+	Variable finalVar = (Variable) var.variable;
+	int end = var.variable.getEnd();
+	if (var.refCount > 0) {
+		finalVar = (Variable) parser.resolveDimList(finalVar, var.list);
+		for (int i = 0; i<var.refCount; i++) {
+			finalVar = new ReflectionVariable(varleft + var.refCount - i - 1, varright, parser.ast, finalVar);
+		}
+		var.list = null;
+		end = varright;
+	}
+	RESULT = parser.resolveDimList(new StaticFieldAccess(classNameleft, end, parser.ast, className, finalVar), var.list);;
+:}
+;
+
+variable_class_name ::=
+reference_variable:var
+{:
+	RESULT = var;
+:}
+;
+
+base_variable_with_function_calls ::=
+base_variable:var
+{: RESULT = var; :}
+
+| function_call:var
+{: RESULT = var; :}
+;
+
+base_variable ::=
+reference_variable:var
+{:
+	RESULT = var;
+:}
+
+| simple_indirect_reference:ref_count reference_variable:var
+{:
+	// the ref_count counts the number of reflection (DOLLAR sign) so now we should
+	// accomulate the dolars into reflection variables
+	VariableBase finalVar = var;
+	for (int i = 0; i<ref_count.intValue(); i++) {
+		finalVar = new ReflectionVariable(ref_countright - i - 1, varright, parser.ast, finalVar);
+	}
+	RESULT = finalVar;
+:}
+
+| static_member:s
+{:
+	RESULT = s;
+:}
+;
+
+reference_variable ::=
+reference_variable:varName T_OPEN_RECT dim_offset:index T_CLOSE_RECT:e
+{:
+	RESULT = new ArrayAccess(varNameleft, eright, parser.ast, varName, index, ArrayAccess.VARIABLE_ARRAY);
+:}
+
+| reference_variable:varName T_CURLY_OPEN expr:index T_CURLY_CLOSE:e
+{:
+	RESULT = new ArrayAccess(varNameleft, eright, parser.ast, varName, index, ArrayAccess.VARIABLE_HASHTABLE);
+:}
+
+| compound_variable:comp_var
+{: RESULT = comp_var; :}
+;
+
+compound_variable ::=
+tracked_variable:var
+{: RESULT = var; :}
+
+| T_DOLLAR:s T_CURLY_OPEN expr:expr T_CURLY_CLOSE:e
+{:
+	ReflectionVariable var = new ReflectionVariable(sleft, eright, parser.ast, expr);
+	RESULT = var;
+:}
+;
+
+dim_offset ::=
+/* empty */
+{:
+	RESULT = null;
+:}
+
+| expr:expr
+{:
+	RESULT = expr;
+:}
+;
+
+dim_list ::=
+/* empty */
+{:
+	RESULT = null;
+:}
+| dim_list:list T_OPEN_RECT dim_offset:index T_CLOSE_RECT:e
+{:
+	if (list == null) {
+		list = new DimList();
+	}
+	list.add(index, ArrayAccess.VARIABLE_ARRAY, eright);
+	RESULT = list;
+:}
+;
+
+object_dim_list ::=
+object_dim_list:var T_OPEN_RECT dim_offset:index T_CLOSE_RECT:e
+{:
+	var.add(index, ArrayAccess.VARIABLE_ARRAY, eright);
+	RESULT = var;
+:}
+
+| object_dim_list:var T_CURLY_OPEN expr:index T_CURLY_CLOSE:e
+{:
+	var.add(index, ArrayAccess.VARIABLE_HASHTABLE, eright);
+	RESULT = var;
+:}
+
+| variable_name:var
+{:
+	RESULT = new ObjectDimList(var);
+:}
+;
+
+variable_name ::=
+string_st:varName
+{:
+	RESULT = new Variable(varNameleft, varNameright, parser.ast, varName);
+:}
+
+| T_CURLY_OPEN:s expr:expr T_CURLY_CLOSE:e
+{:
+	RESULT = new ReflectionVariable(sleft, eright, parser.ast, expr);
+:}
+;
+
+simple_indirect_reference ::=
+T_DOLLAR
+{:
+	RESULT = Integer.valueOf(1);
+:}
+
+| simple_indirect_reference:ref T_DOLLAR
+{:
+	RESULT = Integer.valueOf(1 + ref.intValue());
+:}
+;
+
+assignment_list ::=
+assignment_list:listElements T_COMMA assignment_list_element:element
+{:
+	if (element != null) {
+		listElements.add(element);
+	} else {
+		listElements.add(new EmptyExpression(elementright, parser.ast));
+	}
+	RESULT = listElements;
+:}
+
+| assignment_list_element:var
+{:
+	List listElements = new LinkedList();
+	if (var != null) {
+		listElements.add(var);
+	} else {
+		listElements.add(new EmptyExpression(varright, parser.ast));
+	}
+	RESULT = listElements;
+:}
+;
+
+assignment_list_element ::=
+variable:var
+{:
+	RESULT = var;
+:}
+
+| T_LIST:s T_OPEN_PARENTHESE assignment_list:varList T_CLOSE_PARENTHESE:e
+{:
+	RESULT = new ListVariable(sleft, eright, parser.ast, varList);
+:}
+
+| /* empty */
+{:
+	RESULT = null;
+:}
+;
+
+array_pair_list ::=
+/* empty */
+{:
+	RESULT = new LinkedList();
+:}
+
+| non_empty_array_pair_list:list possible_comma:comma
+{:
+	if (comma != null) {
+		list.add(new EmptyExpression(commaright, parser.ast));
+	}
+	RESULT = list;
+:}
+;
+
+non_empty_array_pair_list ::=
+non_empty_array_pair_list:list T_COMMA expr:key T_DOUBLE_ARROW expr:value
+{:
+	list.add(new ArrayElement(keyleft, valueright, parser.ast, key, value));
+	RESULT = list;
+:}
+
+| non_empty_array_pair_list:list T_COMMA expr:expr
+{:
+	list.add(new ArrayElement(exprleft, exprright, parser.ast, expr));
+	RESULT = list;
+:}
+
+| expr:key T_DOUBLE_ARROW expr:value
+{:
+	List list = new LinkedList();
+	list.add(new ArrayElement(keyleft, valueright, parser.ast, key, value));
+	RESULT = list;
+:}
+
+| expr:expr
+{:
+	List list = new LinkedList();
+	list.add(new ArrayElement(exprleft, exprright, parser.ast, expr));
+	RESULT = list;
+:}
+
+| non_empty_array_pair_list:list T_COMMA expr:key T_DOUBLE_ARROW T_REFERENCE:s w_variable:var
+{:
+	list.add(new ArrayElement(keyleft, varright, parser.ast, key, new Reference(sleft, varright, parser.ast, var)));
+	RESULT = list;
+:}
+
+| non_empty_array_pair_list:list T_COMMA T_REFERENCE:s w_variable:var
+{:
+	list.add(new ArrayElement(sleft, varright, parser.ast, new Reference(sleft, varright, parser.ast, var)));
+	RESULT = list;
+:}
+
+| expr:key T_DOUBLE_ARROW T_REFERENCE:s w_variable:var
+{:
+	List list = new LinkedList();
+	list.add(new ArrayElement(keyleft, varright, parser.ast, key, new Reference(sleft, varright, parser.ast, var)));
+	RESULT = list;
+:}
+
+| T_REFERENCE:s w_variable:var
+{:
+	List list = new LinkedList();
+	list.add(new ArrayElement(sleft, varright, parser.ast, new Reference(sleft, varright, parser.ast, var)));
+	RESULT = list;
+:}
+;
+
+encaps_list ::=
+encaps_list:list encaps_var:var
+{:
+	list.add(var);
+	RESULT = list;
+:}
+
+| encaps_list:list T_ENCAPSED_AND_WHITESPACE:string
+{:
+	list.add(new Scalar(stringleft, stringright, parser.ast, string == null ? "" : string, string == null ? Scalar.TYPE_UNKNOWN : Scalar.TYPE_STRING));
+	RESULT = list;
+:}
+
+| encaps_list:list T_CHARACTER:string
+{:
+	list.add(new Scalar(stringleft, stringright, parser.ast, string, Scalar.TYPE_STRING));
+	RESULT = list;
+:}
+
+| encaps_var:var
+{:
+	List list = new LinkedList();
+	list.add(var);
+	RESULT = list;
+:}
+
+| T_ENCAPSED_AND_WHITESPACE:string encaps_var:var
+{:
+	List list = new LinkedList();
+	list.add(new Scalar(stringleft, stringright, parser.ast, string == null ? "" : string, string == null ? Scalar.TYPE_UNKNOWN : Scalar.TYPE_STRING));
+	list.add(var);
+	RESULT = list;
+:}
+;
+
+encaps_var ::=
+tracked_variable:var
+{:
+	RESULT = var;
+:}
+
+| tracked_variable:varName T_OPEN_RECT encaps_var_offset:index T_CLOSE_RECT:e
+{:
+	RESULT = new ArrayAccess(varNameleft, eright, parser.ast, varName, index, ArrayAccess.VARIABLE_ARRAY);
+:}
+
+| tracked_variable:var T_OBJECT_OPERATOR string_st:string
+{:
+	RESULT = parser.createDispatch(var, new Variable(stringleft, stringright, parser.ast, string));
+:}
+
+| T_DOLLAR_OPEN_CURLY_BRACES:s expr:expr T_CURLY_CLOSE:e
+{:
+	RESULT = new ReflectionVariable(sleft, eright, parser.ast, expr);
+:}
+
+| T_DOLLAR_OPEN_CURLY_BRACES:s T_STRING_VARNAME:varName T_OPEN_RECT expr:index T_CLOSE_RECT:c T_CURLY_CLOSE:e
+{:
+	RESULT = new ReflectionVariable(sleft, eright, parser.ast, new ArrayAccess(varNameleft, cright, parser.ast,
+		new Variable(varNameleft, varNameright, parser.ast, varName), index, ArrayAccess.VARIABLE_ARRAY));
+:}
+
+| T_DOLLAR_OPEN_CURLY_BRACES:s T_STRING_VARNAME:varName T_CURLY_CLOSE:e
+{:
+	RESULT = new ReflectionVariable(sleft, eright, parser.ast, new Variable(varNameleft, varNameright, parser.ast, varName));
+:}
+
+| T_CURLY_OPEN_WITH_DOLAR:s variable:var T_CURLY_CLOSE:e
+{:
+	RESULT = new ReflectionVariable(sleft, eright, parser.ast, var);
+:}
+;
+
+encaps_var_offset ::=
+string_st:string
+{:
+	RESULT = new Identifier(stringleft, stringright, parser.ast, string);
+:}
+
+| T_NUM_STRING:num
+{:
+	RESULT = new Scalar(numleft, numright, parser.ast, num, Scalar.TYPE_REAL);
+:}
+
+| tracked_variable:var
+{:
+	RESULT = var;
+:}
+;
+
+internal_functions_in_yacc ::=
+T_ISSET:s T_OPEN_PARENTHESE isset_variables:varList T_CLOSE_PARENTHESE:e
+{:
+	RESULT = new FunctionInvocation(sleft, eright, parser.ast,
+		new FunctionName(sleft, sright, parser.ast,
+			new Identifier(sleft, sright, parser.ast, "isset")), varList);
+:}
+
+| T_EMPTY:s T_OPEN_PARENTHESE variable:var T_CLOSE_PARENTHESE:e
+{:
+	LinkedList varList = new LinkedList();
+	varList.add(var);
+	RESULT = new FunctionInvocation(sleft, eright, parser.ast,
+		new FunctionName(sleft, sright, parser.ast, new Identifier(sleft, sright, parser.ast, "empty")), varList);
+:}
+
+| T_INCLUDE:include expr:expr
+{:
+	RESULT = new Include(includeleft, exprright, parser.ast, expr, Include.IT_INCLUDE);
+:}
+
+| T_INCLUDE_ONCE:include expr:expr
+{:
+	RESULT = new Include(includeleft, exprright, parser.ast, expr, Include.IT_INCLUDE_ONCE);
+:}
+
+| T_EVAL:s T_OPEN_PARENTHESE expr:expr T_CLOSE_PARENTHESE:e
+{:
+	LinkedList exprList = new LinkedList();
+	exprList.add(expr);
+	RESULT = new FunctionInvocation(sleft, eright, parser.ast,
+		new FunctionName(sleft, sright, parser.ast, new Identifier(sleft, sright, parser.ast, "eval")), exprList);
+:}
+
+| T_REQUIRE:include expr:expr
+{:
+	RESULT = new Include(includeleft, exprright, parser.ast, expr, Include.IT_REQUIRE);
+:}
+
+| T_REQUIRE_ONCE:include expr:expr
+{:
+	RESULT = new Include(includeleft, exprright, parser.ast, expr, Include.IT_REQUIRE_ONCE);
+:}
+
+| T_HALT_COMPILER:s T_OPEN_PARENTHESE function_call_parameter_list:parameters T_CLOSE_PARENTHESE:e
+{:
+	RESULT = new FunctionInvocation(sleft, eright, parser.ast,
+		new FunctionName(sleft, sright, parser.ast,
+			new Identifier(sleft, sright, parser.ast, "__halt_compiler")), parameters);
+:}
+;
+
+isset_variables ::=
+variable:var
+{:
+	List list = new LinkedList();
+	list.add(var);
+	RESULT = list;
+:}
+
+| isset_variables:varList T_COMMA variable:var
+{:
+	varList.add(var);
+	RESULT = varList;
+:}
+;
+
+class_constant ::=
+class_name:className T_PAAMAYIM_NEKUDOTAYIM T_STRING:varName
+{:
+	RESULT = new StaticConstantAccess(classNameleft, varNameright, parser.ast, className,
+		new Identifier(varNameleft, varNameright, parser.ast, varName));
+:}
+
+| variable_class_name:className T_PAAMAYIM_NEKUDOTAYIM T_STRING:varName
+{:
+	RESULT = new StaticConstantAccess(classNameleft, varNameright, parser.ast, className,
+		new Identifier(varNameleft, varNameright, parser.ast, varName));
+:}
+;
+
+tracked_variable ::=
+T_VARIABLE:varName
+{:
+	RESULT = new Variable(varNameleft, varNameright, parser.ast, varName);
+:}
+;
+
+string_st ::=
+T_STRING:value
+{: RESULT = value; :}
+
+| T_DEFINE:value
+{: RESULT = value; :}
+;

@@ -1,0 +1,16 @@
+* graalphp-parser-test
+
+Tests which run a pre-bundled Eclipse PDT parser and compare its parsing output with graalphp-parser.
+This verifies correct extraction of graalphp-parser out of the eclipse project.
+
+Pre-bundled eclipse PDT parser:
+- https://github.com/abertschi/eclipse-pdt-parser-fatjar
+
+
+** How to run
+#+begin_src sh
+$ mvn test
+#+end_src
+
+
+https://github.com/abertschi/graalphp

@@ -1,0 +1,50 @@
+<!--
+	Copyright (c) 2018 IBM Corporation and others.
+
+	This program and the accompanying materials are made
+	available under the terms of the Eclipse Public License 2.0
+	which is available at https://www.eclipse.org/legal/epl-2.0/
+
+	SPDX-License-Identifier: EPL-2.0
+
+	Contributors:
+		IBM Corporation - initial API and implementation
+		Zend Technologies
+ -->
+<project name="Generates DOM AST Parser for PHP 7.3" default="generateParser" basedir=".">
+
+	<target name="checkUpToDate">
+		<uptodate
+			property="upToDate"
+			srcfile="php_ast_parser.cup"
+			targetfile="../../../../gen/org/eclipse/php/internal/core/ast/scanner/php73/PHPAstParser.java" />
+	</target>
+
+	<target name="generateParser" depends="checkUpToDate" unless="upToDate">
+		<java
+			classpath="../../../../../org.eclipse.php.core.parser/target/classes"
+			classname="java_cup.org.graalphp.test.Main"
+			input="php_ast_parser.cup"
+			fork="true">
+
+			<arg value="-compact_red"/>
+			<arg value="-expect"/>
+			<arg value="4"/>
+			<arg value="-parser"/>
+			<arg value="PHPAstParser"/>
+			<arg value="-symbols"/>
+			<arg value="ParserConstants"/>
+			<arg value="-interface"/>
+		</java>
+
+		<move
+			file="PHPAstParser.java"
+			todir="../../../../gen/org/eclipse/php/internal/core/ast/scanner/php73" />
+
+		<move
+			file="ParserConstants.java"
+			todir="../../../../gen/org/eclipse/php/internal/core/ast/scanner/php73" />
+
+	</target>
+
+</project>

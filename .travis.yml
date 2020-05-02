@@ -1,6 +1,6 @@
 env:
-  global:
-  - CI_PARSING_TESTS=true
+   global:
+  - CI=true
   - GRAALVM_VERSION="20.0.0"
   - GRAALVM_JAVA_VERSION="11"
   - GRAALPHP_BUILD_NATIVE="false"

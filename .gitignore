@@ -25,3 +25,4 @@ graalphp-native/graalphp-native
 /graalphp-language/src/main/java/com/oracle/truffle/sl/parser/SimpleLanguage.tokens
 /graalphp-language/src/main/java/com/oracle/truffle/sl/parser/SimpleLanguageLexer.interp
 /graalphp-language/src/main/java/com/oracle/truffle/sl/parser/SimpleLanguageLexer.tokens
+graalvm.tar.gz

@@ -1,0 +1,51 @@
+<!--
+	Copyright (c) 2009 IBM Corporation and others.
+
+	This program and the accompanying materials are made
+	available under the terms of the Eclipse Public License 2.0
+	which is available at https://www.eclipse.org/legal/epl-2.0/
+
+	SPDX-License-Identifier: EPL-2.0
+
+	Contributors:
+		IBM Corporation - initial API and implementation
+		Zend Technologies
+ -->
+<project name="Generates Compiler AST Parser for PHP 7.2" default="generateParser" basedir=".">
+
+	<target name="checkUpToDate">
+		<uptodate
+			property="upToDate"
+			srcfile="php_compiler_ast_parser.cup"
+			targetfile="../../../../gen/org/eclipse/php/internal/core/compiler/ast/parser/php72/CompilerAstParser.java" />
+	</target>
+
+	<target name="generateParser" depends="checkUpToDate" unless="upToDate">
+		<java
+			classpath="../../../../../org.eclipse.php.core.parser/target/classes"
+			classname="java_cup.org.graalphp.test.Main"
+			input="php_compiler_ast_parser.cup"
+			fork="true">
+
+			<arg value="-compact_red" />
+			<arg value="-expect" />
+			<arg value="4" />
+			<arg value="-parser" />
+			<arg value="CompilerAstParser" />
+			<arg value="-symbols" />
+			<arg value="CompilerParserConstants" />
+			<arg value="-interface" />
+		</java>
+
+		<replace
+			file="CompilerAstParser.java"
+			token="extends java_cup.runtime.lr_parser"
+			value="extends AbstractASTParser"/>
+
+		<move file="CompilerAstParser.java" todir="../../../../gen/org/eclipse/php/internal/core/compiler/ast/parser/php72" />
+
+		<move file="CompilerParserConstants.java" todir="../../../../gen/org/eclipse/php/internal/core/compiler/ast/parser/php72" />
+
+	</target>
+
+</project>
