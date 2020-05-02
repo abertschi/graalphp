@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-
-set -x
+cur_dir=$(pwd)
+dir="$(dirname "$(readlink -f "$0")")"
+cd $dir
 
 readonly JAVA_VERSION="${1}"
 echo $JAVA_VERSION
@@ -30,6 +31,7 @@ cp ../graalphp-launcher/target/graalphp-launcher.jar "$LANGUAGE_PATH/launcher/"
 mkdir -p "$LANGUAGE_PATH/bin"
 cp ../graalphp $LANGUAGE_PATH/bin/
 if [[ $INCLUDE_GRAALPHP_NATIVE = "TRUE" ]]; then
+    echo "including native image"
     cp ../graalphp-native/graalphp-native $LANGUAGE_PATH/bin/
 fi
 
@@ -61,3 +63,5 @@ jar uf ../graalphp-component.jar META-INF/symlinks
 jar uf ../graalphp-component.jar META-INF/permissions
 )
 rm -rf $COMPONENT_DIR
+
+cd $cur_dir
