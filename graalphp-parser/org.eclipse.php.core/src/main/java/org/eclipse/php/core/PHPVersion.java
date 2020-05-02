@@ -22,15 +22,25 @@ import java.util.Map;
  */
 public enum PHPVersion {
 
-	PHP5("php5"), //$NON-NLS-1$
-	PHP5_3("php5.3"), //$NON-NLS-1$
-	PHP5_4("php5.4"), //$NON-NLS-1$
-	PHP5_5("php5.5"), //$NON-NLS-1$
-	PHP5_6("php5.6"), //$NON-NLS-1$
-	PHP7_0("php7.0"), //$NON-NLS-1$
-	PHP7_1("php7.1"), //$NON-NLS-1$
-	PHP7_2("php7.2"), //$NON-NLS-1$
-	PHP7_3("php7.3"), //$NON-NLS-1$
+	@Deprecated
+    PHP5("php5"), //$NON-NLS-1$
+    @Deprecated
+    PHP5_3("php5.3"), //$NON-NLS-1$
+	@Deprecated
+    PHP5_4("php5.4"), //$NON-NLS-1$
+	@Deprecated
+    PHP5_5("php5.5"), //$NON-NLS-1$
+	@Deprecated
+    PHP5_6("php5.6"), //$NON-NLS-1$
+	@Deprecated
+    PHP7_0("php7.0"), //$NON-NLS-1$
+	@Deprecated
+    PHP7_1("php7.1"), //$NON-NLS-1$
+	@Deprecated
+    PHP7_2("php7.2"), //$NON-NLS-1$
+
+    @Deprecated
+    PHP7_3("php7.3"), //$NON-NLS-1$
 	/**
 	 * @since 7.0
 	 */

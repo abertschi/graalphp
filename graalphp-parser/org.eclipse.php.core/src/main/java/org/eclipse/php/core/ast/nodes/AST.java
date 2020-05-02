@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.php.core.PHPVersion;
-import org.eclipse.php.internal.core.CoreMessages;
 import org.eclipse.php.internal.core.ast.scanner.AstLexer;
 import org.eclipse.php.internal.core.search.Messages;
 
@@ -238,10 +237,10 @@ public class AST {
 			return lexer74;
 		} else {
 			if (phpVersion == null) {
-				throw new IllegalArgumentException(CoreMessages.getString("UnknownPHPVersion_0")); //$NON-NLS-1$
+				throw new IllegalArgumentException("Invalid PHP version");
 			} else {
 				throw new IllegalArgumentException(
-						Messages.format(CoreMessages.getString("UnknownPHPVersion_1"), phpVersion)); //$NON-NLS-1$
+						Messages.format("Unknown php version: %s", phpVersion));
 			}
 		}
 	}
@@ -370,10 +369,10 @@ public class AST {
 			return parser;
 		} else {
 			if (phpVersion == null) {
-				throw new IllegalArgumentException(CoreMessages.getString("UnknownPHPVersion_0")); //$NON-NLS-1$
+				throw new IllegalArgumentException("invalid php version given"); //$NON-NLS-1$
 			} else {
 				throw new IllegalArgumentException(
-						Messages.format(CoreMessages.getString("UnknownPHPVersion_1"), phpVersion)); //$NON-NLS-1$
+						Messages.format("Unknown PHP version: %s", phpVersion));
 			}
 		}
 	}
