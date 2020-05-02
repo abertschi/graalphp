@@ -6,7 +6,7 @@ import org.eclipse.php.core.ast.visitor.HierarchicalVisitor;
 /**
  * @author abertschi
  */
-public class PhpParseVisitor extends HierarchicalVisitor {
+public class GPhpParseVisitor extends HierarchicalVisitor {
 
     public Object createGraalAst(Program pgm) {
         pgm.accept(this);

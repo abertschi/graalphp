@@ -14,7 +14,7 @@ public class ParseAddition {
             "<?php $a 5= 1; ?>";
     @Test
     public void parseAssign1() throws IOException {
-        PhpParseVisitor v = new PhpParseVisitor();
+        GPhpParseVisitor v = new GPhpParseVisitor();
         ASTParser parser = ASTParser.newParser(PHPVersion.PHP7_4);
         parser.setSource(assign1.toCharArray());
         parser.addErrorListener(new ConsoleErrorListener());
