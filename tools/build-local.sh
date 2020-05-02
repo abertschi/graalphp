@@ -29,7 +29,7 @@ if [ "GRAALPHP_BUILD_NATIVE"=="true" ]; then
 fi
 
 
-mvn package
+#mvn package
 
 ./graalphp ./graalphp-language/tests/dummy.php
 if [ "GRAALPHP_BUILD_NATIVE"=="true" ]; then
@@ -41,7 +41,7 @@ if [ "GRAALPHP_BUILD_NATIVE"=="true" ]; then
 
   "$JAVA_HOME/bin/graalphp-native" ./graalphp-language/tests/dummy.php
 
-  "$JAVA_HOME/bin/polyglot" --jvm --language graalphp --file graalphp-language/tests/dummy.php
+  "$JAVA_HOME/bin/polyglot" --jvm --language php --file ./graalphp-language/tests/dummy.php
   "$JAVA_HOME/bin/gu" remove org.graalphp
 
 fi

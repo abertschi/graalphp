@@ -18,7 +18,7 @@ import org.graalphp.types.PhpNull;
 
 @TruffleLanguage.Registration(
         id = PhpLanguage.ID,
-        name = "graalphpphp",
+        name = "graalphp",
         defaultMimeType = PhpLanguage.MIME_TYPE,
         characterMimeTypes = PhpLanguage.MIME_TYPE,
         contextPolicy = ContextPolicy.SHARED,

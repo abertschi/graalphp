@@ -1,10 +1,10 @@
 env:
    global:
-  - CI=true
-  - GRAALVM_VERSION="20.0.0"
-  - GRAALVM_JAVA_VERSION="11"
-  - GRAALPHP_BUILD_NATIVE="true"
-  - TEST="./graalphp-language/tests/dummy.php"
+    - CI=true
+    - GRAALVM_VERSION="20.0.0"
+    - GRAALVM_JAVA_VERSION="11"
+    - GRAALPHP_BUILD_NATIVE="true"
+    - TEST="./graalphp-language/tests/dummy.php"
 
 os: linux
 
@@ -26,9 +26,9 @@ install:
 script:
   - mvn package
   - ./graalphp $TEST
-  - ./graalphp-native/graalphp-native $TEST;
-  - $JAVA_HOME/bin/gu install -L ./graalphp-component/graalphp-component.jar;
-  - $JAVA_HOME/bin/graalphp $TEST;
-  - $JAVA_HOME/bin/graalphp-native $TEST;
-  - $JAVA_HOME/bin/polyglot --jvm --language graalphp --file $TEST;
-  - $JAVA_HOME/bin/gu remove org.graalphp;
+  - if [[ "GRAALPHP_BUILD_NATIVE" == "true" ]]; then ./graalphp-native/graalphp-native $TEST; fi;
+  - if [[ "GRAALPHP_BUILD_NATIVE" == "true" ]]; then  $JAVA_HOME/bin/gu install -L ./graalphp-component/graalphp-component.jar; fi;
+  - if [[ "GRAALPHP_BUILD_NATIVE" == "true" ]]; then  $JAVA_HOME/bin/graalphp $TEST; fi;
+  - if [[ "GRAALPHP_BUILD_NATIVE" == "true" ]]; then  $JAVA_HOME/bin/graalphp-native $TEST; fi;
+  - if [[ "GRAALPHP_BUILD_NATIVE" == "true" ]]; then  $JAVA_HOME/bin/polyglot --jvm --language php --file $TEST; fi;
+  - if [[ "GRAALPHP_BUILD_NATIVE" == "true" ]]; then  $JAVA_HOME/bin/gu remove org.graalphp; fi;
