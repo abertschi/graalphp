@@ -23,7 +23,7 @@
 	<target name="generateParser" depends="checkUpToDate" unless="upToDate">
 		<java
 			classpath="../../../../../org.eclipse.php.core.parser/target/classes"
-			classname="java_cup.org.graalphp.test.Main"
+			classname="java_cup.Main"
 			input="php_compiler_ast_parser.cup"
 			fork="true">
 

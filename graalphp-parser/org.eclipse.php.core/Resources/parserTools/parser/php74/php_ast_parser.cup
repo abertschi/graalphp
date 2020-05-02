@@ -1,4 +1,4 @@
-package org.eclipse.php.core.ast.scanner.php74;
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -6,19 +6,36 @@ package org.eclipse.php.core.ast.scanner.php74;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+package org.eclipse.php.core.ast.scanner.php74;
 
 import java.util.*;
+import java_cup.runtime.Symbol;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.php.core.ast.nodes.*;
 import org.eclipse.dltk.ast.Modifiers;
+import org.eclipse.php.core.ast.error.*;
+
+
 
 parser code {:
+
 	protected final static Integer PUBLIC = Integer.valueOf(Modifiers.AccPublic);
 	protected final static Integer PRIVATE = Integer.valueOf(Modifiers.AccPrivate);
 	protected final static Integer PROTECTED = Integer.valueOf(Modifiers.AccProtected);
 	protected final static Integer ABSTRACT = Integer.valueOf(Modifiers.AccAbstract);
 	protected final static Integer FINAL = Integer.valueOf(Modifiers.AccFinal);
 	protected final static Integer STATIC = Integer.valueOf(Modifiers.AccStatic);
+
+
+    /** handles parsing errors **/
+    protected ParseErrorManager parseErrorManager = new ParseErrorManager();
+
+	public void addErrorListener(ParseErrorListener l) {
+	    parseErrorManager.addListener(l);
+	}
+	public void removeErrorListener(ParseErrorListener l) {
+        parseErrorManager.removeListener(l);
+    }
 
 	AST ast;
 
@@ -54,16 +71,17 @@ parser code {:
 	@Override
 	public void report_error(String message, Object info)
 	{
-	    super.report_error(message, info);
+	    parseErrorManager.signalError(message, info, false);
 	}
 
 	@Override
-	protected void report_expected_token_ids()
-	{
-		// XXX : really verbose, disable it completely for now
-		// if (DLTKCore.DEBUG) {
-		//     super.report_expected_token_ids();
-		// }
+	public void syntax_error(Symbol cur_token) {
+		List<Integer> ids = expected_token_ids();
+            LinkedList<String> list = new LinkedList<String>();
+            for (Integer expected : ids){
+                list.add(symbl_name_from_id(expected));
+            }
+	    parseErrorManager.signalSyntaxError(cur_token, list);
 	}
 
 	@Override
@@ -76,10 +94,10 @@ parser code {:
 		done_parsing();
 
 		/* use the normal error message reporting to put out the message */
-		report_error(message, info);
+		parseErrorManager.signalError(message, info, true);
 
 		/* throw an exception */
-		 throw new Exception("Can't recover from previous error(s)");
+		throw new Exception("Can't recover from previous error(s)");
 	}
 :}
 

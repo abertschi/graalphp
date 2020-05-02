@@ -24,6 +24,9 @@ import org.eclipse.php.core.PHPVersion;
 import java_cup.runtime.Scanner;
 import java_cup.runtime.Symbol;
 import java_cup.runtime.lr_parser;
+import org.eclipse.php.core.ast.error.ParseErrorListener;
+import org.eclipse.php.core.ast.scanner.php74.PHPAstParser;
+import org.eclipse.php.internal.core.ast.scanner.AstLexer;
 
 /**
  * A PHP language parser for creating abstract syntax trees (ASTs).
@@ -35,8 +38,10 @@ public class ASTParser {
 	 * THREAD SAFE AST PARSER STARTS HERE
 	 */
 	private final AST ast;
+    private final AstLexer lexer;
+    private final lr_parser phpParser;
 
-	private ASTParser(Reader reader, PHPVersion phpVersion, boolean useASPTags, boolean useShortTags)
+    private ASTParser(Reader reader, PHPVersion phpVersion, boolean useASPTags, boolean useShortTags)
 			throws IOException {
 		this(reader, phpVersion, useASPTags, useShortTags, null);
 	}
@@ -45,6 +50,9 @@ public class ASTParser {
 			Object sourceModule) throws IOException {
 		this.ast = new AST(reader, phpVersion, useASPTags, useShortTags);
 		this.ast.setDefaultNodeFlag(ASTNode.ORIGINAL);
+        lexer = this.ast.lexer();
+        phpParser = this.ast.parser();
+        phpParser.setScanner(lexer);
 	}
 
 	/**
@@ -61,9 +69,9 @@ public class ASTParser {
 		}
 	}
 
-	public static ASTParser newParser(Reader reader, PHPVersion version, boolean useASPTags, boolean useShortTags)
+	public static ASTParser newParser(PHPVersion version)
 			throws IOException {
-		return new ASTParser(reader, version, useASPTags, useShortTags);
+		return new ASTParser(new StringReader(""), version, false, true);
 	}
 
 	/**
@@ -85,10 +93,16 @@ public class ASTParser {
 		this.ast.setSource(source);
 	}
 
-    public Program createAST() throws Exception {
-        final Scanner lexer = this.ast.lexer();
-        final lr_parser phpParser = this.ast.parser();
-        phpParser.setScanner(lexer);
+	public void addErrorListener(ParseErrorListener l) {
+        if (phpParser instanceof PHPAstParser) {
+            ((PHPAstParser) phpParser).addErrorListener(l);
+        } else {
+            throw new UnsupportedOperationException("Version of Parser does not support" +
+                    "a Parse Error Listener. Use 7.4 or later");
+        }
+    }
+
+    public Program parsePhpProgram() throws Exception {
         final Symbol symbol = phpParser.parse();
         if (symbol == null || !(symbol.value instanceof Program)) {
             return null;

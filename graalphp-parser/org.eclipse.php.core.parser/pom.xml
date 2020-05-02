@@ -19,7 +19,11 @@
     </properties>
 
     <build>
-
+        <resources>
+            <resource>
+                <directory>src/main/ant</directory>
+            </resource>
+        </resources>
         <plugins>
 
             <plugin>
@@ -34,7 +38,7 @@
                 <configuration>
                     <!-- we dont use maven to generate sources -->
                     <!-- add this so that intellij resolves generated sources in IDE -->
-                    <generatedSourcesDirectory>target/generated-sources/ant</generatedSourcesDirectory>
+<!--                    <generatedSourcesDirectory>target/generated-sources/ant</generatedSourcesDirectory>-->
                 </configuration>
             </plugin>
             <plugin>

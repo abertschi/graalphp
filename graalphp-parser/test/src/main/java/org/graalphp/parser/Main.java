@@ -19,7 +19,7 @@ public class Main {
         String code = readFileToString(args[0]);
         ASTParser parser = ASTParser.newParser(PHPVersion.PHP7_4, false, true);
         parser.setSource(code.toCharArray());
-        Program ast = parser.createAST();
+        Program ast = parser.parsePhpProgram();
         System.out.println(ast.toString());
         System.out.flush();
     }
