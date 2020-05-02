@@ -81,7 +81,6 @@
                     <argLine>${surefireArgLine}</argLine>
                     <!-- Skips unit tests if the value of skip.unit.tests property is true -->
                     <skipTests>${skip.unit.tests}</skipTests>
-
                     <includes>
                         <include>**/*TestSuite.java</include>
                         <include>**/*Test.java</include>
@@ -175,9 +174,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.antlr</groupId>
-            <artifactId>antlr4-runtime</artifactId>
-            <version>4.7</version>
+            <groupId>org.graalphp.parser</groupId>
+            <artifactId>php-parser</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>

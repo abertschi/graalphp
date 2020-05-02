@@ -2,6 +2,7 @@ package org.graalphp.parser;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
+import org.graalphp.parser.suite.FileTestSuite;
 
 import java.io.File;
 import java.io.IOException;
