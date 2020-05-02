@@ -26,9 +26,9 @@ install:
 script:
   - mvn package
   - ./graalphp $TEST
-  - if [[ "GRAALPHP_BUILD_NATIVE" == "true" ]]; then  ./graalphp-native/graalphp-native $TEST; fi;
-  - if [[ "GRAALPHP_BUILD_NATIVE" == "true" ]]; then  $JAVA_HOME/bin/gu install -L ./graalphp-component/graalphp-component.jar; fi;
-  - if [[ "GRAALPHP_BUILD_NATIVE" == "true" ]]; then  $JAVA_HOME/bin/graalphp $TEST; fi;
-  - if [[ "GRAALPHP_BUILD_NATIVE" == "true" ]]; then  $JAVA_HOME/bin/graalphp-native $TEST;  fi;
-  - if [[ "GRAALPHP_BUILD_NATIVE" == "true" ]]; then  $JAVA_HOME/bin/polyglot --jvm --language graalphp --file $TEST; fi;
-  - if [[ "GRAALPHP_BUILD_NATIVE" == "true" ]]; then  $JAVA_HOME/bin/gu remove org.graalphp; fi;
+  - ./graalphp-native/graalphp-native $TEST;
+  - $JAVA_HOME/bin/gu install -L ./graalphp-component/graalphp-component.jar;
+  - $JAVA_HOME/bin/graalphp $TEST;
+  - $JAVA_HOME/bin/graalphp-native $TEST;
+  - $JAVA_HOME/bin/polyglot --jvm --language graalphp --file $TEST;
+  - $JAVA_HOME/bin/gu remove org.graalphp;
