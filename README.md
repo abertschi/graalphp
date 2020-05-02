@@ -11,11 +11,13 @@ Thesis project at ETH Zurich, work in progress
 
 ### Build
 ```shell
-# mvn
 $ mvn package
+```
 
-# native image
+```sh
+# build native image:
 $ export JAVA_HOME=/path/to/graalvm
+$ export GRAALPHP_BUILD_NATIVE="true"
 $ ./tools/build-local.sh
 ```
 
