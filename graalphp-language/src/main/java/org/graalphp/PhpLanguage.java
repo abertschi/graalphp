@@ -10,8 +10,10 @@ import com.oracle.truffle.api.instrumentation.ProvidedTags;
 import com.oracle.truffle.api.interop.InteropLibrary;
 import com.oracle.truffle.api.interop.TruffleObject;
 import com.oracle.truffle.api.interop.UnsupportedMessageException;
+import com.oracle.truffle.api.source.Source;
 import com.oracle.truffle.api.source.SourceSection;
 import org.graalphp.nodes.PhpRootNode;
+import org.graalphp.parser.GPhpParser;
 import org.graalphp.runtime.PhpContext;
 import org.graalphp.types.PhpNull;
 
@@ -53,6 +55,10 @@ public final class PhpLanguage extends TruffleLanguage<PhpContext> {
     @Override
     protected CallTarget parse(ParsingRequest request) throws Exception {
         Map<String, RootCallTarget> functions = new HashMap<>();
+        Source source = request.getSource();
+        GPhpParser phpParser = new GPhpParser(this);
+        functions = phpParser.parseSource(source);
+
         PhpRootNode evalMain = new PhpRootNode(this, null, functions);
         return Truffle.getRuntime().createCallTarget(evalMain);
     }
