@@ -67,6 +67,8 @@ public class ParseErrorManager {
                     .append(" to ")
                     .append(cs.getRight());
         }
+
+        // XXX: index we get here are 0 based. +1 may be better for readability
         if (info instanceof Symbol) {
             int left = ((Symbol) info).left;
             int right = ((Symbol) info).right;

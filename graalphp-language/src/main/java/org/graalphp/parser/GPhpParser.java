@@ -32,6 +32,7 @@ public class GPhpParser {
             parser.addErrorListener((event) -> handleParseError(source, event));
             Object pgm = null;
             pgm = parser.parsePhpProgram();
+            System.out.println(pgm);
         }catch (Exception e) {
         }
 
@@ -39,6 +40,7 @@ public class GPhpParser {
     }
 
     void handleParseError(Source source, ErrorEvent event) {
+        System.out.println("handleParseError");
         StringBuilder msg = new StringBuilder();
         if (event.getType() == ErrorEvent.Type.SYNTAX) {
             msg.append("Syntax Error(s)");
@@ -47,7 +49,6 @@ public class GPhpParser {
         }
         int col = 0;
         int line = 0;
-        int offset = 0;
         int len = 0;
         String location = " unknown location";
         if (event.getLeft() != ErrorEvent.POSITION_UNKNOWN) {
@@ -58,9 +59,15 @@ public class GPhpParser {
         }
 
         msg.append(" parsing script: ").append(location);
-        if (event.getMessage() != null && !event.getMessage().isEmpty()) {
-            msg.append("(").append(event.getMessage()).append(")");
+
+        // XXX: we dont need detail if we deal with syntax error
+        if (event.getType() != ErrorEvent.Type.SYNTAX) {
+            if (event.getMessage() != null && !event.getMessage().isEmpty()) {
+                msg.append("(").append(event.getMessage()).append(")");
+            }
         }
+
+        System.out.println(msg.toString());
         throw new GPhpParseException(source, line, col, len, msg.toString());
     }
 }
