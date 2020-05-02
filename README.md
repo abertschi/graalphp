@@ -9,6 +9,16 @@
     
 Thesis project at ETH Zurich, work in progress
 
+### Build
+```shell
+# mvn
+$ mvn package
+
+# native image
+# JAVA_HOME=/path/to/graalvm
+$ ./tools/build-local.sh
+```
+
 ### Status of Implemented Feature Set
 - see [PHP Language Specification](./docs/spec/lang-spec.org) at ./docs/specs/
 
