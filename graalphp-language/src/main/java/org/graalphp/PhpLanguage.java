@@ -16,6 +16,8 @@ import org.graalphp.nodes.PhpRootNode;
 import org.graalphp.parser.GPhpParser;
 import org.graalphp.runtime.PhpContext;
 import org.graalphp.types.PhpNull;
+import org.graalphp.util.GPhpLogger;
+import org.graalphp.util.Logger;
 
 
 @TruffleLanguage.Registration(
@@ -43,6 +45,7 @@ public final class PhpLanguage extends TruffleLanguage<PhpContext> {
 
     public static final String ID = "php";
     public static final String MIME_TYPE = "application/x-php";
+    private final static Logger LOG = GPhpLogger.getLogger(PhpLanguage.class.getCanonicalName());
 
     public PhpLanguage() {
     }

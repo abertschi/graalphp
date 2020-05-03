@@ -7,6 +7,8 @@ import org.eclipse.php.core.ast.error.ConsoleErrorListener;
 import org.eclipse.php.core.ast.error.ErrorEvent;
 import org.eclipse.php.core.ast.nodes.ASTParser;
 import org.graalphp.PhpLanguage;
+import org.graalphp.util.GPhpLogger;
+import org.graalphp.util.Logger;
 
 import java.util.Map;
 
@@ -17,6 +19,7 @@ import java.util.Map;
  */
 public class GPhpParser {
     private PhpLanguage lang;
+    private final static Logger LOG = GPhpLogger.getLogger(PhpLanguage.class.getCanonicalName());
 
     public GPhpParser(PhpLanguage lang) {
         this.lang = lang;
@@ -32,7 +35,7 @@ public class GPhpParser {
             parser.addErrorListener((event) -> handleParseError(source, event));
             Object pgm = null;
             pgm = parser.parsePhpProgram();
-            System.out.println(pgm);
+            LOG.finest(pgm.toString());
         }catch (Exception e) {
         }
 
@@ -60,14 +63,13 @@ public class GPhpParser {
 
         msg.append(" parsing script: ").append(location);
 
-        // XXX: we dont need detail if we deal with syntax error
+        // XXX: we dont need detailed msg if we deal with syntax error
         if (event.getType() != ErrorEvent.Type.SYNTAX) {
             if (event.getMessage() != null && !event.getMessage().isEmpty()) {
                 msg.append("(").append(event.getMessage()).append(")");
             }
         }
-
-        System.out.println(msg.toString());
+        LOG.info(msg.toString());
         throw new GPhpParseException(source, line, col, len, msg.toString());
     }
 }
