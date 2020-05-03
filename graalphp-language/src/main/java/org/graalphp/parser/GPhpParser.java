@@ -6,10 +6,12 @@ import org.eclipse.php.core.PHPVersion;
 import org.eclipse.php.core.ast.error.ConsoleErrorListener;
 import org.eclipse.php.core.ast.error.ErrorEvent;
 import org.eclipse.php.core.ast.nodes.ASTParser;
+import org.eclipse.php.core.ast.nodes.Program;
 import org.graalphp.PhpLanguage;
 import org.graalphp.util.GPhpLogger;
 import org.graalphp.util.Logger;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -26,24 +28,38 @@ public class GPhpParser {
     }
 
     public Map<String, RootCallTarget> parseSource(Source source) {
-        GPhpParseVisitor v = new GPhpParseVisitor();
+        Map<String, RootCallTarget> functions = new HashMap<>();
         ASTParser parser = null;
+        Program pgm = null;
         try {
             parser = ASTParser.newParser(PHPVersion.PHP7_4);
             parser.setSource(source.getReader());
             parser.addErrorListener(new ConsoleErrorListener());
             parser.addErrorListener((event) -> handleParseError(source, event));
-            Object pgm = null;
+
+            LOG.fine("Parsing sourcecode");
             pgm = parser.parsePhpProgram();
             LOG.finest(pgm.toString());
         }catch (Exception e) {
+            throwGeneralParsingError(source, e.getMessage());
         }
+        GPhpParseVisitor visitor = new GPhpParseVisitor();
+        Object res = visitor.createGraalAst(pgm);
 
-        return null;
+        return functions;
+    }
+
+
+    public static void throwGeneralParsingError(Source source, String msg) {
+        StringBuilder m = new StringBuilder();
+        m.append("Error(s) parsing script");
+        if (msg != null && !msg.isEmpty()) {
+            m.append(" (").append(msg).append(")");
+        }
+        throw new GPhpParseException(source, 0, 0, source.getLength(), m.toString());
     }
 
     void handleParseError(Source source, ErrorEvent event) {
-        System.out.println("handleParseError");
         StringBuilder msg = new StringBuilder();
         if (event.getType() == ErrorEvent.Type.SYNTAX) {
             msg.append("Syntax Error(s)");
@@ -70,6 +86,7 @@ public class GPhpParser {
             }
         }
         LOG.info(msg.toString());
+
         throw new GPhpParseException(source, line, col, len, msg.toString());
     }
 }

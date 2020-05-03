@@ -6,7 +6,7 @@ import com.oracle.truffle.api.source.Source;
 import com.oracle.truffle.api.source.SourceSection;
 
 /**
- * Parsing error occured during parsing of PHP source code.
+ * Parsing error occurred during parsing of PHP source code.
  *
  * @author abertschi
  */
@@ -37,5 +37,11 @@ public class GPhpParseException extends RuntimeException implements TruffleExcep
     @Override
     public boolean isSyntaxError() {
         return true;
+    }
+
+    @SuppressWarnings("sync-override")
+    @Override
+    public final Throwable fillInStackTrace() {
+        return this;
     }
 }
