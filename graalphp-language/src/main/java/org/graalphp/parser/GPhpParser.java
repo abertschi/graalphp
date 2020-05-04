@@ -34,13 +34,16 @@ public class GPhpParser {
         try {
             parser = ASTParser.newParser(PHPVersion.PHP7_4);
             parser.setSource(source.getReader());
-            parser.addErrorListener(new ConsoleErrorListener());
+//            parser.addErrorListener(new ConsoleErrorListener());
             parser.addErrorListener((event) -> handleParseError(source, event));
 
             LOG.fine("Parsing sourcecode");
             pgm = parser.parsePhpProgram();
             LOG.finest(pgm.toString());
-        }catch (Exception e) {
+        } catch (GPhpParseException e) {
+            throw e;
+        } catch (Exception e) {
+            // not an exception we through already ourselves
             throwGeneralParsingError(source, e.getMessage());
         }
         GPhpParseVisitor visitor = new GPhpParseVisitor();
@@ -56,7 +59,7 @@ public class GPhpParser {
         if (msg != null && !msg.isEmpty()) {
             m.append(" (").append(msg).append(")");
         }
-        throw new GPhpParseException(source, 0, 0, source.getLength(), m.toString());
+        throw new GPhpParseException(source, 1, 1, source.getLength(), m.toString());
     }
 
     void handleParseError(Source source, ErrorEvent event) {
@@ -73,7 +76,7 @@ public class GPhpParser {
         if (event.getLeft() != ErrorEvent.POSITION_UNKNOWN) {
             col = source.getColumnNumber(event.getLeft());
             line = source.getLineNumber(event.getLeft());
-            location = "-- line " + line + " col " + col + ": ";
+            location = "-- line " + line + " column " + col;
             len = Math.max(event.getRight() - event.getLeft(), 0);
         }
 
@@ -85,8 +88,6 @@ public class GPhpParser {
                 msg.append("(").append(event.getMessage()).append(")");
             }
         }
-        LOG.info(msg.toString());
-
         throw new GPhpParseException(source, line, col, len, msg.toString());
     }
 }

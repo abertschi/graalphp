@@ -5,6 +5,7 @@ dir="$(dirname "$(readlink -f "$0")")"
 cd $dir
 
 # install
+# XXX: rely on user installation as installing with gu does not install in correct location
 #GRAAL_VM="https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-20.0.0/graalvm-ce-java11-linux-amd64-20.0.0.tar.gz"
 #GRAAL_DIR=$dir/graalvm-ce-java11-20.0.0
 #
@@ -18,21 +19,23 @@ cd $dir
 #JAVA_HOME=$GRAAL_DIR
 #export JAVA_HOME
 
+echo "make sure to have JAVA_HOME set accordingly"
+
 # exec
 export GRAALPHP_BUILD_NATIVE="true"
 set -x
 cd $dir/../
-if [ "GRAALPHP_BUILD_NATIVE"=="true" ]; then
+if [ "$GRAALPHP_BUILD_NATIVE"=="true" ]; then
   $JAVA_HOME/bin/gu install native-image
   which native-image
 #  cp $OLD_JAVA_HOME/bin/native-image $JAVA_HOME/bin/native-image
 fi
 
 
-#mvn package
+mvn package
 
 ./graalphp ./graalphp-language/tests/dummy.php
-if [ "GRAALPHP_BUILD_NATIVE"=="true" ]; then
+if [ "$GRAALPHP_BUILD_NATIVE"=="true" ]; then
 
   ./graalphp-native/graalphp-native ./graalphp-language/tests/dummy.php
 
