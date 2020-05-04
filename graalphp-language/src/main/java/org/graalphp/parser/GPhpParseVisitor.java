@@ -13,8 +13,11 @@ public class GPhpParseVisitor extends HierarchicalVisitor {
     private Source source;
 
     public GPhpParseVisitor(Source source) {
-
         this.source = source;
+    }
+
+    public GPhpParseVisitor() {
+        this.source = null;
     }
 
     public Object createGraalAst(Program pgm) {
