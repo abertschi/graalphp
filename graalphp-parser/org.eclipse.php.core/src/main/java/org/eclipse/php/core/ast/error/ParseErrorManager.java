@@ -56,6 +56,7 @@ public class ParseErrorManager {
     }
 
     private void extractLocation(StringBuilder msg, Object info, ErrorEvent err) {
+        // XXX: index start at 0
         if (info instanceof ComplexSymbolFactory.ComplexSymbol) {
             ComplexSymbolFactory.ComplexSymbol cs = (ComplexSymbolFactory.ComplexSymbol) info;
             err.setLeft(cs.getLeft().getOffset());
