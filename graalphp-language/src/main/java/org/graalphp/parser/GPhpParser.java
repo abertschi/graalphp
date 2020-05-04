@@ -46,7 +46,7 @@ public class GPhpParser {
             // not an exception we through already ourselves
             throwGeneralParsingError(source, e.getMessage());
         }
-        GPhpParseVisitor visitor = new GPhpParseVisitor();
+        GPhpParseVisitor visitor = new GPhpParseVisitor(source);
         Object res = visitor.createGraalAst(pgm);
 
         return functions;
