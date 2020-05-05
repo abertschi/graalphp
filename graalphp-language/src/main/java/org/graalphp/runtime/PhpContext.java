@@ -50,7 +50,6 @@ public final class PhpContext {
      * Returns the default input, i.e., the source for the read builtin. To allow unit
      * testing, we do not use {@link System#in} directly.
      */
-
     public BufferedReader getInput() {
         return input;
     }
@@ -129,14 +128,6 @@ public final class PhpContext {
 
     public CallTarget parse(Source source) {
         return env.parsePublic(source);
-    }
-
-    /**
-     * Returns an object that contains bindings that were exported across all used languages. To
-     * read or write from this object the {@link TruffleObject interop} API can be used.
-     */
-    public TruffleObject getPolyglotBindings() {
-        return (TruffleObject) env.getPolyglotBindings();
     }
 
     public static PhpContext getCurrent() {

@@ -7,6 +7,8 @@ import org.eclipse.php.core.ast.error.ErrorEvent;
 import org.eclipse.php.core.ast.nodes.ASTParser;
 import org.eclipse.php.core.ast.nodes.Program;
 import org.graalphp.PhpLanguage;
+import org.graalphp.nodes.PhpRootNode;
+import org.graalphp.nodes.PhpStmtNode;
 import org.graalphp.util.PhpLogger;
 import org.graalphp.util.Logger;
 
@@ -26,8 +28,7 @@ public class PhpParser {
         this.lang = lang;
     }
 
-    public Map<String, RootCallTarget> parseSource(Source source) {
-        Map<String, RootCallTarget> functions = new HashMap<>();
+    public PhpStmtNode parseSource(Source source) {
         ASTParser parser = null;
         Program pgm = null;
         try {
@@ -47,8 +48,7 @@ public class PhpParser {
         }
         PhpParseVisitor visitor = new PhpParseVisitor(source);
         Object res = visitor.createGraalAst(pgm);
-
-        return functions;
+        return null;
     }
 
 

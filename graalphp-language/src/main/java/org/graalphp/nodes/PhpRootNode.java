@@ -16,18 +16,23 @@ import java.util.Map;
  */
 public final class PhpRootNode extends RootNode {
 
-    private final Map<String, RootCallTarget> functions;
+    // @Child
+    private final PhpStmtNode root;
 
-    public PhpRootNode(PhpLanguage language,
-                       RootCallTarget rootFunction,
-                       Map<String, RootCallTarget> functions) {
+    // TODO: impl functions as hashmap
+
+    public PhpRootNode(PhpLanguage language, PhpStmtNode rootStmt) {
         super(language);
-        this.functions = functions;
+        this.root = rootStmt;
     }
 
     @Override
     public Object execute(VirtualFrame frame) {
-        // TODO:
-        return PhpNull.SINGLETON;
+        // TODO: return something useful
+        Object res = PhpNull.SINGLETON;
+        if (root != null) {
+            root.executeVoid(frame);
+        }
+        return res;
     }
 }

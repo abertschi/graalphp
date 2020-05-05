@@ -11,6 +11,7 @@ import com.oracle.truffle.api.interop.TruffleObject;
 import com.oracle.truffle.api.interop.UnsupportedMessageException;
 import com.oracle.truffle.api.source.Source;
 import org.graalphp.nodes.PhpRootNode;
+import org.graalphp.nodes.PhpStmtNode;
 import org.graalphp.parser.PhpParser;
 import org.graalphp.runtime.PhpContext;
 import org.graalphp.types.PhpNull;
@@ -33,7 +34,8 @@ public final class PhpLanguage extends TruffleLanguage<PhpContext> {
     public static final String ID = "php";
     public static final String MIME_TYPE = "application/x-php";
 
-    private final static Logger LOG = PhpLogger.getLogger(PhpLanguage.class.getCanonicalName());
+    private final static Logger LOG = PhpLogger
+            .getLogger(PhpLanguage.class.getCanonicalName());
 
     public PhpLanguage() {
     }
@@ -45,24 +47,15 @@ public final class PhpLanguage extends TruffleLanguage<PhpContext> {
 
     @Override
     protected CallTarget parse(ParsingRequest request) throws Exception {
-        Map<String, RootCallTarget> functions = new HashMap<>();
         Source source = request.getSource();
         PhpParser phpParser = new PhpParser(this);
-        functions = phpParser.parseSource(source);
 
-        PhpRootNode evalMain = new PhpRootNode(this, null, functions);
+        //
+        PhpStmtNode rootStmt = phpParser.parseSource(source);
+
+        PhpRootNode evalMain = new PhpRootNode(this, rootStmt);
         return Truffle.getRuntime().createCallTarget(evalMain);
     }
-
-//    /*
-//     * Still necessary for the old SL TCK to pass. We should remove with the old TCK. New language
-//     * should not override this.
-//     */
-//    @SuppressWarnings("deprecation")
-//    @Override
-//    protected Object findExportedSymbol(PhpContext context, String globalName, boolean onlyExplicit) {
-//        return context.getFunctionRegistry().lookup(globalName, false);
-//    }
 
     @Override
     protected boolean isVisible(PhpContext context, Object value) {
@@ -75,8 +68,8 @@ public final class PhpLanguage extends TruffleLanguage<PhpContext> {
             return false;
         } else if (object instanceof PhpNull) {
             return true;
-//        } else if (PhpContext.isSLObject(object)) {
-//            return true;
+            //        } else if (PhpContext.isSLObject(object)) {
+            //            return true;
         } else {
             return false;
         }
@@ -102,15 +95,15 @@ public final class PhpLanguage extends TruffleLanguage<PhpContext> {
             } else if (interop.isNull(value)) {
                 return "NULL";
             } else if (interop.isExecutable(value)) {
-//                if (value instanceof SLFunction) {
-//                    return ((SLFunction) value).getName();
-//                } else {
-                    return "Function";
-//                }
+                //                if (value instanceof SLFunction) {
+                //                    return ((SLFunction) value).getName();
+                //                } else {
+                return "Function";
+                //                }
             } else if (interop.hasMembers(value)) {
                 return "Object";
-//            } else if (value instanceof SLBigNumber) {
-//                return value.toString();
+                //            } else if (value instanceof SLBigNumber) {
+                //                return value.toString();
             } else {
                 return "Unsupported";
             }
@@ -146,15 +139,9 @@ public final class PhpLanguage extends TruffleLanguage<PhpContext> {
             return "Unsupported";
         }
     }
+
     public static PhpContext getCurrentContext() {
         return getCurrentContext(PhpLanguage.class);
-    }
-
-    private static final List<NodeFactory<?>> EXTERNAL_BUILTINS = Collections.synchronizedList(new ArrayList<>());
-
-    public static void installBuiltin(NodeFactory<? extends Object> builtin) {
-        throw new UnsupportedOperationException();
-//        EXTERNAL_BUILTINS.add(builtin);
     }
 }
 
