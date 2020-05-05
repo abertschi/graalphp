@@ -29,22 +29,12 @@ import org.graalphp.util.Logger;
         fileTypeDetectors = PhpFileDetector.class)
 
 
-// No tags supported
-@ProvidedTags({
-//                StandardTags.CallTag.class,
-//                StandardTags.StatementTag.class,
-//                StandardTags.RootTag.class,
-//                StandardTags.RootBodyTag.class,
-//                StandardTags.ExpressionTag.class,
-//                DebuggerTags.AlwaysHalt.class,
-//                StandardTags.ReadVariableTag.class,
-//                StandardTags.WriteVariableTag.class
-})
-
+// TODO: add tags
 public final class PhpLanguage extends TruffleLanguage<PhpContext> {
 
     public static final String ID = "php";
     public static final String MIME_TYPE = "application/x-php";
+
     private final static Logger LOG = GPhpLogger.getLogger(PhpLanguage.class.getCanonicalName());
 
     public PhpLanguage() {
@@ -158,25 +148,6 @@ public final class PhpLanguage extends TruffleLanguage<PhpContext> {
             return "Unsupported";
         }
     }
-
-    @Override
-    protected SourceSection findSourceLocation(PhpContext context, Object value) {
-//        if (value instanceof SLFunction) {
-//            return ((SLFunction) value).getDeclaredLocation();
-//        }
-        return null;
-    }
-
-// TODO
-//    @Override
-//    public Iterable<Scope> findLocalScopes(SLContext context, Node node, Frame frame) {
-//    }
-
-//    @Override
-//    protected Iterable<Scope> findTopScopes(PhpContext context) {
-//        return context.getTopScopes();
-//    }
-
     public static PhpContext getCurrentContext() {
         return getCurrentContext(PhpLanguage.class);
     }

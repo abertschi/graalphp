@@ -12,12 +12,12 @@ CLOSED: [2020-05-02 Sat 21:50]
  - https://github.com/abertschi/graalphp/issues/12
 ** TODO Add support for PHP 5 - 7.3
 ** TODO Remove IBindings from codebase
-
 * Graal
 ** TODO TCL test compatibility kit is not enabled
 
 * Truffle
-** 
+** TODO Find out if using with int instead of long can increase performance
+** TODO Unclear when to use @TruffleBoundary annotation
 
 * Testing/ CI
 **

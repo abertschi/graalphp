@@ -9,37 +9,25 @@ import org.graalphp.types.PhpNull;
 
 import java.util.Map;
 
+/**
+ * Root Node of the Truffle AST for PHP
+ *
+ * @author abertschi
+ */
 public final class PhpRootNode extends RootNode {
 
     private final Map<String, RootCallTarget> functions;
 
-    public PhpRootNode(PhpLanguage language, RootCallTarget rootFunction, Map<String, RootCallTarget> functions) {
+    public PhpRootNode(PhpLanguage language,
+                       RootCallTarget rootFunction,
+                       Map<String, RootCallTarget> functions) {
         super(language);
         this.functions = functions;
     }
 
     @Override
-    public boolean isInternal() {
-        return true;
-    }
-
-    @Override
-    protected boolean isInstrumentable() {
-        return false;
-    }
-
-    @Override
-    public String getName() {
-        return "root eval";
-    }
-
-    @Override
-    public String toString() {
-        return getName();
-    }
-
-    @Override
     public Object execute(VirtualFrame frame) {
+        // TODO:
         return PhpNull.SINGLETON;
     }
 }
