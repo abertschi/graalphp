@@ -31,4 +31,11 @@ public class PhpLongNode extends PhpExprNode {
     public Object executeGeneric(VirtualFrame frame) {
         return val;
     }
+
+    @Override
+    public String toString() {
+        return "PhpLongNode{" +
+                "val=" + val +
+                '}';
+    }
 }

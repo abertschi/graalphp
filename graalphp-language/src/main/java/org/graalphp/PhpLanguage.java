@@ -1,17 +1,16 @@
 package org.graalphp;
 
 
-import java.util.*;
-
 import com.oracle.truffle.api.*;
 import com.oracle.truffle.api.TruffleLanguage.ContextPolicy;
-import com.oracle.truffle.api.dsl.NodeFactory;
 import com.oracle.truffle.api.interop.InteropLibrary;
 import com.oracle.truffle.api.interop.TruffleObject;
 import com.oracle.truffle.api.interop.UnsupportedMessageException;
 import com.oracle.truffle.api.source.Source;
+import org.graalphp.nodes.PhpExprNode;
 import org.graalphp.nodes.PhpRootNode;
 import org.graalphp.nodes.PhpStmtNode;
+import org.graalphp.parser.PhpParseResult;
 import org.graalphp.parser.PhpParser;
 import org.graalphp.runtime.PhpContext;
 import org.graalphp.types.PhpNull;
@@ -51,9 +50,10 @@ public final class PhpLanguage extends TruffleLanguage<PhpContext> {
         PhpParser phpParser = new PhpParser(this);
 
         //
-        PhpStmtNode rootStmt = phpParser.parseSource(source);
+        PhpParseResult parseResult = phpParser.parseSource(source);
+        PhpExprNode bodyNodes[] = parseResult.getGlobalStmts().toArray(new PhpExprNode[0]);
 
-        PhpRootNode evalMain = new PhpRootNode(this, rootStmt);
+        PhpRootNode evalMain = new PhpRootNode(this, bodyNodes);
         return Truffle.getRuntime().createCallTarget(evalMain);
     }
 

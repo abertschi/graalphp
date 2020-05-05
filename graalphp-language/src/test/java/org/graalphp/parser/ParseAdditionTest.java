@@ -17,12 +17,14 @@ public class ParseAdditionTest {
     @Test
     public void parseAddIntegrated() throws IOException {
         Context ctx = Context.create("php");
-        Value obj = ctx.eval("php", php("1 + 1;"));
+        String code = php("1 + (2 + 4) ;");
+        Value obj = ctx.eval("php", code);
+        System.out.println(obj.asLong());
     }
 
     @Test
     public void parseAddSimple() throws IOException {
-        String code = php("1 + 1;");
+        String code = php("1 + (2 + 4) ;");
         PhpParseVisitor v = new PhpParseVisitor();
         ASTParser parser = ASTParser.newParser(PHPVersion.PHP7_4);
         parser.setSource(code.toCharArray());

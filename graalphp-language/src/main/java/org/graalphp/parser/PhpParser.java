@@ -29,7 +29,7 @@ public class PhpParser {
         this.lang = lang;
     }
 
-    public PhpStmtNode parseSource(Source source) {
+    public PhpParseResult parseSource(Source source) {
         ASTParser parser = null;
         Program pgm = null;
         try {
@@ -48,8 +48,8 @@ public class PhpParser {
             throwGeneralParsingError(source, e.getMessage());
         }
         PhpParseVisitor visitor = new PhpParseVisitor(source);
-        Object res = visitor.createGraalAst(pgm);
-        return null;
+        PhpParseResult res = visitor.createGraalAst(pgm);
+        return res;
     }
 
 

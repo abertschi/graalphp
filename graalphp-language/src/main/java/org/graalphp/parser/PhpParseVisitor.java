@@ -22,8 +22,8 @@ public class PhpParseVisitor extends HierarchicalVisitor {
     private Source source;
 
     /** current expression in tree **/
-    PhpExprNode astExpressionStmt = null;
-    List<PhpStmtNode> astStmts = new LinkedList<>();
+    PhpExprNode astExprStatement = null;
+    List<PhpExprNode> astStmts = new LinkedList<>();
 
     private static final Logger LOG = PhpLogger
             .getLogger(PhpParseVisitor.class.getSimpleName());
@@ -36,9 +36,10 @@ public class PhpParseVisitor extends HierarchicalVisitor {
         this.source = null;
     }
 
-    public Object createGraalAst(Program pgm) {
+    public PhpParseResult createGraalAst(Program pgm) {
         pgm.accept(this);
-        return null;
+        PhpParseResult res = new PhpParseResult(astStmts);
+        return res;
     }
 
     private SourceSection createSourceSection(ASTNode node) {
@@ -55,47 +56,47 @@ public class PhpParseVisitor extends HierarchicalVisitor {
 
     @Override
     public boolean visit(Program program) {
+        astStmts = new LinkedList<>();
         for(Statement stmt: program.statements()) {
             stmt.accept(this);
         }
+        LOG.info(astStmts.toString());
         // XXX: not interested in program#comments
         return false;
     }
-
-    @Override
-    public void endVisit(Program program) {
-    }
-
-
     // ---------------- expression statements --------------------
     @Override
     public boolean visit(ExpressionStatement expressionStatement) {
-        astExpressionStmt = null;
+        astExprStatement = null;
         return true;
     }
 
     @Override
     public void endVisit(ExpressionStatement expressionStatement) {
-        assert(astExpressionStmt != null);
-        astStmts.add(astExpressionStmt);
+        assert(astExprStatement != null);
+        astStmts.add(astExprStatement);
     }
 
     @Override
     public boolean visit(InfixExpression expr) {
         PhpExprNode left, right;
 
-        astExpressionStmt = null;
+        astExprStatement = null;
         expr.getLeft().accept(this);
-        assert (astExpressionStmt != null);
-        left = astExpressionStmt;
+        assert (astExprStatement != null);
+        left = astExprStatement;
 
         expr.getRight().accept(this);
-        assert (astExpressionStmt != null);
-        right = astExpressionStmt;
+        assert (astExprStatement != null);
+        right = astExprStatement;
+
+        LOG.info(left.toString());
+        LOG.info(right.toString());
 
         switch (expr.getOperator()) {
             case InfixExpression.OP_PLUS: /* + */
-                astExpressionStmt = PhpAddNodeGen.create(left, right);
+                astExprStatement = PhpAddNodeGen.create(left, right);
+                astExprStatement.setSourceSection(expr.getStart(), expr.getLength());
                 break;
             default:
                 LOG.parserEnumerationError("infix expression operand not implemented: " +
@@ -109,7 +110,8 @@ public class PhpParseVisitor extends HierarchicalVisitor {
         switch (scalar.getScalarType()) {
             case Scalar.TYPE_INT:
                 // TODO: should we do parsing in node to handle overflow?
-                astExpressionStmt = new PhpLongNode(Long.parseLong(scalar.getStringValue()));
+                astExprStatement = new PhpLongNode(Long.parseLong(scalar.getStringValue()));
+                astExprStatement.setSourceSection(scalar.getStart(), scalar.getLength());
                 break;
             default:
                 LOG.parserEnumerationError("unexpected scalar type: "

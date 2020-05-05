@@ -20,4 +20,9 @@ public abstract class PhpAddNode extends PhpBinaryNode {
         // TODO: we dont support something else yet
         throw new UnsupportedOperationException();
     }
+
+    @Override
+    public String toString() {
+        return "PhpAddNode{}";
+    }
 }
