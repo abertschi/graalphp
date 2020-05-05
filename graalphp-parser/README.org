@@ -43,7 +43,7 @@ https://github.com/eclipse/pdt
 - [X] cup parser is currently not built on maven install, bin files are used instead
   - integration ant into maven to build cup on each mvn install
 - [X] Write tests which compare parsing results with upstream
-- [ ] Setup Travis
+- [X] Setup Travis
 - [ ] Compare parsing benchmarks with native php, JPHP, Antrl
 - [ ] Add support for previous PHP versions (5 - 7.3)
 
