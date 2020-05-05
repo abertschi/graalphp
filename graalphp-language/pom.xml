@@ -144,6 +144,7 @@
                     <configuration>
                         <source>1.8</source>
                         <target>1.8</target>
+                        <generatedSourcesDirectory>${project.build.directory}/generated-sources/annotations</generatedSourcesDirectory>
                     </configuration>
                 </plugin>
             </plugins>

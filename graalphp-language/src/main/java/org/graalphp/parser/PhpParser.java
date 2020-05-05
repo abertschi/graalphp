@@ -8,7 +8,9 @@ import org.eclipse.php.core.ast.error.ErrorEvent;
 import org.eclipse.php.core.ast.nodes.ASTParser;
 import org.eclipse.php.core.ast.nodes.Program;
 import org.graalphp.PhpLanguage;
-import org.graalphp.util.GPhpLogger;
+import org.graalphp.nodes.PhpRootNode;
+import org.graalphp.nodes.PhpStmtNode;
+import org.graalphp.util.PhpLogger;
 import org.graalphp.util.Logger;
 
 import java.util.HashMap;
@@ -19,37 +21,36 @@ import java.util.Map;
  *
  * @author abertschi
  */
-public class GPhpParser {
+public class PhpParser {
     private PhpLanguage lang;
-    private final static Logger LOG = GPhpLogger.getLogger(PhpLanguage.class.getCanonicalName());
+    private final static Logger LOG = PhpLogger
+            .getLogger(PhpLanguage.class.getCanonicalName());
 
-    public GPhpParser(PhpLanguage lang) {
+    public PhpParser(PhpLanguage lang) {
         this.lang = lang;
     }
 
-    public Map<String, RootCallTarget> parseSource(Source source) {
-        Map<String, RootCallTarget> functions = new HashMap<>();
+    public PhpParseResult parseSource(Source source) {
         ASTParser parser = null;
         Program pgm = null;
         try {
             parser = ASTParser.newParser(PHPVersion.PHP7_4);
             parser.setSource(source.getReader());
-//            parser.addErrorListener(new ConsoleErrorListener());
+            parser.addErrorListener(new ConsoleErrorListener());
             parser.addErrorListener((event) -> handleParseError(source, event));
 
             LOG.fine("Parsing sourcecode");
             pgm = parser.parsePhpProgram();
             LOG.finest(pgm.toString());
-        } catch (GPhpParseException e) {
+        } catch (PhpParseException e) {
             throw e;
         } catch (Exception e) {
             // not an exception we through already ourselves
             throwGeneralParsingError(source, e.getMessage());
         }
-        GPhpParseVisitor visitor = new GPhpParseVisitor(source);
-        Object res = visitor.createGraalAst(pgm);
-
-        return functions;
+        PhpParseVisitor visitor = new PhpParseVisitor(source);
+        PhpParseResult res = visitor.createGraalAst(pgm);
+        return res;
     }
 
 
@@ -59,7 +60,7 @@ public class GPhpParser {
         if (msg != null && !msg.isEmpty()) {
             m.append(" (").append(msg).append(")");
         }
-        throw new GPhpParseException(source, 1, 1, source.getLength(), m.toString());
+        throw new PhpParseException(source, 1, 1, source.getLength(), m.toString());
     }
 
     void handleParseError(Source source, ErrorEvent event) {
@@ -88,6 +89,6 @@ public class GPhpParser {
                 msg.append("(").append(event.getMessage()).append(")");
             }
         }
-        throw new GPhpParseException(source, line, col, len, msg.toString());
+        throw new PhpParseException(source, line, col, len, msg.toString());
     }
 }

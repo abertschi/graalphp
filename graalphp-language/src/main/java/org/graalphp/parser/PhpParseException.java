@@ -10,13 +10,13 @@ import com.oracle.truffle.api.source.SourceSection;
  *
  * @author abertschi
  */
-public class GPhpParseException extends RuntimeException implements TruffleException {
+public class PhpParseException extends RuntimeException implements TruffleException {
     private final Source source;
     private final int line;
     private final int column;
     private final int length;
 
-    public GPhpParseException(Source source, int line, int column, int length, String message) {
+    public PhpParseException(Source source, int line, int column, int length, String message) {
         super(message);
         this.source = source;
         this.line = line;

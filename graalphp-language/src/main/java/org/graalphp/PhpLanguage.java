@@ -1,22 +1,20 @@
 package org.graalphp;
 
 
-import java.util.*;
-
 import com.oracle.truffle.api.*;
 import com.oracle.truffle.api.TruffleLanguage.ContextPolicy;
-import com.oracle.truffle.api.dsl.NodeFactory;
-import com.oracle.truffle.api.instrumentation.ProvidedTags;
 import com.oracle.truffle.api.interop.InteropLibrary;
 import com.oracle.truffle.api.interop.TruffleObject;
 import com.oracle.truffle.api.interop.UnsupportedMessageException;
 import com.oracle.truffle.api.source.Source;
-import com.oracle.truffle.api.source.SourceSection;
+import org.graalphp.nodes.PhpExprNode;
 import org.graalphp.nodes.PhpRootNode;
-import org.graalphp.parser.GPhpParser;
+import org.graalphp.nodes.PhpStmtNode;
+import org.graalphp.parser.PhpParseResult;
+import org.graalphp.parser.PhpParser;
 import org.graalphp.runtime.PhpContext;
 import org.graalphp.types.PhpNull;
-import org.graalphp.util.GPhpLogger;
+import org.graalphp.util.PhpLogger;
 import org.graalphp.util.Logger;
 
 
@@ -29,23 +27,14 @@ import org.graalphp.util.Logger;
         fileTypeDetectors = PhpFileDetector.class)
 
 
-// No tags supported
-@ProvidedTags({
-//                StandardTags.CallTag.class,
-//                StandardTags.StatementTag.class,
-//                StandardTags.RootTag.class,
-//                StandardTags.RootBodyTag.class,
-//                StandardTags.ExpressionTag.class,
-//                DebuggerTags.AlwaysHalt.class,
-//                StandardTags.ReadVariableTag.class,
-//                StandardTags.WriteVariableTag.class
-})
-
+// TODO: add tags
 public final class PhpLanguage extends TruffleLanguage<PhpContext> {
 
     public static final String ID = "php";
     public static final String MIME_TYPE = "application/x-php";
-    private final static Logger LOG = GPhpLogger.getLogger(PhpLanguage.class.getCanonicalName());
+
+    private final static Logger LOG = PhpLogger
+            .getLogger(PhpLanguage.class.getCanonicalName());
 
     public PhpLanguage() {
     }
@@ -57,24 +46,16 @@ public final class PhpLanguage extends TruffleLanguage<PhpContext> {
 
     @Override
     protected CallTarget parse(ParsingRequest request) throws Exception {
-        Map<String, RootCallTarget> functions = new HashMap<>();
         Source source = request.getSource();
-        GPhpParser phpParser = new GPhpParser(this);
-        functions = phpParser.parseSource(source);
+        PhpParser phpParser = new PhpParser(this);
 
-        PhpRootNode evalMain = new PhpRootNode(this, null, functions);
+        //
+        PhpParseResult parseResult = phpParser.parseSource(source);
+        PhpExprNode bodyNodes[] = parseResult.getGlobalStmts().toArray(new PhpExprNode[0]);
+
+        PhpRootNode evalMain = new PhpRootNode(this, bodyNodes);
         return Truffle.getRuntime().createCallTarget(evalMain);
     }
-
-//    /*
-//     * Still necessary for the old SL TCK to pass. We should remove with the old TCK. New language
-//     * should not override this.
-//     */
-//    @SuppressWarnings("deprecation")
-//    @Override
-//    protected Object findExportedSymbol(PhpContext context, String globalName, boolean onlyExplicit) {
-//        return context.getFunctionRegistry().lookup(globalName, false);
-//    }
 
     @Override
     protected boolean isVisible(PhpContext context, Object value) {
@@ -87,8 +68,8 @@ public final class PhpLanguage extends TruffleLanguage<PhpContext> {
             return false;
         } else if (object instanceof PhpNull) {
             return true;
-//        } else if (PhpContext.isSLObject(object)) {
-//            return true;
+            //        } else if (PhpContext.isSLObject(object)) {
+            //            return true;
         } else {
             return false;
         }
@@ -114,15 +95,15 @@ public final class PhpLanguage extends TruffleLanguage<PhpContext> {
             } else if (interop.isNull(value)) {
                 return "NULL";
             } else if (interop.isExecutable(value)) {
-//                if (value instanceof SLFunction) {
-//                    return ((SLFunction) value).getName();
-//                } else {
-                    return "Function";
-//                }
+                //                if (value instanceof SLFunction) {
+                //                    return ((SLFunction) value).getName();
+                //                } else {
+                return "Function";
+                //                }
             } else if (interop.hasMembers(value)) {
                 return "Object";
-//            } else if (value instanceof SLBigNumber) {
-//                return value.toString();
+                //            } else if (value instanceof SLBigNumber) {
+                //                return value.toString();
             } else {
                 return "Unsupported";
             }
@@ -159,33 +140,8 @@ public final class PhpLanguage extends TruffleLanguage<PhpContext> {
         }
     }
 
-    @Override
-    protected SourceSection findSourceLocation(PhpContext context, Object value) {
-//        if (value instanceof SLFunction) {
-//            return ((SLFunction) value).getDeclaredLocation();
-//        }
-        return null;
-    }
-
-// TODO
-//    @Override
-//    public Iterable<Scope> findLocalScopes(SLContext context, Node node, Frame frame) {
-//    }
-
-//    @Override
-//    protected Iterable<Scope> findTopScopes(PhpContext context) {
-//        return context.getTopScopes();
-//    }
-
     public static PhpContext getCurrentContext() {
         return getCurrentContext(PhpLanguage.class);
-    }
-
-    private static final List<NodeFactory<?>> EXTERNAL_BUILTINS = Collections.synchronizedList(new ArrayList<>());
-
-    public static void installBuiltin(NodeFactory<? extends Object> builtin) {
-        throw new UnsupportedOperationException();
-//        EXTERNAL_BUILTINS.add(builtin);
     }
 }
 
