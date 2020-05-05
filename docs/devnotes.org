@@ -23,6 +23,7 @@ CLOSED: [2020-05-02 Sat 21:50]
 - however, new versions of php support type hints and dont have to rely on comments
 - i think for now we lazy load source section with index and lengh and fetch when needed.
 ** TODO find out how to run global stmts: create artificial main function or keep list of stmts
+** TODO Implement proper overflow behavior according to Spec
 
 * Testing/ CI
 **
