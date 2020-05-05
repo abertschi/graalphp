@@ -22,7 +22,8 @@ import java.util.Map;
  */
 public class PhpParser {
     private PhpLanguage lang;
-    private final static Logger LOG = PhpLogger.getLogger(PhpLanguage.class.getCanonicalName());
+    private final static Logger LOG = PhpLogger
+            .getLogger(PhpLanguage.class.getCanonicalName());
 
     public PhpParser(PhpLanguage lang) {
         this.lang = lang;

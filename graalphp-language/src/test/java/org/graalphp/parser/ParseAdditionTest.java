@@ -15,13 +15,14 @@ public class ParseAdditionTest {
     static String php(String stmts) {return "<?php " + stmts + "?>";}
 
     @Test
-    public void parseAssign1() throws IOException {
+    public void parseAddIntegrated() throws IOException {
         Context ctx = Context.create("php");
-        Value obj = ctx.eval("php", php("$a = 1;"));
+        Value obj = ctx.eval("php", php("1 + 1;"));
     }
 
-    public void foo() throws IOException {
-        String code = "";
+    @Test
+    public void parseAddSimple() throws IOException {
+        String code = php("1 + 1;");
         PhpParseVisitor v = new PhpParseVisitor();
         ASTParser parser = ASTParser.newParser(PHPVersion.PHP7_4);
         parser.setSource(code.toCharArray());

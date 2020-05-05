@@ -1,3 +1,3 @@
 <?
-echo "hi";
+// echo "hi";
 ?>

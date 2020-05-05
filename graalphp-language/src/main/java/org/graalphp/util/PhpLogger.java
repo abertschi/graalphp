@@ -34,6 +34,11 @@ public class PhpLogger implements Logger {
         System.err.println(format(msg, "finest"));
     }
 
+    @Override
+    public void parserEnumerationError(String msg) {
+        System.err.println(format(msg, "ERROR"));
+    }
+
     private String format(String msg, String lvl) {
         return String.format("[%1$tF %1$tT] [%2$-7s] %3$s",
                 new Date(),
