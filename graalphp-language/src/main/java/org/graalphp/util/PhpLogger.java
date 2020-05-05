@@ -8,11 +8,11 @@ import java.util.Date;
  * Simple logging interface to use in graalphp.
  * As for now, we dont use java.logging classes to avoid issues with graal native.
  */
-public class GPhpLogger implements Logger {
+public class PhpLogger implements Logger {
 
-    private static final GPhpLogger LOG = new GPhpLogger();
+    private static final PhpLogger LOG = new PhpLogger();
 
-    private GPhpLogger() {
+    private PhpLogger() {
     }
 
     public static Logger getLogger(String name) {

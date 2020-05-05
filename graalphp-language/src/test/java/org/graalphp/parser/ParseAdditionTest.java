@@ -6,9 +6,6 @@ import org.eclipse.php.core.ast.nodes.ASTParser;
 import org.eclipse.php.core.ast.nodes.Program;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.Value;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -25,7 +22,7 @@ public class ParseAdditionTest {
 
     public void foo() throws IOException {
         String code = "";
-        GPhpParseVisitor v = new GPhpParseVisitor();
+        PhpParseVisitor v = new PhpParseVisitor();
         ASTParser parser = ASTParser.newParser(PHPVersion.PHP7_4);
         parser.setSource(code.toCharArray());
         parser.addErrorListener(new ConsoleErrorListener());

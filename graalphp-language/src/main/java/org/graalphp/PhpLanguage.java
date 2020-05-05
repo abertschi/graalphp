@@ -6,17 +6,15 @@ import java.util.*;
 import com.oracle.truffle.api.*;
 import com.oracle.truffle.api.TruffleLanguage.ContextPolicy;
 import com.oracle.truffle.api.dsl.NodeFactory;
-import com.oracle.truffle.api.instrumentation.ProvidedTags;
 import com.oracle.truffle.api.interop.InteropLibrary;
 import com.oracle.truffle.api.interop.TruffleObject;
 import com.oracle.truffle.api.interop.UnsupportedMessageException;
 import com.oracle.truffle.api.source.Source;
-import com.oracle.truffle.api.source.SourceSection;
 import org.graalphp.nodes.PhpRootNode;
-import org.graalphp.parser.GPhpParser;
+import org.graalphp.parser.PhpParser;
 import org.graalphp.runtime.PhpContext;
 import org.graalphp.types.PhpNull;
-import org.graalphp.util.GPhpLogger;
+import org.graalphp.util.PhpLogger;
 import org.graalphp.util.Logger;
 
 
@@ -35,7 +33,7 @@ public final class PhpLanguage extends TruffleLanguage<PhpContext> {
     public static final String ID = "php";
     public static final String MIME_TYPE = "application/x-php";
 
-    private final static Logger LOG = GPhpLogger.getLogger(PhpLanguage.class.getCanonicalName());
+    private final static Logger LOG = PhpLogger.getLogger(PhpLanguage.class.getCanonicalName());
 
     public PhpLanguage() {
     }
@@ -49,7 +47,7 @@ public final class PhpLanguage extends TruffleLanguage<PhpContext> {
     protected CallTarget parse(ParsingRequest request) throws Exception {
         Map<String, RootCallTarget> functions = new HashMap<>();
         Source source = request.getSource();
-        GPhpParser phpParser = new GPhpParser(this);
+        PhpParser phpParser = new PhpParser(this);
         functions = phpParser.parseSource(source);
 
         PhpRootNode evalMain = new PhpRootNode(this, null, functions);

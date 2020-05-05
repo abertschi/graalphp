@@ -8,15 +8,15 @@ import org.eclipse.php.core.ast.visitor.HierarchicalVisitor;
 /**
  * @author abertschi
  */
-public class GPhpParseVisitor extends HierarchicalVisitor {
+public class PhpParseVisitor extends HierarchicalVisitor {
 
     private Source source;
 
-    public GPhpParseVisitor(Source source) {
+    public PhpParseVisitor(Source source) {
         this.source = source;
     }
 
-    public GPhpParseVisitor() {
+    public PhpParseVisitor() {
         this.source = null;
     }
 

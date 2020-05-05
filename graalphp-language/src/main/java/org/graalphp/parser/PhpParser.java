@@ -3,12 +3,11 @@ package org.graalphp.parser;
 import com.oracle.truffle.api.RootCallTarget;
 import com.oracle.truffle.api.source.Source;
 import org.eclipse.php.core.PHPVersion;
-import org.eclipse.php.core.ast.error.ConsoleErrorListener;
 import org.eclipse.php.core.ast.error.ErrorEvent;
 import org.eclipse.php.core.ast.nodes.ASTParser;
 import org.eclipse.php.core.ast.nodes.Program;
 import org.graalphp.PhpLanguage;
-import org.graalphp.util.GPhpLogger;
+import org.graalphp.util.PhpLogger;
 import org.graalphp.util.Logger;
 
 import java.util.HashMap;
@@ -19,11 +18,11 @@ import java.util.Map;
  *
  * @author abertschi
  */
-public class GPhpParser {
+public class PhpParser {
     private PhpLanguage lang;
-    private final static Logger LOG = GPhpLogger.getLogger(PhpLanguage.class.getCanonicalName());
+    private final static Logger LOG = PhpLogger.getLogger(PhpLanguage.class.getCanonicalName());
 
-    public GPhpParser(PhpLanguage lang) {
+    public PhpParser(PhpLanguage lang) {
         this.lang = lang;
     }
 
@@ -40,13 +39,13 @@ public class GPhpParser {
             LOG.fine("Parsing sourcecode");
             pgm = parser.parsePhpProgram();
             LOG.finest(pgm.toString());
-        } catch (GPhpParseException e) {
+        } catch (PhpParseException e) {
             throw e;
         } catch (Exception e) {
             // not an exception we through already ourselves
             throwGeneralParsingError(source, e.getMessage());
         }
-        GPhpParseVisitor visitor = new GPhpParseVisitor(source);
+        PhpParseVisitor visitor = new PhpParseVisitor(source);
         Object res = visitor.createGraalAst(pgm);
 
         return functions;
@@ -59,7 +58,7 @@ public class GPhpParser {
         if (msg != null && !msg.isEmpty()) {
             m.append(" (").append(msg).append(")");
         }
-        throw new GPhpParseException(source, 1, 1, source.getLength(), m.toString());
+        throw new PhpParseException(source, 1, 1, source.getLength(), m.toString());
     }
 
     void handleParseError(Source source, ErrorEvent event) {
@@ -88,6 +87,6 @@ public class GPhpParser {
                 msg.append("(").append(event.getMessage()).append(")");
             }
         }
-        throw new GPhpParseException(source, line, col, len, msg.toString());
+        throw new PhpParseException(source, line, col, len, msg.toString());
     }
 }
