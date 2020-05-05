@@ -3,6 +3,7 @@ package org.graalphp.parser;
 import com.oracle.truffle.api.RootCallTarget;
 import com.oracle.truffle.api.source.Source;
 import org.eclipse.php.core.PHPVersion;
+import org.eclipse.php.core.ast.error.ConsoleErrorListener;
 import org.eclipse.php.core.ast.error.ErrorEvent;
 import org.eclipse.php.core.ast.nodes.ASTParser;
 import org.eclipse.php.core.ast.nodes.Program;
@@ -35,7 +36,7 @@ public class PhpParser {
         try {
             parser = ASTParser.newParser(PHPVersion.PHP7_4);
             parser.setSource(source.getReader());
-//            parser.addErrorListener(new ConsoleErrorListener());
+            parser.addErrorListener(new ConsoleErrorListener());
             parser.addErrorListener((event) -> handleParseError(source, event));
 
             LOG.fine("Parsing sourcecode");

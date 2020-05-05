@@ -6,6 +6,7 @@ import org.eclipse.php.core.ast.nodes.ASTParser;
 import org.eclipse.php.core.ast.nodes.Program;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.Value;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -19,10 +20,10 @@ public class ParseAdditionTest {
         Context ctx = Context.create("php");
         String code = php("1 + (2 + 4) ;");
         Value obj = ctx.eval("php", code);
-        System.out.println(obj.asLong());
+        System.out.println(code + " = " + obj.asLong());
+        Assert.assertSame(7, obj.asInt());
     }
 
-    @Test
     public void parseAddSimple() throws IOException {
         String code = php("1 + (2 + 4) ;");
         PhpParseVisitor v = new PhpParseVisitor();
@@ -35,7 +36,5 @@ public class ParseAdditionTest {
         } catch (Exception e) {
             System.err.println(e);
         }
-        System.out.println(pgm.toString());
-        Object o = v.createGraalAst(pgm);
     }
 }
