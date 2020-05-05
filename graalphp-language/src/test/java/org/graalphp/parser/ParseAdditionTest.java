@@ -24,6 +24,17 @@ public class ParseAdditionTest {
         Assert.assertSame(7, obj.asInt());
     }
 
+    @Test
+    public void parseAddIntegrated2() throws IOException {
+        Context ctx = Context.create("php");
+        Assert.assertSame(7, ctx.eval("php", php("1 + (2 + 4) ;")).asInt());
+        Assert.assertSame(10, ctx.eval("php", php("1 + 1 + 1 + 1 + (2 + 4);")).asInt());
+        Assert.assertSame(22, ctx.eval("php", php("(((1 + 2) + 3) + (1 + 2) + 3) + 10 ;")).asInt());
+        Assert.assertSame(2, ctx.eval("php", php("1 + (2 + 4); 1 + 1")).asInt());
+        Assert.assertSame(10, ctx.eval("php", php("(1 + 2) + 1 + (2 + 4) ;")).asInt());
+        Assert.assertSame(3, ctx.eval("php", php("(1 + 2); 1 + 2;  1 + 2;  1 + 2;")).asInt());
+    }
+
     public void parseAddSimple() throws IOException {
         String code = php("1 + (2 + 4) ;");
         PhpParseVisitor v = new PhpParseVisitor();
