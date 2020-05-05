@@ -18,6 +18,11 @@ CLOSED: [2020-05-02 Sat 21:50]
 * Truffle
 ** TODO Find out if using with int instead of long can increase performance
 ** TODO Unclear when to use @TruffleBoundary annotation
+** TODO Decide if we create source section while parsing or lazy loading
+- pro for eager: we may implement phpdoc semantics into parsing (types)
+- however, new versions of php support type hints and dont have to rely on comments
+- i think for now we lazy load source section with index and lengh and fetch when needed.
+** TODO find out how to run global stmts: create artificial main function or keep list of stmts
 
 * Testing/ CI
 **
