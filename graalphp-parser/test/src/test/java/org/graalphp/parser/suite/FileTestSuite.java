@@ -10,10 +10,10 @@ import java.io.*;
 
 
 /**
- * Testsuite which scanns given directory for php classes.
+ * Testsuite which scans given directory for php classes.
  * Runs graalphp parser and compares produced AST with upstream eclipse parser.
- * Eclipse parser is bundled as fatjar and invoked with exec
- * diff is used to compare ASTs
+ * Eclipse parser is bundled as fatjar and invoked with exec.
+ * diff is used to compare ASTs.
  *
  */
 public class FileTestSuite extends TestSuite {
