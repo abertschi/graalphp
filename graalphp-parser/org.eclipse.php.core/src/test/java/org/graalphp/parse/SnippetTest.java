@@ -1,9 +1,11 @@
 package org.graalphp.parse;
 
 import org.eclipse.php.core.PHPVersion;
+import org.eclipse.php.core.ast.error.BailoutErrorListener;
 import org.eclipse.php.core.ast.error.ConsoleErrorListener;
 import org.eclipse.php.core.ast.nodes.ASTParser;
 import org.eclipse.php.core.ast.nodes.Program;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -58,4 +60,28 @@ public class SnippetTest {
         Program ast = parser.parsePhpProgram();
         System.out.println(ast.toString());
     }
+
+    @Test
+    public void underscoreIntNumber() throws Exception {
+        String code = "<?php  $a =1_234_567; ?>";
+        ASTParser parser = ASTParser.newParser(PHPVersion.PHP7_4, false, true);
+        parser.setSource(code.toCharArray());
+        parser.addErrorListener(new ConsoleErrorListener());
+        parser.addErrorListener(new BailoutErrorListener());
+        Program ast = parser.parsePhpProgram();
+        System.out.println(ast.toString());
+    }
+
+    @Test
+    public void hexNumber() throws Exception {
+        String code = "<?php  $a = 0x1; ?>";
+        ASTParser parser = ASTParser.newParser(PHPVersion.PHP7_4, false, true);
+        parser.setSource(code.toCharArray());
+        parser.addErrorListener(new BailoutErrorListener());
+        Program ast = parser.parsePhpProgram();
+        Assert.assertNotNull(ast);
+        System.out.println(ast.toString());
+    }
+
+
 }

@@ -49,7 +49,6 @@ public final class PhpLanguage extends TruffleLanguage<PhpContext> {
         Source source = request.getSource();
         PhpParser phpParser = new PhpParser(this);
 
-        //
         PhpParseResult parseResult = phpParser.parseSource(source);
         PhpExprNode bodyNodes[] = parseResult.getGlobalStmts().toArray(new PhpExprNode[0]);
 
@@ -68,8 +67,6 @@ public final class PhpLanguage extends TruffleLanguage<PhpContext> {
             return false;
         } else if (object instanceof PhpNull) {
             return true;
-            //        } else if (PhpContext.isSLObject(object)) {
-            //            return true;
         } else {
             return false;
         }
@@ -95,15 +92,9 @@ public final class PhpLanguage extends TruffleLanguage<PhpContext> {
             } else if (interop.isNull(value)) {
                 return "NULL";
             } else if (interop.isExecutable(value)) {
-                //                if (value instanceof SLFunction) {
-                //                    return ((SLFunction) value).getName();
-                //                } else {
                 return "Function";
-                //                }
             } else if (interop.hasMembers(value)) {
                 return "Object";
-                //            } else if (value instanceof SLBigNumber) {
-                //                return value.toString();
             } else {
                 return "Unsupported";
             }
