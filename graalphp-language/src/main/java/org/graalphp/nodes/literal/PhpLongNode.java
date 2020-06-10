@@ -18,6 +18,13 @@ public class PhpLongNode extends PhpExprNode {
 
     private final long val;
 
+    public static PhpLongNode parse(String val) throws NumberFormatException {
+        // TODO: handle big integer
+        // TODO: handle binary, hex representations, octal
+        long v = Long.parseLong(val);
+        return new PhpLongNode(v);
+    }
+
     public PhpLongNode(long val) {
         this.val = val;
     }

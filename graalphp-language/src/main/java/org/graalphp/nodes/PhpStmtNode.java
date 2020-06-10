@@ -24,7 +24,7 @@ public abstract class PhpStmtNode extends Node {
 
     /** index for source section from parser **/
     private int srcSectionStart = SRC_SECTION_NOT_SET;
-    private int scrSectionLen = SRC_SECTION_NOT_SET;
+    private int srcSectionLen = SRC_SECTION_NOT_SET;
 
     /** Stmts evaluate to nothing **/
     public abstract void executeVoid(VirtualFrame frame);
@@ -38,6 +38,6 @@ public abstract class PhpStmtNode extends Node {
             throw new IllegalArgumentException("charRight < 0");
         }
         this.srcSectionStart = charLeft;
-        this.scrSectionLen = charRight;
+        this.srcSectionLen = charRight;
     }
 }
