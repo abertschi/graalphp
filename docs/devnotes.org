@@ -24,6 +24,11 @@ CLOSED: [2020-05-02 Sat 21:50]
 - i think for now we lazy load source section with index and lengh and fetch when needed.
 ** TODO find out how to run global stmts: create artificial main function or keep list of stmts
 ** TODO Implement proper overflow behavior according to Spec
+** TODO we currently only support long numbers
+If we overflow we can either follow spec and convert number into float or use
+big integer exact size of int is undefined (4 or 8 bytes), and conversion to
+float leads to rounding errors big integer may be more suitable, however, it is
+slower.
 
 * Testing/ CI
 **
