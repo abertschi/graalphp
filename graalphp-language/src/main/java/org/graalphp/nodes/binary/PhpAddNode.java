@@ -14,6 +14,11 @@ public abstract class PhpAddNode extends PhpBinaryNode {
         return Math.addExact(left, right);
     }
 
+    @Specialization
+    protected double add(double left, double right) {
+        return left + right;
+    }
+
     // slow track
     @Specialization()
     protected Object add(Object left, Object right) {

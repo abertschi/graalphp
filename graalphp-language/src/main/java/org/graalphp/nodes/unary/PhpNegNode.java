@@ -14,7 +14,12 @@ public abstract class PhpNegNode extends PhpUnaryNode {
         return Math.negateExact(val);
     }
 
-    @Specialization()
+    @Specialization
+    protected double neg(double val) {
+        return - val;
+    }
+
+    @Specialization
     protected Object neg(Object val) {
         throw new UnsupportedOperationException();
     }

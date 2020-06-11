@@ -18,6 +18,11 @@ public abstract class PhpDivNode extends PhpBinaryNode {
         return res;
     }
 
+    @Specialization
+    protected double div(double left, double right) {
+        return left / right;
+    }
+
     @Specialization()
     protected Object div(Object left, Object right) {
         throw new UnsupportedOperationException();

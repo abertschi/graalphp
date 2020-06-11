@@ -43,7 +43,16 @@ slower.
 
 * Design Noes
 ** Integer
-- implemented as java long types
+- implemented as java long type
+- Literals written using hexadecimal, octal, or binary notations are considered to have non-negative values.
+  (https://github.com/php/php-langspec/blob/master/spec/09-lexical-structure.md#literals)
 
 ** Float
-- IEEE 754 64-bit double-precision representation.
+- float type :: https://github.com/php/php-langspec/blob/master/spec/05-types.md#the-floating-point-type
+
+*** Float + Int
+https://github.com/php/php-langspec/blob/master/spec/08-conversions.md#converting-to-floating-point-type
+
+If either or both operands were leading-numeric or non-numeric strings, a
+non-fatal error MUST be produced for each. Then if either operand has type
+float, the other is converted to that type, and the result has type float

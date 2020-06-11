@@ -14,7 +14,12 @@ public abstract class PhpMulNode extends PhpBinaryNode {
         return Math.multiplyExact(left, right);
     }
 
-    @Specialization()
+    @Specialization
+    protected double multiply(double left, double right) {
+        return left * right;
+    }
+
+    @Specialization
     protected Object multiply(Object left, Object right) {
         throw new UnsupportedOperationException();
     }

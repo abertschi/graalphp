@@ -1,6 +1,8 @@
-package org.graalphp.nodes.literal;
+package org.graalphp.parser;
 
 import org.graalphp.nodes.PhpExprNode;
+import org.graalphp.nodes.literal.PhpDoubleNode;
+import org.graalphp.nodes.literal.PhpLongNode;
 
 /**
  * Factory to create an number based node from a string
@@ -8,17 +10,21 @@ import org.graalphp.nodes.PhpExprNode;
  */
 public class NumberLiteralFactory {
 
-    public static PhpExprNode parseNumber(String str) {
+    public static PhpExprNode parseInteger(String str) {
         // TODO: handle hex representation
         // TODO: handle binary
         // TODO: handle octal
         try {
-            long v = Long.parseLong(str);
-            return new PhpLongNode(v);
+            return new PhpLongNode(Long.parseLong(str));
         } catch (NumberFormatException e) {
             // TODO: add support for larger numbers
             // or impl float
             throw new UnsupportedOperationException("larger numbers not yet supported", e);
         }
+    }
+
+    public static PhpExprNode parseFloat(String str) {
+        double val = Double.parseDouble(str);
+        return new PhpDoubleNode(val);
     }
 }

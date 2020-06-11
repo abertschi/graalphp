@@ -9,7 +9,6 @@ import org.graalphp.nodes.binary.PhpAddNodeGen;
 import org.graalphp.nodes.binary.PhpDivNodeGen;
 import org.graalphp.nodes.binary.PhpMulNodeGen;
 import org.graalphp.nodes.binary.PhpSubNodeGen;
-import org.graalphp.nodes.literal.NumberLiteralFactory;
 import org.graalphp.nodes.unary.PhpNegNodeGen;
 import org.graalphp.util.Logger;
 import org.graalphp.util.PhpLogger;
@@ -140,7 +139,6 @@ public class PhpParseVisitor extends HierarchicalVisitor {
             case UnaryOperation.OP_MINUS:
                  astExprStatement = PhpNegNodeGen.create(child);
                 break;
-
             default:
                 hasSource = false;
                 LOG.parserEnumerationError("unary expression operand not implemented: " +
@@ -154,16 +152,23 @@ public class PhpParseVisitor extends HierarchicalVisitor {
 
     @Override
     public boolean visit(Scalar scalar) {
+        boolean hasSource = true;
         switch (scalar.getScalarType()) {
             case Scalar.TYPE_INT:
-                astExprStatement = NumberLiteralFactory.parseNumber(scalar.getStringValue());
-                astExprStatement.setSourceSection(scalar.getStart(), scalar.getLength());
+                astExprStatement = NumberLiteralFactory.parseInteger(scalar.getStringValue());
+                break;
+            case Scalar.TYPE_REAL:
+                astExprStatement = NumberLiteralFactory.parseFloat(scalar.getStringValue());
                 break;
             default:
+                hasSource = false;
                 LOG.parserEnumerationError("unexpected scalar type: "
                         + scalar.getScalarType());
         }
-        return true;
+        if (hasSource) {
+            astExprStatement.setSourceSection(scalar.getStart(), scalar.getLength());
+        }
+        return false;
     }
 
     @Override
