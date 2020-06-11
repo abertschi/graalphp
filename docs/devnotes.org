@@ -47,6 +47,27 @@ slower.
 - Literals written using hexadecimal, octal, or binary notations are considered to have non-negative values.
   (https://github.com/php/php-langspec/blob/master/spec/09-lexical-structure.md#literals)
 
+*** Integer overflows
+
+Spec says:
+#+begin_quote
+The range of values that can be stored is implementation-defined; however, the range [-2147483648, 2147483647], must be supported. This range must be finite.
+
+Certain operations on integer values produce a mathematical result that cannot be represented as an integer. Examples include the following:
+
+    Incrementing the largest value or decrementing the smallest value.
+    Applying the unary minus to the smallest value.
+    Multiplying, adding, or subtracting two values.
+
+In such cases, the computation is done as though the types of the values were float with the result having that type.
+
+#+end_quote
+
+Size of integer is implementation dependent. Alternatively to converting to a float representation,
+we can could big integer, this solves imprecision issues but decreases performance.
+
+
+
 ** Float
 - float type :: https://github.com/php/php-langspec/blob/master/spec/05-types.md#the-floating-point-type
 

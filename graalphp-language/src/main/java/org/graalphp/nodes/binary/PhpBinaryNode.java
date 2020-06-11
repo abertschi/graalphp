@@ -12,4 +12,6 @@ import org.graalphp.nodes.PhpExprNode;
 @NodeChild("leftNode")
 @NodeChild("rightNode")
 public abstract class PhpBinaryNode extends PhpExprNode {
+
+
 }

@@ -38,63 +38,61 @@ public class ParseBinaryTest {
 
     @Test
     public void parseSubSimple() {
-        TestCommons.evalLong(0, "1 - 1");
-        TestCommons.evalLong(0, "0 - 0");
-        TestCommons.evalLong(-8, "-1 - 10 - (-1 -2)");
-        TestCommons.evalLong(-7, "(-1 - 10) - -1 - (-1 -2)");
+        TestCommons.evalInteger(0, "1 - 1");
+        TestCommons.evalInteger(0, "0 - 0");
+        TestCommons.evalInteger(-8, "-1 - 10 - (-1 -2)");
+        TestCommons.evalInteger(-7, "(-1 - 10) - -1 - (-1 -2)");
 
         // test infix
-        TestCommons.evalLong(2, "1 - (-1)");
+        TestCommons.evalInteger(2, "1 - (-1)");
     }
 
     @Test
     public void parseMulSimple() {
-        TestCommons.evalLong(1, "1 * 1");
-        TestCommons.evalLong(0, "0 * 0");
-        TestCommons.evalLong(0, "-0 * 0");
-        TestCommons.evalLong(0, "-0 * -0");
-        TestCommons.evalLong(1, "-1 * -1");
-        TestCommons.evalLong(-1, "1 * -1");
-        TestCommons.evalLong(-1, "-1 * 1");
-        TestCommons.evalLong(36, "2 * 2 * (3 * 3)");
-        TestCommons.evalLong(0, "2 * 2 * (3 * 3) * (0)");
+        TestCommons.evalInteger(1, "1 * 1");
+        TestCommons.evalInteger(0, "0 * 0");
+        TestCommons.evalInteger(0, "-0 * 0");
+        TestCommons.evalInteger(0, "-0 * -0");
+        TestCommons.evalInteger(1, "-1 * -1");
+        TestCommons.evalInteger(-1, "1 * -1");
+        TestCommons.evalInteger(-1, "-1 * 1");
+        TestCommons.evalInteger(36, "2 * 2 * (3 * 3)");
+        TestCommons.evalInteger(0, "2 * 2 * (3 * 3) * (0)");
     }
 
     @Test
     public void parseDivSimple() {
-        TestCommons.evalLong(1, "1 / 1");
-        TestCommons.evalLong(1, "-1 / -1");
-        TestCommons.evalLong(-1, "1 / -1");
-        TestCommons.evalLong(-1, "-1 / 1");
-        TestCommons.evalLong(1, "2 / 2 / (3 / 3)");
-        TestCommons.evalLong(0, "2 / 2 / (3 / 3) * (0)");
+        TestCommons.evalInteger(1, "1 / 1");
+        TestCommons.evalInteger(1, "-1 / -1");
+        TestCommons.evalInteger(-1, "1 / -1");
+        TestCommons.evalInteger(-1, "-1 / 1");
+        TestCommons.evalInteger(1, "2 / 2 / (3 / 3)");
+        TestCommons.evalInteger(0, "2 / 2 / (3 / 3) * (0)");
     }
 
 
-    @Test(expected = PolyglotException.class)
-    // TODO not yet implemented
+    @Test(expected = RuntimeException.class)
     public void parseDivException1() {
-        TestCommons.evalLong(0, "0 / 0");
+        TestCommons.evalInteger(1337, "0 / 0");
     }
 
     @Test
-    // TODO
     public void parseSubOverflow() {
-        TestCommons.evalLong(0, String.format("%d - %d", Long.MIN_VALUE, -1));
+        TestCommons.evalDouble((double) Long.MIN_VALUE - 1.0, String.format("%d - %d", Long.MIN_VALUE, -1));
     }
 
     @Test
-    // TODO
     public void parseMulOverflow() {
-        TestCommons.evalLong(0, "1000000000000 * 100000000000");
-        TestCommons.evalLong(0, "1000000000000000 * 0");
+        TestCommons.evalDouble(1E23, "1000000000000 * 100000000000");
+        TestCommons.evalDouble(100.0, "10.0 * 10.0");
+        TestCommons.evalInteger(0, "1000000000000000 * 0");
     }
 
     @Test
-    // TODO
     public void parseMulOverflowMin() {
-        // This overflows long
-        TestCommons.evalLong(0, String.format("%d * -1", Long.MIN_VALUE));
+        // This overflows long, we convert to double
+        TestCommons.evalDouble((double) Long.MIN_VALUE * -1.0,
+                String.format("%d * -1", Long.MIN_VALUE));
     }
 
     @Test

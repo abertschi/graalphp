@@ -17,9 +17,7 @@ public class NumberLiteralFactory {
         try {
             return new PhpLongNode(Long.parseLong(str));
         } catch (NumberFormatException e) {
-            // TODO: add support for larger numbers
-            // or impl float
-            throw new UnsupportedOperationException("larger numbers not yet supported", e);
+            return parseFloat(str);
         }
     }
 
