@@ -5,11 +5,12 @@ import com.oracle.truffle.api.source.SourceSection;
 import org.eclipse.php.core.ast.nodes.*;
 import org.eclipse.php.core.ast.visitor.HierarchicalVisitor;
 import org.graalphp.nodes.PhpExprNode;
-import org.graalphp.nodes.PhpStmtNode;
 import org.graalphp.nodes.binary.PhpAddNodeGen;
+import org.graalphp.nodes.binary.PhpDivNodeGen;
 import org.graalphp.nodes.binary.PhpMulNodeGen;
 import org.graalphp.nodes.binary.PhpSubNodeGen;
-import org.graalphp.nodes.literal.PhpLongNode;
+import org.graalphp.nodes.literal.NumberLiteralFactory;
+import org.graalphp.nodes.unary.PhpNegNodeGen;
 import org.graalphp.util.Logger;
 import org.graalphp.util.PhpLogger;
 
@@ -106,6 +107,9 @@ public class PhpParseVisitor extends HierarchicalVisitor {
             case InfixExpression.OP_MUL:
                 astExprStatement = PhpMulNodeGen.create(left, right);
                 break;
+            case InfixExpression.OP_DIV:
+                astExprStatement = PhpDivNodeGen.create(left, right);
+                break;
             default:
                 exprHasSource = false;
                 LOG.parserEnumerationError("infix expression operand not implemented: " +
@@ -117,12 +121,42 @@ public class PhpParseVisitor extends HierarchicalVisitor {
         return false;
     }
 
+
+    // ---------------- unary expressions --------------------
+
+
+    public void acceptExprStatement(Expression e){
+        astExprStatement = null;
+        e.accept(this);
+        assert (astExprStatement != null);
+    }
+    @Override
+    public boolean visit(UnaryOperation op) {
+        acceptExprStatement(op.getExpression());
+        PhpExprNode child = astExprStatement;
+        boolean hasSource = true;
+
+        switch(op.getOperator()) {
+            case UnaryOperation.OP_MINUS:
+                 astExprStatement = PhpNegNodeGen.create(child);
+                break;
+
+            default:
+                hasSource = false;
+                LOG.parserEnumerationError("unary expression operand not implemented: " +
+                        InfixExpression.getOperator(op.getOperator()));
+        }
+        if (hasSource) {
+            astExprStatement.setSourceSection(op.getStart(), op.getLength());
+        }
+        return false;
+    }
+
     @Override
     public boolean visit(Scalar scalar) {
         switch (scalar.getScalarType()) {
             case Scalar.TYPE_INT:
-                // TODO: should we do parsing in node to handle overflow?
-                astExprStatement = PhpLongNode.parse(scalar.getStringValue());
+                astExprStatement = NumberLiteralFactory.parseNumber(scalar.getStringValue());
                 astExprStatement.setSourceSection(scalar.getStart(), scalar.getLength());
                 break;
             default:

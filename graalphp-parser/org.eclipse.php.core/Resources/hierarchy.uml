@@ -1,0 +1,841 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement />
+  <nodes>
+    <node x="16362.1796875" y="514.0">org.eclipse.php.core.ast.nodes.TraitPrecedence</node>
+    <node x="1493.0" y="1089.0">org.eclipse.php.core.ast.nodes.IMethodBinding</node>
+    <node x="19229.1796875" y="514.0">org.eclipse.php.core.ast.nodes.EmptyExpression</node>
+    <node x="7565.5546875" y="662.0">org.eclipse.php.core.ast.nodes.TraitPrecedenceStatement</node>
+    <node x="3420.833771306816" y="256.0">org.eclipse.php.core.ast.nodes.ClassName</node>
+    <node x="2592.996787405298" y="662.0">org.eclipse.php.core.ast.nodes.FieldsDeclaration</node>
+    <node x="6482.3046875" y="514.0">org.eclipse.php.core.ast.nodes.EmptyStatement</node>
+    <node x="784.8046875" y="662.0">org.eclipse.php.core.ast.nodes.InterfaceDeclaration</node>
+    <node x="4557.3046875" y="514.0">org.eclipse.php.core.ast.nodes.Block</node>
+    <node x="9298.3046875" y="514.0">org.eclipse.php.core.ast.nodes.NamespaceDeclaration</node>
+    <node x="12000.307393465906" y="662.0">org.eclipse.php.core.ast.nodes.Identifier</node>
+    <node x="4386.204895833334" y="662.0">org.eclipse.php.core.ast.nodes.ConstantDeclaration</node>
+    <node x="4756.3046875" y="514.0">org.eclipse.php.core.ast.nodes.StaticStatement</node>
+    <node x="15522.1796875" y="514.0">org.eclipse.php.core.ast.nodes.ConditionalExpression</node>
+    <node x="19967.1796875" y="514.0">org.eclipse.php.core.ast.nodes.AnonymousClassDeclaration</node>
+    <node x="11641.807393465906" y="662.0">org.eclipse.php.core.ast.nodes.Dispatch</node>
+    <node x="14126.1796875" y="514.0">org.eclipse.php.core.ast.nodes.InstanceOfExpression</node>
+    <node x="6795.5" y="873.0">org.eclipse.php.core.ast.nodes.Bindings</node>
+    <node x="12820.1796875" y="514.0">org.eclipse.php.core.ast.nodes.PrefixExpression</node>
+    <node x="19598.1796875" y="514.0">org.eclipse.php.core.ast.nodes.InfixExpression</node>
+    <node x="16731.1796875" y="514.0">org.eclipse.php.core.ast.nodes.FullyQualifiedTraitMethodReference</node>
+    <node x="6538.638458806816" y="256.0">org.eclipse.php.core.ast.nodes.Statement</node>
+    <node x="8242.3046875" y="514.0">org.eclipse.php.core.ast.nodes.ASTError</node>
+    <node x="9307.068146306816" y="108.0">org.eclipse.php.core.ast.nodes.ASTNode</node>
+    <node x="5477.3046875" y="514.0">org.eclipse.php.core.ast.nodes.GotoStatement</node>
+    <node x="11075.3046875" y="514.0">org.eclipse.php.core.ast.nodes.SwitchCase</node>
+    <node x="7152.3046875" y="514.0">org.eclipse.php.core.ast.nodes.ContinueStatement</node>
+    <node x="12538.580120738632" y="256.0">org.eclipse.php.core.ast.nodes.IOperationNode</node>
+    <node x="1406.3046875" y="514.0">org.eclipse.php.core.ast.nodes.CatchClause</node>
+    <node x="1836.5" y="981.0">org.eclipse.php.core.ast.nodes.IVariableBinding</node>
+    <node x="2616.5" y="981.0">org.eclipse.php.core.ast.nodes.ChildListPropertyDescriptor</node>
+    <node x="7555.3046875" y="514.0">org.eclipse.php.core.ast.nodes.FinallyClause</node>
+    <node x="3593.638020833334" y="662.0">org.eclipse.php.core.ast.nodes.MethodDeclaration</node>
+    <node x="1348.3525641025644" y="1197.0">org.eclipse.php.core.ast.nodes.MethodBinding</node>
+    <node x="13490.1796875" y="514.0">org.eclipse.php.core.ast.nodes.ArrayElement</node>
+    <node x="1124.0" y="1089.0">org.eclipse.php.core.ast.nodes.FunctionBinding</node>
+    <node x="1845.0" y="1089.0">org.eclipse.php.core.ast.nodes.VariableBinding</node>
+    <node x="2377.3046875" y="514.0">org.eclipse.php.core.ast.nodes.EchoStatement</node>
+    <node x="17.0" y="514.0">org.eclipse.php.core.ast.nodes.ASTNode.NodeList.Cursor</node>
+    <node x="6834.3046875" y="514.0">org.eclipse.php.core.ast.nodes.UseStatement</node>
+    <node x="602.0" y="514.0">org.eclipse.php.core.ast.nodes.Program.UseStatementFinder</node>
+    <node x="11673.807393465906" y="770.0">org.eclipse.php.core.ast.nodes.FieldAccess</node>
+    <node x="12417.1796875" y="514.0">org.eclipse.php.core.ast.nodes.PostfixExpression</node>
+    <node x="0.0" y="256.0">org.eclipse.php.core.ast.nodes.ASTNode.NodeList</node>
+    <node x="687.0" y="1089.0">org.eclipse.php.core.ast.nodes.MultipleTypeBinding</node>
+    <node x="15675.388458806816" y="662.0">org.eclipse.php.core.ast.nodes.Quote</node>
+    <node x="11359.3046875" y="514.0">org.eclipse.php.core.ast.nodes.DoStatement</node>
+    <node x="377.5" y="981.0">org.eclipse.php.core.ast.nodes.ITypeBinding</node>
+    <node x="8929.3046875" y="514.0">org.eclipse.php.core.ast.nodes.SwitchStatement</node>
+    <node x="9410.818146306816" y="256.0">org.eclipse.php.core.ast.nodes.FunctionName</node>
+    <node x="4120.3046875" y="514.0">org.eclipse.php.core.ast.nodes.ExpressionStatement</node>
+    <node x="0.0" y="1089.0">org.eclipse.php.core.ast.nodes.MultiTypeBinding</node>
+    <node x="498.25" y="256.0">org.eclipse.php.core.ast.nodes.Program</node>
+    <node x="14893.763458806816" y="256.0">org.eclipse.php.core.ast.nodes.Comment</node>
+    <node x="1037.3046875" y="514.0">org.eclipse.php.core.ast.nodes.TypeDeclaration</node>
+    <node x="2222.5" y="981.0">org.eclipse.php.core.ast.nodes.IIncludeBinding</node>
+    <node x="7345.5" y="873.0">org.eclipse.php.core.ast.nodes.AST</node>
+    <node x="6503.5" y="873.0">org.eclipse.php.core.ast.nodes.ASTParser</node>
+    <node x="16845.138458806818" y="256.0">org.eclipse.php.core.ast.nodes.Expression</node>
+    <node x="20506.1796875" y="514.0">org.eclipse.php.core.ast.nodes.LambdaFunctionDeclaration</node>
+    <node x="7890.3046875" y="514.0">org.eclipse.php.core.ast.nodes.TraitStatement</node>
+    <node x="17775.1796875" y="514.0">org.eclipse.php.core.ast.nodes.IgnoreError</node>
+    <node x="14580.1796875" y="514.0">org.eclipse.php.core.ast.nodes.ArraySpreadElement</node>
+    <node x="3155.5" y="873.0">org.eclipse.php.core.ast.nodes.StructuralPropertyDescriptor</node>
+    <node x="5125.3046875" y="514.0">org.eclipse.php.core.ast.nodes.ThrowStatement</node>
+    <node x="11287.807393465906" y="770.0">org.eclipse.php.core.ast.nodes.MethodInvocation</node>
+    <node x="17413.138458806818" y="256.0">org.eclipse.php.core.ast.nodes.SingleFieldDeclaration</node>
+    <node x="12284.307393465906" y="662.0">org.eclipse.php.core.ast.nodes.ClassInstanceCreation</node>
+    <node x="14988.388458806816" y="662.0">org.eclipse.php.core.ast.nodes.ParenthesisExpression</node>
+    <node x="10986.807393465906" y="770.0">org.eclipse.php.core.ast.nodes.ArrayAccess</node>
+    <node x="5012.5" y="873.0">org.eclipse.php.core.ast.nodes.NodeEventHandler</node>
+    <node x="10566.807393465906" y="770.0">org.eclipse.php.core.ast.nodes.ReflectionVariable</node>
+    <node x="1707.3046875" y="514.0">org.eclipse.php.core.ast.nodes.ForStatement</node>
+    <node x="14301.388458806816" y="662.0">org.eclipse.php.core.ast.nodes.ArrayCreation</node>
+    <node x="5812.3046875" y="514.0">org.eclipse.php.core.ast.nodes.GlobalStatement</node>
+    <node x="386.0" y="1089.0">org.eclipse.php.core.ast.nodes.TypeBinding</node>
+    <node x="14636.388458806816" y="662.0">org.eclipse.php.core.ast.nodes.StaticDispatch</node>
+    <node x="9752.3046875" y="514.0">org.eclipse.php.core.ast.nodes.ForEachStatement</node>
+    <node x="233.0" y="514.0">org.eclipse.php.core.ast.nodes.Program.NamespaceFinder</node>
+    <node x="4301.0" y="873.0">org.eclipse.php.core.ast.nodes.BindingResolver</node>
+    <node x="10138.3046875" y="514.0">org.eclipse.php.core.ast.nodes.TryStatement</node>
+    <node x="13206.1796875" y="514.0">org.eclipse.php.core.ast.nodes.Assignment</node>
+    <node x="5423.5" y="873.0">org.eclipse.php.core.ast.nodes.IDocumentorLexer</node>
+    <node x="15993.1796875" y="514.0">org.eclipse.php.core.ast.nodes.YieldExpression</node>
+    <node x="21045.1796875" y="514.0">org.eclipse.php.core.ast.nodes.BackTickExpression</node>
+    <node x="15000.1796875" y="514.0">org.eclipse.php.core.ast.nodes.ArrowFunctionDeclaration</node>
+    <node x="4241.5" y="981.0">org.eclipse.php.core.ast.nodes.DefaultBindingResolver</node>
+    <node x="18076.1796875" y="514.0">org.eclipse.php.core.ast.nodes.Reference</node>
+    <node x="4754.5" y="981.0">org.eclipse.php.core.ast.nodes.DimList.Element</node>
+    <node x="3467.3046875" y="514.0">org.eclipse.php.core.ast.nodes.BodyDeclaration</node>
+    <node x="9728.818146306816" y="256.0">org.eclipse.php.core.ast.nodes.UseStatementPart</node>
+    <node x="15013.888458806816" y="770.0">org.eclipse.php.core.ast.nodes.StaticConstantAccess</node>
+    <node x="11974.807393465906" y="770.0">org.eclipse.php.core.ast.nodes.NamespaceName</node>
+    <node x="11221.807393465906" y="662.0">org.eclipse.php.core.ast.nodes.FunctionInvocation</node>
+    <node x="10954.807393465906" y="662.0">org.eclipse.php.core.ast.nodes.Variable</node>
+    <node x="10456.3046875" y="514.0">org.eclipse.php.core.ast.nodes.GotoLabel</node>
+    <node x="8492.3046875" y="514.0">org.eclipse.php.core.ast.nodes.FunctionDeclaration</node>
+    <node x="12735.890726799238" y="770.0">org.eclipse.php.core.ast.nodes.StaticMethodInvocation</node>
+    <node x="1589.75" y="873.0">org.eclipse.php.core.ast.nodes.IBinding</node>
+    <node x="6194.5" y="873.0">org.eclipse.php.core.ast.nodes.MethodStub</node>
+    <node x="8087.5546875" y="662.0">org.eclipse.php.core.ast.nodes.TraitAliasStatement</node>
+    <node x="10723.3046875" y="514.0">org.eclipse.php.core.ast.nodes.WhileStatement</node>
+    <node x="12063.3046875" y="514.0">org.eclipse.php.core.ast.nodes.UnaryOperation</node>
+    <node x="3836.3046875" y="514.0">org.eclipse.php.core.ast.nodes.InLineHtml</node>
+    <node x="17129.138458806818" y="256.0">org.eclipse.php.core.ast.nodes.ReturnType</node>
+    <node x="3687.833771306816" y="256.0">org.eclipse.php.core.ast.nodes.FormalParameter</node>
+    <node x="18860.1796875" y="514.0">org.eclipse.php.core.ast.nodes.CloneExpression</node>
+    <node x="9290.068146306816" y="0.0">org.eclipse.php.core.ast.nodes.Visitable</node>
+    <node x="5834.5" y="873.0">org.eclipse.php.core.ast.nodes.ObjectDimList</node>
+    <node x="2025.3046875" y="514.0">org.eclipse.php.core.ast.nodes.BreakStatement</node>
+    <node x="11660.3046875" y="514.0">org.eclipse.php.core.ast.nodes.TraitUseStatement</node>
+    <node x="2231.0" y="1089.0">org.eclipse.php.core.ast.nodes.IncludeBinding</node>
+    <node x="18627.1796875" y="514.0">org.eclipse.php.core.ast.nodes.Include</node>
+    <node x="2712.3046875" y="514.0">org.eclipse.php.core.ast.nodes.ReturnStatement</node>
+    <node x="13808.1796875" y="514.0">org.eclipse.php.core.ast.nodes.VariableBase</node>
+    <node x="7070.5" y="873.0">org.eclipse.php.core.ast.nodes.ASTNodes</node>
+    <node x="1238.8046875" y="662.0">org.eclipse.php.core.ast.nodes.ClassDeclaration</node>
+    <node x="18343.1796875" y="514.0">org.eclipse.php.core.ast.nodes.TraitAlias</node>
+    <node x="1238.8046875" y="770.0">org.eclipse.php.core.ast.nodes.TraitDeclaration</node>
+    <node x="6181.3046875" y="514.0">org.eclipse.php.core.ast.nodes.IfStatement</node>
+    <node x="14610.888458806816" y="770.0">org.eclipse.php.core.ast.nodes.StaticFieldAccess</node>
+    <node x="17423.1796875" y="514.0">org.eclipse.php.core.ast.nodes.CastExpression</node>
+    <node x="3189.5" y="981.0">org.eclipse.php.core.ast.nodes.SimplePropertyDescriptor</node>
+    <node x="3081.3046875" y="514.0">org.eclipse.php.core.ast.nodes.DeclareStatement</node>
+    <node x="13983.388458806816" y="662.0">org.eclipse.php.core.ast.nodes.ListVariable</node>
+    <node x="4754.5" y="873.0">org.eclipse.php.core.ast.nodes.DimList</node>
+    <node x="3711.5" y="981.0">org.eclipse.php.core.ast.nodes.ChildPropertyDescriptor</node>
+    <node x="1322.8525641025644" y="981.0">org.eclipse.php.core.ast.nodes.IFunctionBinding</node>
+    <node x="15459.388458806816" y="662.0">org.eclipse.php.core.ast.nodes.Scalar</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="org.eclipse.php.core.ast.nodes.PrefixExpression" target="org.eclipse.php.core.ast.nodes.Expression">
+      <point x="91.5" y="-29.0" />
+      <point x="13094.6796875" y="404.0" />
+      <point x="16872.638458806818" y="404.0" />
+      <point x="-104.5" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.ContinueStatement" target="org.eclipse.php.core.ast.nodes.Statement">
+      <point x="0.0" y="-29.0" />
+      <point x="7343.8046875" y="484.0" />
+      <point x="6681.435333806816" y="484.0" />
+      <point x="19.296875" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.ASTNode" target="org.eclipse.php.core.ast.nodes.Visitable">
+      <point x="0.0" y="-29.0" />
+      <point x="0.0" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.Scalar" target="org.eclipse.php.core.ast.nodes.VariableBase">
+      <point x="0.0" y="-29.0" />
+      <point x="15557.388458806816" y="602.0" />
+      <point x="14065.543323863636" y="602.0" />
+      <point x="108.36363636363603" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.PostfixExpression" target="org.eclipse.php.core.ast.nodes.Expression">
+      <point x="95.75" y="-29.0" />
+      <point x="12704.4296875" y="394.0" />
+      <point x="16861.638458806818" y="394.0" />
+      <point x="-115.5" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.Reference" target="org.eclipse.php.core.ast.nodes.Expression">
+      <point x="0.0" y="-29.0" />
+      <point x="18199.6796875" y="464.0" />
+      <point x="17015.638458806818" y="464.0" />
+      <point x="38.5" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.ListVariable" target="org.eclipse.php.core.ast.nodes.VariableBase">
+      <point x="0.0" y="-29.0" />
+      <point x="14132.388458806816" y="642.0" />
+      <point x="13957.1796875" y="642.0" />
+      <point x="0.0" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.Assignment" target="org.eclipse.php.core.ast.nodes.IOperationNode">
+      <point x="-66.0" y="-29.0" />
+      <point x="13272.1796875" y="364.0" />
+      <point x="12829.080120738632" y="364.0" />
+      <point x="124.5" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.VariableBase" target="org.eclipse.php.core.ast.nodes.Expression">
+      <point x="0.0" y="-29.0" />
+      <point x="13957.1796875" y="434.0" />
+      <point x="16905.638458806818" y="434.0" />
+      <point x="-71.5" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.Comment" target="org.eclipse.php.core.ast.nodes.ASTNode">
+      <point x="0.0" y="-29.0" />
+      <point x="15000.263458806816" y="216.0" />
+      <point x="9457.943146306816" y="216.0" />
+      <point x="44.375" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.IfStatement" target="org.eclipse.php.core.ast.nodes.Statement">
+      <point x="0.0" y="-29.0" />
+      <point x="6321.8046875" y="484.0" />
+      <point x="6658.279083806816" y="484.0" />
+      <point x="-3.859375" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.ExpressionStatement" target="org.eclipse.php.core.ast.nodes.Statement">
+      <point x="0.0" y="-29.0" />
+      <point x="4328.8046875" y="424.0" />
+      <point x="6611.966583806816" y="424.0" />
+      <point x="-50.171875" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.TraitAliasStatement" target="org.eclipse.php.core.ast.nodes.TraitStatement">
+      <point x="0.0" y="-29.0" />
+      <point x="8296.0546875" y="642.0" />
+      <point x="8139.3046875" y="642.0" />
+      <point x="83.0" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.TraitDeclaration" target="org.eclipse.php.core.ast.nodes.ClassDeclaration">
+      <point x="0.0" y="-29.0" />
+      <point x="0.0" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.FunctionBinding" target="org.eclipse.php.core.ast.nodes.IFunctionBinding">
+      <point x="0.0" y="-29.0" />
+      <point x="1298.5" y="1064.0" />
+      <point x="1414.3525641025644" y="1064.0" />
+      <point x="-91.5" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.Statement" target="org.eclipse.php.core.ast.nodes.ASTNode">
+      <point x="0.0" y="-29.0" />
+      <point x="6662.138458806816" y="236.0" />
+      <point x="9404.693146306816" y="236.0" />
+      <point x="-8.875" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.ConstantDeclaration" target="org.eclipse.php.core.ast.nodes.BodyDeclaration">
+      <point x="0.0" y="-29.0" />
+      <point x="4594.704895833334" y="632.0" />
+      <point x="3758.138020833333" y="632.0" />
+      <point x="116.33333333333303" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.FieldsDeclaration" target="org.eclipse.php.core.ast.nodes.BodyDeclaration">
+      <point x="0.0" y="-29.0" />
+      <point x="2784.496787405298" y="642.0" />
+      <point x="3525.471354166667" y="642.0" />
+      <point x="-116.33333333333303" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.InfixExpression" target="org.eclipse.php.core.ast.nodes.Expression">
+      <point x="0.0" y="-29.0" />
+      <point x="19772.6796875" y="414.0" />
+      <point x="17070.638458806818" y="414.0" />
+      <point x="93.5" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.ReturnStatement" target="org.eclipse.php.core.ast.nodes.Statement">
+      <point x="0.0" y="-29.0" />
+      <point x="2886.8046875" y="384.0" />
+      <point x="6581.091583806816" y="384.0" />
+      <point x="-81.046875" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.TraitPrecedenceStatement" target="org.eclipse.php.core.ast.nodes.TraitStatement">
+      <point x="0.0" y="-29.0" />
+      <point x="7816.5546875" y="642.0" />
+      <point x="7973.3046875" y="642.0" />
+      <point x="-83.0" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.AnonymousClassDeclaration" target="org.eclipse.php.core.ast.nodes.Expression">
+      <point x="0.0" y="-29.0" />
+      <point x="20226.6796875" y="404.0" />
+      <point x="17081.638458806818" y="404.0" />
+      <point x="104.5" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.ArraySpreadElement" target="org.eclipse.php.core.ast.nodes.Expression">
+      <point x="0.0" y="-29.0" />
+      <point x="14780.1796875" y="454.0" />
+      <point x="16927.638458806818" y="454.0" />
+      <point x="-49.5" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.CastExpression" target="org.eclipse.php.core.ast.nodes.Expression">
+      <point x="0.0" y="-29.0" />
+      <point x="17589.1796875" y="484.0" />
+      <point x="16993.638458806818" y="484.0" />
+      <point x="16.5" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.ForEachStatement" target="org.eclipse.php.core.ast.nodes.Statement">
+      <point x="0.0" y="-29.0" />
+      <point x="9935.3046875" y="414.0" />
+      <point x="6735.466583806816" y="414.0" />
+      <point x="73.328125" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.Identifier" target="org.eclipse.php.core.ast.nodes.VariableBase">
+      <point x="0.0" y="-29.0" />
+      <point x="12132.307393465906" y="632.0" />
+      <point x="13902.997869318182" y="632.0" />
+      <point x="-54.18181818181802" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.Program.UseStatementFinder" target="org.eclipse.php.core.ast.nodes.Program">
+      <point x="0.0" y="-29.0" />
+      <point x="802.0" y="494.0" />
+      <point x="658.0" y="494.0" />
+      <point x="53.25" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.MethodDeclaration" target="org.eclipse.php.core.ast.nodes.BodyDeclaration">
+      <point x="0.0" y="-29.0" />
+      <point x="3785.138020833334" y="642.0" />
+      <point x="3641.8046875" y="642.0" />
+      <point x="0.0" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.IMethodBinding" target="org.eclipse.php.core.ast.nodes.IFunctionBinding">
+      <point x="0.0" y="-29.0" />
+      <point x="1659.0" y="1064.0" />
+      <point x="1597.3525641025644" y="1064.0" />
+      <point x="91.5" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.StaticDispatch" target="org.eclipse.php.core.ast.nodes.VariableBase">
+      <point x="0.0" y="-29.0" />
+      <point x="14802.388458806816" y="622.0" />
+      <point x="14011.361505681818" y="622.0" />
+      <point x="54.18181818181802" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.NamespaceDeclaration" target="org.eclipse.php.core.ast.nodes.Statement">
+      <point x="0.0" y="-29.0" />
+      <point x="9515.3046875" y="424.0" />
+      <point x="6727.747833806816" y="424.0" />
+      <point x="65.609375" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.BodyDeclaration" target="org.eclipse.php.core.ast.nodes.Statement">
+      <point x="0.0" y="-29.0" />
+      <point x="3641.8046875" y="404.0" />
+      <point x="6596.529083806816" y="404.0" />
+      <point x="-65.609375" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.NamespaceName" target="org.eclipse.php.core.ast.nodes.Identifier">
+      <point x="0.0" y="-29.0" />
+      <point x="0.0" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.ForStatement" target="org.eclipse.php.core.ast.nodes.Statement">
+      <point x="0.0" y="-29.0" />
+      <point x="1856.3046875" y="354.0" />
+      <point x="6557.935333806816" y="354.0" />
+      <point x="-104.203125" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.StaticConstantAccess" target="org.eclipse.php.core.ast.nodes.StaticDispatch">
+      <point x="0.0" y="-29.0" />
+      <point x="15230.888458806816" y="745.0" />
+      <point x="14913.055125473482" y="745.0" />
+      <point x="110.66666666666606" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.ParenthesisExpression" target="org.eclipse.php.core.ast.nodes.VariableBase">
+      <point x="0.0" y="-29.0" />
+      <point x="15213.888458806816" y="612.0" />
+      <point x="14038.452414772728" y="612.0" />
+      <point x="81.27272727272793" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.FullyQualifiedTraitMethodReference" target="org.eclipse.php.core.ast.nodes.Expression">
+      <point x="0.0" y="-29.0" />
+      <point x="17067.1796875" y="494.0" />
+      <point x="16982.638458806818" y="494.0" />
+      <point x="5.5" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.TraitPrecedence" target="org.eclipse.php.core.ast.nodes.Expression">
+      <point x="0.0" y="-29.0" />
+      <point x="16536.6796875" y="494.0" />
+      <point x="16971.638458806818" y="494.0" />
+      <point x="-5.5" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.SimplePropertyDescriptor" target="org.eclipse.php.core.ast.nodes.StructuralPropertyDescriptor">
+      <point x="0.0" y="-29.0" />
+      <point x="0.0" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.ChildListPropertyDescriptor" target="org.eclipse.php.core.ast.nodes.StructuralPropertyDescriptor">
+      <point x="0.0" y="-29.0" />
+      <point x="2893.0" y="956.0" />
+      <point x="3250.5" y="956.0" />
+      <point x="-190.0" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.InstanceOfExpression" target="org.eclipse.php.core.ast.nodes.Expression">
+      <point x="0.0" y="-29.0" />
+      <point x="14343.1796875" y="444.0" />
+      <point x="16916.638458806818" y="444.0" />
+      <point x="-60.5" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.TypeBinding" target="org.eclipse.php.core.ast.nodes.ITypeBinding">
+      <point x="0.0" y="-29.0" />
+      <point x="0.0" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.IFunctionBinding" target="org.eclipse.php.core.ast.nodes.IBinding">
+      <point x="0.0" y="-29.0" />
+      <point x="1505.8525641025644" y="961.0" />
+      <point x="1676.0" y="961.0" />
+      <point x="-28.75" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.TraitStatement" target="org.eclipse.php.core.ast.nodes.Statement">
+      <point x="0.0" y="-29.0" />
+      <point x="8056.3046875" y="464.0" />
+      <point x="6696.872833806816" y="464.0" />
+      <point x="34.734375" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.InterfaceDeclaration" target="org.eclipse.php.core.ast.nodes.TypeDeclaration">
+      <point x="0.0" y="-29.0" />
+      <point x="1001.8046875" y="642.0" />
+      <point x="1124.5546875" y="642.0" />
+      <point x="-87.25" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.ThrowStatement" target="org.eclipse.php.core.ast.nodes.Statement">
+      <point x="0.0" y="-29.0" />
+      <point x="5291.3046875" y="454.0" />
+      <point x="6635.122833806816" y="454.0" />
+      <point x="-27.015625" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.CatchClause" target="org.eclipse.php.core.ast.nodes.Statement">
+      <point x="0.0" y="-29.0" />
+      <point x="1546.8046875" y="344.0" />
+      <point x="6550.216583806816" y="344.0" />
+      <point x="-111.921875" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.DeclareStatement" target="org.eclipse.php.core.ast.nodes.Statement">
+      <point x="0.0" y="-29.0" />
+      <point x="3264.3046875" y="394.0" />
+      <point x="6588.810333806816" y="394.0" />
+      <point x="-73.328125" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.BreakStatement" target="org.eclipse.php.core.ast.nodes.Statement">
+      <point x="0.0" y="-29.0" />
+      <point x="2191.3046875" y="364.0" />
+      <point x="6565.654083806816" y="364.0" />
+      <point x="-96.484375" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.Expression" target="org.eclipse.php.core.ast.nodes.ASTNode">
+      <point x="0.0" y="-29.0" />
+      <point x="16977.138458806818" y="206.0" />
+      <point x="9475.693146306816" y="206.0" />
+      <point x="62.125" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.EmptyExpression" target="org.eclipse.php.core.ast.nodes.Expression">
+      <point x="0.0" y="-29.0" />
+      <point x="19403.6796875" y="424.0" />
+      <point x="17059.638458806818" y="424.0" />
+      <point x="82.5" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.Assignment" target="org.eclipse.php.core.ast.nodes.Expression">
+      <point x="66.0" y="-29.0" />
+      <point x="13404.1796875" y="414.0" />
+      <point x="16883.638458806818" y="414.0" />
+      <point x="-93.5" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.ChildPropertyDescriptor" target="org.eclipse.php.core.ast.nodes.StructuralPropertyDescriptor">
+      <point x="0.0" y="-29.0" />
+      <point x="3954.0" y="956.0" />
+      <point x="3630.5" y="956.0" />
+      <point x="190.0" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.ArrayCreation" target="org.eclipse.php.core.ast.nodes.VariableBase">
+      <point x="0.0" y="-29.0" />
+      <point x="14458.888458806816" y="632.0" />
+      <point x="13984.27059659091" y="632.0" />
+      <point x="27.090909090909918" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.PrefixExpression" target="org.eclipse.php.core.ast.nodes.IOperationNode">
+      <point x="-91.5" y="-29.0" />
+      <point x="12911.6796875" y="374.0" />
+      <point x="12746.080120738632" y="374.0" />
+      <point x="41.5" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.ReflectionVariable" target="org.eclipse.php.core.ast.nodes.Variable">
+      <point x="0.0" y="-29.0" />
+      <point x="10766.807393465906" y="745.0" />
+      <point x="11012.307393465906" y="745.0" />
+      <point x="-57.5" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.Quote" target="org.eclipse.php.core.ast.nodes.VariableBase">
+      <point x="0.0" y="-29.0" />
+      <point x="15764.888458806816" y="592.0" />
+      <point x="14092.634232954546" y="592.0" />
+      <point x="135.45454545454595" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.Block" target="org.eclipse.php.core.ast.nodes.Statement">
+      <point x="0.0" y="-29.0" />
+      <point x="4646.8046875" y="434.0" />
+      <point x="6619.685333806816" y="434.0" />
+      <point x="-42.453125" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.TryStatement" target="org.eclipse.php.core.ast.nodes.Statement">
+      <point x="0.0" y="-29.0" />
+      <point x="10287.3046875" y="404.0" />
+      <point x="6743.185333806816" y="404.0" />
+      <point x="81.046875" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.UnaryOperation" target="org.eclipse.php.core.ast.nodes.Expression">
+      <point x="83.0" y="-29.0" />
+      <point x="12312.3046875" y="384.0" />
+      <point x="16850.638458806818" y="384.0" />
+      <point x="-126.5" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.ClassInstanceCreation" target="org.eclipse.php.core.ast.nodes.VariableBase">
+      <point x="0.0" y="-29.0" />
+      <point x="12509.807393465906" y="642.0" />
+      <point x="13930.08877840909" y="642.0" />
+      <point x="-27.090909090909918" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.Dispatch" target="org.eclipse.php.core.ast.nodes.VariableBase">
+      <point x="0.0" y="-29.0" />
+      <point x="11756.807393465906" y="622.0" />
+      <point x="13875.906960227272" y="622.0" />
+      <point x="-81.27272727272793" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.MultipleTypeBinding" target="org.eclipse.php.core.ast.nodes.ITypeBinding">
+      <point x="0.0" y="-29.0" />
+      <point x="895.5" y="1064.0" />
+      <point x="625.8333333333335" y="1064.0" />
+      <point x="99.33333333333348" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.UseStatementPart" target="org.eclipse.php.core.ast.nodes.ASTNode">
+      <point x="0.0" y="-29.0" />
+      <point x="9911.818146306816" y="226.0" />
+      <point x="9440.193146306816" y="226.0" />
+      <point x="26.625" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.MethodInvocation" target="org.eclipse.php.core.ast.nodes.Dispatch">
+      <point x="0.0" y="-29.0" />
+      <point x="11470.807393465906" y="745.0" />
+      <point x="11699.307393465906" y="745.0" />
+      <point x="-57.5" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.MultiTypeBinding" target="org.eclipse.php.core.ast.nodes.ITypeBinding">
+      <point x="0.0" y="-29.0" />
+      <point x="183.0" y="1064.0" />
+      <point x="427.16666666666674" y="1064.0" />
+      <point x="-99.33333333333326" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.StaticMethodInvocation" target="org.eclipse.php.core.ast.nodes.StaticDispatch">
+      <point x="0.0" y="-29.0" />
+      <point x="12969.890726799238" y="745.0" />
+      <point x="14691.72179214015" y="745.0" />
+      <point x="-110.66666666666606" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.GlobalStatement" target="org.eclipse.php.core.ast.nodes.Statement">
+      <point x="0.0" y="-29.0" />
+      <point x="5986.8046875" y="474.0" />
+      <point x="6650.560333806816" y="474.0" />
+      <point x="-11.578125" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.LambdaFunctionDeclaration" target="org.eclipse.php.core.ast.nodes.Expression">
+      <point x="0.0" y="-29.0" />
+      <point x="20765.6796875" y="394.0" />
+      <point x="17092.638458806818" y="394.0" />
+      <point x="115.5" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.DoStatement" target="org.eclipse.php.core.ast.nodes.Statement">
+      <point x="0.0" y="-29.0" />
+      <point x="11499.8046875" y="364.0" />
+      <point x="6774.060333806816" y="364.0" />
+      <point x="111.921875" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.IIncludeBinding" target="org.eclipse.php.core.ast.nodes.IBinding">
+      <point x="0.0" y="-29.0" />
+      <point x="2397.0" y="951.0" />
+      <point x="1791.0" y="951.0" />
+      <point x="86.25" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.Variable" target="org.eclipse.php.core.ast.nodes.VariableBase">
+      <point x="0.0" y="-29.0" />
+      <point x="11069.807393465906" y="602.0" />
+      <point x="13821.725142045454" y="602.0" />
+      <point x="-135.45454545454595" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.FunctionName" target="org.eclipse.php.core.ast.nodes.ASTNode">
+      <point x="0.0" y="-29.0" />
+      <point x="9559.818146306816" y="236.0" />
+      <point x="9422.443146306816" y="236.0" />
+      <point x="8.875" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.ClassName" target="org.eclipse.php.core.ast.nodes.ASTNode">
+      <point x="0.0" y="-29.0" />
+      <point x="3544.333771306816" y="216.0" />
+      <point x="9369.193146306816" y="216.0" />
+      <point x="-44.375" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.InLineHtml" target="org.eclipse.php.core.ast.nodes.Statement">
+      <point x="0.0" y="-29.0" />
+      <point x="3968.3046875" y="414.0" />
+      <point x="6604.247833806816" y="414.0" />
+      <point x="-57.890625" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.CloneExpression" target="org.eclipse.php.core.ast.nodes.Expression">
+      <point x="0.0" y="-29.0" />
+      <point x="19034.6796875" y="434.0" />
+      <point x="17048.638458806818" y="434.0" />
+      <point x="71.5" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.UseStatement" target="org.eclipse.php.core.ast.nodes.Statement">
+      <point x="0.0" y="-29.0" />
+      <point x="6983.3046875" y="494.0" />
+      <point x="6673.716583806816" y="494.0" />
+      <point x="11.578125" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.FormalParameter" target="org.eclipse.php.core.ast.nodes.ASTNode">
+      <point x="0.0" y="-29.0" />
+      <point x="3862.333771306816" y="226.0" />
+      <point x="9386.943146306816" y="226.0" />
+      <point x="-26.625" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.WhileStatement" target="org.eclipse.php.core.ast.nodes.Statement">
+      <point x="0.0" y="-29.0" />
+      <point x="10889.3046875" y="384.0" />
+      <point x="6758.622833806816" y="384.0" />
+      <point x="96.484375" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.IVariableBinding" target="org.eclipse.php.core.ast.nodes.IBinding">
+      <point x="0.0" y="-29.0" />
+      <point x="2019.5" y="961.0" />
+      <point x="1733.5" y="961.0" />
+      <point x="28.75" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.FunctionInvocation" target="org.eclipse.php.core.ast.nodes.VariableBase">
+      <point x="0.0" y="-29.0" />
+      <point x="11421.807393465906" y="612.0" />
+      <point x="13848.816051136364" y="612.0" />
+      <point x="-108.36363636363603" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.GotoLabel" target="org.eclipse.php.core.ast.nodes.Statement">
+      <point x="0.0" y="-29.0" />
+      <point x="10579.8046875" y="394.0" />
+      <point x="6750.904083806816" y="394.0" />
+      <point x="88.765625" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.UnaryOperation" target="org.eclipse.php.core.ast.nodes.IOperationNode">
+      <point x="-83.0" y="-29.0" />
+      <point x="12146.3046875" y="364.0" />
+      <point x="12580.080120738632" y="364.0" />
+      <point x="-124.5" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.BackTickExpression" target="org.eclipse.php.core.ast.nodes.Expression">
+      <point x="0.0" y="-29.0" />
+      <point x="21245.1796875" y="384.0" />
+      <point x="17103.638458806818" y="384.0" />
+      <point x="126.5" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.TraitAlias" target="org.eclipse.php.core.ast.nodes.Expression">
+      <point x="0.0" y="-29.0" />
+      <point x="18475.1796875" y="454.0" />
+      <point x="17026.638458806818" y="454.0" />
+      <point x="49.5" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.ASTError" target="org.eclipse.php.core.ast.nodes.Statement">
+      <point x="0.0" y="-29.0" />
+      <point x="8357.3046875" y="454.0" />
+      <point x="6704.591583806816" y="454.0" />
+      <point x="42.453125" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.SingleFieldDeclaration" target="org.eclipse.php.core.ast.nodes.ASTNode">
+      <point x="0.0" y="-29.0" />
+      <point x="17647.138458806818" y="186.0" />
+      <point x="9511.193146306816" y="186.0" />
+      <point x="97.625" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.ArrayElement" target="org.eclipse.php.core.ast.nodes.Expression">
+      <point x="0.0" y="-29.0" />
+      <point x="13639.1796875" y="424.0" />
+      <point x="16894.638458806818" y="424.0" />
+      <point x="-82.5" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.GotoStatement" target="org.eclipse.php.core.ast.nodes.Statement">
+      <point x="0.0" y="-29.0" />
+      <point x="5634.8046875" y="464.0" />
+      <point x="6642.841583806816" y="464.0" />
+      <point x="-19.296875" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.EmptyStatement" target="org.eclipse.php.core.ast.nodes.Statement">
+      <point x="0.0" y="-29.0" />
+      <point x="6648.3046875" y="494.0" />
+      <point x="6665.997833806816" y="494.0" />
+      <point x="3.859375" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.ArrayAccess" target="org.eclipse.php.core.ast.nodes.Variable">
+      <point x="0.0" y="-29.0" />
+      <point x="57.5" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.FinallyClause" target="org.eclipse.php.core.ast.nodes.Statement">
+      <point x="0.0" y="-29.0" />
+      <point x="7712.8046875" y="474.0" />
+      <point x="6689.154083806816" y="474.0" />
+      <point x="27.015625" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.DefaultBindingResolver" target="org.eclipse.php.core.ast.nodes.BindingResolver">
+      <point x="0.0" y="-29.0" />
+      <point x="0.0" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.ASTNode.NodeList.Cursor" target="org.eclipse.php.core.ast.nodes.ASTNode.NodeList">
+      <point x="0.0" y="-29.0" />
+      <point x="0.0" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.StaticFieldAccess" target="org.eclipse.php.core.ast.nodes.StaticDispatch">
+      <point x="0.0" y="-29.0" />
+      <point x="0.0" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.Program" target="org.eclipse.php.core.ast.nodes.ASTNode">
+      <point x="0.0" y="-29.0" />
+      <point x="604.75" y="206.0" />
+      <point x="9351.443146306816" y="206.0" />
+      <point x="-62.125" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.EchoStatement" target="org.eclipse.php.core.ast.nodes.Statement">
+      <point x="0.0" y="-29.0" />
+      <point x="2534.8046875" y="374.0" />
+      <point x="6573.372833806816" y="374.0" />
+      <point x="-88.765625" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.TraitUseStatement" target="org.eclipse.php.core.ast.nodes.Statement">
+      <point x="0.0" y="-29.0" />
+      <point x="11851.8046875" y="354.0" />
+      <point x="6781.779083806816" y="354.0" />
+      <point x="119.640625" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.IgnoreError" target="org.eclipse.php.core.ast.nodes.Expression">
+      <point x="0.0" y="-29.0" />
+      <point x="17915.6796875" y="474.0" />
+      <point x="17004.638458806818" y="474.0" />
+      <point x="27.5" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.StaticStatement" target="org.eclipse.php.core.ast.nodes.Statement">
+      <point x="0.0" y="-29.0" />
+      <point x="4930.8046875" y="444.0" />
+      <point x="6627.404083806816" y="444.0" />
+      <point x="-34.734375" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.Program.NamespaceFinder" target="org.eclipse.php.core.ast.nodes.Program">
+      <point x="0.0" y="-29.0" />
+      <point x="407.5" y="494.0" />
+      <point x="551.5" y="494.0" />
+      <point x="-53.25" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.MethodBinding" target="org.eclipse.php.core.ast.nodes.FunctionBinding">
+      <point x="-78.75" y="-29.0" />
+      <point x="1427.1025641025644" y="1172.0" />
+      <point x="1298.5" y="1172.0" />
+      <point x="0.0" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.ASTNode.NodeList" target="org.eclipse.php.core.ast.nodes.ASTNode">
+      <point x="57.5" y="-29.0" />
+      <point x="172.5" y="196.0" />
+      <point x="9333.693146306816" y="196.0" />
+      <point x="-79.875" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.FunctionDeclaration" target="org.eclipse.php.core.ast.nodes.Statement">
+      <point x="0.0" y="-29.0" />
+      <point x="8700.8046875" y="444.0" />
+      <point x="6712.310333806816" y="444.0" />
+      <point x="50.171875" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.ConditionalExpression" target="org.eclipse.php.core.ast.nodes.Expression">
+      <point x="0.0" y="-29.0" />
+      <point x="15747.6796875" y="474.0" />
+      <point x="16949.638458806818" y="474.0" />
+      <point x="-27.5" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.ReturnType" target="org.eclipse.php.core.ast.nodes.ASTNode">
+      <point x="0.0" y="-29.0" />
+      <point x="17261.138458806818" y="196.0" />
+      <point x="9493.443146306816" y="196.0" />
+      <point x="79.875" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.IncludeBinding" target="org.eclipse.php.core.ast.nodes.IIncludeBinding">
+      <point x="0.0" y="-29.0" />
+      <point x="0.0" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.PostfixExpression" target="org.eclipse.php.core.ast.nodes.IOperationNode">
+      <point x="-95.75" y="-29.0" />
+      <point x="12512.9296875" y="374.0" />
+      <point x="12663.080120738632" y="374.0" />
+      <point x="-41.5" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.ClassDeclaration" target="org.eclipse.php.core.ast.nodes.TypeDeclaration">
+      <point x="0.0" y="-29.0" />
+      <point x="1421.8046875" y="642.0" />
+      <point x="1299.0546875" y="642.0" />
+      <point x="87.25" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.FieldAccess" target="org.eclipse.php.core.ast.nodes.Dispatch">
+      <point x="0.0" y="-29.0" />
+      <point x="57.5" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.DimList.Element" target="org.eclipse.php.core.ast.nodes.DimList">
+      <point x="0.0" y="-29.0" />
+      <point x="0.0" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.YieldExpression" target="org.eclipse.php.core.ast.nodes.Expression">
+      <point x="0.0" y="-29.0" />
+      <point x="16167.6796875" y="484.0" />
+      <point x="16960.638458806818" y="484.0" />
+      <point x="-16.5" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.MethodBinding" target="org.eclipse.php.core.ast.nodes.IMethodBinding">
+      <point x="78.75" y="-29.0" />
+      <point x="1584.6025641025644" y="1172.0" />
+      <point x="1659.0" y="1172.0" />
+      <point x="0.0" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.TypeDeclaration" target="org.eclipse.php.core.ast.nodes.Statement">
+      <point x="0.0" y="-29.0" />
+      <point x="1211.8046875" y="334.0" />
+      <point x="6542.497833806816" y="334.0" />
+      <point x="-119.640625" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.VariableBinding" target="org.eclipse.php.core.ast.nodes.IVariableBinding">
+      <point x="0.0" y="-29.0" />
+      <point x="0.0" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.SwitchCase" target="org.eclipse.php.core.ast.nodes.Statement">
+      <point x="0.0" y="-29.0" />
+      <point x="11207.3046875" y="374.0" />
+      <point x="6766.341583806816" y="374.0" />
+      <point x="104.203125" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.ITypeBinding" target="org.eclipse.php.core.ast.nodes.IBinding">
+      <point x="0.0" y="-29.0" />
+      <point x="526.5" y="951.0" />
+      <point x="1618.5" y="951.0" />
+      <point x="-86.25" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.SwitchStatement" target="org.eclipse.php.core.ast.nodes.Statement">
+      <point x="0.0" y="-29.0" />
+      <point x="9103.8046875" y="434.0" />
+      <point x="6720.029083806816" y="434.0" />
+      <point x="57.890625" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.ArrowFunctionDeclaration" target="org.eclipse.php.core.ast.nodes.Expression">
+      <point x="0.0" y="-29.0" />
+      <point x="15251.1796875" y="464.0" />
+      <point x="16938.638458806818" y="464.0" />
+      <point x="-38.5" y="29.0" />
+    </edge>
+    <edge source="org.eclipse.php.core.ast.nodes.Include" target="org.eclipse.php.core.ast.nodes.Expression">
+      <point x="0.0" y="-29.0" />
+      <point x="18733.6796875" y="444.0" />
+      <point x="17037.638458806818" y="444.0" />
+      <point x="60.5" y="29.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.0" x="0.0" y="0.0" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Inner Classes</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
