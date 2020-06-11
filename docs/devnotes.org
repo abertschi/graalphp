@@ -30,9 +30,20 @@ big integer exact size of int is undefined (4 or 8 bytes), and conversion to
 float leads to rounding errors big integer may be more suitable, however, it is
 slower.
 
+*** Integer
+**** TODO make PHP_INT_SIZE, PHP_INT_MIN and PHP_INT_MAX available as constants
+**** TODO isInt library function
 * Testing/ CI
 **
 **
 
 * Doc
 ** TODO update list of implemented features to facebook spec
+
+
+* Design Noes
+** Integer
+- implemented as java long types
+
+** Float
+- IEEE 754 64-bit double-precision representation.

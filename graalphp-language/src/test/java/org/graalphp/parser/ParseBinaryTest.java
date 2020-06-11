@@ -77,8 +77,6 @@ public class ParseBinaryTest {
         TestCommons.evalLong(0, "0 / 0");
     }
 
-
-
     @Test
     // TODO
     public void parseSubOverflow() {
@@ -90,6 +88,13 @@ public class ParseBinaryTest {
     public void parseMulOverflow() {
         TestCommons.evalLong(0, "1000000000000 * 100000000000");
         TestCommons.evalLong(0, "1000000000000000 * 0");
+    }
+
+    @Test
+    // TODO
+    public void parseMulOverflowMin() {
+        // This overflows long
+        TestCommons.evalLong(0, String.format("%d * -1", Long.MIN_VALUE));
     }
 
     @Test
