@@ -56,4 +56,18 @@ public class VariaTest {
         System.out.println(e);
         System.out.println(f);
     }
+
+    @Test
+    public void divTest() {
+        long a = Long.MIN_VALUE;
+        long b = -1;
+        long res = a / b;
+        System.out.println(a & b & res);
+        System.out.println(String.format("a: %x", Long.MIN_VALUE));
+        System.out.println(String.format("a: %x", Long.MAX_VALUE));
+        System.out.println("b: " + b);
+        System.out.println("res: " + res);
+
+
+    }
 }
