@@ -12,6 +12,6 @@ public class ParseUnaryTest {
         TestCommons.evalLong(0, "-0");
         TestCommons.evalLong(0, "-(-0)");
         TestCommons.evalLong(0, "-(-(-(-(-0))))");
-        TestCommons.evalLong(0, "-(-(-(-(-1))))");
+        TestCommons.evalLong(-1, "-(-(-(-(-1))))");
     }
 }
