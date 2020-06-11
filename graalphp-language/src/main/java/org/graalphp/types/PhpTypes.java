@@ -13,12 +13,13 @@ import com.oracle.truffle.api.dsl.TypeSystem;
 })
 public class PhpTypes {
 
-    // we allow a long to be converted to double where possible
+    PhpTypes() {
+    }
 
-    // TODO: this makes compiler crash
+    // we allow a long to be converted to double where possible
     @ImplicitCast
-    public double longToDouble(long val) {
-        return val;
+    public static double longToDouble(long val) {
+        return (double) val;
     }
 
     // more efficient way than default way which does boxing
@@ -28,7 +29,7 @@ public class PhpTypes {
     }
 
     @TypeCast(long.class)
-    public static double asLong(Object value) {
+    public static long asLong(Object value) {
         return ((Long) value).longValue();
     }
 }
