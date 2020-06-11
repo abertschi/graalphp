@@ -1,4 +1,4 @@
-package org.graalphp.test;
+package org.graalphp.end2end;
 
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.Value;
