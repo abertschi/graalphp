@@ -2,6 +2,7 @@ package org.graalphp.parser;
 
 import org.eclipse.php.core.PHPVersion;
 import org.eclipse.php.core.ast.error.BailoutErrorListener;
+import org.eclipse.php.core.ast.error.ConsoleErrorListener;
 import org.eclipse.php.core.ast.nodes.ASTParser;
 import org.eclipse.php.core.ast.nodes.Program;
 import org.graalvm.polyglot.Context;
@@ -102,6 +103,7 @@ public class ParseBinaryTest {
         ASTParser parser = ASTParser.newParser(PHPVersion.PHP7_4);
         parser.setSource(code.toCharArray());
         parser.addErrorListener(new BailoutErrorListener());
+        parser.addErrorListener(new ConsoleErrorListener());
         Program pgm = parser.parsePhpProgram();
         System.out.println(pgm);
     }
