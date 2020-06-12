@@ -42,7 +42,6 @@ slower.
 * Doc
 ** TODO update list of implemented features to facebook spec
 
-
 * Design Noes
 ** Integer
 - implemented as java long type

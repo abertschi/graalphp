@@ -1,0 +1,92 @@
+## -*- coding: utf-8;mode: org; fill-column: 80;  -*-
+## This file is best viewed with GNU Emacs Org-mode: http://orgmode.org/
+
+#+TITLE: Implementing Functions
+- Spec :: https://github.com/php/php-langspec/blob/master/spec/13-functions.md#functions
+
+* Scope
+- [ ] function definition with arguments
+- [ ] function invocation
+
+** Optional for now
+- [ ] generator functions
+- [ ] nested functions
+- [ ] variable functions
+- [ ] anonymous functions
+- [ ] argument passing by ref
+- [ ] callable type
+- [ ] __invoke
+
+* Sample Code
+#+begin_src php
+  // with types
+  function  increment(int $val): int {
+      return $val + 1;
+  }
+
+  // without
+  function increment($val) {
+      return $val + 1;
+  }
+
+  increment(1337);
+#+end_src
+
+Anonymous functions
+
+#+begin_src php
+$f = function($i) {
+    return ($i % 2) == 0;
+};
+#+end_src
+
+** Type Annotations
+- PHP 7 introduces strict types
+- https://thevaluable.dev/php-7-type-hinting-pitfalls/
+- weird type conversions apply if strict_typed=1 not set
+- should we support type annotations?
+  - it will make programming much less error prone
+  - however, unless all code uses type annotations, we still need type conversions
+  - so adding type annotation is extra work unless we make it required for all code
+
+* How to represent functions in graal
+- FrameSlot: represents a variable in a (stack) frame
+- in order to implement functions, we need a way to access stack variables
+- the truffle way suggest nodes to
+  a. write local variable into current stack frame
+  b. read parameters
+  c. read local variables
+
+- global and function scope should make representation in graal straight forward
+- no scope walking, either function scope or not (with global keyword).
+
+** Scoping
+- https://phppot.com/php/variable-scope-in-php/
+- PHP does not have lexical scope
+- it has it's own concept of global and function scope
+- A variable is either globally defined and not available within functions
+- or locally defined within a function
+- if global variable wants to be accessed within a function, global keyword must be used
+- https://github.com/php/php-langspec/blob/master/spec/04-basic-concepts.md#scope
+
+*** What about nested functions?
+- same principle holds for nested function, no lexical scope defined
+
+*** global, static
+- global scope
+- function scope (variables in functions, as well as function args)
+- static scope (delcaring a var static within a function)
+- super global (GLOBALS variable)
+
+*** What happens to blocks within functions (if, or simply {})
+- nothing, same rules apply, does not create a new scope
+** Design ideas
+*** Parser
+- keep track of scope: function or global
+- if function use a readNode to access virtual frame to get object
+- if global use a readnode for globals
+*** Function registry
+- Hashmap: string -> function
+*** PhpFunction node
+- has a name
+- has a call target
