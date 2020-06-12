@@ -38,7 +38,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.graalphp.test;
+package org.graalphp.end2end;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -82,7 +82,7 @@ import org.junit.runners.ParentRunner;
 import org.junit.runners.model.InitializationError;
 
 import com.oracle.truffle.api.dsl.NodeFactory;
-import org.graalphp.test.GraalPhpTestRunner.TestCase;
+import org.graalphp.end2end.GraalPhpTestRunner.TestCase;
 
 
 /**

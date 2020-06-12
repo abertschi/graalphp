@@ -1,3 +1,31 @@
+* Features relevant for benchmarks
+- functions calls with args
+- global variables
+- if, else
+- return out of functions
+- equality test with ===
+- syntax sugar for if else with ?, :
+- printf
+- do while
+- for while
+- while
+- foreach
+- global
+- unset variables
+- arrays
+- array access with variables as index
+- array of arrays
+- list function
+- argv, argc
+- defines
+- string concatination
+- float numbers in in notation to the power of 10
+- OO
+  - Classes
+  - public attributes
+  - access attributes of objects
+
+
 * Benchmarks
 ** binarytrees.php-1.php
 - https://benchmarksgame-team.pages.debian.net/benchmarksgame/program/binarytrees-php-1.html

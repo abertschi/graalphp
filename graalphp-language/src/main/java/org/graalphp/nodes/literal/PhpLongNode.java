@@ -23,7 +23,7 @@ public class PhpLongNode extends PhpExprNode {
     }
 
     @Override
-    public long executeLong(VirtualFrame f) throws UnexpectedResultException {
+    public long executeLong(VirtualFrame f) {
         return val;
     }
 

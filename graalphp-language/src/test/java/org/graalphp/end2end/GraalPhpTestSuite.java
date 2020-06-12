@@ -39,7 +39,7 @@
  * SOFTWARE.
  */
 
-package org.graalphp.test;
+package org.graalphp.end2end;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

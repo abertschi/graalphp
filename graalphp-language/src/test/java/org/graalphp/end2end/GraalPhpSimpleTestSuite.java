@@ -38,7 +38,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.graalphp.test;
+package org.graalphp.end2end;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

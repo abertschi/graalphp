@@ -86,6 +86,8 @@
                         <include>**/*Test.java</include>
                     </includes>
                     <argLine>-Dgraalvm.locatorDisabled=true ${test.argLine}</argLine>
+                     <!-- ea flag -->
+                     <enableAssertions>true</enableAssertions>
                 </configuration>
             </plugin>
             <plugin>
