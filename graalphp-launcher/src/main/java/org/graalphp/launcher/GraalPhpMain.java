@@ -40,11 +40,7 @@
  */
 package org.graalphp.launcher;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -73,19 +69,55 @@ public final class GraalPhpMain {
                 }
             }
         }
+        if (options.containsKey("repl")) {
+            options.remove("repl");
+            System.exit(executeRepl(options));
+        }
 
         if (file == null) {
-            // @formatter:off
             source = Source.newBuilder(PHP, new InputStreamReader(System.in), "<stdin>").build();
-            // @formatter:on
         } else {
             source = Source.newBuilder(PHP, new File(file)).build();
         }
-
         System.exit(executeSource(source, System.in, System.out, options));
     }
 
-    private static int executeSource(Source source, InputStream in, PrintStream out, Map<String, String> options) {
+    private static String phpTags(String src) {
+        return "<?php " + src + " ?>";
+    }
+
+    private static int executeRepl(Map<String, String> options) {
+        Context context;
+        PrintStream err = System.err;
+        try {
+            context = Context.newBuilder(PHP).in(System.in).out(System.out).options(options).build();
+        } catch (IllegalArgumentException e) {
+            err.println(e.getMessage());
+            return 1;
+        }
+
+        Console console = System.console();
+        while (true) {
+            String line = console.readLine();
+            if (line == null) {
+                break;
+            }
+            try {
+                Source source = Source.newBuilder(PHP, phpTags(line), "<console>").build();
+                executeSource(source, System.in, System.out, options);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        context.close();
+        return 0;
+    }
+
+    private static int executeSource(Source source,
+                                     InputStream in,
+                                     PrintStream out,
+                                     Map<String, String> options) {
         Context context;
         PrintStream err = System.err;
         try {
@@ -98,14 +130,7 @@ public final class GraalPhpMain {
 
         try {
             Value result = context.eval(source);
-            // TODO: do we need this check?
-//            if (context.getBindings(PHP).getMember("main") == null) {
-//                err.println("No function main() defined in SL source file.");
-//                return 1;
-//            }
-//            if (!result.isNull()) {
             out.println(result.toString());
-//            }
             return 0;
         } catch (PolyglotException ex) {
             if (ex.isInternalError()) {

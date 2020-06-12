@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+# run this script within git directory
+# builds language module only and runs repl
+
+SCRIPT_HOME="$(cd "$(dirname "$0")" && pwd -P)"
+
+CUR_DIR=$(pwd)
+cd $SCRIPT_HOME
+
+cd $SCRIPT_HOME/graalphp-language/
+mvn package -DskipTests=true -Dskip.parser.tests=true
+
+cd $CUR_DIR
+
+$SCRIPT_HOME/graalphp --repl

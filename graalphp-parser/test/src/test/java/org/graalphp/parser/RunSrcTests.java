@@ -18,7 +18,11 @@ public class RunSrcTests {
 
         TestSuite suite = new TestSuite(
                 "compare output with upstream php parser");
-        suite.addTest(new FileTestSuite(new File(getDirectory())));
+
+        String tests = System.getenv("CI");
+        if (tests != null && (tests.toLowerCase().equals("true") || tests.equals("1"))) {
+            suite.addTest(new FileTestSuite(new File(getDirectory())));
+        }
         return suite;
     }
 
