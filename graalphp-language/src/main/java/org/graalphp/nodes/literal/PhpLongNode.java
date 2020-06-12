@@ -9,12 +9,18 @@ import com.oracle.truffle.api.nodes.UnexpectedResultException;
 import org.graalphp.nodes.PhpExprNode;
 
 /**
- * A long literal
+ * Represents integer numbers in graalphp
+ *
+ * Based on a primitive long in java
  *
  * @author abertschi
  */
 @NodeInfo(shortName = "long")
 public class PhpLongNode extends PhpExprNode {
+
+    public static final long PHP_INT_SIZE = Long.SIZE;
+    public static final long PHP_INT_MIN = Long.MIN_VALUE;
+    public static final long PHP_INT_MAX = Long.MAX_VALUE;
 
     private final long val;
 

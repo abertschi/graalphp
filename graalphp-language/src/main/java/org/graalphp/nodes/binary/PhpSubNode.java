@@ -14,6 +14,11 @@ public abstract class PhpSubNode extends PhpBinaryNode {
         return Math.subtractExact(left, right);
     }
 
+    @Specialization
+    protected double sub(double left, double right) {
+        return left - right;
+    }
+
     // slow track
     @Specialization()
     protected Object sub(Object left, Object right) {

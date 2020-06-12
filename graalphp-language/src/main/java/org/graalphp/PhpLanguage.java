@@ -9,10 +9,8 @@ import com.oracle.truffle.api.interop.UnsupportedMessageException;
 import com.oracle.truffle.api.source.Source;
 import org.graalphp.nodes.PhpExprNode;
 import org.graalphp.nodes.PhpRootNode;
-import org.graalphp.nodes.PhpStmtNode;
 import org.graalphp.parser.PhpParseResult;
 import org.graalphp.parser.PhpParser;
-import org.graalphp.runtime.PhpContext;
 import org.graalphp.types.PhpNull;
 import org.graalphp.util.PhpLogger;
 import org.graalphp.util.Logger;
@@ -85,6 +83,8 @@ public final class PhpLanguage extends TruffleLanguage<PhpContext> {
             InteropLibrary interop = InteropLibrary.getFactory().getUncached(value);
             if (interop.fitsInLong(value)) {
                 return Long.toString(interop.asLong(value));
+            } else if (interop.fitsInDouble(value)) {
+                return Double.toString(interop.asDouble(value));
             } else if (interop.isBoolean(value)) {
                 return Boolean.toString(interop.asBoolean(value));
             } else if (interop.isString(value)) {
@@ -96,7 +96,7 @@ public final class PhpLanguage extends TruffleLanguage<PhpContext> {
             } else if (interop.hasMembers(value)) {
                 return "Object";
             } else {
-                return "Unsupported";
+                return "Datatype unsupported by graalphp";
             }
         } catch (UnsupportedMessageException e) {
             CompilerDirectives.transferToInterpreter();

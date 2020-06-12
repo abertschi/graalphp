@@ -30,9 +30,60 @@ big integer exact size of int is undefined (4 or 8 bytes), and conversion to
 float leads to rounding errors big integer may be more suitable, however, it is
 slower.
 
+*** Integer
+**** TODO make PHP_INT_SIZE, PHP_INT_MIN and PHP_INT_MAX available as constants
+**** TODO isInt library function
+* Optimizations
+** TODO See if specialisation for shift instead of div by 2 brings performance
 * Testing/ CI
 **
 **
 
 * Doc
 ** TODO update list of implemented features to facebook spec
+
+
+* Design Noes
+** Integer
+- implemented as java long type
+- Literals written using hexadecimal, octal, or binary notations are considered to have non-negative values.
+  (https://github.com/php/php-langspec/blob/master/spec/09-lexical-structure.md#literals)
+
+*** Integer overflows
+Spec says:
+#+begin_quote
+The range of values that can be stored is implementation-defined; however, the range [-2147483648, 2147483647], must be supported. This range must be finite.
+
+Certain operations on integer values produce a mathematical result that cannot be represented as an integer. Examples include the following:
+
+    Incrementing the largest value or decrementing the smallest value.
+    Applying the unary minus to the smallest value.
+    Multiplying, adding, or subtracting two values.
+
+In such cases, the computation is done as though the types of the values were float with the result having that type.
+
+#+end_quote
+
+Size of integer is implementation dependent. Alternatively to converting to a float representation,
+we can could big integer, this solves imprecision issues but decreases performance.
+
+
+
+** Float
+- float type :: https://github.com/php/php-langspec/blob/master/spec/05-types.md#the-floating-point-type
+
+*** Float + Int
+https://github.com/php/php-langspec/blob/master/spec/08-conversions.md#converting-to-floating-point-type
+
+If either or both operands were leading-numeric or non-numeric strings, a
+non-fatal error MUST be produced for each. Then if either operand has type
+float, the other is converted to that type, and the result has type float
+
+*** TODO Convert float to int
+#+begin_src 
+Psy Shell v0.9.12 (PHP 7.4.6 — cli) by Justin Hileman
+=> 6
+>>> (int) 5.99999999999999959 + 1
+=> 7
+>>> (int) 5.99999999999999955 +
+#+end_src

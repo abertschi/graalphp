@@ -6,8 +6,6 @@ import org.junit.Test;
 
 import java.io.IOException;
 
-import static org.graalphp.parser.ParseAdditionTest.php;
-
 /**
  * @author abertschi
  */
@@ -15,8 +13,8 @@ public class ParseSkalarTest {
     @Test
     public void parserSkalar() throws IOException {
         Context ctx = Context.create("php");
-        Assert.assertSame(1, ctx.eval("php", php("1")).asInt());
-        Assert.assertTrue(1000000000L == ctx.eval("php", php("1000000000")).asLong());
+        Assert.assertSame(1, ctx.eval("php", TestCommons.php("1")).asInt());
+        Assert.assertTrue(1000000000L == ctx.eval("php", TestCommons.php("1000000000")).asLong());
     }
 
     @Test

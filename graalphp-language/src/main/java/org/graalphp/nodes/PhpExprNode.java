@@ -28,4 +28,8 @@ public abstract class PhpExprNode extends PhpStmtNode {
     public long executeLong(VirtualFrame f) throws UnexpectedResultException {
         return PhpTypesGen.expectLong(this.executeGeneric(f));
     }
+
+    public double executeDouble(VirtualFrame f) throws UnexpectedResultException {
+        return PhpTypesGen.expectDouble(this.executeGeneric(f));
+    }
 }
