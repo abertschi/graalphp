@@ -12,6 +12,7 @@ import org.graalphp.types.PhpNull;
  *
  * @author abertschi
  */
+// TODO: rewrite this to use stmts
 public final class PhpRootNode extends RootNode {
 
     @Children
