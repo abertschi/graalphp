@@ -17,6 +17,13 @@
 - [ ] callable type
 - [ ] __invoke
 
+* Approach
+- study simple language
+- find a way to represent global scope (which executed first)
+- find a way to represent variables in global scope
+- translate results to function class and functions
+  - is global scope a "main" function itself?
+
 * Sample Code
 #+begin_src php
   // with types
@@ -80,6 +87,7 @@ Anonymous functions
 
 *** What happens to blocks within functions (if, or simply {})
 - nothing, same rules apply, does not create a new scope
+
 ** Design ideas
 *** Parser
 - keep track of scope: function or global
@@ -110,6 +118,17 @@ Anonymous functions
   - stmt nodes not return something
   - expression is subclass of stmt
   - slroot hode has a body, which is a reference to a slstmt
+
+- *SLRootNode vs EvalRootNode*
+  - rootNode defines an execute(frame) method
+  - slroot node and evalroot node contain a member which is a node
+  - in execute(frame), they call bodyNode.executeGeneric(frame)
+  - which then can be specialized by truffle during runtime
+  - evalrootnode
+    - has one child, a directCallNode, which is created from the main function and called with args from frame
+    - used to run main function
+  - slrootnode
+    - is either function or builtin
 
 
 *** TODO how does SLRootNode get its arguments?
@@ -144,3 +163,137 @@ Anonymous functions
         return result;
     }
 #+end_src
+
+* Entry point for execution
+- PHP has global scope and function scope
+- how should we represent global scope?
+- there is only one such scope
+- we can represent it as a function which takes arguments no arguments but contains a special variable for argv, argc
+- this can either be treated like any other function in graal php
+- or as a special kind of function (with its own class)
+ 
+** Do function def need to be above function calls in php source?
+no
+** Design idea: wrap everything within a main function
+#+begin_src php
+<?php
+    
+function main() {
+$_argv = array("main.php", 1, "a");
+$_argc = 3;
+
+
+function test() {
+    global $_argv;  // this is not effective, we cant access _argv at all
+    global $_argc;
+    echo "output: ";
+    echo $_argc;
+}
+
+test();
+
+}
+main();
+?>
+#+end_src
+Result: 
+output
+
+
+Issues:
+- there is no way to access outer function variable
+- with global, global scope is accessed which is not within a function
+- php supports use keyword, to allow a function to access outer function variables
+- https://stackoverflow.com/questions/2408908/is-it-possible-to-access-outer-local-variable-in-php
+#+begin_src php
+$bar = function() use(&$l) {
+};
+$bar();
+#+end_src
+
+#+begin_src php
+<?php
+    
+function main() {
+$_argv = array("main.php", 1, "a");
+$_argc = 3;
+
+
+$test = function() use (&$_argv, &$_argc) {
+    echo "output: ";
+    echo $_argc;
+};
+
+$test();
+
+}
+
+
+main();
+?>
+#+end_src
+Output:
+- output: 3
+
+This would achieve the desired result
+
+- We are free in changing the internals of our implementation as long as we correctly model global scope.
+- However, making above code (which does not produce desired result)
+  work, adds an exception in how source code has to be handled for
+  main function
+- does not scale well, for all possible globals we have to add these to the function definitions
+- What about super globals?
+*** Super globals
+#+begin_src
+    $GLOBALS
+    $_SERVER
+    $_GET
+    $_POST
+    $_FILES
+    $_COOKIE
+    $_SESSION
+    $_REQUEST
+    $_ENV
+#+end_src
+
+
+#+begin_src 
+<?php
+echo var_dump($GLOBALS);
+echo var_dump($GLOBALS["argv"][1]);
+?>
+
+array(8) {
+  ["_GET"]=>
+  array(0) {
+  }
+  ["_POST"]=>
+  array(0) {
+  }
+  ["_COOKIE"]=>
+  array(0) {
+  }
+  ["_FILES"]=>
+  array(0) {
+  }
+  ["argv"]=>
+  array(2) {
+    [0]=>
+    string(9) "main3.php"
+    [1]=>
+    string(4) "1337"
+  }
+  ["argc"]=>
+  int(2)
+#+end_src
+
+*** Pos. Design Solution
+- do not wrap in a main function, treat main function differently than user defined functions
+- GlobalEntryNode
+  - is Expression
+  - contains a stmt which throws exception on return
+  - every function has a reference to variables defined in global scope, ie this node?
+  - We would have userdef functions, builtins, and the global entry node
+
+
+** Scoping in Truffle

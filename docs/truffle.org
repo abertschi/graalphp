@@ -13,3 +13,6 @@
 - where partial evaluation should stop
 - developer is in control
 - where it stops, function calls are performed instead of inlining
+
+* Scoping
+
