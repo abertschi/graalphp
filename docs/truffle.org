@@ -1,0 +1,15 @@
+## -*- coding: utf-8;mode: org; fill-column: 80;  -*-
+## This file is best viewed with GNU Emacs Org-mode: http://orgmode.org/
+
+#+TITLE: Truffle Implementation Detalis
+
+* TODO @ExportLibrary
+- unclear what it does
+- probably related to inter language implementation communication
+- unclear what method names must be used, where does isArray() come from?
+- InteropLibrary.class
+
+* @TruffleBoundary
+- where partial evaluation should stop
+- developer is in control
+- where it stops, function calls are performed instead of inlining

@@ -35,9 +35,9 @@
 Anonymous functions
 
 #+begin_src php
-$f = function($i) {
-    return ($i % 2) == 0;
-};
+  $f = function($i) {
+      return ($i % 2) == 0;
+  };
 #+end_src
 
 ** Type Annotations
@@ -90,3 +90,57 @@ $f = function($i) {
 *** PhpFunction node
 - has a name
 - has a call target
+
+
+** SL implementation
+- *SLFunction*
+  - is TruffleObject
+  - has name and rootcalltarget
+  - Who does create it?
+    - SLFunctionRegistry
+- *SLFunctionRegistry*
+  - maps name to slfunctions
+- *SLRootNode*
+  - is rootnode
+  - root of all execution trees
+  - either builtins
+  - or user defined functions
+  - a node that allows to be executed with #execute(VirtualFrame)
+- *Expression Node vs StmtNode?*
+  - stmt nodes not return something
+  - expression is subclass of stmt
+  - slroot hode has a body, which is a reference to a slstmt
+
+
+*** TODO how does SLRootNode get its arguments?
+- slrootnode is a rootnode and has an execute(frame) method.
+- how are arguments to function given to slrootnode?
+
+*** how are slfunction and slfunctionbody node releated with each other
+
+*** create assignment (from function arguments)
+- function arguments created as read argument node, which is an expression and passed as the value node to create assignment
+#+begin_src java
+    public SLExpressionNode createAssignment(SLExpressionNode nameNode, SLExpressionNode valueNode, Integer argumentIndex) {
+        if (nameNode == null || valueNode == null) {
+            return null;
+        }
+
+        String name = ((SLStringLiteralNode) nameNode).executeGeneric(null);
+        FrameSlot frameSlot = frameDescriptor.findOrAddFrameSlot(
+                        name,
+                        argumentIndex,
+                        FrameSlotKind.Illegal);
+        lexicalScope.locals.put(name, frameSlot);
+        final SLExpressionNode result = SLWriteLocalVariableNodeGen.create(valueNode, frameSlot);
+
+        if (valueNode.hasSource()) {
+            final int start = nameNode.getSourceCharIndex();
+            final int length = valueNode.getSourceEndIndex() - start;
+            result.setSourceSection(start, length);
+        }
+        result.addExpressionTag();
+
+        return result;
+    }
+#+end_src

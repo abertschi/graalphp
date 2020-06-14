@@ -1,0 +1,28 @@
+
+* Allocation Reporter
+#+begin_src java
+/**
+     * Allocate an empty object. All new objects initially have no properties. Properties are added
+     * when they are first stored, i.e., the store triggers a shape change of the object.
+     */
+    public DynamicObject createObject(AllocationReporter reporter) {
+        DynamicObject object = null;
+        reporter.onEnter(null, 0, AllocationReporter.SIZE_UNKNOWN);
+        object = emptyShape.newInstance();
+        reporter.onReturnValue(object, 0, AllocationReporter.SIZE_UNKNOWN);
+        return object;
+    }
+
+@NodeInfo(shortName = "new")
+public abstract class SLNewObjectBuiltin extends SLBuiltinNode {
+
+    @Specialization
+    @SuppressWarnings("unused")
+    public Object newObject(SLNull o, @CachedContext(SLLanguage.class) SLContext context,
+                    @Cached("context.getAllocationReporter()") AllocationReporter reporter) {
+        return context.createObject(reporter);
+    }
+}
+#+end_src
+
+
