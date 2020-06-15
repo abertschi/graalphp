@@ -39,9 +39,6 @@
 
   increment(1337);
 #+end_src
-Ich hoffe, ich kann die nächsten Tage/ Wochen speditiven Forschritt machen,
-da die Prüfungen nun durch sind.
-Anonymous functions
 
 #+begin_src php
   $f = function($i) {
