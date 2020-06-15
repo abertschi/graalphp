@@ -1,3 +1,8 @@
+## -*- coding: utf-8;mode: org; fill-column: 80;  -*-
+## This file is best viewed with GNU Emacs Org-mode: http://orgmode.org/
+
+#+TITLE: Implementing Classes
+
 
 * Allocation Reporter
 #+begin_src java

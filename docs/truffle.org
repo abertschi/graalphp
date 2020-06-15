@@ -1,7 +1,7 @@
 ## -*- coding: utf-8;mode: org; fill-column: 80;  -*-
 ## This file is best viewed with GNU Emacs Org-mode: http://orgmode.org/
 
-#+TITLE: Truffle Implementation Detalis
+#+TITLE: Truffle Implementation Details
 
 * TODO @ExportLibrary
 - unclear what it does
@@ -13,6 +13,90 @@
 - where partial evaluation should stop
 - developer is in control
 - where it stops, function calls are performed instead of inlining
+
+* Frame
+- activation record of a truffle function
+- provides scope for a function: args, local vars, and other state
+- can store variables, think of stackframe but also for heap data
+- keeps track of type used for key to avoid boxing
+- variables are in slots in frames, FrameSlot.class
+- identifier and frameslotkind
+
+** TODO can we store more meta data in frameslot?
+this becomes useful to remember if a variable is global or not
+
+** TODO how do Frame and FrameDesriptor differ?
+
+
+* MaterializedFrame
+- stored in heap
+- more heavyweight than virtualframe
+- used when vars are accessed/shared from different functions
+- preferred way for lexical scope
+
+* VirtualFrame
+- cannot escape compilation unit
+
+* FrameDescriptor
+On the one hand, it maintains the structural information about the
+slots of a frame, and on the other hand, the frame slots can record
+type information. For now, we will focus on the structural elements,
+and will ignore the type information.
+
+https://stefan-marr.de/2015/12/add-graal-jit-compilation-to-your-jvm-language-in-5-easy-steps-step-4/
+
+* Frameslot
+ The slot is uninitialized if its kind is Illegal.
+
+* @Children vs Blocknode
+- one can either define a sequence class which has a list of expressions/ stmts
+  - @Children private final ExpressionNode[] expressions;
+- or use the @Child private BlockNode<SLStatementNode> block API
+#+begin_src 
+    /**
+     * The block of child nodes. Using the block node allows Truffle to split the block into
+     * multiple groups for compilation if the method is too big. This is an optional API.
+     * Alternatively, you may just use your own block node, with a
+     * {@link com.oracle.truffle.api.nodes.Node.Children @Children} field. However, this prevents
+     * Truffle from compiling big methods, so these methods might fail to compile with a compilation
+     * bailout.
+     */
+#+end_src
+See SLBlockNode in sl code base
+
+#+begin_src
+  @Children private final ExpressionNode[] expressions;
+
+  @ExplodeLoop
+  public Object executeGeneric(VirtualFrame frame) {
+	for (int i = 0; i < expressions.length - 1; i++) {
+      expressions[i].executeGeneric(frame);
+    }
+    return expressions[expressions.length - 1].executeGeneric(frame);
+  }
+#+end_src
+
+* @Child
+@Child cannot be final, because they need to be able to specialize
+themselves, and the compiler treats them specially.
+
+* @ExplodeLoop
+- optimization hint for loop unrolling
+- wherever loop size is constant
+- useful for iterating through stmts in a block, or argument count
+
+* Returning from Functions (truffle way)
+- Throw control flow exception, dont fill stacktrace for performance
+
+
+* CompilerDirectives.transferToInterpreter()
+- ensures code is not included in compilation
+- 
+
+* Functions
+- Truffle.getRuntime().createCallTarget(this)
+- where this is subclass of RootNode
+- and in excute method will call @child expr.executeGeneric() which throws exception with result
 
 * Scoping
 
