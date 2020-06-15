@@ -1,5 +1,6 @@
 package org.graalphp.parser;
 
+import com.oracle.truffle.api.RootCallTarget;
 import com.oracle.truffle.api.source.Source;
 import com.oracle.truffle.api.source.SourceSection;
 import org.eclipse.php.core.ast.nodes.*;
@@ -10,22 +11,24 @@ import org.graalphp.nodes.binary.PhpAddNodeGen;
 import org.graalphp.nodes.binary.PhpDivNodeGen;
 import org.graalphp.nodes.binary.PhpMulNodeGen;
 import org.graalphp.nodes.binary.PhpSubNodeGen;
-import org.graalphp.nodes.controlflow.PhpReturnNode;
-import org.graalphp.nodes.controlflow.PhpStmtListNode;
 import org.graalphp.nodes.unary.PhpNegNodeGen;
 import org.graalphp.util.Logger;
 import org.graalphp.util.PhpLogger;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author abertschi
  */
-public class PhpParseVisitor extends HierarchicalVisitor {
+public class PhpProgramVisitor extends HierarchicalVisitor {
 
     // TODO: do we need to store this?
     private Source source;
+
+    private  Map<String, RootCallTarget> functions = new HashMap<>();
 
     /**
      * current expression in tree
@@ -35,13 +38,13 @@ public class PhpParseVisitor extends HierarchicalVisitor {
     List<PhpStmtNode> astStmts = new LinkedList<>();
 
     private static final Logger LOG = PhpLogger
-            .getLogger(PhpParseVisitor.class.getSimpleName());
+            .getLogger(PhpProgramVisitor.class.getSimpleName());
 
-    public PhpParseVisitor(Source source) {
+    public PhpProgramVisitor(Source source) {
         this.source = source;
     }
 
-    public PhpParseVisitor() {
+    public PhpProgramVisitor() {
         this.source = null;
     }
 
@@ -200,5 +203,37 @@ public class PhpParseVisitor extends HierarchicalVisitor {
         assignment.getLeftHandSide().accept(this);
         assignment.getRightHandSide().accept(this);
         return super.visit(assignment);
+    }
+
+
+    // ---------------- function definition --------------------
+
+    @Override
+    public boolean visit(FunctionDeclaration fn) {
+        // TODO : we ignore isNullable for now
+        String name = fn.getFunctionName().getName();
+        String returnType = fn.getReturnType() != null ? fn.getReturnType().toString() : null;
+
+//        for (ASTNode node : fn.formalParameters()) {
+//            node.accept(this);
+//        }
+        if (fn.getBody() != null) {
+            fn.getBody().accept(this);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean visit(FormalParameter parm) {
+
+//        if (parm.getDefaultValue() != null) {
+//            parameterType.accept(visitor);
+//        }
+//        parameterName.accept(visitor);
+//        if (defaultValue != null) {
+//            defaultValue.accept(visitor);
+//        }
+//        return super.visit(formalParameter);
+        return false;
     }
 }

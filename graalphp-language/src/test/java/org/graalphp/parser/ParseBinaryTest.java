@@ -6,7 +6,6 @@ import org.eclipse.php.core.ast.error.ConsoleErrorListener;
 import org.eclipse.php.core.ast.nodes.ASTParser;
 import org.eclipse.php.core.ast.nodes.Program;
 import org.graalvm.polyglot.Context;
-import org.graalvm.polyglot.PolyglotException;
 import org.graalvm.polyglot.Value;
 import org.junit.Assert;
 import org.junit.Test;
@@ -99,7 +98,7 @@ public class ParseBinaryTest {
     @Test
     public void parseAst() throws Exception {
         String code = TestCommons.php("1 - (-1)");
-        PhpParseVisitor v = new PhpParseVisitor();
+        PhpProgramVisitor v = new PhpProgramVisitor();
         ASTParser parser = ASTParser.newParser(PHPVersion.PHP7_4);
         parser.setSource(code.toCharArray());
         parser.addErrorListener(new BailoutErrorListener());
