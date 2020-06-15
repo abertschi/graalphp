@@ -9,7 +9,7 @@ import org.graalphp.nodes.controlflow.execption.PhpReturnException;
 import org.graalphp.types.PhpNull;
 
 /**
- * Controlflow Node to model return values
+ * Control flow Node to model return values
  *
  * @author abertschi
  */

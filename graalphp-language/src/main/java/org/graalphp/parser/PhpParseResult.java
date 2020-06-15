@@ -11,17 +11,13 @@ import java.util.Map;
  */
 public class PhpParseResult {
 
-    private List<PhpExprNode> globalStmts;
+    private final List<PhpStmtNode> rootNode;
 
-    public PhpParseResult(List<PhpExprNode> globalStmts) {
-        this.globalStmts = globalStmts;
+    public PhpParseResult(List<PhpStmtNode> rootNode) {
+        this.rootNode = rootNode;
     }
 
-    public List<PhpExprNode> getGlobalStmts() {
-        return globalStmts;
-    }
-
-    public void setGlobalStmts(List<PhpExprNode> globalStmts) {
-        this.globalStmts = globalStmts;
+    public List<PhpStmtNode> getRootNode () {
+        return this.rootNode;
     }
 }

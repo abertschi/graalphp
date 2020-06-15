@@ -2,7 +2,6 @@ package org.graalphp.nodes.controlflow;
 
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.BlockNode;
-import com.oracle.truffle.api.object.dsl.Nullable;
 import org.graalphp.nodes.PhpStmtNode;
 
 /**
@@ -21,7 +20,8 @@ public class PhpStmtListNode extends PhpStmtNode
     private BlockNode<PhpStmtNode> block;
 
     public PhpStmtListNode(PhpStmtNode[] stmts) {
-        this.block = stmts != null ? BlockNode.create(stmts, this) : null;
+        this.block = (stmts != null && stmts.length > 0)
+                ? BlockNode.create(stmts, this) : null;
     }
 
     @Override
