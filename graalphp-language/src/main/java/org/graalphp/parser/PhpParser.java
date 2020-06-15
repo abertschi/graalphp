@@ -25,7 +25,7 @@ public class PhpParser {
         this.lang = lang;
     }
 
-    public PhpParseResult parseSource(Source source) {
+    public PhpStmtVisitor.PhpStmtVisitorContext parseSource(Source source) {
         ASTParser parser = null;
         Program pgm = null;
         try {
@@ -43,8 +43,8 @@ public class PhpParser {
             // not an exception we through already ourselves
             throwGeneralParsingError(source, e.getMessage());
         }
-        PhpProgramVisitor visitor = new PhpProgramVisitor(source);
-        PhpParseResult res = visitor.createGraalAst(pgm);
+        PhpStmtVisitor visitor = new PhpStmtVisitor();
+        PhpStmtVisitor.PhpStmtVisitorContext res = visitor.createPhpAst(pgm);
         return res;
     }
 

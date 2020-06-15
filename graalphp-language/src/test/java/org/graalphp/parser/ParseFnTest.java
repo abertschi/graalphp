@@ -20,7 +20,6 @@ public class ParseFnTest {
     public void parseSimpleFn() throws Exception {
         String src = toString(getClass().getResourceAsStream("ParseFnTest01.php"));
         System.out.println(src);
-        PhpProgramVisitor v = new PhpProgramVisitor();
         ASTParser parser = ASTParser.newParser(PHPVersion.PHP7_4);
         parser.setSource(src.toCharArray());
         parser.addErrorListener(new ConsoleErrorListener());
