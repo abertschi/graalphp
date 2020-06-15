@@ -13,6 +13,7 @@ import org.graalphp.types.PhpNull;
  * @author abertschi
  */
 // TODO: rewrite this to use stmts
+@Deprecated() // use global scope node
 public final class PhpRootNode extends RootNode {
 
     @Children

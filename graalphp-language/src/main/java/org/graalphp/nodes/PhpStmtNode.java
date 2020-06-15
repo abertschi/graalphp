@@ -8,7 +8,6 @@ import org.graalphp.types.PhpTypes;
 
 /**
  * This represents a node which does not return a value.
- * It evaluates to nothing. This is typical for stmts.
  *
  * @author abertschi
  */
@@ -18,11 +17,15 @@ public abstract class PhpStmtNode extends Node {
 
     private static final int SRC_SECTION_NOT_SET = -1;
 
-    /** index for source section from parser **/
+    /**
+     * index for source section from parser
+     **/
     private int srcSectionStart = SRC_SECTION_NOT_SET;
     private int srcSectionLen = SRC_SECTION_NOT_SET;
 
-    /** Stmts evaluate to nothing **/
+    /**
+     * Stmts evaluate to nothing
+     **/
     public abstract void executeVoid(VirtualFrame frame);
 
     public final void setSourceSection(int charLeft, int len) {
