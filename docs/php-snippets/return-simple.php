@@ -1,7 +1,9 @@
 <?php
-1;
 
-return 1337;
-2;
-return 1;
+function foo($b, $a = $b + 1) {
+    $a = 1;
+    return 1337;
+}
+
+foo();
 ?>

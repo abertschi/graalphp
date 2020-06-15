@@ -84,9 +84,9 @@ public class PhpStmtVisitor extends HierarchicalVisitor {
         String name = fn.getFunctionName().getName();
         String returnType = fn.getReturnType() != null ? fn.getReturnType().toString() : null;
 
-        //        for (ASTNode node : fn.formalParameters()) {
-        //            node.accept(this);
-        //        }
+        for (ASTNode node : fn.formalParameters()) {
+            node.accept(this);
+        }
         if (fn.getBody() != null) {
             fn.getBody().accept(this);
         }

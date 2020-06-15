@@ -25,6 +25,11 @@ public class PhpParser {
         this.lang = lang;
     }
 
+    public PhpStmtVisitor.PhpStmtVisitorContext parseSource(String source) {
+        return parseSource(
+                Source.newBuilder(PhpLanguage.ID, source, "<console>").build());
+    }
+
     public PhpStmtVisitor.PhpStmtVisitorContext parseSource(Source source) {
         ASTParser parser = null;
         Program pgm = null;
