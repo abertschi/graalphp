@@ -1,7 +1,7 @@
 package org.graalphp.parser;
 
-import com.oracle.truffle.api.Truffle;
-import com.oracle.truffle.api.frame.FrameDescriptor;
+import com.oracle.truffle.api.frame.FrameSlot;
+import com.oracle.truffle.api.frame.FrameSlotKind;
 import org.eclipse.php.core.ast.nodes.*;
 import org.eclipse.php.core.ast.visitor.HierarchicalVisitor;
 import org.graalphp.nodes.PhpExprNode;
@@ -10,8 +10,8 @@ import org.graalphp.nodes.binary.PhpAddNodeGen;
 import org.graalphp.nodes.binary.PhpDivNodeGen;
 import org.graalphp.nodes.binary.PhpMulNodeGen;
 import org.graalphp.nodes.binary.PhpSubNodeGen;
-import org.graalphp.nodes.localvar.PhpReadVarNode;
 import org.graalphp.nodes.localvar.PhpReadVarNodeGen;
+import org.graalphp.nodes.localvar.PhpWriteVarNodeGen;
 import org.graalphp.nodes.unary.PhpNegNodeGen;
 import org.graalphp.util.Logger;
 import org.graalphp.util.PhpLogger;
@@ -22,10 +22,11 @@ import org.graalphp.util.PhpLogger;
 public class PhpExprVisitor extends HierarchicalVisitor {
 
     private PhpExprNode currExpr = null;
-    private FrameDescriptor currFrameDesciptor = null;
+    private ParseScope scope;
 
     private static final Logger LOG = PhpLogger
             .getLogger(PhpExprVisitor.class.getSimpleName());
+
 
     public PhpExprVisitor() {
     }
@@ -33,23 +34,28 @@ public class PhpExprVisitor extends HierarchicalVisitor {
     // XXX: not thread safe
     // to reduce object creation, call visitExpression
     // on multipl. expressions
-    public PhpExprNode createExprAst(Expression e) {
-        if (currFrameDesciptor == null){
-            new IllegalArgumentException("framedesc. cant be null");
+    public PhpExprNode createExprAst(Expression e, ParseScope scope) {
+        if (scope == null) {
+            new IllegalArgumentException("scope. cant be null");
         }
         currExpr = null;
-        this.currFrameDesciptor = currFrameDesciptor;
+        this.scope = scope;
         e.accept(this);
         PhpExprNode res = currExpr;
         currExpr = null;
-        this.currFrameDesciptor = null;
+        this.scope = null;
         return res;
     }
 
-    private void initAndAcceptExpr(final Expression e) {
+    private PhpExprNode initAndAcceptExpr(final Expression e) {
         currExpr = null;
         e.accept(this);
         assert (currExpr != null);
+        return currExpr;
+    }
+
+    private void setSourceSection(PhpStmtNode target, ASTNode n) {
+        target.setSourceSection(n.getStart(), n.getLength());
     }
 
     @Override
@@ -131,10 +137,6 @@ public class PhpExprVisitor extends HierarchicalVisitor {
 
     // ---------------- scalar expressions --------------------
 
-    private void addSource(PhpStmtNode target, ASTNode n) {
-        target.setSourceSection(n.getStart(), n.getLength());
-    }
-
     @Override
     public boolean visit(Scalar scalar) {
         boolean hasSource = true;
@@ -156,21 +158,51 @@ public class PhpExprVisitor extends HierarchicalVisitor {
         return false;
     }
 
-
     // ---------------- local variable lookup --------------------
+
     @Override
     public boolean visit(Variable variable) {
-        assert(currExpr == null);
+        assert (currExpr == null);
 
         if (!(variable.getName() instanceof Identifier)) {
             throw new UnsupportedOperationException("Other variables than identifier not supported");
         }
-        String name = ((Identifier) variable.getName()).getName();
-//        currFrameDesciptor.get
-//        currExpr = PhpReadVarNodeGen.create()
 
+        // TODO: support global vars
+        final String name = ((Identifier) variable.getName()).getName();
+        FrameSlot varSlot = scope.getVars().get(name);
+        if (varSlot == null) {
+            throw new IllegalStateException("Variable not found in scope. Globals not yet supported");
+        }
+
+        final PhpExprNode varNode = PhpReadVarNodeGen.create(varSlot);
+        setSourceSection(varNode, variable);
+
+        currExpr = varNode;
         return false;
     }
 
+    // ---------------- local variable write --------------------
 
+    @Override
+    public boolean visit(Assignment ass) {
+        System.out.println(ass.getLeftHandSide());
+        if (!(ass.getLeftHandSide() instanceof Variable)) {
+            throw new UnsupportedOperationException("Other variables than identifier not supported");
+        }
+
+        final String dest = new PhpIdentifierVisitor().getIdentifierName(ass.getLeftHandSide()).getName();
+        final PhpExprNode source = initAndAcceptExpr(ass.getRightHandSide());
+        final FrameSlot frameSlot = scope.getFrameDesc().findOrAddFrameSlot(
+                dest,
+                null,
+                FrameSlotKind.Illegal);
+
+        scope.getVars().put(dest, frameSlot);
+        final PhpExprNode assignNode = PhpWriteVarNodeGen.create(source, frameSlot);
+        setSourceSection(assignNode, ass);
+
+        currExpr = assignNode;
+        return false;
+    }
 }

@@ -4,6 +4,10 @@ import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.Value;
 import org.junit.Assert;
 
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.Scanner;
+
 /**
  * @author abertschi
  */
@@ -30,5 +34,13 @@ public class TestCommons {
         Value val = ctx.eval("php", php(src));
         Assert.assertEquals(expected, val.asDouble(), 0000000000.1);
         return val.asDouble();
+    }
+
+    public static String inputStreamToString(InputStream in ) {
+        String text = null;
+        try (Scanner scanner = new Scanner(in, StandardCharsets.UTF_8.name())) {
+            text = scanner.useDelimiter("\\A").next();
+        }
+        return text;
     }
 }

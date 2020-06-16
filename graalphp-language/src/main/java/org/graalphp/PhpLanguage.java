@@ -48,7 +48,11 @@ public final class PhpLanguage extends TruffleLanguage<PhpContext> {
 
         PhpStmtVisitor.PhpStmtVisitorContext parseResult = phpParser.parseSource(source);
         PhpGlobalScopeNode evalMain =
-                new PhpGlobalScopeNode(this, null, parseResult.stmts, true);
+                new PhpGlobalScopeNode(
+                        this,
+                        parseResult.scope.getFrameDesc(),
+                        parseResult.stmts,
+                        true);
         return Truffle.getRuntime().createCallTarget(evalMain);
     }
 

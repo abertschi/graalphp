@@ -23,7 +23,7 @@ public abstract class PhpWriteVarNode extends PhpExprNode {
     @Specialization
     // TODO: make this specialization for primitive types to avoid boxing
     protected Object write(VirtualFrame frame, Object value) {
-        frame.getFrameDescriptor().setFrameSlotKind(getSlot(), FrameSlotKind.Object);
+//        frame.getFrameDescriptor().setFrameSlotKind(getSlot(), FrameSlotKind.Object);
         frame.setObject(getSlot(), value);
         return value;
     }
