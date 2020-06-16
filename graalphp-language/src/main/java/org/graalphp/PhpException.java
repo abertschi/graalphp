@@ -30,4 +30,8 @@ public class PhpException extends RuntimeException implements TruffleException {
     public Node getLocation() {
         return location;
     }
+
+    public static void typeError(String msg, Node location) {
+        throw new PhpException(msg, location);
+    }
 }
