@@ -4,6 +4,7 @@ import com.oracle.truffle.api.frame.FrameSlot;
 import com.oracle.truffle.api.frame.FrameSlotKind;
 import org.eclipse.php.core.ast.nodes.*;
 import org.eclipse.php.core.ast.visitor.HierarchicalVisitor;
+import org.graalphp.PhpException;
 import org.graalphp.nodes.PhpExprNode;
 import org.graalphp.nodes.PhpStmtNode;
 import org.graalphp.nodes.binary.PhpAddNodeGen;
@@ -172,7 +173,7 @@ public class PhpExprVisitor extends HierarchicalVisitor {
         final String name = ((Identifier) variable.getName()).getName();
         FrameSlot varSlot = scope.getVars().get(name);
         if (varSlot == null) {
-            throw new IllegalStateException("Variable not found in scope. Globals not yet supported");
+            PhpException.undefVariableError(name, null);
         }
 
         final PhpExprNode varNode = PhpReadVarNodeGen.create(varSlot);

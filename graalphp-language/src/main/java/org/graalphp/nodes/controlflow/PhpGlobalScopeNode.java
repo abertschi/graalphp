@@ -7,10 +7,8 @@ import com.oracle.truffle.api.nodes.RootNode;
 import org.graalphp.PhpLanguage;
 import org.graalphp.nodes.PhpExprNode;
 import org.graalphp.nodes.PhpStmtNode;
-import org.graalphp.nodes.controlflow.execption.PhpReturnException;
 import org.graalphp.types.PhpNull;
 
-import java.util.Collections;
 import java.util.List;
 
 /**

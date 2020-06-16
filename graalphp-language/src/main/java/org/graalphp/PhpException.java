@@ -34,4 +34,12 @@ public class PhpException extends RuntimeException implements TruffleException {
     public static void typeError(String msg, Node location) {
         throw new PhpException(msg, location);
     }
+
+    public static void undefVariableError(String var, Node location) {
+        StringBuilder buf = new StringBuilder();
+        buf.append("Undefined variable: ").append(var);
+        // TODO: add reference to source section
+
+        throw new PhpException(buf.toString(), location);
+    }
 }

@@ -1,4 +1,4 @@
-package org.graalphp.nodes.controlflow.execption;
+package org.graalphp.nodes.controlflow;
 
 import com.oracle.truffle.api.nodes.ControlFlowException;
 
