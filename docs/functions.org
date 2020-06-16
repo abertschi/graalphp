@@ -296,3 +296,15 @@ array(8) {
 
 
 ** Scoping in Truffle
+* Questions
+** Can i call nested functions from outside of function which is parent of nested function?
+#+begin_src php
+function foo() {
+    function test() {
+        echo "hi";
+    }
+}
+
+test();
+#+end_src
+No

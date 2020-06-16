@@ -18,8 +18,13 @@ feature compliance. However, it is not versioned by PHP version and seems outdat
 ** TODO [[file:https://www.php.net/manual/en/language.types.php][Types]]
 + [ ] [[file:https://www.php.net/manual/en/language.types.intro.php][Introduction]]
 + [ ] [[file:https://www.php.net/manual/en/language.types.boolean.php][Booleans]]
-+ [ ] [[file:https://www.php.net/manual/en/language.types.integer.php][Integers]]
-+ [ ] [[file:https://www.php.net/manual/en/language.types.float.php][Floating point numbers]]
++ [-] [[file:https://www.php.net/manual/en/language.types.integer.php][Integers]]
+  - [X] 8 bytes, signed int
+  - [X] converted to float on overflow
+  - [ ] Hex numbers
+  - [ ] Oct numbers
++ [X] [[file:https://www.php.net/manual/en/language.types.float.php][Floating point numbers]]
+  - [X] double precision floats
 + [ ] [[file:https://www.php.net/manual/en/language.types.string.php][Strings]]
 + [ ] [[file:https://www.php.net/manual/en/language.types.array.php][Arrays]]
 + [ ] [[file:https://www.php.net/manual/en/language.types.iterable.php][Iterables]]
@@ -81,6 +86,7 @@ feature compliance. However, it is not versioned by PHP version and seems outdat
 ** TODO [[file:https://www.php.net/manual/en/language.functions.php][Functions]]
 + [ ] [[file:https://www.php.net/manual/en/functions.user-defined.php][User-defined functions]]
 + [ ] [[file:https://www.php.net/manual/en/functions.arguments.php][Function arguments]]
+  - [ ] type annotations
 + [ ] [[file:https://www.php.net/manual/en/functions.returning-values.php][Returning values]]
 + [ ] [[file:https://www.php.net/manual/en/functions.variable-functions.php][Variable functions]]
 + [ ] [[file:https://www.php.net/manual/en/functions.internal.php][Internal (built-in) functions]]

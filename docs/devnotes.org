@@ -33,6 +33,8 @@ slower.
 *** Integer
 **** TODO make PHP_INT_SIZE, PHP_INT_MIN and PHP_INT_MAX available as constants
 **** TODO isInt library function
+** TODO unclear DirectCallNode vs RootCallTarget
+We currently use RootCallTarget for functions
 * Optimizations
 ** TODO See if specialisation for shift instead of div by 2 brings performance
 * Testing/ CI
