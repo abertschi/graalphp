@@ -1,12 +1,17 @@
 package org.graalphp.parser;
 
+import com.oracle.truffle.api.Truffle;
+import com.oracle.truffle.api.frame.FrameDescriptor;
 import org.eclipse.php.core.ast.nodes.*;
 import org.eclipse.php.core.ast.visitor.HierarchicalVisitor;
 import org.graalphp.nodes.PhpExprNode;
+import org.graalphp.nodes.PhpStmtNode;
 import org.graalphp.nodes.binary.PhpAddNodeGen;
 import org.graalphp.nodes.binary.PhpDivNodeGen;
 import org.graalphp.nodes.binary.PhpMulNodeGen;
 import org.graalphp.nodes.binary.PhpSubNodeGen;
+import org.graalphp.nodes.localvar.PhpReadVarNode;
+import org.graalphp.nodes.localvar.PhpReadVarNodeGen;
 import org.graalphp.nodes.unary.PhpNegNodeGen;
 import org.graalphp.util.Logger;
 import org.graalphp.util.PhpLogger;
@@ -17,6 +22,7 @@ import org.graalphp.util.PhpLogger;
 public class PhpExprVisitor extends HierarchicalVisitor {
 
     private PhpExprNode currExpr = null;
+    private FrameDescriptor currFrameDesciptor = null;
 
     private static final Logger LOG = PhpLogger
             .getLogger(PhpExprVisitor.class.getSimpleName());
@@ -28,10 +34,15 @@ public class PhpExprVisitor extends HierarchicalVisitor {
     // to reduce object creation, call visitExpression
     // on multipl. expressions
     public PhpExprNode createExprAst(Expression e) {
+        if (currFrameDesciptor == null){
+            new IllegalArgumentException("framedesc. cant be null");
+        }
         currExpr = null;
+        this.currFrameDesciptor = currFrameDesciptor;
         e.accept(this);
         PhpExprNode res = currExpr;
         currExpr = null;
+        this.currFrameDesciptor = null;
         return res;
     }
 
@@ -120,6 +131,10 @@ public class PhpExprVisitor extends HierarchicalVisitor {
 
     // ---------------- scalar expressions --------------------
 
+    private void addSource(PhpStmtNode target, ASTNode n) {
+        target.setSourceSection(n.getStart(), n.getLength());
+    }
+
     @Override
     public boolean visit(Scalar scalar) {
         boolean hasSource = true;
@@ -140,4 +155,22 @@ public class PhpExprVisitor extends HierarchicalVisitor {
         }
         return false;
     }
+
+
+    // ---------------- local variable lookup --------------------
+    @Override
+    public boolean visit(Variable variable) {
+        assert(currExpr == null);
+
+        if (!(variable.getName() instanceof Identifier)) {
+            throw new UnsupportedOperationException("Other variables than identifier not supported");
+        }
+        String name = ((Identifier) variable.getName()).getName();
+//        currFrameDesciptor.get
+//        currExpr = PhpReadVarNodeGen.create()
+
+        return false;
+    }
+
+
 }

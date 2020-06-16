@@ -3,12 +3,17 @@ package org.graalphp.parser;
 import com.oracle.truffle.api.RootCallTarget;
 import com.oracle.truffle.api.Truffle;
 import com.oracle.truffle.api.frame.FrameDescriptor;
+import com.oracle.truffle.api.frame.FrameSlot;
+import com.oracle.truffle.api.frame.FrameSlotKind;
 import org.eclipse.php.core.ast.nodes.*;
 import org.eclipse.php.core.ast.visitor.HierarchicalVisitor;
 import org.graalphp.PhpLanguage;
 import org.graalphp.nodes.PhpExprNode;
 import org.graalphp.nodes.PhpStmtNode;
 import org.graalphp.nodes.controlflow.PhpFnRootNode;
+import org.graalphp.nodes.localvar.PhpReadArgNode;
+import org.graalphp.nodes.localvar.PhpWriteVarNode;
+import org.graalphp.nodes.localvar.PhpWriteVarNodeGen;
 import org.graalphp.util.Logger;
 import org.graalphp.util.PhpLogger;
 
@@ -29,9 +34,6 @@ public class PhpStmtVisitor extends HierarchicalVisitor {
     private List<PhpStmtNode> stmts;
     private Map<String, RootCallTarget> functions;
     private PhpExprVisitor exprVisitor;
-
-    // tmp storage for walking
-    private FrameDescriptor currFnFrameDescriptor;
 
     public PhpStmtVisitor(PhpLanguage lang) {
         this.exprVisitor = new PhpExprVisitor();
@@ -80,27 +82,47 @@ public class PhpStmtVisitor extends HierarchicalVisitor {
 
     // ---------------- function definition --------------------
 
+    private FrameDescriptor currFnFrameDescriptor;
+    private int currFnArgumentCount = 0;
+    private PhpExprNode currFnParamExpr;
+
     @Override
     public boolean visit(FunctionDeclaration fnParse) {
         // TODO: ignore nullable
         // TODO: ignore return Type
+
         final String fnName = fnParse.getFunctionName().getName();
         final PhpFnRootNode fnRoot;
         this.currFnFrameDescriptor = new FrameDescriptor();
+        this.currFnArgumentCount = 0;
 
-        for (ASTNode node : fnParse.formalParameters()) {
-            // TODO: integrate formal params
+        final List<PhpStmtNode> bodyStmts = new LinkedList<>();
+        for (FormalParameter node : fnParse.formalParameters()) {
+            this.currFnParamExpr = null;
             node.accept(this);
+
+            assert (currFnParamExpr != null);
+            bodyStmts.add(currFnParamExpr);
+            LOG.info("adding expr: " + currFnParamExpr.toString());
         }
         if (fnParse.getBody() != null) {
             final PhpStmtVisitor fnVisitor = new PhpStmtVisitor(this.language);
             final PhpStmtVisitorContext body = fnVisitor.createPhpStmtAst(fnParse.getBody());
-            fnRoot = PhpFnRootNode.createFromStmts(language, currFnFrameDescriptor, fnName,
-                    body.stmts);
-            functions.putAll(body.functions);
-        } else {
-            fnRoot = PhpFnRootNode.createWithoutBody(language, currFnFrameDescriptor, fnName);
+            bodyStmts.addAll(body.stmts);
+
+            System.out.println(body.functions);
+            if (body.functions != null && body.functions.size() > 0){
+                // functions.putAll(body.functions);
+                // TODO: nested functions are only visible within that function!
+                throw new UnsupportedOperationException("nested functions not yet supported:");
+            }
         }
+        fnRoot = PhpFnRootNode.createFromStmts(
+                language,
+                currFnFrameDescriptor,
+                fnName,
+                bodyStmts);
+
         functions.put(fnName, Truffle.getRuntime().createCallTarget(fnRoot));
         LOG.info("create call target for " + fnName);
 
@@ -108,11 +130,32 @@ public class PhpStmtVisitor extends HierarchicalVisitor {
     }
 
     @Override
-    public boolean visit(FormalParameter parm) {
-        // LOG.finest("param: " + parm.getParameterName().toString());
+    public boolean visit(FormalParameter formalParameter) {
+        assert currFnParamExpr == null;
+
+        final PhpReadArgNode readArg = new PhpReadArgNode(this.currFnArgumentCount);
+        this.currFnParamExpr = createLocalAssignment(this.currFnFrameDescriptor,
+                new PhpIdentifierVisitor().getIdentifierName(formalParameter.getParameterName()).getName(),
+                readArg,
+                this.currFnArgumentCount);
+        this.currFnArgumentCount++;
+
         return false;
     }
 
+    private PhpExprNode createLocalAssignment(FrameDescriptor frame,
+                                              String target,
+                                              PhpExprNode source,
+                                              Integer argumentId) {
+
+        final FrameSlot frameSlot = frame.findOrAddFrameSlot(
+                target,
+                argumentId,
+                FrameSlotKind.Illegal);
+
+        // TODO: source section?
+        return PhpWriteVarNodeGen.create(source, frameSlot);
+    }
 
     /**
      * Represents return object of ast walking
