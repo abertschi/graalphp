@@ -1,0 +1,20 @@
+package org.graalphp.nodes.controlflow;
+
+import com.oracle.truffle.api.frame.VirtualFrame;
+import org.graalphp.nodes.PhpExprNode;
+import org.graalphp.nodes.PhpStmtNode;
+import org.graalphp.types.PhpNull;
+
+/**
+ * A dummy node which returns nothing
+ * Used instead of null in nodes to prevent null checks
+ *
+ * @author abertschi
+ */
+public class PhpEmptyExprNode extends PhpExprNode {
+
+    @Override
+    public Object executeGeneric(VirtualFrame frame) {
+        return PhpNull.SINGLETON;
+    }
+}

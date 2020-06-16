@@ -48,7 +48,7 @@ public class PhpParser {
             // not an exception we through already ourselves
             throwGeneralParsingError(source, e.getMessage());
         }
-        PhpStmtVisitor visitor = new PhpStmtVisitor();
+        PhpStmtVisitor visitor = new PhpStmtVisitor(lang);
         PhpStmtVisitor.PhpStmtVisitorContext res = visitor.createPhpAst(pgm);
         return res;
     }

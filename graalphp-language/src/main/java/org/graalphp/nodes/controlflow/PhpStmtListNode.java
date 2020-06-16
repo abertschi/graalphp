@@ -4,6 +4,10 @@ import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.BlockNode;
 import org.graalphp.nodes.PhpStmtNode;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Represents a sequence of stmts in PHP.
  *
@@ -24,6 +28,10 @@ public class PhpStmtListNode extends PhpStmtNode
                 ? BlockNode.create(stmts, this) : null;
     }
 
+    public PhpStmtListNode(List<PhpStmtNode> stmts) {
+        this(stmts.toArray(new PhpStmtNode[stmts.size()]));
+    }
+
     @Override
     public void executeVoid(VirtualFrame frame) {
         if (block != null) {
@@ -34,5 +42,23 @@ public class PhpStmtListNode extends PhpStmtNode
     @Override
     public void executeVoid(VirtualFrame frame, PhpStmtNode node, int index, int argument) {
         node.executeVoid(frame);
+    }
+
+    public List<PhpStmtNode> getStatements() {
+        if (block == null) {
+            return Collections.emptyList();
+        }
+        return Collections.unmodifiableList(Arrays.asList(block.getElements()));
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder buf = new StringBuilder();
+        buf.append(getClass().getSimpleName()).append(": ");
+        for(PhpStmtNode s: getStatements()) {
+            buf.append(s.toString());
+        }
+        return buf.toString();
+
     }
 }

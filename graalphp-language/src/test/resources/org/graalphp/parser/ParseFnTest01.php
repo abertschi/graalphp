@@ -1,7 +1,7 @@
 <?php
+1 + 1;
 
-function foo($b, $a = $a + 1) {
-    $a = 1;
+function foo() {
     return 1337;
 }
 

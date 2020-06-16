@@ -98,7 +98,6 @@ public class ParseBinaryTest {
     @Test
     public void parseAst() throws Exception {
         String code = TestCommons.php("1 - (-1)");
-        PhpStmtVisitor v = new PhpStmtVisitor();
         ASTParser parser = ASTParser.newParser(PHPVersion.PHP7_4);
         parser.setSource(code.toCharArray());
         parser.addErrorListener(new BailoutErrorListener());
