@@ -1,8 +1,9 @@
-package org.graalphp.nodes.controlflow;
+package org.graalphp.nodes;
 
 import com.oracle.truffle.api.frame.VirtualFrame;
 import org.graalphp.nodes.PhpExprNode;
 import org.graalphp.nodes.PhpStmtNode;
+import org.graalphp.nodes.controlflow.PhpReturnException;
 import org.graalphp.types.PhpNull;
 
 /**
@@ -11,14 +12,14 @@ import org.graalphp.types.PhpNull;
  *
  * @author abertschi
  */
-public class PhpFnBodyNode extends PhpExprNode {
+public class PhpReturnBodyNode extends PhpExprNode {
 
     // TODO: add branch profiling
 
     @Child
     private PhpStmtNode body;
 
-    public PhpFnBodyNode(PhpStmtNode body) {
+    public PhpReturnBodyNode(PhpStmtNode body) {
         this.body = body;
     }
 

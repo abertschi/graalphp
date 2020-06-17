@@ -1,4 +1,4 @@
-package org.graalphp.nodes.controlflow;
+package org.graalphp.nodes;
 
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.BlockNode;

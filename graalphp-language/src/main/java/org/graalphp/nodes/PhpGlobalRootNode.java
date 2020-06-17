@@ -1,4 +1,4 @@
-package org.graalphp.nodes.controlflow;
+package org.graalphp.nodes;
 
 import com.oracle.truffle.api.frame.FrameDescriptor;
 import com.oracle.truffle.api.frame.VirtualFrame;
@@ -6,7 +6,10 @@ import com.oracle.truffle.api.nodes.NodeInfo;
 import com.oracle.truffle.api.nodes.RootNode;
 import org.graalphp.PhpLanguage;
 import org.graalphp.nodes.PhpExprNode;
+import org.graalphp.nodes.PhpStmtListNode;
 import org.graalphp.nodes.PhpStmtNode;
+import org.graalphp.nodes.controlflow.PhpReturnException;
+import org.graalphp.nodes.controlflow.PhpReturnNode;
 import org.graalphp.types.PhpNull;
 
 import java.util.ArrayList;
@@ -16,15 +19,15 @@ import java.util.List;
  * @author abertschi
  */
 @NodeInfo(language = PhpLanguage.ID, description = "entry point to execute source code")
-public class PhpGlobalScopeNode extends RootNode {
+public class PhpGlobalRootNode extends RootNode {
 
     @Child
     private PhpStmtNode body;
 
-    public PhpGlobalScopeNode(PhpLanguage language,
-                              FrameDescriptor globalDescriptor,
-                              List<PhpStmtNode> body,
-                              boolean returnLastExpr) {
+    public PhpGlobalRootNode(PhpLanguage language,
+                             FrameDescriptor globalDescriptor,
+                             List<PhpStmtNode> body,
+                             boolean returnLastExpr) {
         super(language, globalDescriptor);
         prepareBody(body, returnLastExpr);
     }

@@ -308,3 +308,17 @@ function foo() {
 test();
 #+end_src
 No
+
+** TODO Unclear when to use RootCallTarget and when to use Direct, IndirectCallNode
+*** RootCallTarget
+- is created with TruffleRuntime for a Node which represents a function of the entry point
+- is subclass of CallTarget
+*** IndirectCallNode
+- target may change
+
+*** DirectCallNode
+- target does not change, has potential for inlinging
+- create a directCallNode from a calltarget, which is a rootcalltarget for functions
+- cant we call rootcalltarget directly?
+
+

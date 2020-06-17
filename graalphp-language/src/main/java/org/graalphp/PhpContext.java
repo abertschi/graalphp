@@ -48,15 +48,4 @@ public final class PhpContext {
         return output;
     }
 
-    public static NodeInfo lookupNodeInfo(Class<?> clazz) {
-        if (clazz == null) {
-            return null;
-        }
-        NodeInfo info = clazz.getAnnotation(NodeInfo.class);
-        if (info != null) {
-            return info;
-        } else {
-            return lookupNodeInfo(clazz.getSuperclass());
-        }
-    }
 }

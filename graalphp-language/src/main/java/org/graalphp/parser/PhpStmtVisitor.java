@@ -10,7 +10,7 @@ import org.eclipse.php.core.ast.visitor.HierarchicalVisitor;
 import org.graalphp.PhpLanguage;
 import org.graalphp.nodes.PhpExprNode;
 import org.graalphp.nodes.PhpStmtNode;
-import org.graalphp.nodes.controlflow.PhpFnRootNode;
+import org.graalphp.nodes.PhpFunctionRootNode;
 import org.graalphp.nodes.localvar.PhpReadArgNode;
 import org.graalphp.nodes.localvar.PhpWriteVarNodeGen;
 import org.graalphp.util.Logger;
@@ -89,6 +89,7 @@ public class PhpStmtVisitor extends HierarchicalVisitor {
     }
 
     // ---------------- function definition --------------------
+
     private int currFnArgumentCount = 0;
     private PhpExprNode currFnParamExpr;
     private ParseScope currFnScope;
@@ -99,7 +100,7 @@ public class PhpStmtVisitor extends HierarchicalVisitor {
         // TODO: ignore return Type
 
         final String fnName = fnParse.getFunctionName().getName();
-        final PhpFnRootNode fnRoot;
+        final PhpFunctionRootNode fnRoot;
         this.currFnArgumentCount = 0;
         this.currFnScope = new ParseScope(new FrameDescriptor(), this.scope.getGlobal());
 
@@ -124,7 +125,7 @@ public class PhpStmtVisitor extends HierarchicalVisitor {
                 throw new UnsupportedOperationException("nested functions not yet supported:");
             }
         }
-        fnRoot = PhpFnRootNode.createFromStmts(
+        fnRoot = PhpFunctionRootNode.createFromStmts(
                 language,
                 currFnScope.getFrameDesc(),
                 fnName,

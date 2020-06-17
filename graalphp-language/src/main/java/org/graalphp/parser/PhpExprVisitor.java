@@ -2,10 +2,12 @@ package org.graalphp.parser;
 
 import com.oracle.truffle.api.frame.FrameSlot;
 import com.oracle.truffle.api.frame.FrameSlotKind;
+import com.oracle.truffle.api.nodes.DirectCallNode;
 import org.eclipse.php.core.ast.nodes.*;
 import org.eclipse.php.core.ast.visitor.HierarchicalVisitor;
 import org.graalphp.PhpException;
 import org.graalphp.nodes.PhpExprNode;
+import org.graalphp.nodes.PhpInvokeNode;
 import org.graalphp.nodes.PhpStmtNode;
 import org.graalphp.nodes.binary.PhpAddNodeGen;
 import org.graalphp.nodes.binary.PhpDivNodeGen;
@@ -16,13 +18,19 @@ import org.graalphp.nodes.localvar.PhpWriteVarNodeGen;
 import org.graalphp.nodes.unary.PhpNegNodeGen;
 import org.graalphp.util.Logger;
 import org.graalphp.util.PhpLogger;
+import org.graalvm.compiler.nodes.DirectCallTargetNode;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author abertschi
  */
 public class PhpExprVisitor extends HierarchicalVisitor {
 
+    // current expression
     private PhpExprNode currExpr = null;
+
     private ParseScope scope;
 
     private static final Logger LOG = PhpLogger
@@ -192,7 +200,9 @@ public class PhpExprVisitor extends HierarchicalVisitor {
             throw new UnsupportedOperationException("Other variables than identifier not supported");
         }
 
-        final String dest = new PhpIdentifierVisitor().getIdentifierName(ass.getLeftHandSide()).getName();
+        final String dest = new PhpIdentifierVisitor()
+                .getIdentifierName(ass.getLeftHandSide()).getName();
+
         final PhpExprNode source = initAndAcceptExpr(ass.getRightHandSide());
         final FrameSlot frameSlot = scope.getFrameDesc().findOrAddFrameSlot(
                 dest,
@@ -204,6 +214,52 @@ public class PhpExprVisitor extends HierarchicalVisitor {
         setSourceSection(assignNode, ass);
 
         currExpr = assignNode;
+        return false;
+    }
+
+
+    // ---------------- function invocations --------------------
+
+
+    //<FunctionInvocation start='44' length='9'>
+    //	<FunctionName start='44' length='3'>
+    //		<NamespaceName start='44' length='3' global='false' current='false'>
+    //			<Identifier start='44' length='3' name='foo'/>
+    //		</NamespaceName>
+    //	</FunctionName>
+    //	<Parameters>
+    //		<Scalar start='48' length='4' type='int' value='1337'/>
+    //	</Parameters>
+    //</FunctionInvocation>
+
+    @Override
+    public boolean visit(FunctionInvocation fn) {
+        //TODO:  we dont support function names which are stored in variables yet
+
+        final Identifier fnId = new PhpIdentifierVisitor().getIdentifierName(fn);
+        if (fnId == null){
+            throw new UnsupportedOperationException("we dont support function lookup in vars");
+        }
+
+        List<PhpExprNode> args = new LinkedList<>();
+        for(Expression e: fn.parameters()) {
+            final PhpExprNode arg = initAndAcceptExpr(e);
+            System.out.println(arg);
+            // setSourceSection(arg, e);
+            args.add(arg);
+        }
+
+        currExpr = null;
+
+        // TODO: problem
+        // at this point we have not parsed everything yet, so we dont have calltargets
+        // for the function because it is parsed later in the source flow.
+        // we need a form of lazy lookup here
+//        DirectCallNode target = null;
+//        PhpInvokeNode invokeNode = new PhpInvokeNode(args.toArray(new PhpInvokeNode[args.size()]), target);
+
+//        setSourceSection(invokeNode, fn);
+//        currExpr = invokeNode;
         return false;
     }
 }
