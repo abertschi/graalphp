@@ -4,7 +4,7 @@ env:
     - GRAALVM_VERSION="20.0.0"
     - GRAALVM_JAVA_VERSION="11"
     - GRAALPHP_BUILD_NATIVE="true"
-    - TEST="./graalphp-language/tests/dummy.php"
+    - TEST="./graalphp-language/tests/assign/assign-var-03.php"
 
 os: linux
 
