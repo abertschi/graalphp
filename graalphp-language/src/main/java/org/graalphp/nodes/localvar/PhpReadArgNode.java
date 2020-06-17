@@ -1,9 +1,7 @@
 package org.graalphp.nodes.localvar;
 
 import com.oracle.truffle.api.frame.VirtualFrame;
-import org.graalphp.PhpException;
 import org.graalphp.nodes.PhpExprNode;
-import org.graalphp.types.PhpNull;
 
 /**
  * Node which returns argument from truffle frame

@@ -17,7 +17,6 @@ import org.graalphp.nodes.binary.PhpSubNodeGen;
 import org.graalphp.nodes.localvar.PhpReadVarNodeGen;
 import org.graalphp.nodes.localvar.PhpWriteVarNodeGen;
 import org.graalphp.nodes.unary.PhpNegNodeGen;
-import org.graalphp.types.PhpFunction;
 import org.graalphp.util.Logger;
 import org.graalphp.util.PhpLogger;
 

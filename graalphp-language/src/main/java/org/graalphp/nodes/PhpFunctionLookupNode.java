@@ -3,9 +3,7 @@ package org.graalphp.nodes;
 import com.oracle.truffle.api.CompilerDirectives;
 import com.oracle.truffle.api.CompilerDirectives.CompilationFinal;
 import com.oracle.truffle.api.frame.VirtualFrame;
-import org.graalphp.PhpContext;
 import org.graalphp.PhpException;
-import org.graalphp.PhpLanguage;
 import org.graalphp.parser.ParseScope;
 import org.graalphp.types.PhpFunction;
 

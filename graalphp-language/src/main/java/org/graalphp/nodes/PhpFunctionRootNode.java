@@ -15,7 +15,7 @@ import java.util.List;
  *
  * @author abertschi
  */
-public class PhpFunctionRootNode extends RootNode {
+public final class PhpFunctionRootNode extends RootNode {
 
     @Node.Child
     private PhpExprNode body;
@@ -27,7 +27,6 @@ public class PhpFunctionRootNode extends RootNode {
         this.name = name;
         this.body = body;
     }
-
 
     public static PhpFunctionRootNode createFromStmts(PhpLanguage lang,
                                                       FrameDescriptor desc,
@@ -48,5 +47,13 @@ public class PhpFunctionRootNode extends RootNode {
     @Override
     public Object execute(VirtualFrame frame) {
         return body.executeGeneric(frame);
+    }
+
+    @Override
+    public String toString() {
+        return "PhpFunctionRootNode{" +
+                "body=" + body +
+                ", name='" + name + '\'' +
+                '}';
     }
 }

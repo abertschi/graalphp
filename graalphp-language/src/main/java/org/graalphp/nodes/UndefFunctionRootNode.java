@@ -1,6 +1,5 @@
 package org.graalphp.nodes;
 
-import com.oracle.truffle.api.TruffleLanguage;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.RootNode;
 import org.graalphp.PhpLanguage;
