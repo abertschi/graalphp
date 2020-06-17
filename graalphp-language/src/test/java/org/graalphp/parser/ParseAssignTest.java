@@ -5,14 +5,8 @@ import org.eclipse.php.core.ast.error.BailoutErrorListener;
 import org.eclipse.php.core.ast.error.ConsoleErrorListener;
 import org.eclipse.php.core.ast.nodes.ASTParser;
 import org.eclipse.php.core.ast.nodes.Program;
-import org.graalphp.PhpException;
 import org.graalphp.nodes.PhpStmtNode;
-import org.graalvm.polyglot.Context;
-import org.graalvm.polyglot.Value;
-import org.junit.Assert;
 import org.junit.Test;
-
-import java.io.IOException;
 
 /**
  * @author abertschi
@@ -51,8 +45,8 @@ public class ParseAssignTest {
         parser.addErrorListener(new BailoutErrorListener());
         Program pgm = parser.parsePhpProgram();
         System.out.println(pgm);
-        PhpStmtVisitor visitor = new PhpStmtVisitor(null);
-        PhpStmtVisitor.PhpStmtVisitorContext phpAst = visitor.createPhpAst(pgm);
+        StmtVisitor visitor = new StmtVisitor(null);
+        StmtVisitor.PhpStmtVisitorContext phpAst = visitor.createPhpAst(pgm);
 
         for (PhpStmtNode s : phpAst.stmts) {
             System.out.println(s);
@@ -79,8 +73,8 @@ public class ParseAssignTest {
         parser.addErrorListener(new BailoutErrorListener());
         Program pgm = parser.parsePhpProgram();
         System.out.println(pgm);
-        PhpStmtVisitor visitor = new PhpStmtVisitor(null);
-        PhpStmtVisitor.PhpStmtVisitorContext phpAst = visitor.createPhpAst(pgm);
+        StmtVisitor visitor = new StmtVisitor(null);
+        StmtVisitor.PhpStmtVisitorContext phpAst = visitor.createPhpAst(pgm);
 
         for (PhpStmtNode s : phpAst.stmts) {
             System.out.println(s);

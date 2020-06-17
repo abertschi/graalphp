@@ -27,8 +27,8 @@ public class ParseFnTest {
         parser.addErrorListener(new BailoutErrorListener());
         Program pgm = parser.parsePhpProgram();
                 System.out.println(pgm);
-        PhpStmtVisitor visitor = new PhpStmtVisitor(null);
-        PhpStmtVisitor.PhpStmtVisitorContext phpAst = visitor.createPhpAst(pgm);
+        StmtVisitor visitor = new StmtVisitor(null);
+        StmtVisitor.PhpStmtVisitorContext phpAst = visitor.createPhpAst(pgm);
         for(PhpStmtNode s: phpAst.stmts) {
             System.out.println(s);
         }
