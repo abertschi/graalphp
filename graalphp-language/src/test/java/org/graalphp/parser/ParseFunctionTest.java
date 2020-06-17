@@ -75,7 +75,7 @@ public class ParseFnTest {
 
     @Test
     public void testFnINestedInvocations() {
-        TestCommons.evalInteger(2, "function foo($a) {return ($a  + 1);}; foo(foo(0));");
+        TestCommons.evalInteger(2, "function foo($a) {return 0;}; foo(foo());");
     }
 
 
