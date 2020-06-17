@@ -9,6 +9,7 @@ import org.graalphp.nodes.PhpExprNode;
 import org.graalphp.nodes.PhpStmtNode;
 import org.graalphp.types.PhpNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,16 +31,21 @@ public class PhpGlobalScopeNode extends RootNode {
 
     // XXX: for testing, if returnLastExpr = true,
     // always return last expression from script if it is an expression
+    // this simplifies testing when there is no support for print yet
     private void prepareBody(List<PhpStmtNode> body, boolean returnLastExpr) {
-        if (returnLastExpr){
-            if (body.size() > 0){
+        if (returnLastExpr) {
+            ArrayList<PhpStmtNode> stmts = new ArrayList<>(body);
+            if (stmts.size() > 0) {
                 final PhpStmtNode lastStmt = body.get(body.size() - 1);
                 if (lastStmt instanceof PhpExprNode) {
-                    body.add(new PhpReturnNode((PhpExprNode) lastStmt));
+                    stmts.remove(body.size() - 1);
+                    stmts.add(new PhpReturnNode((PhpExprNode) lastStmt));
                 }
             }
+            this.body = new PhpStmtListNode(stmts.toArray(new PhpStmtNode[stmts.size()]));
+        } else {
+            this.body = new PhpStmtListNode(body.toArray(new PhpStmtNode[body.size()]));
         }
-        this.body = new PhpStmtListNode(body.toArray(new PhpStmtNode[body.size()]));
     }
 
     @Override

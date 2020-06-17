@@ -5,6 +5,7 @@ import org.eclipse.php.core.ast.error.BailoutErrorListener;
 import org.eclipse.php.core.ast.error.ConsoleErrorListener;
 import org.eclipse.php.core.ast.nodes.ASTParser;
 import org.eclipse.php.core.ast.nodes.Program;
+import org.graalphp.PhpException;
 import org.graalphp.nodes.PhpStmtNode;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.Value;
@@ -36,6 +37,31 @@ public class ParseAssignTest {
         TestCommons.evalDouble(3.5, "$a = 3.5; $a = $a;");
         TestCommons.evalDouble(3.6, "$a = 3.5; $b = 3.6;");
         TestCommons.evalDouble(1.7, "$a = 1.5 + 0.2; $a");
+    }
+
+    @Test
+    public void testLastStmtIsAssignment() throws Exception {
+        String src =
+                "$i1 = 2;" +
+                "$i1 = $i1 * 3; ";
+
+        ASTParser parser = ASTParser.newParser(PHPVersion.PHP7_4);
+        parser.setSource(TestCommons.php(src).toCharArray());
+        parser.addErrorListener(new ConsoleErrorListener());
+        parser.addErrorListener(new BailoutErrorListener());
+        Program pgm = parser.parsePhpProgram();
+        System.out.println(pgm);
+        PhpStmtVisitor visitor = new PhpStmtVisitor(null);
+        PhpStmtVisitor.PhpStmtVisitorContext phpAst = visitor.createPhpAst(pgm);
+
+        for (PhpStmtNode s : phpAst.stmts) {
+            System.out.println(s);
+        }
+
+
+//        TestCommons.evalInteger(6, src);
+
+
     }
 
     @Test(expected = Exception.class)
