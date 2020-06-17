@@ -12,7 +12,7 @@ import org.graalphp.nodes.PhpExprNode;
  * @author abertschi
  */
 @NodeField(name = "slot", type = FrameSlot.class)
-public abstract class ReadVarNode extends PhpExprNode {
+public abstract class PhpReadVarNode extends PhpExprNode {
 
     // location in frame where to read from
     protected abstract FrameSlot getSlot();

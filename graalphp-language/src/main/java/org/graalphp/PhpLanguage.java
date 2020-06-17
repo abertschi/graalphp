@@ -1,6 +1,5 @@
 package org.graalphp;
 
-
 import com.oracle.truffle.api.*;
 import com.oracle.truffle.api.TruffleLanguage.ContextPolicy;
 import com.oracle.truffle.api.interop.InteropLibrary;
@@ -13,7 +12,6 @@ import org.graalphp.parser.StmtVisitor;
 import org.graalphp.types.PhpNull;
 import org.graalphp.util.PhpLogger;
 import org.graalphp.util.Logger;
-
 
 @TruffleLanguage.Registration(
         id = PhpLanguage.ID,
@@ -46,7 +44,7 @@ public final class PhpLanguage extends TruffleLanguage<PhpContext> {
         Source source = request.getSource();
         PhpParser phpParser = new PhpParser(this);
 
-        StmtVisitor.PhpStmtVisitorContext parseResult = phpParser.parseSource(source);
+        StmtVisitor.StmtVisitorContext parseResult = phpParser.parseSource(source);
         PhpGlobalRootNode evalMain =
                 new PhpGlobalRootNode(
                         this,

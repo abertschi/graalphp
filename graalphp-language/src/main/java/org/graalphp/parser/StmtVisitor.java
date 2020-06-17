@@ -12,7 +12,7 @@ import org.graalphp.nodes.PhpExprNode;
 import org.graalphp.nodes.PhpStmtNode;
 import org.graalphp.nodes.PhpFunctionRootNode;
 import org.graalphp.nodes.controlflow.PhpReturnNode;
-import org.graalphp.nodes.localvar.ReadArgNode;
+import org.graalphp.nodes.localvar.PhpReadArgNode;
 import org.graalphp.nodes.localvar.PhpWriteVarNodeGen;
 import org.graalphp.types.PhpFunction;
 import org.graalphp.util.Logger;
@@ -37,10 +37,9 @@ public class StmtVisitor extends HierarchicalVisitor {
     public StmtVisitor(PhpLanguage lang) {
         this.exprVisitor = new ExprVisitor(lang);
         this.language = lang;
-
     }
 
-    public PhpStmtVisitorContext createPhpAst(Program p) {
+    public StmtVisitorContext createPhpAst(Program p) {
         this.stmts = new LinkedList<>();
         this.scope = new ParseScope(new FrameDescriptor());
         this.scope.setGlobal(this.scope);
@@ -48,23 +47,14 @@ public class StmtVisitor extends HierarchicalVisitor {
         for (Statement s : p.statements()) {
             s.accept(this);
         }
-
-        PhpStmtVisitorContext ctx = new PhpStmtVisitorContext(stmts, this.scope);
-        // TODO: is this useful? we may rather create a new object for each visiting
-        this.stmts = null;
-        this.scope = null;
-        return ctx;
+        return new StmtVisitorContext(stmts, this.scope);
     }
 
-    public PhpStmtVisitorContext createPhpStmtAst(Statement stmt, ParseScope scope) {
+    public StmtVisitorContext createPhpStmtAst(Statement stmt, ParseScope scope) {
         this.scope = scope;
         this.stmts = new LinkedList<>();
         stmt.accept(this);
-
-        PhpStmtVisitorContext ctx = new PhpStmtVisitorContext(stmts, this.scope);
-        this.stmts = null;
-        this.scope = null;
-        return ctx;
+        return new StmtVisitorContext(stmts, this.scope);
     }
 
     private void setSourceSection(PhpStmtNode target, ASTNode n) {
@@ -75,9 +65,7 @@ public class StmtVisitor extends HierarchicalVisitor {
 
     @Override
     public boolean visit(ExpressionStatement expressionStatement) {
-        PhpExprNode phpExpr =
-                exprVisitor.createExprAst(expressionStatement.getExpression(), scope);
-
+        PhpExprNode phpExpr = exprVisitor.createExprAst(expressionStatement.getExpression(), scope);
         if (phpExpr == null) {
             LOG.info("exprVisitor.createExprAst returned null. " +
                     "This is fine as long as not all features impl. " + expressionStatement.toString());
@@ -132,30 +120,18 @@ public class StmtVisitor extends HierarchicalVisitor {
         final PhpFunctionRootNode fnRoot;
         this.currFunctionArgumentCount = 0;
         this.currFunctionScope = new ParseScope(new FrameDescriptor(), this.scope.getGlobal());
+        List<PhpStmtNode> bodyStmts = parseParameters(fnParse.formalParameters());
 
-        final List<PhpStmtNode> bodyStmts = new LinkedList<>();
-        for (FormalParameter node : fnParse.formalParameters()) {
-            this.currFunctionParamExpr = null;
-            node.accept(this);
-
-            assert (currFunctionParamExpr != null);
-            bodyStmts.add(currFunctionParamExpr);
-            LOG.info("adding expr: " + currFunctionParamExpr.toString());
-        }
         if (fnParse.getBody() != null) {
             final StmtVisitor fnVisitor = new StmtVisitor(this.language);
-            final PhpStmtVisitorContext body = fnVisitor.createPhpStmtAst(fnParse.getBody(), currFunctionScope);
+            final StmtVisitorContext body = fnVisitor.createPhpStmtAst(fnParse.getBody(), currFunctionScope);
             bodyStmts.addAll(body.stmts);
         }
-        fnRoot = PhpFunctionRootNode.createFromStmts(
-                language,
-                currFunctionScope.getFrameDesc(),
+        fnRoot = PhpFunctionRootNode.createFromStmts(language, currFunctionScope.getFrameDesc(),
                 fnName,
                 bodyStmts);
-
-
-        final PhpFunction function =
-                new PhpFunction(fnName, scope, Truffle.getRuntime().createCallTarget(fnRoot));
+        final PhpFunction function = new PhpFunction(fnName, scope,
+                Truffle.getRuntime().createCallTarget(fnRoot));
 
         scope.getFunctions().registerOrUpdate(fnName, function, true);
         LOG.info("create call target for " + fnName);
@@ -164,12 +140,24 @@ public class StmtVisitor extends HierarchicalVisitor {
         return false;
     }
 
+    private List<PhpStmtNode> parseParameters(List<FormalParameter> parms) {
+        final List<PhpStmtNode> bodyStmts = new LinkedList<>();
+        for (FormalParameter node : parms) {
+            this.currFunctionParamExpr = null;
+            node.accept(this);
+
+            assert (currFunctionParamExpr != null);
+            bodyStmts.add(currFunctionParamExpr);
+            LOG.info("adding expr: " + currFunctionParamExpr.toString());
+        }
+        return bodyStmts;
+    }
 
     @Override
     public boolean visit(FormalParameter formalParameter) {
         assert currFunctionParamExpr == null;
 
-        final ReadArgNode readArg = new ReadArgNode(this.currFunctionArgumentCount);
+        final PhpReadArgNode readArg = new PhpReadArgNode(this.currFunctionArgumentCount);
         final String name = new IdentifierVisitor()
                 .getIdentifierName(formalParameter.getParameterName()).getName();
         final PhpExprNode assignNode = createLocalAssignment(
@@ -201,13 +189,13 @@ public class StmtVisitor extends HierarchicalVisitor {
     /**
      * Represents return object of ast walking
      **/
-    public static class PhpStmtVisitorContext {
+    public static class StmtVisitorContext {
 
         private final ParseScope scope;
         private final List<PhpStmtNode> stmts;
 
-        public PhpStmtVisitorContext(List<PhpStmtNode> stmts,
-                                     ParseScope scope) {
+        public StmtVisitorContext(List<PhpStmtNode> stmts,
+                                  ParseScope scope) {
             this.stmts = stmts;
             this.scope = scope;
         }

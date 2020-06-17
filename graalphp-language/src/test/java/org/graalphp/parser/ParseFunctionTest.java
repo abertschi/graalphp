@@ -29,7 +29,7 @@ public class ParseFunctionTest {
         Program pgm = parser.parsePhpProgram();
         System.out.println(pgm);
         StmtVisitor visitor = new StmtVisitor(null);
-        StmtVisitor.PhpStmtVisitorContext phpAst = visitor.createPhpAst(pgm);
+        StmtVisitor.StmtVisitorContext phpAst = visitor.createPhpAst(pgm);
         for(PhpStmtNode s: phpAst.getStmts()) {
             System.out.println(s.toString());
         }
