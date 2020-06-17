@@ -35,6 +35,7 @@ slower.
 **** TODO isInt library function
 ** TODO unclear DirectCallNode vs RootCallTarget
 We currently use RootCallTarget for functions
+** TODO do we need to make framedescriptor frame of global scope materialized?
 * Optimizations
 ** TODO See if specialisation for shift instead of div by 2 brings performance
 * Testing/ CI
