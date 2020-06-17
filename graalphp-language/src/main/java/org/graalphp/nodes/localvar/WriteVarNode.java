@@ -14,7 +14,7 @@ import org.graalphp.nodes.PhpExprNode;
  */
 @NodeChild(value = "srcNode", type = PhpExprNode.class) // value to be assigned
 @NodeField(name = "slot", type = FrameSlot.class)
-public abstract class PhpWriteVarNode extends PhpExprNode {
+public abstract class WriteVarNode extends PhpExprNode {
 
     // storage slot in frame
     protected abstract FrameSlot getSlot();

@@ -12,7 +12,7 @@ import org.graalphp.nodes.PhpExprNode;
 import org.graalphp.nodes.PhpStmtNode;
 import org.graalphp.nodes.PhpFunctionRootNode;
 import org.graalphp.nodes.controlflow.PhpReturnNode;
-import org.graalphp.nodes.localvar.PhpReadArgNode;
+import org.graalphp.nodes.localvar.ReadArgNode;
 import org.graalphp.nodes.localvar.PhpWriteVarNodeGen;
 import org.graalphp.types.PhpFunction;
 import org.graalphp.util.Logger;
@@ -169,7 +169,7 @@ public class StmtVisitor extends HierarchicalVisitor {
     public boolean visit(FormalParameter formalParameter) {
         assert currFunctionParamExpr == null;
 
-        final PhpReadArgNode readArg = new PhpReadArgNode(this.currFunctionArgumentCount);
+        final ReadArgNode readArg = new ReadArgNode(this.currFunctionArgumentCount);
         final String name = new IdentifierVisitor()
                 .getIdentifierName(formalParameter.getParameterName()).getName();
         final PhpExprNode assignNode = createLocalAssignment(
