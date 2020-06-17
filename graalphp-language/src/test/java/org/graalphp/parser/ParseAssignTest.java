@@ -37,25 +37,16 @@ public class ParseAssignTest {
     public void testLastStmtIsAssignment() throws Exception {
         String src =
                 "$i1 = 2;" +
-                "$i1 = $i1 * 3; ";
+                        "$i1 = $i1 * 3; ";
 
         ASTParser parser = ASTParser.newParser(PHPVersion.PHP7_4);
         parser.setSource(TestCommons.php(src).toCharArray());
         parser.addErrorListener(new ConsoleErrorListener());
         parser.addErrorListener(new BailoutErrorListener());
         Program pgm = parser.parsePhpProgram();
-        System.out.println(pgm);
         StmtVisitor visitor = new StmtVisitor(null);
         StmtVisitor.PhpStmtVisitorContext phpAst = visitor.createPhpAst(pgm);
-
-        for (PhpStmtNode s : phpAst.getStmts()) {
-            System.out.println(s);
-        }
-
-
-//        TestCommons.evalInteger(6, src);
-
-
+        TestCommons.evalInteger(6, src);
     }
 
     @Test(expected = Exception.class)
@@ -64,6 +55,7 @@ public class ParseAssignTest {
     }
 
 
+    // for debugging
     private void tmp() throws Exception {
         String src = TestCommons.inputStreamToString(getClass().getResourceAsStream("simpleAssignment.php"));
         System.out.println(src);
