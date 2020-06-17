@@ -238,7 +238,7 @@ public class ExprVisitor extends HierarchicalVisitor {
     public boolean visit(FunctionInvocation fn) {
         //TODO:  we dont support function names which are stored in variables yet
 
-        final Identifier fnId = new IdentifierVisitor().getIdentifierName(fn);
+        final Identifier fnId = new IdentifierVisitor().getIdentifierName(fn.getFunctionName().getName());
         if (fnId == null) {
             throw new UnsupportedOperationException("we dont support function lookup in vars");
         }

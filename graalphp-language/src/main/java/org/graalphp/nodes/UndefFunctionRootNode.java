@@ -4,6 +4,7 @@ import com.oracle.truffle.api.TruffleLanguage;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.RootNode;
 import org.graalphp.PhpLanguage;
+import org.graalphp.PhpUndefFunctionException;
 
 /**
  * Function which is not initialized but used somewhere will cause a fail
@@ -21,6 +22,7 @@ public class UndefFunctionRootNode extends RootNode {
 
     @Override
     public Object execute(VirtualFrame frame) {
-        return null;
+        throw new PhpUndefFunctionException("function not backed by implementation " + name,
+                this);
     }
 }

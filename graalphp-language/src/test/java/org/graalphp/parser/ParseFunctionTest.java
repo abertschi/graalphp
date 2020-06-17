@@ -18,7 +18,7 @@ import java.util.Scanner;
 /**
  * @author abertschi
  */
-public class ParseFnTest {
+public class ParseFunctionTest {
 
     @Test
     public void parseSimpleFn() throws Exception {
@@ -41,8 +41,8 @@ public class ParseFnTest {
 
     @Test
     public void testSimpleStatic() {
-        String src = "function foo() {return 1337;}; foo();";
-        TestCommons.evalInteger(1337, src);
+        String src = "function foo() {return 1000; }; foo();";
+        TestCommons.evalInteger(1000, src);
     }
 
     @Test
@@ -53,7 +53,7 @@ public class ParseFnTest {
 
     @Test
     public void testSimpleStaticEmptyArg() {
-        String src = "function foo($a) {return 1 + 1;}; foo();";
+        String src = "function foo($a) {return 1 + 1;}; foo(1);";
         TestCommons.evalInteger(2, src);
     }
 
@@ -61,6 +61,13 @@ public class ParseFnTest {
     public void testSimpleArg() {
         String src = "function foo($a) {return $a;}; foo(1);";
         TestCommons.evalInteger(1, src);
+    }
+
+    @Test
+    public void testCallOtherFn() {
+        final String src = "function a() {return b();} function b() {return 1337;} a();";
+        TestCommons.evalInteger(1337, src);
+
     }
 
     @Test
@@ -75,7 +82,7 @@ public class ParseFnTest {
 
     @Test
     public void testFnINestedInvocations() {
-        TestCommons.evalInteger(2, "function foo($a) {return 0;}; foo(foo());");
+        TestCommons.evalInteger(4, "function foo($a) {return $a + 1;}; foo(1 + foo(1));");
     }
 
 

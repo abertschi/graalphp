@@ -30,14 +30,20 @@ public final class PhpFunctionLookupNode extends PhpExprNode {
     @Override
     public Object executeGeneric(VirtualFrame frame) {
         if (function == null) {
-
             // TODO: we could make this a new type which we execute and expect instead
 
             // We are about to change a @CompilationFinal field.
             CompilerDirectives.transferToInterpreterAndInvalidate();
+
             PhpFunction fn = this.scope.resolveFunction(this.name);
             if (fn == null) {
-                throw new PhpException("Function " + name + " not found.", this);
+                StringBuilder buf = new StringBuilder();
+                buf.append("Function ")
+                        .append(name)
+                        .append(" not found.")
+                        .append(" scope: ")
+                        .append(scope.getGlobal() == scope ? "<global>" : "<function>");
+                throw new PhpException(buf.toString(), this);
             }
             this.function = fn;
         }

@@ -16,7 +16,7 @@ import java.util.Map;
  */
 public class ParseScope {
 
-    private ParseScope global;
+    private ParseScope global; // ref to self if this is global
     private FrameDescriptor frameDesc;
 
     // in current scope
@@ -39,8 +39,13 @@ public class ParseScope {
     }
 
 
+    // TODO: we currently do not support nested functions
     public PhpFunction resolveFunction(String name) {
-        return this.functions.getFunction(name);
+        PhpFunction fn = this.functions.getFunction(name);
+        if (fn == null && !isGlobalScope()) {
+            return this.global.resolveFunction(name);
+        }
+        return fn;
     }
 
     public PhpFunctionRegistry getFunctions() {
@@ -69,5 +74,10 @@ public class ParseScope {
 
     public void setVars(Map<String, FrameSlot> vars) {
         this.vars = vars;
+    }
+
+    public boolean isGlobalScope() {
+        assert global != null : "global can never be null";
+        return this.global == this;
     }
 }
