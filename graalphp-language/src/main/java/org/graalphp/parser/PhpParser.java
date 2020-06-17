@@ -25,12 +25,12 @@ public class PhpParser {
         this.lang = lang;
     }
 
-    public PhpStmtVisitor.PhpStmtVisitorContext parseSource(String source) {
+    public StmtVisitor.PhpStmtVisitorContext parseSource(String source) {
         return parseSource(
                 Source.newBuilder(PhpLanguage.ID, source, "<console>").build());
     }
 
-    public PhpStmtVisitor.PhpStmtVisitorContext parseSource(Source source) {
+    public StmtVisitor.PhpStmtVisitorContext parseSource(Source source) {
         ASTParser parser = null;
         Program pgm = null;
         try {
@@ -48,8 +48,8 @@ public class PhpParser {
             // not an exception we through already ourselves
             throwGeneralParsingError(source, e.getMessage());
         }
-        PhpStmtVisitor visitor = new PhpStmtVisitor(lang);
-        PhpStmtVisitor.PhpStmtVisitorContext res = visitor.createPhpAst(pgm);
+        StmtVisitor visitor = new StmtVisitor(lang);
+        StmtVisitor.PhpStmtVisitorContext res = visitor.createPhpAst(pgm);
         return res;
     }
 

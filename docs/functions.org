@@ -310,9 +310,7 @@ This requires lazy registration.
 if we get a function call, the function definition may be within the current function (nested)
 or in a parent function. So we need to walk up the nestings to get to it.
 
-There can only be one function definition independent on the scope. One function can only exist with the same name
-(in the same namespace, but we ignore name spaces for now).
-
+There can only be one function definition with the same name (in the current or upper scopes).
 
 #+begin_src php
 
@@ -349,6 +347,8 @@ in
 /home/b/beandata/pgm-eth/eth-s08-ba-graalphp/graalphp-public/docs/php-snippets/fncall.php
 on line 9
 #+end_quote
+
+Also nested function definitions need to appear before their calls. Unlike in global scope
 
 *** Solution
 if we get the function definition first, steps are straight forward. We have the proper Phpscope,

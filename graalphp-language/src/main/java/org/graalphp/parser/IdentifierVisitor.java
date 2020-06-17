@@ -7,7 +7,7 @@ import org.eclipse.php.core.ast.visitor.HierarchicalVisitor;
 /**
  * @author abertschi
  */
-public class PhpIdentifierVisitor extends HierarchicalVisitor {
+public class IdentifierVisitor extends HierarchicalVisitor {
 
     private Identifier id;
 
@@ -19,7 +19,7 @@ public class PhpIdentifierVisitor extends HierarchicalVisitor {
 
     @Override
     public boolean visit(Identifier identifier) {
-        assert (id == null);
+        assert (id == null) : "id must be null, otherwise logic error in this visitor";
         this.id = identifier;
         return false;
     }

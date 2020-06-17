@@ -25,7 +25,7 @@ public class PhpReadArgNode extends PhpExprNode {
             return args[index];
         } else {
             // TODO: we throw exception in strict mode
-            throw new UnsupportedOperationException();
+            throw new UnsupportedOperationException("invalid argument count given");
         }
     }
 }

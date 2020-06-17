@@ -9,7 +9,7 @@ import com.oracle.truffle.api.interop.UnsupportedMessageException;
 import com.oracle.truffle.api.source.Source;
 import org.graalphp.nodes.PhpGlobalRootNode;
 import org.graalphp.parser.PhpParser;
-import org.graalphp.parser.PhpStmtVisitor;
+import org.graalphp.parser.StmtVisitor;
 import org.graalphp.types.PhpNull;
 import org.graalphp.util.PhpLogger;
 import org.graalphp.util.Logger;
@@ -46,7 +46,7 @@ public final class PhpLanguage extends TruffleLanguage<PhpContext> {
         Source source = request.getSource();
         PhpParser phpParser = new PhpParser(this);
 
-        PhpStmtVisitor.PhpStmtVisitorContext parseResult = phpParser.parseSource(source);
+        StmtVisitor.PhpStmtVisitorContext parseResult = phpParser.parseSource(source);
         PhpGlobalRootNode evalMain =
                 new PhpGlobalRootNode(
                         this,

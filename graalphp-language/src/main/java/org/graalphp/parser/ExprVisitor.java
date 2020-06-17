@@ -2,11 +2,12 @@ package org.graalphp.parser;
 
 import com.oracle.truffle.api.frame.FrameSlot;
 import com.oracle.truffle.api.frame.FrameSlotKind;
-import com.oracle.truffle.api.nodes.DirectCallNode;
 import org.eclipse.php.core.ast.nodes.*;
 import org.eclipse.php.core.ast.visitor.HierarchicalVisitor;
 import org.graalphp.PhpException;
+import org.graalphp.PhpLanguage;
 import org.graalphp.nodes.PhpExprNode;
+import org.graalphp.nodes.PhpFunctionLookupNode;
 import org.graalphp.nodes.PhpInvokeNode;
 import org.graalphp.nodes.PhpStmtNode;
 import org.graalphp.nodes.binary.PhpAddNodeGen;
@@ -16,9 +17,9 @@ import org.graalphp.nodes.binary.PhpSubNodeGen;
 import org.graalphp.nodes.localvar.PhpReadVarNodeGen;
 import org.graalphp.nodes.localvar.PhpWriteVarNodeGen;
 import org.graalphp.nodes.unary.PhpNegNodeGen;
+import org.graalphp.types.PhpFunction;
 import org.graalphp.util.Logger;
 import org.graalphp.util.PhpLogger;
-import org.graalvm.compiler.nodes.DirectCallTargetNode;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -26,18 +27,19 @@ import java.util.List;
 /**
  * @author abertschi
  */
-public class PhpExprVisitor extends HierarchicalVisitor {
+public class ExprVisitor extends HierarchicalVisitor {
 
     // current expression
     private PhpExprNode currExpr = null;
-
     private ParseScope scope;
+    private PhpLanguage language;
 
     private static final Logger LOG = PhpLogger
-            .getLogger(PhpExprVisitor.class.getSimpleName());
+            .getLogger(ExprVisitor.class.getSimpleName());
 
 
-    public PhpExprVisitor() {
+    public ExprVisitor(PhpLanguage language) {
+        this.language = language;
     }
 
     // XXX: not thread safe
@@ -200,7 +202,7 @@ public class PhpExprVisitor extends HierarchicalVisitor {
             throw new UnsupportedOperationException("Other variables than identifier not supported");
         }
 
-        final String dest = new PhpIdentifierVisitor()
+        final String dest = new IdentifierVisitor()
                 .getIdentifierName(ass.getLeftHandSide()).getName();
 
         final PhpExprNode source = initAndAcceptExpr(ass.getRightHandSide());
@@ -236,30 +238,24 @@ public class PhpExprVisitor extends HierarchicalVisitor {
     public boolean visit(FunctionInvocation fn) {
         //TODO:  we dont support function names which are stored in variables yet
 
-        final Identifier fnId = new PhpIdentifierVisitor().getIdentifierName(fn);
-        if (fnId == null){
+        final Identifier fnId = new IdentifierVisitor().getIdentifierName(fn);
+        if (fnId == null) {
             throw new UnsupportedOperationException("we dont support function lookup in vars");
         }
 
         List<PhpExprNode> args = new LinkedList<>();
-        for(Expression e: fn.parameters()) {
+        for (Expression e : fn.parameters()) {
             final PhpExprNode arg = initAndAcceptExpr(e);
-            System.out.println(arg);
-            // setSourceSection(arg, e);
             args.add(arg);
         }
 
-        currExpr = null;
+        final PhpFunctionLookupNode lookupNode = new PhpFunctionLookupNode(fnId.getName(), scope);
+        setSourceSection(lookupNode, fn);
+        final PhpInvokeNode invokeNode =
+                new PhpInvokeNode(args.toArray(new PhpExprNode[0]), lookupNode);
+        setSourceSection(invokeNode, fn);
 
-        // TODO: problem
-        // at this point we have not parsed everything yet, so we dont have calltargets
-        // for the function because it is parsed later in the source flow.
-        // we need a form of lazy lookup here
-//        DirectCallNode target = null;
-//        PhpInvokeNode invokeNode = new PhpInvokeNode(args.toArray(new PhpInvokeNode[args.size()]), target);
-
-//        setSourceSection(invokeNode, fn);
-//        currExpr = invokeNode;
+        currExpr = invokeNode;
         return false;
     }
 }
