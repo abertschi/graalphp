@@ -50,8 +50,8 @@ public final class PhpLanguage extends TruffleLanguage<PhpContext> {
         PhpGlobalRootNode evalMain =
                 new PhpGlobalRootNode(
                         this,
-                        parseResult.scope.getFrameDesc(),
-                        parseResult.stmts,
+                        parseResult.getScope().getFrameDesc(),
+                        parseResult.getStmts(),
                         true);
         return Truffle.getRuntime().createCallTarget(evalMain);
     }

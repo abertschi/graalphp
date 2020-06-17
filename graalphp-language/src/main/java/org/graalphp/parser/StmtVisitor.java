@@ -26,8 +26,7 @@ import java.util.List;
  */
 public class StmtVisitor extends HierarchicalVisitor {
 
-    private static final Logger LOG = PhpLogger
-            .getLogger(StmtVisitor.class.getSimpleName());
+    private static final Logger LOG = PhpLogger.getLogger(StmtVisitor.class.getSimpleName());
 
     private final PhpLanguage language;
     private List<PhpStmtNode> stmts;
@@ -68,6 +67,9 @@ public class StmtVisitor extends HierarchicalVisitor {
         return ctx;
     }
 
+    private void setSourceSection(PhpStmtNode target, ASTNode n) {
+        target.setSourceSection(n.getStart(), n.getLength());
+    }
 
     // ---------------- expression statements --------------------
 
@@ -87,16 +89,14 @@ public class StmtVisitor extends HierarchicalVisitor {
 
     // ---------------- return --------------------
 
-
     @Override
     public boolean visit(ReturnStatement ret) {
-        PhpReturnNode returnNode;
+        final PhpReturnNode returnNode;
         if (ret.getExpression() == null) {
             returnNode = new PhpReturnNode(new PhpEmptyExprNode());
-
         } else {
-            final PhpExprNode ex = this.exprVisitor.createExprAst(ret.getExpression(), getCurrentScope());
-            System.out.println(ex);
+            final PhpExprNode ex = this.exprVisitor
+                    .createExprAst(ret.getExpression(), getCurrentScope());
             returnNode = new PhpReturnNode(ex);
         }
         stmts.add(returnNode);
@@ -172,16 +172,14 @@ public class StmtVisitor extends HierarchicalVisitor {
         final PhpReadArgNode readArg = new PhpReadArgNode(this.currFunctionArgumentCount);
         final String name = new IdentifierVisitor()
                 .getIdentifierName(formalParameter.getParameterName()).getName();
-
         final PhpExprNode assignNode = createLocalAssignment(
                 this.currFunctionScope,
                 name,
                 readArg,
                 this.currFunctionArgumentCount);
+        setSourceSection(assignNode, formalParameter);
 
         this.currFunctionArgumentCount++;
-
-        // TODO: source section
         currFunctionParamExpr = assignNode;
         return false;
     }
@@ -190,16 +188,14 @@ public class StmtVisitor extends HierarchicalVisitor {
                                               String target,
                                               PhpExprNode source,
                                               Integer argumentId) {
-
-        final FrameSlot frameSlot = scope.getFrameDesc().findOrAddFrameSlot(
-                target,
-                argumentId,
-                FrameSlotKind.Illegal);
+        final FrameSlot frameSlot = scope.getFrameDesc()
+                .findOrAddFrameSlot(target, argumentId, FrameSlotKind.Illegal);
 
         scope.getVars().put(target, frameSlot);
 
         // TODO: source section?
-        return PhpWriteVarNodeGen.create(source, frameSlot);
+        final PhpExprNode assign = PhpWriteVarNodeGen.create(source, frameSlot);
+        return assign;
     }
 
     /**
@@ -207,13 +203,21 @@ public class StmtVisitor extends HierarchicalVisitor {
      **/
     public static class PhpStmtVisitorContext {
 
-        public final ParseScope scope;
-        public final List<PhpStmtNode> stmts;
+        private final ParseScope scope;
+        private final List<PhpStmtNode> stmts;
 
         public PhpStmtVisitorContext(List<PhpStmtNode> stmts,
                                      ParseScope scope) {
             this.stmts = stmts;
             this.scope = scope;
+        }
+
+        public ParseScope getScope() {
+            return scope;
+        }
+
+        public List<PhpStmtNode> getStmts() {
+            return stmts;
         }
 
         @Override

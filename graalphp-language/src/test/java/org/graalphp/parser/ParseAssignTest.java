@@ -48,7 +48,7 @@ public class ParseAssignTest {
         StmtVisitor visitor = new StmtVisitor(null);
         StmtVisitor.PhpStmtVisitorContext phpAst = visitor.createPhpAst(pgm);
 
-        for (PhpStmtNode s : phpAst.stmts) {
+        for (PhpStmtNode s : phpAst.getStmts()) {
             System.out.println(s);
         }
 
@@ -72,11 +72,11 @@ public class ParseAssignTest {
         parser.addErrorListener(new ConsoleErrorListener());
         parser.addErrorListener(new BailoutErrorListener());
         Program pgm = parser.parsePhpProgram();
-        System.out.println(pgm);
+        // System.out.println(pgm);
         StmtVisitor visitor = new StmtVisitor(null);
         StmtVisitor.PhpStmtVisitorContext phpAst = visitor.createPhpAst(pgm);
 
-        for (PhpStmtNode s : phpAst.stmts) {
+        for (PhpStmtNode s : phpAst.getStmts()) {
             System.out.println(s);
         }
     }

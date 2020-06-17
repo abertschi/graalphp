@@ -6,8 +6,6 @@ import org.eclipse.php.core.ast.error.ConsoleErrorListener;
 import org.eclipse.php.core.ast.nodes.ASTParser;
 import org.eclipse.php.core.ast.nodes.Program;
 import org.graalphp.nodes.PhpStmtNode;
-import org.graalvm.polyglot.Context;
-import org.graalvm.polyglot.Value;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -32,11 +30,11 @@ public class ParseFunctionTest {
         System.out.println(pgm);
         StmtVisitor visitor = new StmtVisitor(null);
         StmtVisitor.PhpStmtVisitorContext phpAst = visitor.createPhpAst(pgm);
-        for(PhpStmtNode s: phpAst.stmts) {
+        for(PhpStmtNode s: phpAst.getStmts()) {
             System.out.println(s.toString());
         }
 
-        Assert.assertTrue(phpAst.stmts.size() > 0);
+        Assert.assertTrue(phpAst.getStmts().size() > 0);
     }
 
     @Test

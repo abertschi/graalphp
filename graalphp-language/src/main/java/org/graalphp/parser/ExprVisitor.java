@@ -28,17 +28,13 @@ import java.util.List;
  */
 public class ExprVisitor extends HierarchicalVisitor {
 
+    private static final Logger LOG = PhpLogger.getLogger(ExprVisitor.class.getSimpleName());
+
     // current expression
     private PhpExprNode currExpr = null;
     private ParseScope scope;
-    private PhpLanguage language;
-
-    private static final Logger LOG = PhpLogger
-            .getLogger(ExprVisitor.class.getSimpleName());
-
 
     public ExprVisitor(PhpLanguage language) {
-        this.language = language;
     }
 
     // XXX: not thread safe
@@ -50,8 +46,9 @@ public class ExprVisitor extends HierarchicalVisitor {
         }
         currExpr = null;
         this.scope = scope;
-        e.accept(this);
-        PhpExprNode res = currExpr;
+
+        PhpExprNode res = initAndAcceptExpr(e);
+
         currExpr = null;
         this.scope = null;
         return res;
@@ -60,7 +57,7 @@ public class ExprVisitor extends HierarchicalVisitor {
     private PhpExprNode initAndAcceptExpr(final Expression e) {
         currExpr = null;
         e.accept(this);
-        assert (currExpr != null);
+        assert (currExpr != null) : "Current expression must be set after an accept phase";
         return currExpr;
     }
 
@@ -70,21 +67,15 @@ public class ExprVisitor extends HierarchicalVisitor {
 
     @Override
     public boolean visit(InfixExpression expr) {
-        PhpExprNode left, right;
-
-        initAndAcceptExpr(expr.getLeft());
-        left = currExpr;
-        initAndAcceptExpr(expr.getRight());
-        right = currExpr;
-
-        LOG.info(left.toString());
-        LOG.info(right.toString());
+        final PhpExprNode left, right;
+        left = initAndAcceptExpr(expr.getLeft());
+        right = initAndAcceptExpr(expr.getRight());
 
         currExpr = createInfixExpression(expr, left, right);
         return false;
     }
 
-    PhpExprNode createInfixExpression(final InfixExpression expr,
+    private PhpExprNode createInfixExpression(final InfixExpression expr,
                                       final PhpExprNode left,
                                       final PhpExprNode right) {
         PhpExprNode result = null;
@@ -114,7 +105,6 @@ public class ExprVisitor extends HierarchicalVisitor {
         return result;
     }
 
-
     // ---------------- unary expressions --------------------
 
     @Override
@@ -126,7 +116,7 @@ public class ExprVisitor extends HierarchicalVisitor {
         return false;
     }
 
-    PhpExprNode createUnaryExpression(final UnaryOperation op, final PhpExprNode child) {
+    private PhpExprNode createUnaryExpression(final UnaryOperation op, final PhpExprNode child) {
         boolean hasSource = true;
         PhpExprNode node = null;
 
@@ -221,27 +211,13 @@ public class ExprVisitor extends HierarchicalVisitor {
 
     // ---------------- function invocations --------------------
 
-
-    //<FunctionInvocation start='44' length='9'>
-    //	<FunctionName start='44' length='3'>
-    //		<NamespaceName start='44' length='3' global='false' current='false'>
-    //			<Identifier start='44' length='3' name='foo'/>
-    //		</NamespaceName>
-    //	</FunctionName>
-    //	<Parameters>
-    //		<Scalar start='48' length='4' type='int' value='1337'/>
-    //	</Parameters>
-    //</FunctionInvocation>
-
     @Override
     public boolean visit(FunctionInvocation fn) {
-        //TODO:  we dont support function names which are stored in variables yet
-
         final Identifier fnId = new IdentifierVisitor().getIdentifierName(fn.getFunctionName().getName());
         if (fnId == null) {
+            // TODO;
             throw new UnsupportedOperationException("we dont support function lookup in vars");
         }
-
         List<PhpExprNode> args = new LinkedList<>();
         for (Expression e : fn.parameters()) {
             final PhpExprNode arg = initAndAcceptExpr(e);
@@ -250,8 +226,7 @@ public class ExprVisitor extends HierarchicalVisitor {
 
         final PhpFunctionLookupNode lookupNode = new PhpFunctionLookupNode(fnId.getName(), scope);
         setSourceSection(lookupNode, fn);
-        final PhpInvokeNode invokeNode =
-                new PhpInvokeNode(args.toArray(new PhpExprNode[0]), lookupNode);
+        final PhpInvokeNode invokeNode =new PhpInvokeNode(args.toArray(new PhpExprNode[0]), lookupNode);
         setSourceSection(invokeNode, fn);
 
         currExpr = invokeNode;
