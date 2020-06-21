@@ -9,7 +9,6 @@ import org.graalphp.types.PhpFunction;
  *
  * @author abertschi
  */
-//@NodeChild(value = "functionNode", type = PhpExprNode.class)
 public class PhpInvokeNode extends PhpExprNode {
 
     @Child
@@ -18,11 +17,7 @@ public class PhpInvokeNode extends PhpExprNode {
     @Children
     protected PhpExprNode[] argNodes;
 
-//    // TODO: investigate
-//    @Child
-//    protected DirectCallNode target;
-
-
+    // TODO Change this to an abstract nodes, introduce object [] types
     public PhpInvokeNode(PhpExprNode[] arguments, PhpExprNode function) {
         this.argNodes = arguments;
         this.function = function;

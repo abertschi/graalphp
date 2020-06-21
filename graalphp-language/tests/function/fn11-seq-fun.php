@@ -1,14 +1,14 @@
 <?php
-
+// test sequenced function invocations
 function a($a) {
  $b = 10;
- $c = $a * 33 + $b;
+ $c = $a + $b;
  return $c;
 }
 
 
 function b($c) {
-$c = $c * a($c);
+$c = $c + a($c);
 return $c + 1;
 }
 

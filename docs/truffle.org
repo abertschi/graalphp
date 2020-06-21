@@ -87,7 +87,7 @@ themselves, and the compiler treats them specially.
 * Returning from Functions (truffle way)
 - Throw control flow exception, dont fill stacktrace for performance
 
-
+  
 * CompilerDirectives.transferToInterpreter()
 - ensures code is not included in compilation
 - 
@@ -101,4 +101,8 @@ themselves, and the compiler treats them specially.
 - executed before guards
 - creates a copy/ cache of passed dynamic parameter which remains the same when
   same parameter called again
+- powerful tool
 
+* Control Flow Exceptions
+- overwrite stacktrace generation: more lightweight
+- if graal sees throw and catch blow it can simply overflow

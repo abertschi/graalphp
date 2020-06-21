@@ -368,7 +368,23 @@ Ideally, we can lookup the rootcall target at runtime, or after all functions ha
 
 
 
-
+* Conditionally Defined Functions
+- for conditionally defined functions, function definition must appear before function call.
+- For global function, it does not have to
+#+begin_quote
+An unconditionally defined function is a function whose definition is at the top
+level of a script. A conditionally defined function is a function whose
+definition occurs inside a compound statement, such as the body of another
+function (a nested function), conditional statement, etc. There is no limit on
+the depth of levels of function nesting. Consider the case of an outer function,
+and an inner function defined within it. Until the outer function is called at
+least once, its inner function does not exist. Even if the outer function is
+called, if its runtime logic bypasses the definition of the inner function, that
+inner function still does not exist. The conditionally defined function comes
+into existence when the execution flow reaches the point where the function is
+defined.
+https://github.com/php/php-langspec/blob/8f78136eaae6a3fa7eef4789c8729bc38726b19d/spec/13-functions.md
+#+end_quote
 * Questions
 ** Can i call nested functions from outside of function which is parent of nested function?
 #+begin_src php
