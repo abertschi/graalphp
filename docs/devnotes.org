@@ -63,6 +63,32 @@ A materialized frame can escape compilation unit and is thus slower than a virtu
 ** TODO ensure finals in nodes
 * Optimizations
 ** TODO See if specialisation for shift instead of div by 2 brings performance
+** TODO Optimize Function invocation
+- currently no optimiations done
+- we can;
+  - make phpfunction a phpType
+  - change invokeNode such that it has phpfunction and arguments as children
+  - make object[] a new type known to phptypes
+  - introduce executeValues node which has children and executes them all and returns obj[]
+
+See Oz Project:
+#+begin_src 
+public class ExecuteValuesNode extends OzNode {
+
+	@Children final OzNode[] valuesNodes;
+
+	public ExecuteValuesNode(OzNode[] valuesNodes) {
+		this.valuesNodes = valuesNodes;
+	}
+
+	@Override
+	public Object[] execute(VirtualFrame frame) {
+		return NodeHelpers.executeValues(frame, valuesNodes);
+	}
+
+}
+#+end_src
+
 * Testing/ CI
 **
 **
