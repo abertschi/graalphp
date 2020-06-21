@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author abertschi
  */
-public class PhpStmtListNode extends PhpStmtNode
+public class StmtListNode extends PhpStmtNode
         implements BlockNode.ElementExecutor<PhpStmtNode> {
 
     /*
@@ -22,12 +22,12 @@ public class PhpStmtListNode extends PhpStmtNode
     @Child
     private BlockNode<PhpStmtNode> block;
 
-    public PhpStmtListNode(PhpStmtNode[] stmts) {
+    public StmtListNode(PhpStmtNode[] stmts) {
         this.block = (stmts != null && stmts.length > 0)
                 ? BlockNode.create(stmts, this) : null;
     }
 
-    public PhpStmtListNode(List<PhpStmtNode> stmts) {
+    public StmtListNode(List<PhpStmtNode> stmts) {
         this(stmts.toArray(new PhpStmtNode[stmts.size()]));
     }
 

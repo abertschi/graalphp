@@ -1,9 +1,7 @@
 package org.graalphp.nodes.binary;
 
 import com.oracle.truffle.api.dsl.NodeChild;
-import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.NodeInfo;
-import org.graalphp.PhpException;
 import org.graalphp.nodes.PhpExprNode;
 
 /**

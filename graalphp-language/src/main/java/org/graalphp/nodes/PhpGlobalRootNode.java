@@ -5,9 +5,6 @@ import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.NodeInfo;
 import com.oracle.truffle.api.nodes.RootNode;
 import org.graalphp.PhpLanguage;
-import org.graalphp.nodes.PhpExprNode;
-import org.graalphp.nodes.PhpStmtListNode;
-import org.graalphp.nodes.PhpStmtNode;
 import org.graalphp.nodes.controlflow.PhpReturnException;
 import org.graalphp.nodes.controlflow.PhpReturnNode;
 import org.graalphp.types.PhpNull;
@@ -45,9 +42,9 @@ public class PhpGlobalRootNode extends RootNode {
                     stmts.add(new PhpReturnNode((PhpExprNode) lastStmt));
                 }
             }
-            this.body = new PhpStmtListNode(stmts.toArray(new PhpStmtNode[stmts.size()]));
+            this.body = new StmtListNode(stmts.toArray(new PhpStmtNode[stmts.size()]));
         } else {
-            this.body = new PhpStmtListNode(body.toArray(new PhpStmtNode[body.size()]));
+            this.body = new StmtListNode(body.toArray(new PhpStmtNode[body.size()]));
         }
     }
 

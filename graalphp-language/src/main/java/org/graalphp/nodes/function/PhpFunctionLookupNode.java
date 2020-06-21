@@ -1,9 +1,10 @@
-package org.graalphp.nodes;
+package org.graalphp.nodes.function;
 
 import com.oracle.truffle.api.CompilerDirectives;
 import com.oracle.truffle.api.CompilerDirectives.CompilationFinal;
 import com.oracle.truffle.api.frame.VirtualFrame;
-import org.graalphp.PhpUndefFunctionException;
+import org.graalphp.exception.PhpUndefFunctionException;
+import org.graalphp.nodes.PhpExprNode;
 import org.graalphp.parser.ParseScope;
 import org.graalphp.types.PhpFunction;
 

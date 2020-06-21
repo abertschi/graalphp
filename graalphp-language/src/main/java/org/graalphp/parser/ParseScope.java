@@ -2,7 +2,7 @@ package org.graalphp.parser;
 
 import com.oracle.truffle.api.frame.FrameDescriptor;
 import com.oracle.truffle.api.frame.FrameSlot;
-import org.graalphp.PhpFunctionRegistry;
+import org.graalphp.FunctionRegistry;
 import org.graalphp.types.PhpFunction;
 
 import java.util.HashMap;
@@ -23,19 +23,19 @@ public class ParseScope {
     private Map<String, FrameSlot> vars;
 
     // functions in current scope
-    private PhpFunctionRegistry functions;
+    private FunctionRegistry functions;
 
     public ParseScope(FrameDescriptor frameDesc) {
         this.frameDesc = frameDesc;
         this.vars = new HashMap<>();
-        this.functions = new PhpFunctionRegistry();
+        this.functions = new FunctionRegistry();
     }
 
     public ParseScope(FrameDescriptor frameDesc, ParseScope global) {
         this.frameDesc = frameDesc;
         this.vars = new HashMap<>();
         this.global = global;
-        this.functions = new PhpFunctionRegistry();
+        this.functions = new FunctionRegistry();
     }
 
 
@@ -48,7 +48,7 @@ public class ParseScope {
         return fn;
     }
 
-    public PhpFunctionRegistry getFunctions() {
+    public FunctionRegistry getFunctions() {
         return this.functions;
     }
 

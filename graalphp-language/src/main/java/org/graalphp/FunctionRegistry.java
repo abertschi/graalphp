@@ -16,11 +16,11 @@ import java.util.Map;
  * @author abertschi
  */
 // TODO
-public class PhpFunctionRegistry {
+public class FunctionRegistry {
 
     private Map<String, PhpFunction> functions;
 
-    public PhpFunctionRegistry() {
+    public FunctionRegistry() {
         this.functions = new HashMap<>();
     }
 

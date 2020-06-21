@@ -1,9 +1,9 @@
-package org.graalphp.nodes;
+package org.graalphp.nodes.function;
 
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.RootNode;
 import org.graalphp.PhpLanguage;
-import org.graalphp.PhpUndefFunctionException;
+import org.graalphp.exception.PhpUndefFunctionException;
 
 /**
  * Function which is not initialized but used somewhere will cause a fail

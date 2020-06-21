@@ -7,10 +7,10 @@ import com.oracle.truffle.api.frame.FrameSlotKind;
 import org.eclipse.php.core.ast.nodes.*;
 import org.eclipse.php.core.ast.visitor.HierarchicalVisitor;
 import org.graalphp.PhpLanguage;
-import org.graalphp.nodes.PhpEmptyExprNode;
+import org.graalphp.nodes.EmptyExprNode;
 import org.graalphp.nodes.PhpExprNode;
 import org.graalphp.nodes.PhpStmtNode;
-import org.graalphp.nodes.PhpFunctionRootNode;
+import org.graalphp.nodes.function.PhpFunctionRootNode;
 import org.graalphp.nodes.controlflow.PhpReturnNode;
 import org.graalphp.nodes.localvar.PhpReadArgNode;
 import org.graalphp.nodes.localvar.PhpWriteVarNodeGen;
@@ -81,7 +81,7 @@ public class StmtVisitor extends HierarchicalVisitor {
     public boolean visit(ReturnStatement ret) {
         final PhpReturnNode returnNode;
         if (ret.getExpression() == null) {
-            returnNode = new PhpReturnNode(new PhpEmptyExprNode());
+            returnNode = new PhpReturnNode(new EmptyExprNode());
         } else {
             final PhpExprNode ex = this.exprVisitor
                     .createExprAst(ret.getExpression(), getCurrentScope());

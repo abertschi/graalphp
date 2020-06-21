@@ -1,9 +1,13 @@
-package org.graalphp.nodes;
+package org.graalphp.nodes.function;
 
 import com.oracle.truffle.api.frame.FrameDescriptor;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.RootNode;
 import org.graalphp.PhpLanguage;
+import org.graalphp.nodes.EmptyExprNode;
+import org.graalphp.nodes.PhpExprNode;
+import org.graalphp.nodes.StmtListNode;
+import org.graalphp.nodes.PhpStmtNode;
 
 import java.util.List;
 
@@ -33,7 +37,7 @@ public final class PhpFunctionRootNode extends RootNode {
                                                       FrameDescriptor desc,
                                                       String name,
                                                       List<PhpStmtNode> stmts) {
-        PhpStmtListNode stmt = new PhpStmtListNode(stmts);
+        StmtListNode stmt = new StmtListNode(stmts);
         PhpReturnBodyNode fnBody = new PhpReturnBodyNode(stmt);
         return new PhpFunctionRootNode(lang, desc, name, fnBody);
     }
@@ -42,7 +46,7 @@ public final class PhpFunctionRootNode extends RootNode {
                                                         FrameDescriptor desc,
                                                         String name) {
 
-        return new PhpFunctionRootNode(lang, desc, name, new PhpEmptyExprNode());
+        return new PhpFunctionRootNode(lang, desc, name, new EmptyExprNode());
     }
 
     @Override

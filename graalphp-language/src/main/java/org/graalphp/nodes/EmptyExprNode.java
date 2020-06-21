@@ -9,7 +9,7 @@ import org.graalphp.types.PhpNull;
  *
  * @author abertschi
  */
-public class PhpEmptyExprNode extends PhpExprNode {
+public class EmptyExprNode extends PhpExprNode {
 
     @Override
     public Object executeGeneric(VirtualFrame frame) {

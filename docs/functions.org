@@ -385,6 +385,7 @@ into existence when the execution flow reaches the point where the function is
 defined.
 https://github.com/php/php-langspec/blob/8f78136eaae6a3fa7eef4789c8729bc38726b19d/spec/13-functions.md
 #+end_quote
+
 * Questions
 ** Can i call nested functions from outside of function which is parent of nested function?
 #+begin_src php
@@ -410,3 +411,72 @@ No
 - create a directCallNode from a calltarget, which is a rootcalltarget for functions
 - cant we call rootcalltarget directly?
 
+* Status Initial 20-06-21
+Introduce parsing, storing, lookup and execution of non polymorphic functions
+
+No optimizations are implemented yet
+
+*Remarks*
+- No inline caching
+- global functions can be called before they are defined (according to spec)
+- function definitions in source are modeled as PhpFunctionRootNode which are
+  RootCallTargets
+- function calls are modeled as PhpInvokeNode which contain a expression
+  which resolves to a function and children for arguments (potential for inline caching)
+- a function is lazily loaded, this is due to the semantics that they can be
+  called before they appear in source code
+- if a function is called, it's PhpFunction is resolved (PhpFunctionLookupNode).
+- A PhpFunction is a Pojo storing a name and a calltarget
+- Php scoping semantics are modeled as ParseScope.
+- No global keyword is implemented yet
+- No nested functions are implemented yet
+- Local variables are introduced, they read from the framedescriptor responsible
+  for the current function. 
+- Function arguments are converted to local variables and added to the
+  framedescriptor of the corresponding function.
+- We currently do not need to materialize the Truffle frames because of the
+  scoping semantics of PHP (there is no lexical scope)
+- A PhpScope contains a functionRegistry which maps function names to PhpFunction's
+- If a function is not found in current scope, it is looked up in the global scope.
+  - This partially implements nested functions. For full nested function
+    support, we need to store all parent scopes not just global scope.
+
+*Next steps:*
+- In order to apply optimizations, it is useful to have other control flow
+  constructs available. This makes it easier to measure if an optimization has an
+  impact on performance
+- Introduce If/ else/ while
+- introduce ability to print to stdout
+- with the above implemented, we can start with optimizations
+  - specializations to avoid boxing
+  - inline caches before function invocation
+  - tail Call optimizations
+  - branch profiling
+  - loop unrolling
+
+
+Example of currently supported feature set:
+(see language/tests/ for end2end tests)
+
+#+begin_src php
+// test sequenced function invocations
+function a($a) {
+ $b = 10;
+ $c = $a + $b;
+ return $c;
+}
+
+
+function b($c) {
+$c = $c + a($c);
+return $c + 1;
+}
+
+
+function c($a, $b) {
+return a(b($a + $b));
+}
+
+c(a(1), b(b(b(2))));
+?>
+#+end_src

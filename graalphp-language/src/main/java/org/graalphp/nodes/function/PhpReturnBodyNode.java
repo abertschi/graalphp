@@ -1,6 +1,8 @@
-package org.graalphp.nodes;
+package org.graalphp.nodes.function;
 
 import com.oracle.truffle.api.frame.VirtualFrame;
+import org.graalphp.nodes.PhpExprNode;
+import org.graalphp.nodes.PhpStmtNode;
 import org.graalphp.nodes.controlflow.PhpReturnException;
 import org.graalphp.types.PhpNull;
 

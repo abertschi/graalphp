@@ -1,7 +1,8 @@
-package org.graalphp.nodes;
+package org.graalphp.nodes.function;
 
 import com.oracle.truffle.api.CompilerAsserts;
 import com.oracle.truffle.api.frame.VirtualFrame;
+import org.graalphp.nodes.PhpExprNode;
 import org.graalphp.types.PhpFunction;
 
 /**

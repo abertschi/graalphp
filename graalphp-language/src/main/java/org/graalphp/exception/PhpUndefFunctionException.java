@@ -1,4 +1,4 @@
-package org.graalphp;
+package org.graalphp.exception;
 
 import com.oracle.truffle.api.nodes.Node;
 
