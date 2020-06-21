@@ -27,7 +27,6 @@ this becomes useful to remember if a variable is global or not
 
 ** TODO how do Frame and FrameDesriptor differ?
 
-
 * MaterializedFrame
 - stored in heap
 - more heavyweight than virtualframe
@@ -98,5 +97,8 @@ themselves, and the compiler treats them specially.
 - where this is subclass of RootNode
 - and in excute method will call @child expr.executeGeneric() which throws exception with result
 
-* Scoping
+* Cache Annotations
+- executed before guards
+- creates a copy/ cache of passed dynamic parameter which remains the same when
+  same parameter called again
 

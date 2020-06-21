@@ -2,6 +2,7 @@ package org.graalphp.types;
 
 import com.oracle.truffle.api.RootCallTarget;
 import com.oracle.truffle.api.Truffle;
+import com.oracle.truffle.api.interop.TruffleObject;
 import org.graalphp.PhpLanguage;
 import org.graalphp.nodes.UndefFunctionRootNode;
 import org.graalphp.parser.ParseScope;
@@ -13,7 +14,7 @@ import org.graalphp.parser.ParseScope;
  *
  * @author abertschi
  */
-public class PhpFunction {
+public class PhpFunction implements TruffleObject {
 
     // TODO: look into CyclicAssumption
     // TODO: truffleObject for interoperability?

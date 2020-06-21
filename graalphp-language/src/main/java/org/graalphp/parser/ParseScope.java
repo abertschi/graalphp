@@ -2,7 +2,6 @@ package org.graalphp.parser;
 
 import com.oracle.truffle.api.frame.FrameDescriptor;
 import com.oracle.truffle.api.frame.FrameSlot;
-import org.graalphp.PhpException;
 import org.graalphp.PhpFunctionRegistry;
 import org.graalphp.types.PhpFunction;
 
@@ -17,6 +16,7 @@ import java.util.Map;
 public class ParseScope {
 
     private ParseScope global; // ref to self if this is global
+
     private FrameDescriptor frameDesc;
 
     // in current scope

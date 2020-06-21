@@ -2,14 +2,13 @@ package org.graalphp.nodes;
 
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.BlockNode;
-import org.graalphp.nodes.PhpStmtNode;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 /**
- * Represents a sequence of stmts in PHP.
+ * Represents a sequence of stmts.
  *
  * @author abertschi
  */
@@ -55,7 +54,7 @@ public class PhpStmtListNode extends PhpStmtNode
     public String toString() {
         StringBuilder buf = new StringBuilder();
         buf.append(getClass().getSimpleName()).append(": ");
-        for(PhpStmtNode s: getStatements()) {
+        for (PhpStmtNode s : getStatements()) {
             buf.append(s.toString());
         }
         return buf.toString();

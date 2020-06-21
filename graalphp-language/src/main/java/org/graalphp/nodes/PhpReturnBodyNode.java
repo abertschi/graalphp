@@ -1,14 +1,14 @@
 package org.graalphp.nodes;
 
 import com.oracle.truffle.api.frame.VirtualFrame;
-import org.graalphp.nodes.PhpExprNode;
-import org.graalphp.nodes.PhpStmtNode;
 import org.graalphp.nodes.controlflow.PhpReturnException;
 import org.graalphp.types.PhpNull;
 
 /**
  * Node to represent a construct in PHP which can return a value
  * (function, or return from global scope)
+ *
+ * Uses Truffle idiomatic way to wrap return type into Control Flow exception.
  *
  * @author abertschi
  */

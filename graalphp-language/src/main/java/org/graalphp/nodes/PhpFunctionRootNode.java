@@ -2,27 +2,28 @@ package org.graalphp.nodes;
 
 import com.oracle.truffle.api.frame.FrameDescriptor;
 import com.oracle.truffle.api.frame.VirtualFrame;
-import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.nodes.RootNode;
 import org.graalphp.PhpLanguage;
 
 import java.util.List;
 
 /**
- * Represents a function node. A function is a root node.
- *
+ * Represents a callable function node.
  * A function needs to be converted to a call target to be callable
  *
  * @author abertschi
  */
 public final class PhpFunctionRootNode extends RootNode {
 
-    @Node.Child
+    @Child
     private PhpExprNode body;
 
     private final String name;
 
-    public PhpFunctionRootNode(PhpLanguage lang, FrameDescriptor desc, String name, PhpExprNode body) {
+    public PhpFunctionRootNode(PhpLanguage lang,
+                               FrameDescriptor desc,
+                               String name,
+                               PhpExprNode body) {
         super(lang, desc);
         this.name = name;
         this.body = body;

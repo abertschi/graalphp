@@ -1,9 +1,7 @@
 package org.graalphp.nodes;
 
 import com.oracle.truffle.api.CompilerAsserts;
-import com.oracle.truffle.api.Truffle;
 import com.oracle.truffle.api.frame.VirtualFrame;
-import com.oracle.truffle.api.nodes.DirectCallNode;
 import org.graalphp.types.PhpFunction;
 
 /**
@@ -11,6 +9,7 @@ import org.graalphp.types.PhpFunction;
  *
  * @author abertschi
  */
+//@NodeChild(value = "functionNode", type = PhpExprNode.class)
 public class PhpInvokeNode extends PhpExprNode {
 
     @Child
@@ -31,7 +30,6 @@ public class PhpInvokeNode extends PhpExprNode {
 
     @Override
     public Object executeGeneric(VirtualFrame frame) {
-
         // TODO: improve this, avoid casting
         PhpFunction fn = (PhpFunction) function.executeGeneric(frame);
 
@@ -42,6 +40,16 @@ public class PhpInvokeNode extends PhpExprNode {
         for (int i = 0; i < argNodes.length; i++) {
             argVals[i] = argNodes[i].executeGeneric(frame);
         }
+        // TODO: do polymorphic inline cache technique here
         return fn.getCallTarget().call(argVals);
     }
+
+//    private PhpFunction resolveFunction(VirtualFrame virtualFrame) {
+//        try {
+//            return this.function.executePhpFunction(virtualFrame);
+//        } catch (UnexpectedResultException e) {
+//            throw new UnsupportedSpecializationException(this,
+//                    new Node[] {this.functionNode}, e);
+//        }
+//    }
 }

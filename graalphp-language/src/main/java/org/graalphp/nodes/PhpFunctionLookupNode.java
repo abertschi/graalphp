@@ -3,11 +3,16 @@ package org.graalphp.nodes;
 import com.oracle.truffle.api.CompilerDirectives;
 import com.oracle.truffle.api.CompilerDirectives.CompilationFinal;
 import com.oracle.truffle.api.frame.VirtualFrame;
-import org.graalphp.PhpException;
+import org.graalphp.PhpUndefFunctionException;
 import org.graalphp.parser.ParseScope;
 import org.graalphp.types.PhpFunction;
 
 /**
+ * Function implementation may only be known after a function call
+ * in terms of location in source code.
+ * <p>
+ * During runtime, this node looks up the implementation of the function.
+ *
  * @author abertschi
  */
 public final class PhpFunctionLookupNode extends PhpExprNode {
@@ -36,16 +41,12 @@ public final class PhpFunctionLookupNode extends PhpExprNode {
             PhpFunction fn = this.scope.resolveFunction(this.name);
             if (fn == null) {
                 StringBuilder buf = new StringBuilder();
-                buf.append("Function ")
-                        .append(name)
-                        .append(" not found.")
-                        .append(" scope: ")
+                buf.append("Function ").append(name).append(" not found.").append(" scope: ")
                         .append(scope.getGlobal() == scope ? "<global>" : "<function>");
-                throw new PhpException(buf.toString(), this);
+                throw new PhpUndefFunctionException(buf.toString(), this);
             }
             this.function = fn;
         }
-
         return function;
     }
 }

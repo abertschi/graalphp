@@ -7,7 +7,9 @@ import com.oracle.truffle.api.nodes.NodeInfo;
 import org.graalphp.types.PhpTypes;
 
 /**
- * This represents a node which does not return a value.
+ * Representation of a statement.
+ * A statement does not return a value.
+ * Parent node of all PHP specific nodes.
  *
  * @author abertschi
  */
@@ -17,9 +19,7 @@ public abstract class PhpStmtNode extends Node {
 
     private static final int SRC_SECTION_NOT_SET = -1;
 
-    /**
-     * index for source section from parser
-     **/
+    // TODO: implement get source section
     private int srcSectionStart = SRC_SECTION_NOT_SET;
     private int srcSectionLen = SRC_SECTION_NOT_SET;
 
