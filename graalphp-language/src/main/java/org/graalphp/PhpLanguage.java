@@ -28,6 +28,8 @@ public final class PhpLanguage extends TruffleLanguage<PhpContext> {
     public static final String ID = "php";
     public static final String MIME_TYPE = "application/x-php";
 
+    private static final boolean RETURN_LAST_EXPR = true;
+
     private final static Logger LOG = PhpLogger
             .getLogger(PhpLanguage.class.getCanonicalName());
 
@@ -50,7 +52,7 @@ public final class PhpLanguage extends TruffleLanguage<PhpContext> {
                         this,
                         parseResult.getScope().getFrameDesc(),
                         parseResult.getStmts(),
-                        true);
+                        RETURN_LAST_EXPR);
 
         getCurrentContext().setRootScope(parseResult.getScope());
         return Truffle.getRuntime().createCallTarget(evalMain);

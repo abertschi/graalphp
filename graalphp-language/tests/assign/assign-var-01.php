@@ -17,5 +17,5 @@ $r3 = (($i0 + $i1) + ($i2 + $i3)) + (($i4 + $i5) + ($i6 + $i7));
 
 // we dont support print yet, so last expression will returned in test mode
 $r1;
-// print $r1;
+print $r1;
 ?>

@@ -1,3 +1,4 @@
 <?php
-function a() {return b();} function b() {return 1337;} a();
+function a() {return b();} function b() {return 1337;}
+print a();
 ?>

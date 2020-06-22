@@ -16,6 +16,5 @@ function c($a, $b) {
 return a(b($a + $b));
 }
 
-// echo c(a(1), b(b(b(2))));
-c(a(1), b(b(b(2))));
+print c(a(1), b(b(b(2))));
 ?>

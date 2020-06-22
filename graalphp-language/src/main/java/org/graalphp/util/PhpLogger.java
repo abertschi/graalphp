@@ -8,7 +8,17 @@ package org.graalphp.util;
  */
 public class PhpLogger implements Logger {
 
-    final private String name;
+    private final String name;
+
+    public static boolean DISABLE = false;
+
+    public static synchronized void disable() {
+        DISABLE = false;
+    }
+
+    public static synchronized void enable() {
+        DISABLE = true;
+    }
 
     private PhpLogger(String name) {
         this.name = name;
@@ -22,18 +32,19 @@ public class PhpLogger implements Logger {
 
     @Override
     public void fine(String msg) {
-//        return;
+        if (DISABLE) return;
         System.err.println(format(msg, "fine"));
     }
 
     @Override
     public void info(String msg) {
+        if (DISABLE) return;
         System.err.println(format(msg, "info"));
     }
 
     @Override
     public void finest(String msg) {
-//        return;
+        if (DISABLE) return;
         System.err.println(format(msg, "finest"));
     }
 

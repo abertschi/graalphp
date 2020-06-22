@@ -40,14 +40,19 @@
  */
 package org.graalphp.launcher;
 
-import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.PolyglotException;
 import org.graalvm.polyglot.Source;
 import org.graalvm.polyglot.Value;
+
+import java.io.Console;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
+import java.util.HashMap;
+import java.util.Map;
 
 public final class GraalPhpMain {
 
@@ -126,7 +131,7 @@ public final class GraalPhpMain {
             err.println(e.getMessage());
             return 1;
         }
-        out.println("== running on " + context.getEngine());
+        // out.println("== running on " + context.getEngine());
 
         try {
             Value result = context.eval(source);
