@@ -35,7 +35,6 @@ this becomes useful to remember if a variable is global or not
 
 * VirtualFrame
 - cannot escape compilation unit
-
 * FrameDescriptor
 On the one hand, it maintains the structural information about the
 slots of a frame, and on the other hand, the frame slots can record

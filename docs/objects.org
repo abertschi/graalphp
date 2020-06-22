@@ -3,7 +3,6 @@
 
 #+TITLE: Implementing Classes
 
-
 * Allocation Reporter
 #+begin_src java
 /**

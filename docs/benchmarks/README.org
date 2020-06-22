@@ -1,4 +1,57 @@
+* Benchmarks to choose
+- binarytrees.php-1.php
+  - has no reference operator
+  - classes
+- fannkuchredux.php-1.php
+  - has no reference operator
 * Features relevant for benchmarks
+- [ ] classes
+  - [ ] public attributes
+  - [ ] write object attributes
+  - [ ] read object attributes
+  - [ ] new operator
+- [-] non-polymorphic functions
+  - [X] function arguments
+  - [X] return from functions
+  - [X] function invocation
+  - [ ] default arguments
+  - [ ] argument by reference
+- [-] variables
+  - [ ] global variables
+  - [X] function local variables
+- [ ] if/ else
+- [ ] if/ else short form
+- [ ] for loop
+- [ ] foreach with key => val
+- [ ] foreach with reference
+- [ ] do while loop
+- [ ] break out of loop
+- [ ] access argv/ argc
+- [ ] arrays
+  - [ ] argv
+  - [ ] nested arrays
+- [-] binary operations
+  - [ ] shift left
+  - [ ] shift right
+  - [ ] equals (==)
+  - [ ] short hand >>=
+  - [ ] triple equals (===)
+  - [X] addition
+  - [X] subtraction
+  - [X] multiplication
+  - [X] division
+  - [ ] modulo
+  - [ ] ++, --
+- [ ] built in functions
+  - [ ] max
+  - [ ] printf
+  - [ ] unset
+  - [ ] global
+  - [ ] sqrt
+  - [ ] count
+  - [ ] list
+
+
 - functions calls with args
 - global variables
 - if, else
