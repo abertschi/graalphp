@@ -15,7 +15,7 @@
   - [X] return from functions
   - [X] function invocation
   - [ ] default arguments
-  - [ ] argument by reference
+  - [ ] argument by reference ? Do we really want to implement this (hack dropped it)
 - [-] variables
   - [ ] global variables
   - [X] function local variables
