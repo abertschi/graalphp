@@ -9,20 +9,21 @@ import com.oracle.truffle.api.dsl.TypeSystem;
  */
 @TypeSystem({
         long.class,
-        double.class
+        double.class,
+        PhpFunction.class
 })
 public class PhpTypes {
 
     PhpTypes() {
     }
 
-    // we allow a long to be converted to double where possible
+    // XXX: we allow a long to be converted to double where possible
     @ImplicitCast
     public static double longToDouble(long val) {
         return (double) val;
     }
 
-    // more efficient way than default way which does boxing
+    // XXX: more efficient way than default way which does boxing
     @TypeCast(double.class)
     public static double asDouble(Object value) {
         return ((Double) value).doubleValue();

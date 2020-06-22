@@ -124,6 +124,7 @@ public class GraalPhpTestRunner extends ParentRunner<TestCase> {
         try {
             testCases = createTests(runningClass);
         } catch (IOException e) {
+            System.out.println(e.getLocalizedMessage());
             throw new InitializationError(e);
         }
     }

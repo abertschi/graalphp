@@ -1,0 +1,482 @@
+## -*- coding: utf-8;mode: org; fill-column: 80;  -*-
+## This file is best viewed with GNU Emacs Org-mode: http://orgmode.org/
+
+#+TITLE: Implementing Functions
+- Spec :: https://github.com/php/php-langspec/blob/master/spec/13-functions.md#functions
+
+* Scope
+- [ ] function definition with arguments
+- [ ] function invocation
+- [ ] do not support polymorphic functions yet
+
+** Optional for now
+- [ ] generator functions
+- [ ] nested functions
+- [ ] variable functions
+- [ ] anonymous functions
+- [ ] argument passing by ref
+- [ ] callable type
+- [ ] __invoke
+
+* Approach
+- study simple language
+- find a way to represent global scope (which executed first)
+- find a way to represent variables in global scope
+- translate results to function class and functions
+  - is global scope a "main" function itself?
+
+* Sample Code
+#+begin_src php
+  // with types
+  function  increment(int $val): int {
+      return $val + 1;
+  }
+
+  // without
+  function increment($val) {
+      return $val + 1;
+  }
+
+  increment(1337);
+#+end_src
+
+#+begin_src php
+  $f = function($i) {
+      return ($i % 2) == 0;
+  };
+#+end_src
+
+** Type Annotations
+- PHP 7 introduces strict types
+- https://thevaluable.dev/php-7-type-hinting-pitfalls/
+- weird type conversions apply if strict_typed=1 not set
+- should we support type annotations?
+  - it will make programming much less error prone
+  - however, unless all code uses type annotations, we still need type conversions
+  - so adding type annotation is extra work unless we make it required for all code
+
+* How to represent functions in graal
+- FrameSlot: represents a variable in a (stack) frame
+- in order to implement functions, we need a way to access stack variables
+- the truffle way suggest nodes to
+  a. write local variable into current stack frame
+  b. read parameters
+  c. read local variables
+
+- global and function scope should make representation in graal straight forward
+- no scope walking, either function scope or not (with global keyword).
+
+** Scoping
+- https://phppot.com/php/variable-scope-in-php/
+- PHP does not have lexical scope
+- it has it's own concept of global and function scope
+- A variable is either globally defined and not available within functions
+- or locally defined within a function
+- if global variable wants to be accessed within a function, global keyword must be used
+- https://github.com/php/php-langspec/blob/master/spec/04-basic-concepts.md#scope
+
+*** What about nested functions?
+- same principle holds for nested function, no lexical scope defined
+
+*** global, static
+- global scope
+- function scope (variables in functions, as well as function args)
+- static scope (delcaring a var static within a function)
+- super global (GLOBALS variable)
+
+*** What happens to blocks within functions (if, or simply {})
+- nothing, same rules apply, does not create a new scope
+
+** Design ideas
+*** Parser
+- keep track of scope: function or global
+- if function use a readNode to access virtual frame to get object
+- if global use a readnode for globals
+*** Function registry
+- Hashmap: string -> function
+*** PhpFunction node
+- has a name
+- has a call target
+
+
+** SL implementation
+- *SLFunction*
+  - is TruffleObject
+  - has name and rootcalltarget
+  - Who does create it?
+    - SLFunctionRegistry
+- *SLFunctionRegistry*
+  - maps name to slfunctions
+- *SLRootNode*
+  - is rootnode
+  - root of all execution trees
+  - either builtins
+  - or user defined functions
+  - a node that allows to be executed with #execute(VirtualFrame)
+- *Expression Node vs StmtNode?*
+  - stmt nodes not return something
+  - expression is subclass of stmt
+  - slroot hode has a body, which is a reference to a slstmt
+
+- *SLRootNode vs EvalRootNode*
+  - rootNode defines an execute(frame) method
+  - slroot node and evalroot node contain a member which is a node
+  - in execute(frame), they call bodyNode.executeGeneric(frame)
+  - which then can be specialized by truffle during runtime
+  - evalrootnode
+    - has one child, a directCallNode, which is created from the main function and called with args from frame
+    - used to run main function
+  - slrootnode
+    - is either function or builtin
+
+
+*** TODO how does SLRootNode get its arguments?
+- slrootnode is a rootnode and has an execute(frame) method.
+- how are arguments to function given to slrootnode?
+
+*** how are slfunction and slfunctionbody node releated with each other
+
+*** create assignment (from function arguments)
+- function arguments created as read argument node, which is an expression and passed as the value node to create assignment
+#+begin_src java
+    public SLExpressionNode createAssignment(SLExpressionNode nameNode, SLExpressionNode valueNode, Integer argumentIndex) {
+        if (nameNode == null || valueNode == null) {
+            return null;
+        }
+
+        String name = ((SLStringLiteralNode) nameNode).executeGeneric(null);
+        FrameSlot frameSlot = frameDescriptor.findOrAddFrameSlot(
+                        name,
+                        argumentIndex,
+                        FrameSlotKind.Illegal);
+        lexicalScope.locals.put(name, frameSlot);
+        final SLExpressionNode result = SLWriteLocalVariableNodeGen.create(valueNode, frameSlot);
+
+        if (valueNode.hasSource()) {
+            final int start = nameNode.getSourceCharIndex();
+            final int length = valueNode.getSourceEndIndex() - start;
+            result.setSourceSection(start, length);
+        }
+        result.addExpressionTag();
+
+        return result;
+    }
+#+end_src
+
+* Entry point for execution
+- PHP has global scope and function scope
+- how should we represent global scope?
+- there is only one such scope
+- we can represent it as a function which takes arguments no arguments but contains a special variable for argv, argc
+- this can either be treated like any other function in graal php
+- or as a special kind of function (with its own class)
+ 
+** Do function def need to be above function calls in php source?
+no
+** Design idea: wrap everything within a main function
+#+begin_src php
+<?php
+    
+function main() {
+$_argv = array("main.php", 1, "a");
+$_argc = 3;
+
+
+function test() {
+    global $_argv;  // this is not effective, we cant access _argv at all
+    global $_argc;
+    echo "output: ";
+    echo $_argc;
+}
+
+test();
+
+}
+main();
+?>
+#+end_src
+Result: 
+output
+
+
+Issues:
+- there is no way to access outer function variable
+- with global, global scope is accessed which is not within a function
+- php supports use keyword, to allow a function to access outer function variables
+- https://stackoverflow.com/questions/2408908/is-it-possible-to-access-outer-local-variable-in-php
+#+begin_src php
+$bar = function() use(&$l) {
+};
+$bar();
+#+end_src
+
+#+begin_src php
+<?php
+    
+function main() {
+$_argv = array("main.php", 1, "a");
+$_argc = 3;
+
+
+$test = function() use (&$_argv, &$_argc) {
+    echo "output: ";
+    echo $_argc;
+};
+
+$test();
+
+}
+
+
+main();
+?>
+#+end_src
+Output:
+- output: 3
+
+This would achieve the desired result
+
+- We are free in changing the internals of our implementation as long as we correctly model global scope.
+- However, making above code (which does not produce desired result)
+  work, adds an exception in how source code has to be handled for
+  main function
+- does not scale well, for all possible globals we have to add these to the function definitions
+- What about super globals?
+*** Super globals
+#+begin_src
+    $GLOBALS
+    $_SERVER
+    $_GET
+    $_POST
+    $_FILES
+    $_COOKIE
+    $_SESSION
+    $_REQUEST
+    $_ENV
+#+end_src
+
+
+#+begin_src 
+<?php
+echo var_dump($GLOBALS);
+echo var_dump($GLOBALS["argv"][1]);
+?>
+
+array(8) {
+  ["_GET"]=>
+  array(0) {
+  }
+  ["_POST"]=>
+  array(0) {
+  }
+  ["_COOKIE"]=>
+  array(0) {
+  }
+  ["_FILES"]=>
+  array(0) {
+  }
+  ["argv"]=>
+  array(2) {
+    [0]=>
+    string(9) "main3.php"
+    [1]=>
+    string(4) "1337"
+  }
+  ["argc"]=>
+  int(2)
+#+end_src
+
+*** Pos. Design Solution
+- do not wrap in a main function, treat main function differently than user defined functions
+- GlobalEntryNode
+  - is Expression
+  - contains a stmt which throws exception on return
+  - every function has a reference to variables defined in global scope, ie this node?
+  - We would have userdef functions, builtins, and the global entry node
+  - 
+
+
+* Function invoke
+** Problem
+If we parse an invoke node the function body may not be parsed yet because
+function calls can appear above their definitions.
+
+- In the invoke node we need a call target.
+- But the call target we only get once we have a root node,
+- which we only get once we have a function body node
+
+This requires lazy registration.
+
+if we get a function call, the function definition may be within the current function (nested)
+or in a parent function. So we need to walk up the nestings to get to it.
+
+There can only be one function definition with the same name (in the current or upper scopes).
+
+#+begin_src php
+
+function test() {
+    echo "test";
+    $a = 1;
+
+    abc();
+    
+    function abc() {
+        echo "test:abc";
+    }
+    
+}
+
+function abc() {
+    echo "abc";
+}
+
+
+test();
+#+end_src
+
+#+begin_quote
+testabcPHP Fatal error: Cannot redeclare abc() (previously declared in
+/home/b/beandata/pgm-eth/eth-s08-ba-graalphp/graalphp-public/docs/php-snippets/fncall.php:16)
+in
+/home/b/beandata/pgm-eth/eth-s08-ba-graalphp/graalphp-public/docs/php-snippets/fncall.php
+on line 9
+
+Fatal error: Cannot redeclare abc() (previously declared in
+/home/b/beandata/pgm-eth/eth-s08-ba-graalphp/graalphp-public/docs/php-snippets/fncall.php:16)
+in
+/home/b/beandata/pgm-eth/eth-s08-ba-graalphp/graalphp-public/docs/php-snippets/fncall.php
+on line 9
+#+end_quote
+
+Also nested function definitions need to appear before their calls. Unlike in global scope
+
+*** Solution
+if we get the function definition first, steps are straight forward. We have the proper Phpscope,
+and can define the function in that scope.
+
+
+If we get a function invocation first, it is more tricky.
+
+
+Ideally, we can lookup the rootcall target at runtime, or after all functions have been parsed.
+
+1. either we evaluae the function at runtime (make a node return it at runtime)
+   - this is useful if function can change, which is a feature if we store
+     function in variables which we invoke, but we do not support this yet
+2. or we walk through all nodes after parsing and fix lazy loading
+3. 
+
+
+
+* Conditionally Defined Functions
+- for conditionally defined functions, function definition must appear before function call.
+- For global function, it does not have to
+#+begin_quote
+An unconditionally defined function is a function whose definition is at the top
+level of a script. A conditionally defined function is a function whose
+definition occurs inside a compound statement, such as the body of another
+function (a nested function), conditional statement, etc. There is no limit on
+the depth of levels of function nesting. Consider the case of an outer function,
+and an inner function defined within it. Until the outer function is called at
+least once, its inner function does not exist. Even if the outer function is
+called, if its runtime logic bypasses the definition of the inner function, that
+inner function still does not exist. The conditionally defined function comes
+into existence when the execution flow reaches the point where the function is
+defined.
+https://github.com/php/php-langspec/blob/8f78136eaae6a3fa7eef4789c8729bc38726b19d/spec/13-functions.md
+#+end_quote
+
+* Questions
+** Can i call nested functions from outside of function which is parent of nested function?
+#+begin_src php
+function foo() {
+    function test() {
+        echo "hi";
+    }
+}
+
+test();
+#+end_src
+No
+
+** TODO Unclear when to use RootCallTarget and when to use Direct, IndirectCallNode
+*** RootCallTarget
+- is created with TruffleRuntime for a Node which represents a function of the entry point
+- is subclass of CallTarget
+*** IndirectCallNode
+- target may change
+
+*** DirectCallNode
+- target does not change, has potential for inlinging
+- create a directCallNode from a calltarget, which is a rootcalltarget for functions
+- cant we call rootcalltarget directly?
+
+* Status Initial 20-06-21
+Introduce parsing, storing, lookup and execution of non polymorphic functions
+
+No optimizations are implemented yet
+
+*Remarks*
+- No inline caching
+- global functions can be called before they are defined (according to spec)
+- function definitions in source are modeled as PhpFunctionRootNode which are
+  RootCallTargets
+- function calls are modeled as PhpInvokeNode which contain a expression
+  which resolves to a function and children for arguments (potential for inline caching)
+- a function is lazily loaded, this is due to the semantics that they can be
+  called before they appear in source code
+- if a function is called, it's PhpFunction is resolved (PhpFunctionLookupNode).
+- A PhpFunction is a Pojo storing a name and a calltarget
+- Php scoping semantics are modeled as ParseScope.
+- No global keyword is implemented yet
+- No nested functions are implemented yet
+- Local variables are introduced, they read from the framedescriptor responsible
+  for the current function. 
+- Function arguments are converted to local variables and added to the
+  framedescriptor of the corresponding function.
+- We currently do not need to materialize the Truffle frames because of the
+  scoping semantics of PHP (there is no lexical scope)
+- A PhpScope contains a functionRegistry which maps function names to PhpFunction's
+- If a function is not found in current scope, it is looked up in the global scope.
+  - This partially implements nested functions. For full nested function
+    support, we need to store all parent scopes not just global scope.
+
+*Next steps:*
+- In order to apply optimizations, it is useful to have other control flow
+  constructs available. This makes it easier to measure if an optimization has an
+  impact on performance
+- Introduce If/ else/ while
+- introduce ability to print to stdout
+- with the above implemented, we can start with optimizations
+  - specializations to avoid boxing
+  - inline caches before function invocation
+  - tail Call optimizations
+  - branch profiling
+  - loop unrolling
+
+
+Example of currently supported feature set:
+(see language/tests/ for end2end tests)
+
+#+begin_src php
+// test sequenced function invocations
+function a($a) {
+ $b = 10;
+ $c = $a + $b;
+ return $c;
+}
+
+
+function b($c) {
+$c = $c + a($c);
+return $c + 1;
+}
+
+
+function c($a, $b) {
+return a(b($a + $b));
+}
+
+c(a(1), b(b(b(2))));
+?>
+#+end_src

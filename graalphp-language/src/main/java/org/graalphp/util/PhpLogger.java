@@ -10,13 +10,16 @@ import java.util.Date;
  */
 public class PhpLogger implements Logger {
 
-    private static final PhpLogger LOG = new PhpLogger();
+    final private String name;
 
-    private PhpLogger() {
+    private PhpLogger(String name) {
+        this.name = name;
     }
 
     public static Logger getLogger(String name) {
-        return LOG;
+        // XXX: to reduce object creation make logger static
+        // fine for now, Logger is debug utility
+        return new PhpLogger(name);
     }
 
     @Override
@@ -40,8 +43,13 @@ public class PhpLogger implements Logger {
     }
 
     private String format(String msg, String lvl) {
-        return String.format("[%1$tF %1$tT] [%2$-7s] %3$s",
-                new Date(),
+//        return String.format("[%1$tF %1$tT] [%2$-7s] %3$s",
+//                new Date(),
+//                lvl,
+//                msg
+//        );
+        return String.format("[%1$-15s] [%2$-7s] %3$s",
+                name,
                 lvl,
                 msg
         );

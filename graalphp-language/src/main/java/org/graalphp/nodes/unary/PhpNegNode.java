@@ -19,11 +19,6 @@ public abstract class PhpNegNode extends PhpUnaryNode {
         return - val;
     }
 
-    @Specialization
-    protected Object neg(Object val) {
-        throw new UnsupportedOperationException();
-    }
-
     @Override
     public String toString() {
         return "PhpNegNode{}";

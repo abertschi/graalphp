@@ -33,15 +33,68 @@ slower.
 *** Integer
 **** TODO make PHP_INT_SIZE, PHP_INT_MIN and PHP_INT_MAX available as constants
 **** TODO isInt library function
+** TODO unclear DirectCallNode vs RootCallTarget
+We currently use RootCallTarget for functions
+** TODO do we need to make framedescriptor frame of global scope materialized?
+As soon as a frame is stored in a java object, (a virtual frame), it needs to materialize.
+This is useful if we want to model lexical scope where functions can access scope of caller.
+But php does not support this so we dont need to pass the parent frame around (unless
+we implement the reference operator).
+
+See this example of mumber project. function need access to frame of parent function.
+this is why the frame is stored and must be materialzed beforehand.
+A materialized frame can escape compilation unit and is thus slower than a virtual frame.
+
+#+begin_src java
+@Specialization
+    public Object getMumblerFunction(VirtualFrame virtualFrame) {
+        MumblerFunction function = this.getFunction();
+        if (!isScopeSet()) {
+            CompilerDirectives.transferToInterpreterAndInvalidate();
+            function.setLexicalScope(virtualFrame.materialize());
+            this.scopeSet = true;
+        }
+        return function;
+    }
+#+end_src
+
+    
+
+** TODO ensure finals in nodes
 * Optimizations
 ** TODO See if specialisation for shift instead of div by 2 brings performance
+** TODO Optimize Function invocation
+- currently no optimiations done
+- we can;
+  - make phpfunction a phpType
+  - change invokeNode such that it has phpfunction and arguments as children
+  - make object[] a new type known to phptypes
+  - introduce executeValues node which has children and executes them all and returns obj[]
+
+See Oz Project:
+#+begin_src 
+public class ExecuteValuesNode extends OzNode {
+
+	@Children final OzNode[] valuesNodes;
+
+	public ExecuteValuesNode(OzNode[] valuesNodes) {
+		this.valuesNodes = valuesNodes;
+	}
+
+	@Override
+	public Object[] execute(VirtualFrame frame) {
+		return NodeHelpers.executeValues(frame, valuesNodes);
+	}
+
+}
+#+end_src
+
 * Testing/ CI
 **
 **
 
 * Doc
 ** TODO update list of implemented features to facebook spec
-
 
 * Design Noes
 ** Integer

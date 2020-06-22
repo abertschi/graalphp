@@ -19,9 +19,8 @@ public class ParseSkalarTest {
 
     @Test
     public void parserSkalarTooBig() throws IOException {
-        // TODO Test overflow
-        Context ctx = Context.create("php");
-//        Assert.assertSame(1, ctx.eval("php", php("-2147483648;")).asLong());
+        TestCommons.evalDouble(-2147483648, "-2147483648;");
+        TestCommons.evalDouble(-2147483648000.0, "-2147483648000;");
     }
 
 

@@ -8,8 +8,10 @@
         <artifactId>php-parser-pom</artifactId>
         <version>0.0.1-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
+
     </parent>
 
+    <packaging>jar</packaging>
     <artifactId>php-parser</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
@@ -91,6 +93,5 @@
                 </includes>
             </resource>
         </resources>
-
     </build>
 </project>

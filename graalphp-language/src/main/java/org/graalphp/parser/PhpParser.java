@@ -1,6 +1,5 @@
 package org.graalphp.parser;
 
-import com.oracle.truffle.api.RootCallTarget;
 import com.oracle.truffle.api.source.Source;
 import org.eclipse.php.core.PHPVersion;
 import org.eclipse.php.core.ast.error.ConsoleErrorListener;
@@ -8,13 +7,8 @@ import org.eclipse.php.core.ast.error.ErrorEvent;
 import org.eclipse.php.core.ast.nodes.ASTParser;
 import org.eclipse.php.core.ast.nodes.Program;
 import org.graalphp.PhpLanguage;
-import org.graalphp.nodes.PhpRootNode;
-import org.graalphp.nodes.PhpStmtNode;
 import org.graalphp.util.PhpLogger;
 import org.graalphp.util.Logger;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Main class to parse and translate PHP to graal php AST.
@@ -23,6 +17,7 @@ import java.util.Map;
  */
 public class PhpParser {
     private PhpLanguage lang;
+
     private final static Logger LOG = PhpLogger
             .getLogger(PhpLanguage.class.getCanonicalName());
 
@@ -30,7 +25,12 @@ public class PhpParser {
         this.lang = lang;
     }
 
-    public PhpParseResult parseSource(Source source) {
+    public StmtVisitor.StmtVisitorContext parseSource(String source) {
+        return parseSource(
+                Source.newBuilder(PhpLanguage.ID, source, "<console>").build());
+    }
+
+    public StmtVisitor.StmtVisitorContext parseSource(Source source) {
         ASTParser parser = null;
         Program pgm = null;
         try {
@@ -48,8 +48,8 @@ public class PhpParser {
             // not an exception we through already ourselves
             throwGeneralParsingError(source, e.getMessage());
         }
-        PhpParseVisitor visitor = new PhpParseVisitor(source);
-        PhpParseResult res = visitor.createGraalAst(pgm);
+        StmtVisitor visitor = new StmtVisitor(lang);
+        StmtVisitor.StmtVisitorContext res = visitor.createPhpAst(pgm);
         return res;
     }
 

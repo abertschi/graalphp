@@ -22,6 +22,6 @@ public class ParseUnaryTest {
         // this causes a parser error
         // parser cannot handler larger than 8 bytes numbers, which is fine
         // neither can java with primitive types
-        // TestCommons.evalLong(0, String.format("-%d ", Long.MIN_VALUE));
+        // TestCommons.evalInteger(0, String.format("-%d ", Long.MIN_VALUE));
     }
 }

@@ -1,26 +1,7 @@
 package org.graalphp;
 
-import java.io.*;
-import java.util.Collections;
-import java.util.List;
-
-import com.oracle.truffle.api.CallTarget;
-import com.oracle.truffle.api.CompilerDirectives;
-import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
-import com.oracle.truffle.api.Scope;
-import com.oracle.truffle.api.Truffle;
 import com.oracle.truffle.api.TruffleLanguage;
-import com.oracle.truffle.api.TruffleLanguage.Env;
-import com.oracle.truffle.api.dsl.NodeFactory;
-import com.oracle.truffle.api.frame.FrameDescriptor;
-import com.oracle.truffle.api.instrumentation.AllocationReporter;
-import com.oracle.truffle.api.interop.TruffleObject;
-import com.oracle.truffle.api.nodes.NodeInfo;
-import com.oracle.truffle.api.object.DynamicObject;
-import com.oracle.truffle.api.object.Layout;
-import com.oracle.truffle.api.object.Shape;
-import com.oracle.truffle.api.source.Source;
-import org.graalphp.PhpLanguage;
+import java.io.*;
 
 public final class PhpContext {
 
@@ -48,15 +29,4 @@ public final class PhpContext {
         return output;
     }
 
-    public static NodeInfo lookupNodeInfo(Class<?> clazz) {
-        if (clazz == null) {
-            return null;
-        }
-        NodeInfo info = clazz.getAnnotation(NodeInfo.class);
-        if (info != null) {
-            return info;
-        } else {
-            return lookupNodeInfo(clazz.getSuperclass());
-        }
-    }
 }

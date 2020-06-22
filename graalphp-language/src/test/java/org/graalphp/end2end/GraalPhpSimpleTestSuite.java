@@ -48,6 +48,8 @@ import org.junit.runner.RunWith;
 public class GraalPhpSimpleTestSuite {
 
     public static void main(String[] args) throws Exception {
+        // If you run this test not within maven but your IDE,
+        // ensure that the directory root is set to this maven submodule
         GraalPhpTestRunner.runInMain(GraalPhpSimpleTestSuite.class, args);
     }
 

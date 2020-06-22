@@ -22,8 +22,7 @@ public abstract class PhpAddNode extends PhpBinaryNode {
     // slow track
     @Specialization()
     protected Object add(Object left, Object right) {
-        // TODO: we dont support something else yet
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("Addition of objects not implemented");
     }
 
     @Override

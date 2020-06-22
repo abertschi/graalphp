@@ -75,6 +75,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.9</version>
                 <configuration>
+                    <redirectTestOutputToFile>true</redirectTestOutputToFile>
                     <useFile>false</useFile>
                     <trimStackTrace>false</trimStackTrace>
                     <!-- Sets the VM argument line used when unit tests are run. -->
@@ -158,6 +159,7 @@
             <groupId>org.graalphp.parser</groupId>
             <artifactId>php-parser</artifactId>
             <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>
