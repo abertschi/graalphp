@@ -5,7 +5,6 @@ import org.eclipse.php.core.ast.error.BailoutErrorListener;
 import org.eclipse.php.core.ast.error.ConsoleErrorListener;
 import org.eclipse.php.core.ast.nodes.ASTParser;
 import org.eclipse.php.core.ast.nodes.Program;
-import org.graalphp.nodes.PhpStmtNode;
 import org.junit.Test;
 
 /**
@@ -45,31 +44,13 @@ public class ParseAssignTest {
         parser.addErrorListener(new BailoutErrorListener());
         Program pgm = parser.parsePhpProgram();
         StmtVisitor visitor = new StmtVisitor(null);
-        StmtVisitor.StmtVisitorContext phpAst = visitor.createPhpAst(pgm);
+        StmtVisitor.StmtVisitorContext phpAst = visitor.createPhpAst(pgm,
+                ParseScope.newGlobalScope());
         TestCommons.evalInteger(6, src);
     }
 
     @Test(expected = Exception.class)
     public void testAssignFail() {
         TestCommons.evalInteger(1, "$a = $a;"); // undef var
-    }
-
-
-    // for debugging
-    private void tmp() throws Exception {
-        String src = TestCommons.inputStreamToString(getClass().getResourceAsStream("simpleAssignment.php"));
-        System.out.println(src);
-        ASTParser parser = ASTParser.newParser(PHPVersion.PHP7_4);
-        parser.setSource(src.toCharArray());
-        parser.addErrorListener(new ConsoleErrorListener());
-        parser.addErrorListener(new BailoutErrorListener());
-        Program pgm = parser.parsePhpProgram();
-        // System.out.println(pgm);
-        StmtVisitor visitor = new StmtVisitor(null);
-        StmtVisitor.StmtVisitorContext phpAst = visitor.createPhpAst(pgm);
-
-        for (PhpStmtNode s : phpAst.getStmts()) {
-            System.out.println(s);
-        }
     }
 }

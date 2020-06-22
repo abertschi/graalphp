@@ -4,7 +4,9 @@ import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.Value;
 import org.junit.Assert;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
@@ -32,6 +34,17 @@ public class TestCommons {
         return val.asDouble();
     }
 
+    public static String compareStdout(String expected, String src) {
+        final ByteArrayOutputStream myOut = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(myOut));
+        Context ctx = Context.create("php");
+        ctx.eval("php", php(src));
+        final String standardOutput = myOut.toString();
+        Assert.assertEquals(expected, standardOutput);
+        System.out.println(standardOutput);
+        return standardOutput;
+    }
+
     public static double evalDouble(double expected, String src) {
         Context ctx = Context.create("php");
         Value val = ctx.eval("php", php(src));
@@ -39,7 +52,7 @@ public class TestCommons {
         return val.asDouble();
     }
 
-    public static String inputStreamToString(InputStream in ) {
+    public static String inputStreamToString(InputStream in) {
         String text = null;
         try (Scanner scanner = new Scanner(in, StandardCharsets.UTF_8.name())) {
             text = scanner.useDelimiter("\\A").next();

@@ -5,5 +5,5 @@ function foo() {
     return 1337;
 }
 
-foo();
+print foo();
 ?>

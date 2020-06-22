@@ -59,8 +59,9 @@ A materialized frame can escape compilation unit and is thus slower than a virtu
 #+end_src
 
     
+** TODO How can we pass a var arg of exprNodes to a node which uses NodeChild(args)
+and is abstract?
 
-** TODO ensure finals in nodes
 * Optimizations
 ** TODO See if specialisation for shift instead of div by 2 brings performance
 ** TODO Optimize Function invocation
@@ -88,7 +89,12 @@ public class ExecuteValuesNode extends OzNode {
 
 }
 #+end_src
-
+** TODO specializations to avoid boxing
+** TODO inline caches before function invocation
+** TODO tail Call optimizations
+** TODO branch profiling
+** TODO loop unrolling
+** TODO ensure finals in nodes
 * Testing/ CI
 **
 **

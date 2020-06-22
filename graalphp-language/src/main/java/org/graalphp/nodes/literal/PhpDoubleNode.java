@@ -6,7 +6,7 @@ import org.graalphp.nodes.PhpExprNode;
 
 /**
  * Represents floats in graalphp
- *
+ * <p>
  * Must support at least the range and precision of IEEE 754 64-bit double-precision representation.
  * Hence is based on double in java
  *

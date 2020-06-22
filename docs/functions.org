@@ -411,7 +411,9 @@ No
 - create a directCallNode from a calltarget, which is a rootcalltarget for functions
 - cant we call rootcalltarget directly?
 
-* Status Initial 20-06-21
+* Status Initial Pullrequest 20-06-21
+- https://github.com/abertschi/graalphp/pull/21
+:pullrequest:
 Introduce parsing, storing, lookup and execution of non polymorphic functions
 
 No optimizations are implemented yet
@@ -480,3 +482,4 @@ return a(b($a + $b));
 c(a(1), b(b(b(2))));
 ?>
 #+end_src
+:end:

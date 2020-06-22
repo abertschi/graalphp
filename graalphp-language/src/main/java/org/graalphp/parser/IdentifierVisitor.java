@@ -13,7 +13,7 @@ public class IdentifierVisitor extends HierarchicalVisitor {
 
     public Identifier getIdentifierName(Expression e) {
         e.accept(this);
-        assert(id != null);
+        assert (id != null);
         return id;
     }
 

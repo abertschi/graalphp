@@ -15,20 +15,26 @@ import java.util.Map;
  */
 public class ParseScope {
 
-    private ParseScope global; // ref to self if this is global
+    // XXX: This does not yet model nested functions
+
+    // XXX: ref to self if this is global
+    private ParseScope global;
 
     private FrameDescriptor frameDesc;
-
-    // in current scope
     private Map<String, FrameSlot> vars;
-
-    // functions in current scope
     private FunctionRegistry functions;
 
-    public ParseScope(FrameDescriptor frameDesc) {
+    private ParseScope(FrameDescriptor frameDesc) {
         this.frameDesc = frameDesc;
         this.vars = new HashMap<>();
         this.functions = new FunctionRegistry();
+    }
+
+    public static ParseScope newGlobalScope() {
+        FrameDescriptor frameDesc = new FrameDescriptor();
+        ParseScope scope = new ParseScope(frameDesc);
+        scope.setGlobal(scope);
+        return scope;
     }
 
     public ParseScope(FrameDescriptor frameDesc, ParseScope global) {
@@ -37,7 +43,6 @@ public class ParseScope {
         this.global = global;
         this.functions = new FunctionRegistry();
     }
-
 
     // TODO: we currently do not support nested functions
     public PhpFunction resolveFunction(String name) {

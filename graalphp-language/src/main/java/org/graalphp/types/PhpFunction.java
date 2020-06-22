@@ -9,14 +9,14 @@ import org.graalphp.parser.ParseScope;
 
 /**
  * Holds context of a function to call
- *
+ * <p>
  * Can be created without being backed by an implementation.
  *
  * @author abertschi
  */
 public class PhpFunction implements TruffleObject {
 
-    // TODO: look into CyclicAssumption
+    // TODO: optimization: CyclicAssumption
     // TODO: truffleObject for interoperability?
 
     private String name;
@@ -27,7 +27,6 @@ public class PhpFunction implements TruffleObject {
 
     // is true if target is set properly
     private boolean init;
-
 
     public PhpFunction(String name, ParseScope scope, RootCallTarget target) {
         this.name = name;
