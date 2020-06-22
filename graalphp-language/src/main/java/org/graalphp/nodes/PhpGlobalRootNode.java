@@ -50,8 +50,7 @@ public class PhpGlobalRootNode extends RootNode {
 
     @Override
     public Object execute(VirtualFrame frame) {
-        // TODO: integrate arguments
-
+        // TODO: integrate arguments for argv, argc
         Object result = PhpNull.SINGLETON;
         try {
             body.executeVoid(frame);

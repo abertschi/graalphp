@@ -12,7 +12,7 @@ import org.graalphp.nodes.PhpExprNode;
  *
  * @author abertschi
  */
-@NodeChild(value = "srcNode", type = PhpExprNode.class) // value to be assigned
+@NodeChild(value = "srcNode", type = PhpExprNode.class)
 @NodeField(name = "slot", type = FrameSlot.class)
 public abstract class PhpWriteVarNode extends PhpExprNode {
 
@@ -22,7 +22,7 @@ public abstract class PhpWriteVarNode extends PhpExprNode {
     @Specialization
     // TODO: make this specialization for primitive types to avoid boxing
     protected Object write(VirtualFrame frame, Object value) {
-//        frame.getFrameDescriptor().setFrameSlotKind(getSlot(), FrameSlotKind.Object);
+        // frame.getFrameDescriptor().setFrameSlotKind(getSlot(), FrameSlotKind.Object);
         frame.setObject(getSlot(), value);
         return value;
     }

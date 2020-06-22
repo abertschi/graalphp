@@ -6,6 +6,7 @@ import org.graalphp.nodes.literal.PhpLongNode;
 
 /**
  * Factory to create an number based node from a string
+ *
  * @author abertschi
  */
 public class NumberLiteralFactory {

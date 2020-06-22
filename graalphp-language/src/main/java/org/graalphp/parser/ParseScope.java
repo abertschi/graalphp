@@ -17,15 +17,11 @@ public class ParseScope {
 
     // XXX: This does not yet model nested functions
 
-    // ref to self if this is global
+    // XXX: ref to self if this is global
     private ParseScope global;
 
     private FrameDescriptor frameDesc;
-
-    // in current scope
     private Map<String, FrameSlot> vars;
-
-    // functions in current scope
     private FunctionRegistry functions;
 
     private ParseScope(FrameDescriptor frameDesc) {
@@ -33,7 +29,6 @@ public class ParseScope {
         this.vars = new HashMap<>();
         this.functions = new FunctionRegistry();
     }
-
 
     public static ParseScope newGlobalScope() {
         FrameDescriptor frameDesc = new FrameDescriptor();
@@ -48,7 +43,6 @@ public class ParseScope {
         this.global = global;
         this.functions = new FunctionRegistry();
     }
-
 
     // TODO: we currently do not support nested functions
     public PhpFunction resolveFunction(String name) {

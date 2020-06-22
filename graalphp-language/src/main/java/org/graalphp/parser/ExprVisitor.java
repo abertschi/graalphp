@@ -38,8 +38,6 @@ public class ExprVisitor extends HierarchicalVisitor {
     }
 
     // XXX: not thread safe
-    // to reduce object creation, call visitExpression
-    // on multipl. expressions
     public PhpExprNode createExprAst(Expression e, ParseScope scope) {
         if (scope == null) {
             new IllegalArgumentException("scope. cant be null");
@@ -76,8 +74,8 @@ public class ExprVisitor extends HierarchicalVisitor {
     }
 
     private PhpExprNode createInfixExpression(final InfixExpression expr,
-                                      final PhpExprNode left,
-                                      final PhpExprNode right) {
+                                              final PhpExprNode left,
+                                              final PhpExprNode right) {
         PhpExprNode result = null;
         boolean exprHasSource = true;
 
@@ -165,7 +163,8 @@ public class ExprVisitor extends HierarchicalVisitor {
         assert (currExpr == null);
 
         if (!(variable.getName() instanceof Identifier)) {
-            throw new UnsupportedOperationException("Other variables than identifier not supported");
+            throw new UnsupportedOperationException("Other variables than identifier not " +
+                    "supported");
         }
 
         // TODO: support global vars
@@ -187,7 +186,8 @@ public class ExprVisitor extends HierarchicalVisitor {
     @Override
     public boolean visit(Assignment ass) {
         if (!(ass.getLeftHandSide() instanceof Variable)) {
-            throw new UnsupportedOperationException("Other variables than identifier not supported");
+            throw new UnsupportedOperationException("Other variables than identifier not " +
+                    "supported");
         }
 
         final String dest = new IdentifierVisitor()
@@ -207,12 +207,12 @@ public class ExprVisitor extends HierarchicalVisitor {
         return false;
     }
 
-
     // ---------------- function invocations --------------------
 
     @Override
     public boolean visit(FunctionInvocation fn) {
-        final Identifier fnId = new IdentifierVisitor().getIdentifierName(fn.getFunctionName().getName());
+        final Identifier fnId =
+                new IdentifierVisitor().getIdentifierName(fn.getFunctionName().getName());
         if (fnId == null) {
             throw new UnsupportedOperationException("we dont support function lookup in vars");
         }
@@ -224,7 +224,8 @@ public class ExprVisitor extends HierarchicalVisitor {
 
         final PhpFunctionLookupNode lookupNode = new PhpFunctionLookupNode(fnId.getName(), scope);
         setSourceSection(lookupNode, fn);
-        final PhpInvokeNode invokeNode =new PhpInvokeNode(args.toArray(new PhpExprNode[0]), lookupNode);
+        final PhpInvokeNode invokeNode = new PhpInvokeNode(args.toArray(new PhpExprNode[0]),
+                lookupNode);
         setSourceSection(invokeNode, fn);
 
         currExpr = invokeNode;
