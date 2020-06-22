@@ -49,7 +49,8 @@ public class PhpParser {
             throwGeneralParsingError(source, e.getMessage());
         }
         StmtVisitor visitor = new StmtVisitor(lang);
-        StmtVisitor.StmtVisitorContext res = visitor.createPhpAst(pgm);
+        StmtVisitor.StmtVisitorContext res =
+                visitor.createPhpAst(pgm, lang.getCurrentContext().getRootScope());
         return res;
     }
 

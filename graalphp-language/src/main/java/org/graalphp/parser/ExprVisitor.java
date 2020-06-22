@@ -186,7 +186,6 @@ public class ExprVisitor extends HierarchicalVisitor {
 
     @Override
     public boolean visit(Assignment ass) {
-        System.out.println(ass.getLeftHandSide());
         if (!(ass.getLeftHandSide() instanceof Variable)) {
             throw new UnsupportedOperationException("Other variables than identifier not supported");
         }
@@ -215,7 +214,6 @@ public class ExprVisitor extends HierarchicalVisitor {
     public boolean visit(FunctionInvocation fn) {
         final Identifier fnId = new IdentifierVisitor().getIdentifierName(fn.getFunctionName().getName());
         if (fnId == null) {
-            // TODO;
             throw new UnsupportedOperationException("we dont support function lookup in vars");
         }
         List<PhpExprNode> args = new LinkedList<>();

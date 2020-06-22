@@ -1,5 +1,6 @@
 package org.graalphp;
 
+import org.graalphp.exception.PhpException;
 import org.graalphp.types.PhpFunction;
 
 import java.util.HashMap;
@@ -28,13 +29,16 @@ public class FunctionRegistry {
         return this.functions.get(name);
     }
 
-    public void registerOrUpdate(String name, PhpFunction fn, boolean update) {
+    public void register(String name, PhpFunction fn, boolean allowOverwrite) {
         boolean contains = this.functions.containsKey(name);
-        if (update && contains) {
+        if (contains) {
+            if (!allowOverwrite) {
+                throw new PhpException("Function already defined: " + name, null);
+            }
             PhpFunction stored = this.functions.get(name);
             stored.setScope(fn.getScope());
             stored.setCallTarget(fn.getCallTarget());
-        } else if (!contains) {
+        } else {
             this.functions.put(name, fn);
         }
     }

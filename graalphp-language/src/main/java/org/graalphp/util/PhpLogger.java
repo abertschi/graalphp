@@ -1,10 +1,8 @@
 package org.graalphp.util;
 
-import java.util.Date;
-
 /**
  * @author abertschi
- *
+ * <p>
  * Simple logging interface to use in graalphp.
  * As for now, we dont use java.logging classes to avoid issues with graal native.
  */
@@ -24,6 +22,7 @@ public class PhpLogger implements Logger {
 
     @Override
     public void fine(String msg) {
+//        return;
         System.err.println(format(msg, "fine"));
     }
 
@@ -34,6 +33,7 @@ public class PhpLogger implements Logger {
 
     @Override
     public void finest(String msg) {
+//        return;
         System.err.println(format(msg, "finest"));
     }
 
@@ -43,11 +43,7 @@ public class PhpLogger implements Logger {
     }
 
     private String format(String msg, String lvl) {
-//        return String.format("[%1$tF %1$tT] [%2$-7s] %3$s",
-//                new Date(),
-//                lvl,
-//                msg
-//        );
+        // [%1$tF %1$tT] [%2$-7s] %3$s",
         return String.format("[%1$-15s] [%2$-7s] %3$s",
                 name,
                 lvl,

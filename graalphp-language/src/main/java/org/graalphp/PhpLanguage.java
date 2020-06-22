@@ -51,6 +51,8 @@ public final class PhpLanguage extends TruffleLanguage<PhpContext> {
                         parseResult.getScope().getFrameDesc(),
                         parseResult.getStmts(),
                         true);
+
+        getCurrentContext().setRootScope(parseResult.getScope());
         return Truffle.getRuntime().createCallTarget(evalMain);
     }
 

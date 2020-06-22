@@ -25,7 +25,7 @@ public class ParseIfElseTest {
         Program pgm = parser.parsePhpProgram();
         System.out.println(pgm);
         StmtVisitor visitor = new StmtVisitor(null);
-        StmtVisitor.StmtVisitorContext phpAst = visitor.createPhpAst(pgm);
+        StmtVisitor.StmtVisitorContext phpAst = visitor.createPhpAst(pgm, ParseScope.newGlobalScope());
         for(PhpStmtNode s: phpAst.getStmts()) {
             System.out.println(s.toString());
         }
