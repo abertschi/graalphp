@@ -9,6 +9,7 @@ import com.oracle.truffle.api.dsl.TypeSystem;
  */
 @TypeSystem({
         long.class,
+        boolean.class,
         double.class,
         PhpFunction.class
 })
