@@ -9,6 +9,7 @@ import org.graalphp.nodes.binary.PhpBinaryNode;
 /**
  * @author abertschi
  */
+// TODO: make this a short circuit
 @NodeInfo(shortName = "&&")
 public abstract class PhpAndNode extends PhpBinaryNode {
 

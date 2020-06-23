@@ -20,12 +20,13 @@ import org.graalphp.nodes.binary.PhpAddNodeGen;
 import org.graalphp.nodes.binary.PhpDivNodeGen;
 import org.graalphp.nodes.binary.PhpMulNodeGen;
 import org.graalphp.nodes.binary.PhpSubNodeGen;
+import org.graalphp.nodes.binary.logic.PhpAndNodeGen;
 import org.graalphp.nodes.binary.logic.PhpEqNodeGen;
 import org.graalphp.nodes.binary.logic.PhpGeNodeGen;
 import org.graalphp.nodes.binary.logic.PhpGtNodeGen;
 import org.graalphp.nodes.binary.logic.PhpLeNodeGen;
-import org.graalphp.nodes.binary.logic.PhpLtNodeGen;
 import org.graalphp.nodes.binary.logic.PhpNeqNodeGen;
+import org.graalphp.nodes.binary.logic.PhpOrNodeGen;
 import org.graalphp.nodes.function.PhpFunctionLookupNode;
 import org.graalphp.nodes.function.PhpInvokeNode;
 import org.graalphp.nodes.literal.PhpBooleanNode;
@@ -123,8 +124,11 @@ public class ExprVisitor extends HierarchicalVisitor {
             case InfixExpression.OP_IS_SMALLER_OR_EQUAL:
                 result = PhpLeNodeGen.create(left, right);
                 break;
-            case InfixExpression.OP_RGREATER:
-                result = PhpLtNodeGen.create(left, right);
+            case InfixExpression.OP_BOOL_AND:
+                result = PhpAndNodeGen.create(left, right);
+                break;
+            case InfixExpression.OP_BOOL_OR:
+                result = PhpOrNodeGen.create(left, right);
                 break;
             default:
                 exprHasSource = false;

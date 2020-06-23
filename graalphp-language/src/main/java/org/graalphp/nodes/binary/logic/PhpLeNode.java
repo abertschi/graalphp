@@ -23,6 +23,6 @@ public abstract class PhpLeNode extends PhpBinaryNode {
 
     @Specialization
     protected Object fallback(Object left, Object right) {
-        throw new UnsupportedOperationException("Generic less equals is not yet supported");
+        throw new UnsupportedOperationException("Generic <= is not yet supported");
     }
 }
