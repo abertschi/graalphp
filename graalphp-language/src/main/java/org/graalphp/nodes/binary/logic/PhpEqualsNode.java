@@ -22,7 +22,7 @@ public abstract class PhpEqualsNode extends PhpBinaryNode {
     }
 
     @Specialization()
-    protected Object doEqualsGeneric(Object left, Object right) {
+    protected Object fallback(Object left, Object right) {
         throw new UnsupportedOperationException("Generic Equals (==) is not yet supported");
     }
 }
