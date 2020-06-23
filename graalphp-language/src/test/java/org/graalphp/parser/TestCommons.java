@@ -46,10 +46,14 @@ public class TestCommons {
     }
 
     public static String compareStdout(String expected, String src) {
+        return compareStdout(expected, src, true);
+    }
+
+    public static String compareStdout(String expected, String src, boolean addTags) {
         final ByteArrayOutputStream myOut = new ByteArrayOutputStream();
         System.setOut(new PrintStream(myOut));
         Context ctx = Context.create("php");
-        ctx.eval("php", php(src));
+        ctx.eval("php", addTags ? php(src) : src);
         final String standardOutput = myOut.toString();
         Assert.assertEquals(expected, standardOutput);
         System.out.println(standardOutput);

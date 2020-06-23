@@ -1,26 +1,31 @@
 package org.graalphp.nodes.binary.logic;
 
-import com.oracle.truffle.api.dsl.Specialization;
-import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.NodeInfo;
-import org.graalphp.exception.PhpException;
-import org.graalphp.nodes.binary.PhpBinaryNode;
+import org.graalphp.nodes.PhpExprNode;
 
 /**
  * @author abertschi
  */
-// TODO: make this a short circuit
 @NodeInfo(shortName = "&&")
-public abstract class PhpAndNode extends PhpBinaryNode {
+public final class PhpAndNode extends PhpShortCircuitNode {
 
-    @Specialization
-    public boolean doAnd(VirtualFrame f, boolean a, boolean b) {
-        return a && b;
+    public PhpAndNode(PhpExprNode left, PhpExprNode right) {
+        super(left, right);
     }
 
-    @Specialization()
-    protected Object fallback(Object left, Object right) {
-        throw new PhpException("and can not be applied to operands", this);
+    @Override
+    protected boolean shouldEvaluateRight(boolean left) {
+        return left;
+    }
+
+    @Override
+    public String toString() {
+        return "PhpAndNode{" + toStringChildren() + "}";
+    }
+
+    @Override
+    protected boolean executeBinaryOp(boolean left, boolean right) {
+        return left && right;
     }
 }
 

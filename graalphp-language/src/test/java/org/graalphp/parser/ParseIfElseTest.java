@@ -16,7 +16,8 @@ public class ParseIfElseTest {
 
     @Test
     public void testParsing() throws Exception {
-        String src = TestCommons.php("if (1) {return 1;} return 2;");
+//        String src = TestCommons.php("if (1) {return 1;} return 2;");
+        String src = TestCommons.php("if (10 + 1) { return 1; } return 3;");
         System.out.println(src);
         ASTParser parser = ASTParser.newParser(PHPVersion.PHP7_4);
         parser.setSource(src.toCharArray());
@@ -40,5 +41,10 @@ public class ParseIfElseTest {
         TestCommons.evalInteger(2, "if (0) { return 1; } return 2;");
         TestCommons.evalInteger(1, "if (1) { return 1; } else { return 2;} return 3;");
         TestCommons.evalInteger(2, "if (0) { return 1; } else { return 2;} return 3;");
+    }
+
+    @Test
+    public void testArbitraryNumbers() throws Exception {
+        TestCommons.evalInteger(1, "if (10 + 1) { return 1; } return 3;");
     }
 }
