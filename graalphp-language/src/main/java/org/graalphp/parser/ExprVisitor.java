@@ -2,18 +2,27 @@ package org.graalphp.parser;
 
 import com.oracle.truffle.api.frame.FrameSlot;
 import com.oracle.truffle.api.frame.FrameSlotKind;
-import org.eclipse.php.core.ast.nodes.*;
+import org.eclipse.php.core.ast.nodes.ASTNode;
+import org.eclipse.php.core.ast.nodes.Assignment;
+import org.eclipse.php.core.ast.nodes.Expression;
+import org.eclipse.php.core.ast.nodes.FunctionInvocation;
+import org.eclipse.php.core.ast.nodes.Identifier;
+import org.eclipse.php.core.ast.nodes.InfixExpression;
+import org.eclipse.php.core.ast.nodes.Scalar;
+import org.eclipse.php.core.ast.nodes.UnaryOperation;
+import org.eclipse.php.core.ast.nodes.Variable;
 import org.eclipse.php.core.ast.visitor.HierarchicalVisitor;
-import org.graalphp.exception.PhpException;
 import org.graalphp.PhpLanguage;
+import org.graalphp.exception.PhpException;
 import org.graalphp.nodes.PhpExprNode;
-import org.graalphp.nodes.function.PhpFunctionLookupNode;
-import org.graalphp.nodes.function.PhpInvokeNode;
 import org.graalphp.nodes.PhpStmtNode;
 import org.graalphp.nodes.binary.PhpAddNodeGen;
 import org.graalphp.nodes.binary.PhpDivNodeGen;
 import org.graalphp.nodes.binary.PhpMulNodeGen;
 import org.graalphp.nodes.binary.PhpSubNodeGen;
+import org.graalphp.nodes.binary.logic.PhpEqualsNodeGen;
+import org.graalphp.nodes.function.PhpFunctionLookupNode;
+import org.graalphp.nodes.function.PhpInvokeNode;
 import org.graalphp.nodes.literal.PhpBooleanNode;
 import org.graalphp.nodes.localvar.PhpReadVarNodeGen;
 import org.graalphp.nodes.localvar.PhpWriteVarNodeGen;
@@ -93,6 +102,9 @@ public class ExprVisitor extends HierarchicalVisitor {
                 break;
             case InfixExpression.OP_DIV:
                 result = PhpDivNodeGen.create(left, right);
+                break;
+            case InfixExpression.OP_IS_EQUAL:
+                result = PhpEqualsNodeGen.create(left, right);
                 break;
             default:
                 exprHasSource = false;
