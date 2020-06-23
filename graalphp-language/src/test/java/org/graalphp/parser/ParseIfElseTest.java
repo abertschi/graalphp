@@ -15,7 +15,7 @@ import org.junit.Test;
 public class ParseIfElseTest {
 
     @Test
-    public void simpleIf() throws Exception {
+    public void testParsing() throws Exception {
         String src = TestCommons.php("if (1) {return 1;} return 2;");
         System.out.println(src);
         ASTParser parser = ASTParser.newParser(PHPVersion.PHP7_4);
@@ -31,6 +31,14 @@ public class ParseIfElseTest {
         }
 
         Assert.assertTrue(phpAst.getStmts().size() > 0);
+    }
 
+    @Test
+    public void testIfSimple() throws Exception {
+        TestCommons.evalInteger(2, "if (false) { return 1; } return 2;");
+        TestCommons.evalInteger(1, "if (1) { return 1; } return 2;");
+        TestCommons.evalInteger(2, "if (0) { return 1; } return 2;");
+        TestCommons.evalInteger(1, "if (1) { return 1; } else { return 2;} return 3;");
+        TestCommons.evalInteger(2, "if (0) { return 1; } else { return 2;} return 3;");
     }
 }

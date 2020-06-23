@@ -1,5 +1,6 @@
 package org.graalphp.parser;
 
+import org.graalphp.PhpLanguage;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.Value;
 import org.junit.Assert;
@@ -23,6 +24,7 @@ public class TestCommons {
 
     public static double evalInteger(long expected, String src) {
         Context ctx = Context.create("php");
+        PhpLanguage.RETURN_LAST_EXPR = true;
 
         Value val = ctx.eval("php", php(src));
         System.out.println(val.toString());
