@@ -21,6 +21,10 @@ import org.graalphp.nodes.binary.PhpDivNodeGen;
 import org.graalphp.nodes.binary.PhpMulNodeGen;
 import org.graalphp.nodes.binary.PhpSubNodeGen;
 import org.graalphp.nodes.binary.logic.PhpEqualsNodeGen;
+import org.graalphp.nodes.binary.logic.PhpGeNodeGen;
+import org.graalphp.nodes.binary.logic.PhpGtNodeGen;
+import org.graalphp.nodes.binary.logic.PhpLeNodeGen;
+import org.graalphp.nodes.binary.logic.PhpLtNodeGen;
 import org.graalphp.nodes.binary.logic.PhpNotEqualsNodeGen;
 import org.graalphp.nodes.function.PhpFunctionLookupNode;
 import org.graalphp.nodes.function.PhpInvokeNode;
@@ -109,6 +113,18 @@ public class ExprVisitor extends HierarchicalVisitor {
                 break;
             case InfixExpression.OP_IS_NOT_EQUAL:
                 result = PhpNotEqualsNodeGen.create(left, right);
+                break;
+            case InfixExpression.OP_IS_GREATER_OR_EQUAL:
+                result = PhpGeNodeGen.create(left, right);
+                break;
+            case InfixExpression.OP_LGREATER:
+                result = PhpGtNodeGen.create(left, right);
+                break;
+            case InfixExpression.OP_IS_SMALLER_OR_EQUAL:
+                result = PhpLeNodeGen.create(left, right);
+                break;
+            case InfixExpression.OP_RGREATER:
+                result = PhpLtNodeGen.create(left, right);
                 break;
             default:
                 exprHasSource = false;
