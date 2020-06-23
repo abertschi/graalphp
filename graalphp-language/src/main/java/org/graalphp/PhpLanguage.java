@@ -28,7 +28,7 @@ public final class PhpLanguage extends TruffleLanguage<PhpContext> {
     public static final String ID = "php";
     public static final String MIME_TYPE = "application/x-php";
 
-    private static final boolean RETURN_LAST_EXPR = true;
+    public static boolean RETURN_LAST_EXPR = true;
 
     private final static Logger LOG = PhpLogger
             .getLogger(PhpLanguage.class.getCanonicalName());
