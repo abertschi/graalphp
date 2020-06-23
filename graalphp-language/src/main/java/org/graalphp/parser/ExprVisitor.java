@@ -20,12 +20,12 @@ import org.graalphp.nodes.binary.PhpAddNodeGen;
 import org.graalphp.nodes.binary.PhpDivNodeGen;
 import org.graalphp.nodes.binary.PhpMulNodeGen;
 import org.graalphp.nodes.binary.PhpSubNodeGen;
-import org.graalphp.nodes.binary.logic.PhpEqualsNodeGen;
+import org.graalphp.nodes.binary.logic.PhpEqNodeGen;
 import org.graalphp.nodes.binary.logic.PhpGeNodeGen;
 import org.graalphp.nodes.binary.logic.PhpGtNodeGen;
 import org.graalphp.nodes.binary.logic.PhpLeNodeGen;
 import org.graalphp.nodes.binary.logic.PhpLtNodeGen;
-import org.graalphp.nodes.binary.logic.PhpNotEqualsNodeGen;
+import org.graalphp.nodes.binary.logic.PhpNeqNodeGen;
 import org.graalphp.nodes.function.PhpFunctionLookupNode;
 import org.graalphp.nodes.function.PhpInvokeNode;
 import org.graalphp.nodes.literal.PhpBooleanNode;
@@ -109,10 +109,10 @@ public class ExprVisitor extends HierarchicalVisitor {
                 result = PhpDivNodeGen.create(left, right);
                 break;
             case InfixExpression.OP_IS_EQUAL:
-                result = PhpEqualsNodeGen.create(left, right);
+                result = PhpEqNodeGen.create(left, right);
                 break;
             case InfixExpression.OP_IS_NOT_EQUAL:
-                result = PhpNotEqualsNodeGen.create(left, right);
+                result = PhpNeqNodeGen.create(left, right);
                 break;
             case InfixExpression.OP_IS_GREATER_OR_EQUAL:
                 result = PhpGeNodeGen.create(left, right);

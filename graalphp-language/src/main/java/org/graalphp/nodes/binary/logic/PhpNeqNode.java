@@ -8,21 +8,21 @@ import org.graalphp.nodes.binary.PhpBinaryNode;
 /**
  * @author abertschi
  */
-@NodeInfo(shortName = "==")
-public abstract class PhpEqualsNode extends PhpBinaryNode {
+@NodeInfo(shortName = "!=")
+public abstract class PhpNeqNode extends PhpBinaryNode {
 
     @Specialization
-    public boolean doEqualsLong(VirtualFrame f, long a, long b) {
-        return a == b;
+    public boolean doOpLong(VirtualFrame f, long a, long b) {
+        return a != b;
     }
 
     @Specialization
-    public boolean doEqualsDouble(VirtualFrame f, double a, double b) {
-        return a == b;
+    public boolean doOpDouble(VirtualFrame f, double a, double b) {
+        return a != b;
     }
 
     @Specialization()
     protected Object fallback(Object left, Object right) {
-        throw new UnsupportedOperationException("Generic Equals (==) is not yet supported");
+        throw new UnsupportedOperationException("Generic not Equals is not yet supported");
     }
 }
