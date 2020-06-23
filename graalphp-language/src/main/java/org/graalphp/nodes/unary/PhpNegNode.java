@@ -21,6 +21,6 @@ public abstract class PhpNegNode extends PhpUnaryNode {
 
     @Override
     public String toString() {
-        return "PhpNegNode{}";
+        return "PhpNegNode{" + getValueNode() + "}";
     }
 }

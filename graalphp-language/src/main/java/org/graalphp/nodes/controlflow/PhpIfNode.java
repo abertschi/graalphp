@@ -5,6 +5,8 @@ import com.oracle.truffle.api.nodes.UnexpectedResultException;
 import org.graalphp.exception.PhpException;
 import org.graalphp.nodes.PhpExprNode;
 import org.graalphp.nodes.PhpStmtNode;
+import org.graalphp.nodes.unary.PhpConvertToBooleanNode;
+import org.graalphp.nodes.unary.PhpConvertToBooleanNodeGen;
 
 /**
  * @author abertschi
@@ -12,7 +14,7 @@ import org.graalphp.nodes.PhpStmtNode;
 public class PhpIfNode extends PhpStmtNode {
 
     @Child
-    private PhpExprNode conditionNode;
+    private PhpConvertToBooleanNode conditionNode;
 
     @Child
     private PhpStmtNode ifNode;
@@ -24,10 +26,18 @@ public class PhpIfNode extends PhpStmtNode {
     public PhpIfNode(PhpExprNode condition,
                      PhpStmtNode ifBranch,
                      PhpStmtNode elseBranch) {
-        this.conditionNode = condition;
+        this.conditionNode = convertToBooleanNode(condition);
         this.ifNode = ifBranch;
         this.elseNode = elseBranch;
     }
+
+    private PhpConvertToBooleanNode convertToBooleanNode(PhpExprNode n) {
+        if (n instanceof PhpConvertToBooleanNode) {
+            return (PhpConvertToBooleanNode) n;
+        }
+        return PhpConvertToBooleanNodeGen.create(n);
+    }
+
 
     @Override
     public void executeVoid(VirtualFrame frame) {

@@ -34,7 +34,7 @@ public abstract class PhpDivNode extends PhpBinaryNode {
 
     @Override
     public String toString() {
-        return "PhpDivNode{}";
+        return "PhpDivNode{" + toStringChildren() + "}";
     }
 }
 
