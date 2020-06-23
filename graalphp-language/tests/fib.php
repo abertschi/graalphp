@@ -9,6 +9,6 @@ if ($a <= 2) {
 return fib($a - 1) + fib($a - 2);
 }
 
-print fib(40);
+print fib(30);
 
 ?>
