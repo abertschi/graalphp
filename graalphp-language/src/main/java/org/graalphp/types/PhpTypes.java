@@ -18,6 +18,18 @@ public class PhpTypes {
     PhpTypes() {
     }
 
+    @ImplicitCast
+    public static boolean longToBoolean(long val) {
+        // XXX: according to 08-conversions.md#converting-to-boolean-type
+        return val != 0;
+    }
+
+    @ImplicitCast
+    public static boolean doubleToBoolean(double val) {
+        // XXX: according to 08-conversions.md#converting-to-boolean-type
+        return val != 0.0;
+    }
+
     // XXX: we allow a long to be converted to double where possible
     @ImplicitCast
     public static double longToDouble(long val) {
