@@ -301,6 +301,7 @@ public class GraalPhpTestRunner extends ParentRunner<TestCase> {
     @Override
     protected void runChild(TestCase testCase, RunNotifier notifier) {
         notifier.fireTestStarted(testCase.name);
+        boolean returnLastExpr = PhpLanguage.RETURN_LAST_EXPR;
         PhpLanguage.RETURN_LAST_EXPR = false;
         Context context = null;
         try {
@@ -333,6 +334,7 @@ public class GraalPhpTestRunner extends ParentRunner<TestCase> {
                 context.close();
             }
             notifier.fireTestFinished(testCase.name);
+            PhpLanguage.RETURN_LAST_EXPR = returnLastExpr;
         }
     }
 
