@@ -9,8 +9,8 @@ import com.oracle.truffle.api.dsl.TypeSystem;
  */
 @TypeSystem({
         long.class,
-        boolean.class,
         double.class,
+        boolean.class,
         PhpFunction.class
 })
 public class PhpTypes {
@@ -30,7 +30,16 @@ public class PhpTypes {
         return val != 0.0;
     }
 
-    // XXX: we allow a long to be converted to double where possible
+    @ImplicitCast
+    public static long booleanToLong(boolean b) {
+        return b ? 1 : 0;
+    }
+
+    @ImplicitCast
+    public static double booleanToDouble(boolean b) {
+        return b ? 1.0 : 0.0;
+    }
+
     @ImplicitCast
     public static double longToDouble(long val) {
         return (double) val;

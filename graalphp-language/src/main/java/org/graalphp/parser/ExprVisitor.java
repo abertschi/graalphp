@@ -14,6 +14,7 @@ import org.graalphp.nodes.binary.PhpAddNodeGen;
 import org.graalphp.nodes.binary.PhpDivNodeGen;
 import org.graalphp.nodes.binary.PhpMulNodeGen;
 import org.graalphp.nodes.binary.PhpSubNodeGen;
+import org.graalphp.nodes.literal.PhpBooleanNode;
 import org.graalphp.nodes.localvar.PhpReadVarNodeGen;
 import org.graalphp.nodes.localvar.PhpWriteVarNodeGen;
 import org.graalphp.nodes.unary.PhpNegNodeGen;
@@ -55,7 +56,8 @@ public class ExprVisitor extends HierarchicalVisitor {
     private PhpExprNode initAndAcceptExpr(final Expression e) {
         currExpr = null;
         e.accept(this);
-        assert (currExpr != null) : "Current expression must be set after an accept phase";
+        assert (currExpr != null) : "Current expression must be set after an accept phase. " +
+                "Unsupported syntax? " + e.toString();
         return currExpr;
     }
 
@@ -144,6 +146,14 @@ public class ExprVisitor extends HierarchicalVisitor {
                 break;
             case Scalar.TYPE_REAL:
                 currExpr = NumberLiteralFactory.parseFloat(scalar.getStringValue());
+                break;
+            case Scalar.TYPE_STRING:
+                final String v = scalar.getStringValue();
+                if (NumberLiteralFactory.isBooleanLiteral(v)) {
+                    currExpr = new PhpBooleanNode(NumberLiteralFactory.booleanLiteralToValue(v));
+                } else {
+                    LOG.parserEnumerationError("Strings not yet supported");
+                }
                 break;
             default:
                 hasSource = false;

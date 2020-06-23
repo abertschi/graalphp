@@ -34,6 +34,15 @@ public class TestCommons {
         return val.asDouble();
     }
 
+    public static boolean evalBoolean(boolean expected, String src) {
+        Context ctx = Context.create("php");
+        Value val = ctx.eval("php", php(src));
+        System.out.println(val.toString());
+        boolean res = val.asBoolean();
+        Assert.assertEquals(expected, res);
+        return res;
+    }
+
     public static String compareStdout(String expected, String src) {
         final ByteArrayOutputStream myOut = new ByteArrayOutputStream();
         System.setOut(new PrintStream(myOut));
