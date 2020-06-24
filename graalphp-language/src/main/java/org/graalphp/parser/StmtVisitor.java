@@ -12,6 +12,7 @@ import org.eclipse.php.core.ast.nodes.IfStatement;
 import org.eclipse.php.core.ast.nodes.Program;
 import org.eclipse.php.core.ast.nodes.ReturnStatement;
 import org.eclipse.php.core.ast.nodes.Statement;
+import org.eclipse.php.core.ast.nodes.WhileStatement;
 import org.eclipse.php.core.ast.visitor.HierarchicalVisitor;
 import org.graalphp.PhpLanguage;
 import org.graalphp.nodes.EmptyExprNode;
@@ -20,6 +21,7 @@ import org.graalphp.nodes.PhpStmtNode;
 import org.graalphp.nodes.StmtListNode;
 import org.graalphp.nodes.controlflow.PhpIfNode;
 import org.graalphp.nodes.controlflow.PhpReturnNode;
+import org.graalphp.nodes.controlflow.PhpWhileNode;
 import org.graalphp.nodes.function.PhpFunctionRootNode;
 import org.graalphp.nodes.localvar.PhpReadArgNode;
 import org.graalphp.nodes.localvar.PhpWriteVarNodeGen;
@@ -220,6 +222,19 @@ public class StmtVisitor extends HierarchicalVisitor {
         final PhpIfNode ifElseNode = new PhpIfNode(condition, ifBlockNode, elseBlockNode);
         setSourceSection(ifElseNode, ifStmt);
         stmts.add(ifElseNode);
+        return false;
+    }
+
+    @Override
+    public boolean visit(WhileStatement whileStmt) {
+        final PhpExprNode conditionNode =
+                exprVisitor.createExprAst(whileStmt.getCondition(), getCurrentScope());
+        final StmtVisitorContext bodyContext =
+                new StmtVisitor(this.language).createPhpStmtAst(whileStmt.getBody(),
+                        getCurrentScope());
+        final StmtListNode stmtListNode = new StmtListNode(bodyContext.stmts);
+        setSourceSection(stmtListNode, whileStmt.getBody());
+        stmts.add(new PhpWhileNode(conditionNode, stmtListNode));
         return false;
     }
 
