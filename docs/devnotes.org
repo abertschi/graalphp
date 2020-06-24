@@ -56,9 +56,7 @@ A materialized frame can escape compilation unit and is thus slower than a virtu
         }
         return function;
     }
-#+end_src
-
-    
+#+end_src    
 ** TODO How can we pass a var arg of exprNodes to a node which uses NodeChild(args)
 and is abstract?
 
@@ -96,12 +94,13 @@ public class ExecuteValuesNode extends OzNode {
 ** TODO loop unrolling
 ** TODO ensure finals in nodes
 * Testing/ CI
-**
-**
-
 * Doc
 ** TODO update list of implemented features to facebook spec
-
+* Language
+** TODO Break and Continue accept an expression
+currently no need to support this
+** TODO Conditional Functions
+which are only active once execution flow reaches that part
 * Design Noes
 ** Integer
 - implemented as java long type
@@ -125,9 +124,6 @@ In such cases, the computation is done as though the types of the values were fl
 
 Size of integer is implementation dependent. Alternatively to converting to a float representation,
 we can could big integer, this solves imprecision issues but decreases performance.
-
-
-
 ** Float
 - float type :: https://github.com/php/php-langspec/blob/master/spec/05-types.md#the-floating-point-type
 
