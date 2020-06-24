@@ -6,7 +6,6 @@ import org.graalphp.exception.PhpException;
 import org.graalphp.nodes.PhpExprNode;
 import org.graalphp.nodes.PhpStmtNode;
 import org.graalphp.nodes.unary.PhpConvertToBooleanNode;
-import org.graalphp.nodes.unary.PhpConvertToBooleanNodeGen;
 
 /**
  * @author abertschi
@@ -26,18 +25,10 @@ public class PhpIfNode extends PhpStmtNode {
     public PhpIfNode(PhpExprNode condition,
                      PhpStmtNode ifBranch,
                      PhpStmtNode elseBranch) {
-        this.conditionNode = convertToBooleanNode(condition);
+        this.conditionNode = PhpConvertToBooleanNode.createAndWrap(condition);
         this.ifNode = ifBranch;
         this.elseNode = elseBranch;
     }
-
-    private PhpConvertToBooleanNode convertToBooleanNode(PhpExprNode n) {
-        if (n instanceof PhpConvertToBooleanNode) {
-            return (PhpConvertToBooleanNode) n;
-        }
-        return PhpConvertToBooleanNodeGen.create(n);
-    }
-
 
     @Override
     public void executeVoid(VirtualFrame frame) {

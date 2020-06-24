@@ -5,7 +5,6 @@ import com.oracle.truffle.api.nodes.UnexpectedResultException;
 import org.graalphp.exception.PhpException;
 import org.graalphp.nodes.PhpExprNode;
 import org.graalphp.nodes.unary.PhpConvertToBooleanNode;
-import org.graalphp.nodes.unary.PhpConvertToBooleanNodeGen;
 
 /**
  * @author abertschi
@@ -19,15 +18,8 @@ public abstract class PhpShortCircuitNode extends PhpExprNode {
     private PhpConvertToBooleanNode rightNode;
 
     public PhpShortCircuitNode(PhpExprNode left, PhpExprNode right) {
-        this.leftNode = convertToBooleanNode(left);
-        this.rightNode = convertToBooleanNode(right);
-    }
-
-    private PhpConvertToBooleanNode convertToBooleanNode(PhpExprNode n) {
-        if (n instanceof PhpConvertToBooleanNode) {
-            return (PhpConvertToBooleanNode) n;
-        }
-        return PhpConvertToBooleanNodeGen.create(n);
+        this.leftNode = PhpConvertToBooleanNode.createAndWrap(left);
+        this.rightNode = PhpConvertToBooleanNode.createAndWrap(right);
     }
 
     @Override
