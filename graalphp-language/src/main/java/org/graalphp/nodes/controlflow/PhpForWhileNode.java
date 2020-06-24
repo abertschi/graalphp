@@ -14,7 +14,7 @@ import java.util.List;
  * @author abertschi
  */
 @NodeInfo(shortName = "for")
-public class PhpForWhileNode extends PhpStmtNode {
+public final class PhpForWhileNode extends PhpStmtNode {
 
     @Child
     PhpStmtNode initNode;

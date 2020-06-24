@@ -15,7 +15,7 @@ import java.util.List;
  *
  * @author abertschi
  */
-public class ExprGroupNode extends PhpExprNode {
+public final class ExprGroupNode extends PhpExprNode {
 
     @Children
     private PhpExprNode[] expressionNodes;

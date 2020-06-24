@@ -10,7 +10,7 @@ import org.graalphp.nodes.unary.PhpConvertToBooleanNode;
 /**
  * @author abertschi
  */
-public class PhpIfNode extends PhpStmtNode {
+public final class PhpIfNode extends PhpStmtNode {
 
     @Child
     private PhpConvertToBooleanNode conditionNode;

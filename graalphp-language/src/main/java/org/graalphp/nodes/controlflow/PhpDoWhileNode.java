@@ -1,13 +1,15 @@
 package org.graalphp.nodes.controlflow;
 
 import com.oracle.truffle.api.frame.VirtualFrame;
+import com.oracle.truffle.api.nodes.NodeInfo;
 import org.graalphp.nodes.PhpExprNode;
 import org.graalphp.nodes.PhpStmtNode;
 
 /**
  * @author abertschi
  */
-public class PhpDoWhileNode extends PhpStmtNode {
+@NodeInfo(shortName = "do-while")
+public final class PhpDoWhileNode extends PhpStmtNode {
 
     @Child
     PhpStmtNode body;
