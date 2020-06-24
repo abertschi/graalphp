@@ -5,9 +5,9 @@
 - Spec :: https://github.com/php/php-langspec/blob/master/spec/13-functions.md#functions
 
 * Scope
-- [ ] function definition with arguments
-- [ ] function invocation
-- [ ] do not support polymorphic functions yet
+- [X] function definition with arguments
+- [X] function invocation
+- [X] do not support polymorphic functions yet
 
 ** Optional for now
 - [ ] generator functions
@@ -77,7 +77,6 @@
 
 *** What about nested functions?
 - same principle holds for nested function, no lexical scope defined
-
 *** global, static
 - global scope
 - function scope (variables in functions, as well as function args)
@@ -97,7 +96,6 @@
 *** PhpFunction node
 - has a name
 - has a call target
-
 
 ** SL implementation
 - *SLFunction*
@@ -128,14 +126,10 @@
     - used to run main function
   - slrootnode
     - is either function or builtin
-
-
-*** TODO how does SLRootNode get its arguments?
+*** how does SLRootNode get its arguments?
 - slrootnode is a rootnode and has an execute(frame) method.
 - how are arguments to function given to slrootnode?
-
 *** how are slfunction and slfunctionbody node releated with each other
-
 *** create assignment (from function arguments)
 - function arguments created as read argument node, which is an expression and passed as the value node to create assignment
 #+begin_src java
@@ -364,11 +358,8 @@ Ideally, we can lookup the rootcall target at runtime, or after all functions ha
    - this is useful if function can change, which is a feature if we store
      function in variables which we invoke, but we do not support this yet
 2. or we walk through all nodes after parsing and fix lazy loading
-3. 
-
-
-
-* Conditionally Defined Functions
+3.
+* TODO Conditionally Defined Functions
 - for conditionally defined functions, function definition must appear before function call.
 - For global function, it does not have to
 #+begin_quote
@@ -385,6 +376,21 @@ into existence when the execution flow reaches the point where the function is
 defined.
 https://github.com/php/php-langspec/blob/8f78136eaae6a3fa7eef4789c8729bc38726b19d/spec/13-functions.md
 #+end_quote
+
+We currently do not support conditional functions
+
+#+begin_src php
+
+$a = 0;
+while($a > 0) {
+    function foo() {
+       print 1337;
+    }
+}
+
+foo();
+#+end_src
+
 
 * Questions
 ** Can i call nested functions from outside of function which is parent of nested function?

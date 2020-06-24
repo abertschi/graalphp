@@ -10,7 +10,7 @@ import org.graalphp.exception.PhpUndefFunctionException;
  *
  * @author abertschi
  */
-public class UndefFunctionRootNode extends RootNode {
+public final class UndefFunctionRootNode extends RootNode {
 
     private final String name;
 

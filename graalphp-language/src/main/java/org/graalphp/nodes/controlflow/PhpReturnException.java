@@ -7,7 +7,7 @@ import com.oracle.truffle.api.nodes.ControlFlowException;
  *
  * @author abertschi
  */
-public class PhpReturnException extends ControlFlowException {
+public final class PhpReturnException extends ControlFlowException {
 
     private final Object result;
 

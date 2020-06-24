@@ -2,6 +2,7 @@ package org.graalphp.nodes.unary;
 
 import com.oracle.truffle.api.dsl.Specialization;
 import org.graalphp.exception.PhpTypeError;
+import org.graalphp.nodes.PhpExprNode;
 
 /**
  * In PHP, a value used in a condition is automatically converted to boolean
@@ -10,6 +11,14 @@ import org.graalphp.exception.PhpTypeError;
  * @author abertschi
  */
 public abstract class PhpConvertToBooleanNode extends PhpUnaryNode {
+
+    public static PhpConvertToBooleanNode createAndWrap(PhpExprNode n) {
+        if (n instanceof PhpConvertToBooleanNode) {
+            return (PhpConvertToBooleanNode) n;
+        } else {
+            return PhpConvertToBooleanNodeGen.create(n);
+        }
+    }
 
     @Specialization
     boolean doBoolean(boolean val) {
