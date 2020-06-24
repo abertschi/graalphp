@@ -1,4 +1,4 @@
-package org.graalphp.nodes.binary.logic;
+package org.graalphp.nodes.binary.logical;
 
 import com.oracle.truffle.api.nodes.NodeInfo;
 import org.graalphp.nodes.PhpExprNode;

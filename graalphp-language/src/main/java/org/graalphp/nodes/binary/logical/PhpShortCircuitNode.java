@@ -1,4 +1,4 @@
-package org.graalphp.nodes.binary.logic;
+package org.graalphp.nodes.binary.logical;
 
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.UnexpectedResultException;
