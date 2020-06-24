@@ -24,13 +24,13 @@ import org.graalphp.nodes.PhpStmtNode;
 import org.graalphp.nodes.StmtListNode;
 import org.graalphp.nodes.controlflow.PhpBreakNode;
 import org.graalphp.nodes.controlflow.PhpContinueNode;
+import org.graalphp.nodes.controlflow.PhpDoWhileNode;
 import org.graalphp.nodes.controlflow.PhpIfNode;
 import org.graalphp.nodes.controlflow.PhpReturnNode;
 import org.graalphp.nodes.controlflow.PhpWhileNode;
 import org.graalphp.nodes.function.PhpFunctionRootNode;
 import org.graalphp.nodes.localvar.PhpReadArgNode;
 import org.graalphp.nodes.localvar.PhpWriteVarNodeGen;
-import org.graalphp.nodes.unary.PhpConvertToBooleanNode;
 import org.graalphp.types.PhpFunction;
 import org.graalphp.util.Logger;
 import org.graalphp.util.PhpLogger;
@@ -268,14 +268,18 @@ public class StmtVisitor extends HierarchicalVisitor {
 
     @Override
     public boolean visit(DoStatement doStatement) {
-        final PhpConvertToBooleanNode condition = PhpConvertToBooleanNode.createAndWrap(
-                exprVisitor.createExprAst(doStatement.getCondition(), getCurrentScope()));
+        final PhpExprNode condition =
+                exprVisitor.createExprAst(doStatement.getCondition(), getCurrentScope());
+        final StmtVisitorContext bodyContext = new StmtVisitor(this.language)
+                .createPhpStmtAst(doStatement.getBody(), getCurrentScope());
 
-        StmtVisitorContext beforeLoop =
-                new StmtVisitor(this.language).createPhpStmtAst(doStatement.getBody(),
-                        getCurrentScope());
+        final StmtListNode stmtListNode = new StmtListNode(bodyContext.getStmts());
+        setSourceSection(stmtListNode, doStatement.getBody());
 
-        return super.visit(doStatement);
+        final PhpDoWhileNode doWhileNode = new PhpDoWhileNode(stmtListNode, condition);
+        setSourceSection(doWhileNode, doStatement);
+        stmts.add(doWhileNode);
+        return false;
     }
 
     /**

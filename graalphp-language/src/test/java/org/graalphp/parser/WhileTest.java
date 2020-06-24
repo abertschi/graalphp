@@ -9,6 +9,7 @@ import org.junit.Test;
 
 /**
  * @author abertschi
+ * See end to end test for more tests
  */
 public class WhileTest {
 
@@ -51,5 +52,13 @@ public class WhileTest {
     @Test(expected = Exception.class)
     public void testContinueNoLoop() {
         TestCommons.compareStdout("", "continue;" );
+    }
+
+    @Test
+    public void testDoWhile() {
+        TestCommons.compareStdout("11111111111111111111", "$a = 20; do {print 1; $a = $a - 1;} while($a != 0);");
+        TestCommons.compareStdout("1", "do {print 1;} while(false);");
+        TestCommons.compareStdout("1", "do {print 1; break; } while(false);");
+        TestCommons.compareStdout("1", "do {print 1; break; } while(true);");
     }
 }
