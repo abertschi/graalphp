@@ -27,6 +27,11 @@ public class PhpDoubleNode extends PhpExprNode {
     }
 
     @Override
+    public boolean executeBoolean(VirtualFrame f) {
+        return val != 0.0;
+    }
+
+    @Override
     public Object executeGeneric(VirtualFrame frame) {
         return val;
     }

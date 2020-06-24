@@ -8,6 +8,7 @@ import com.oracle.truffle.api.dsl.TypeSystem;
  * @author abertschi
  */
 @TypeSystem({
+        boolean.class,
         long.class,
         double.class,
         PhpFunction.class
@@ -17,10 +18,31 @@ public class PhpTypes {
     PhpTypes() {
     }
 
-    // XXX: we allow a long to be converted to double where possible
+    //    @ImplicitCast
+    //    public static boolean longToBoolean(long val) {
+    //        // XXX: according to 08-conversions.md#converting-to-boolean-type
+    //        return val != 0;
+    //    }
+    //
+    //    @ImplicitCast
+    //    public static boolean doubleToBoolean(double val) {
+    //        // XXX: according to 08-conversions.md#converting-to-boolean-type
+    //        return val != 0.0;
+    //    }
+
     @ImplicitCast
     public static double longToDouble(long val) {
         return (double) val;
+    }
+
+    @ImplicitCast
+    public static long booleanToLong(boolean b) {
+        return b ? 1 : 0;
+    }
+
+    @ImplicitCast
+    public static double booleanToDouble(boolean b) {
+        return b ? 1.0 : 0.0;
     }
 
     // XXX: more efficient way than default way which does boxing
@@ -33,4 +55,10 @@ public class PhpTypes {
     public static long asLong(Object value) {
         return ((Long) value).longValue();
     }
+
+    //    @TypeCast(boolean.class)
+    //    public static long asBoolean(Object value) {
+    //        if ()
+    //        return ((Long) value).longValue();
+    //    }
 }

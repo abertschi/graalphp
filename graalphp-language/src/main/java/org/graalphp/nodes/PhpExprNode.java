@@ -28,6 +28,10 @@ public abstract class PhpExprNode extends PhpStmtNode {
         return PhpTypesGen.expectLong(this.executeGeneric(f));
     }
 
+    public boolean executeBoolean(VirtualFrame f) throws UnexpectedResultException {
+        return PhpTypesGen.expectBoolean(this.executeGeneric(f));
+    }
+
     public double executeDouble(VirtualFrame f) throws UnexpectedResultException {
         return PhpTypesGen.expectDouble(this.executeGeneric(f));
     }

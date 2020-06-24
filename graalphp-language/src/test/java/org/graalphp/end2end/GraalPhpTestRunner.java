@@ -46,6 +46,7 @@ import org.graalphp.end2end.GraalPhpTestRunner.TestCase;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.PolyglotException;
 import org.graalvm.polyglot.Source;
+import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.internal.TextListener;
 import org.junit.runner.Description;
@@ -102,7 +103,6 @@ public class GraalPhpTestRunner extends ParentRunner<TestCase> {
         protected final String testInput;
         protected final String expectedOutput;
         protected final Map<String, String> options;
-        protected String actualOutput;
 
         protected TestCase(Class<?> testClass, String baseName, String sourceName, Path path,
                            String testInput, String expectedOutput, Map<String, String> options) {
@@ -286,7 +286,8 @@ public class GraalPhpTestRunner extends ParentRunner<TestCase> {
         // fix line feeds for non unix os
         StringBuilder outFile = new StringBuilder();
         for (String line : Files.readAllLines(file, Charset.defaultCharset())) {
-            outFile.append(line).append(LF);
+             outFile.append(line);
+                     //.append(LF);
         }
         return outFile.toString();
     }
@@ -295,20 +296,19 @@ public class GraalPhpTestRunner extends ParentRunner<TestCase> {
     private static final List<NodeFactory<?>> builtins = new ArrayList<>();
 
     public static void installBuiltin(NodeFactory<?> builtin) {
-        // TODO: install a builtin
     }
 
     @Override
     protected void runChild(TestCase testCase, RunNotifier notifier) {
         notifier.fireTestStarted(testCase.name);
-
+        boolean returnLastExpr = PhpLanguage.RETURN_LAST_EXPR;
+        PhpLanguage.RETURN_LAST_EXPR = false;
         Context context = null;
         try {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             for (NodeFactory<?> builtin : builtins) {
-//                PhpLanguage.installBuiltin(builtin);
+                // PhpLanguage.installBuiltin(builtin);
             }
-
             Context.Builder builder = Context.newBuilder().
                     allowExperimentalOptions(true)
                     .in(new ByteArrayInputStream(testCase.testInput.getBytes("UTF-8")))
@@ -323,9 +323,10 @@ public class GraalPhpTestRunner extends ParentRunner<TestCase> {
             printer.flush();
 
             String actualOutput = new String(out.toByteArray());
-            System.out.println(actualOutput);
-            System.out.println(testCase.expectedOutput);
-            // Assert.assertEquals(testCase.name.toString(), testCase.expectedOutput, actualOutput);
+            System.out.println(String.format("expect:\n'%s'", testCase.expectedOutput));
+            System.out.println(String.format("actual:\n'%s'", actualOutput));
+            System.out.println("success: " + testCase.expectedOutput.equals(actualOutput));
+             Assert.assertEquals(testCase.name.toString(), testCase.expectedOutput, actualOutput);
         } catch (Throwable ex) {
             notifier.fireTestFailure(new Failure(testCase.name, ex));
         } finally {
@@ -333,6 +334,7 @@ public class GraalPhpTestRunner extends ParentRunner<TestCase> {
                 context.close();
             }
             notifier.fireTestFinished(testCase.name);
+            PhpLanguage.RETURN_LAST_EXPR = returnLastExpr;
         }
     }
 

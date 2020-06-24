@@ -8,6 +8,7 @@ import org.eclipse.php.core.ast.nodes.ASTNode;
 import org.eclipse.php.core.ast.nodes.ExpressionStatement;
 import org.eclipse.php.core.ast.nodes.FormalParameter;
 import org.eclipse.php.core.ast.nodes.FunctionDeclaration;
+import org.eclipse.php.core.ast.nodes.IfStatement;
 import org.eclipse.php.core.ast.nodes.Program;
 import org.eclipse.php.core.ast.nodes.ReturnStatement;
 import org.eclipse.php.core.ast.nodes.Statement;
@@ -16,6 +17,8 @@ import org.graalphp.PhpLanguage;
 import org.graalphp.nodes.EmptyExprNode;
 import org.graalphp.nodes.PhpExprNode;
 import org.graalphp.nodes.PhpStmtNode;
+import org.graalphp.nodes.StmtListNode;
+import org.graalphp.nodes.controlflow.PhpIfNode;
 import org.graalphp.nodes.controlflow.PhpReturnNode;
 import org.graalphp.nodes.function.PhpFunctionRootNode;
 import org.graalphp.nodes.localvar.PhpReadArgNode;
@@ -141,7 +144,7 @@ public class StmtVisitor extends HierarchicalVisitor {
                 Truffle.getRuntime().createCallTarget(fnRoot));
 
         scope.getFunctions().register(fnName, function, false);
-        LOG.info("create call target for " + fnName);
+        LOG.fine("create call target for " + fnName);
 
         this.currFunctionScope = null;
         return false;
@@ -189,6 +192,35 @@ public class StmtVisitor extends HierarchicalVisitor {
         // TODO: source section?
         final PhpExprNode assign = PhpWriteVarNodeGen.create(source, frameSlot);
         return assign;
+    }
+
+    /**
+     * If Statements
+     */
+    @Override
+    public boolean visit(IfStatement ifStmt) {
+        final PhpExprNode condition = exprVisitor.createExprAst(ifStmt.getCondition(),
+                getCurrentScope());
+
+        final StmtVisitorContext ifContext = new StmtVisitor(this.language)
+                .createPhpStmtAst(ifStmt.getTrueStatement(), getCurrentScope());
+
+        final StmtListNode ifBlockNode = new StmtListNode(ifContext.stmts);
+        setSourceSection(ifBlockNode, ifStmt.getTrueStatement());
+
+        StmtListNode elseBlockNode = null;
+        if (ifStmt.getFalseStatement() != null) {
+            final StmtVisitorContext elseContext = new StmtVisitor(this.language)
+                    .createPhpStmtAst(ifStmt.getFalseStatement(), getCurrentScope());
+
+            elseBlockNode = new StmtListNode(elseContext.stmts);
+            setSourceSection(elseBlockNode, ifStmt.getFalseStatement());
+        }
+
+        final PhpIfNode ifElseNode = new PhpIfNode(condition, ifBlockNode, elseBlockNode);
+        setSourceSection(ifElseNode, ifStmt);
+        stmts.add(ifElseNode);
+        return false;
     }
 
     /**

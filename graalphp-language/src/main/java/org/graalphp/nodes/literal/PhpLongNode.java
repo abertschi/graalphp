@@ -1,16 +1,12 @@
 package org.graalphp.nodes.literal;
 
 import com.oracle.truffle.api.frame.VirtualFrame;
-import com.oracle.truffle.api.interop.InteropLibrary;
-import com.oracle.truffle.api.interop.TruffleObject;
-import com.oracle.truffle.api.library.ExportLibrary;
 import com.oracle.truffle.api.nodes.NodeInfo;
-import com.oracle.truffle.api.nodes.UnexpectedResultException;
 import org.graalphp.nodes.PhpExprNode;
 
 /**
  * Represents integer numbers in graalphp
- *
+ * <p>
  * Based on a primitive long in java
  *
  * @author abertschi
@@ -31,6 +27,11 @@ public class PhpLongNode extends PhpExprNode {
     @Override
     public long executeLong(VirtualFrame f) {
         return val;
+    }
+
+    @Override
+    public boolean executeBoolean(VirtualFrame f) {
+        return val != 0;
     }
 
     @Override

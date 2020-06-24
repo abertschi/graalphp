@@ -27,7 +27,8 @@ public abstract class PhpSubNode extends PhpBinaryNode {
 
     @Override
     public String toString() {
-        return "PhpSubNode{}";
+        return "PhpSubNode{" + toStringChildren() + "}";
+
     }
 }
 

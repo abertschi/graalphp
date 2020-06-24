@@ -11,6 +11,8 @@ public class PhpLogger implements Logger {
     private final String name;
 
     public static boolean DISABLE = false;
+    public static boolean DISABLE_FINEST = true;
+    public static boolean DISABLE_FINE = true;
 
     public static synchronized void disable() {
         DISABLE = false;
@@ -32,7 +34,7 @@ public class PhpLogger implements Logger {
 
     @Override
     public void fine(String msg) {
-        if (DISABLE) return;
+        if (DISABLE || DISABLE_FINE) return;
         System.err.println(format(msg, "fine"));
     }
 
@@ -44,7 +46,7 @@ public class PhpLogger implements Logger {
 
     @Override
     public void finest(String msg) {
-        if (DISABLE) return;
+        if (DISABLE || DISABLE_FINEST) return;
         System.err.println(format(msg, "finest"));
     }
 

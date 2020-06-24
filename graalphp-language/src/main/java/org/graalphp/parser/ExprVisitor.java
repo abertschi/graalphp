@@ -2,18 +2,35 @@ package org.graalphp.parser;
 
 import com.oracle.truffle.api.frame.FrameSlot;
 import com.oracle.truffle.api.frame.FrameSlotKind;
-import org.eclipse.php.core.ast.nodes.*;
+import org.eclipse.php.core.ast.nodes.ASTNode;
+import org.eclipse.php.core.ast.nodes.Assignment;
+import org.eclipse.php.core.ast.nodes.Expression;
+import org.eclipse.php.core.ast.nodes.FunctionInvocation;
+import org.eclipse.php.core.ast.nodes.Identifier;
+import org.eclipse.php.core.ast.nodes.InfixExpression;
+import org.eclipse.php.core.ast.nodes.Scalar;
+import org.eclipse.php.core.ast.nodes.UnaryOperation;
+import org.eclipse.php.core.ast.nodes.Variable;
 import org.eclipse.php.core.ast.visitor.HierarchicalVisitor;
-import org.graalphp.exception.PhpException;
 import org.graalphp.PhpLanguage;
+import org.graalphp.exception.PhpException;
 import org.graalphp.nodes.PhpExprNode;
-import org.graalphp.nodes.function.PhpFunctionLookupNode;
-import org.graalphp.nodes.function.PhpInvokeNode;
 import org.graalphp.nodes.PhpStmtNode;
 import org.graalphp.nodes.binary.PhpAddNodeGen;
 import org.graalphp.nodes.binary.PhpDivNodeGen;
 import org.graalphp.nodes.binary.PhpMulNodeGen;
 import org.graalphp.nodes.binary.PhpSubNodeGen;
+import org.graalphp.nodes.binary.logic.PhpAndNode;
+import org.graalphp.nodes.binary.logic.PhpEqNodeGen;
+import org.graalphp.nodes.binary.logic.PhpGeNodeGen;
+import org.graalphp.nodes.binary.logic.PhpGtNodeGen;
+import org.graalphp.nodes.binary.logic.PhpLeNodeGen;
+import org.graalphp.nodes.binary.logic.PhpLtNodeGen;
+import org.graalphp.nodes.binary.logic.PhpNeqNodeGen;
+import org.graalphp.nodes.binary.logic.PhpOrNode;
+import org.graalphp.nodes.function.PhpFunctionLookupNode;
+import org.graalphp.nodes.function.PhpInvokeNode;
+import org.graalphp.nodes.literal.PhpBooleanNode;
 import org.graalphp.nodes.localvar.PhpReadVarNodeGen;
 import org.graalphp.nodes.localvar.PhpWriteVarNodeGen;
 import org.graalphp.nodes.unary.PhpNegNodeGen;
@@ -55,7 +72,8 @@ public class ExprVisitor extends HierarchicalVisitor {
     private PhpExprNode initAndAcceptExpr(final Expression e) {
         currExpr = null;
         e.accept(this);
-        assert (currExpr != null) : "Current expression must be set after an accept phase";
+        assert (currExpr != null) : "Current expression must be set after an accept phase. " +
+                "Unsupported syntax? " + e.toString();
         return currExpr;
     }
 
@@ -91,6 +109,30 @@ public class ExprVisitor extends HierarchicalVisitor {
                 break;
             case InfixExpression.OP_DIV:
                 result = PhpDivNodeGen.create(left, right);
+                break;
+            case InfixExpression.OP_IS_EQUAL:
+                result = PhpEqNodeGen.create(left, right);
+                break;
+            case InfixExpression.OP_IS_NOT_EQUAL:
+                result = PhpNeqNodeGen.create(left, right);
+                break;
+            case InfixExpression.OP_LGREATER:
+                result = PhpGtNodeGen.create(left, right);
+                break;
+            case InfixExpression.OP_RGREATER:
+                result = PhpLtNodeGen.create(left, right);
+                break;
+            case InfixExpression.OP_IS_SMALLER_OR_EQUAL:
+                result = PhpLeNodeGen.create(left, right);
+                break;
+            case InfixExpression.OP_IS_GREATER_OR_EQUAL:
+                result = PhpGeNodeGen.create(left, right);
+                break;
+            case InfixExpression.OP_BOOL_AND:
+                result = new PhpAndNode(left, right);
+                break;
+            case InfixExpression.OP_BOOL_OR:
+                result = new PhpOrNode(left, right);
                 break;
             default:
                 exprHasSource = false;
@@ -144,6 +186,14 @@ public class ExprVisitor extends HierarchicalVisitor {
                 break;
             case Scalar.TYPE_REAL:
                 currExpr = NumberLiteralFactory.parseFloat(scalar.getStringValue());
+                break;
+            case Scalar.TYPE_STRING:
+                final String v = scalar.getStringValue();
+                if (NumberLiteralFactory.isBooleanLiteral(v)) {
+                    currExpr = new PhpBooleanNode(NumberLiteralFactory.booleanLiteralToValue(v));
+                } else {
+                    LOG.parserEnumerationError("Strings not yet supported");
+                }
                 break;
             default:
                 hasSource = false;

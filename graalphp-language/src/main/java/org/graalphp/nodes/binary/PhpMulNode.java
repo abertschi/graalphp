@@ -15,8 +15,7 @@ public abstract class PhpMulNode extends PhpBinaryNode {
     }
 
     @Specialization
-    protected double multiply(double left, double right)
-    {
+    protected double multiply(double left, double right) {
         return left * right;
     }
 
@@ -27,7 +26,8 @@ public abstract class PhpMulNode extends PhpBinaryNode {
 
     @Override
     public String toString() {
-        return "PhpMulNode{}";
+        return "PhpMulNode{" + toStringChildren() + "}";
+
     }
 }
 
