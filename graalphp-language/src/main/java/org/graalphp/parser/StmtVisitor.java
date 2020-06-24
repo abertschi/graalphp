@@ -7,6 +7,7 @@ import com.oracle.truffle.api.frame.FrameSlotKind;
 import org.eclipse.php.core.ast.nodes.ASTNode;
 import org.eclipse.php.core.ast.nodes.BreakStatement;
 import org.eclipse.php.core.ast.nodes.ContinueStatement;
+import org.eclipse.php.core.ast.nodes.DoStatement;
 import org.eclipse.php.core.ast.nodes.ExpressionStatement;
 import org.eclipse.php.core.ast.nodes.FormalParameter;
 import org.eclipse.php.core.ast.nodes.FunctionDeclaration;
@@ -29,6 +30,7 @@ import org.graalphp.nodes.controlflow.PhpWhileNode;
 import org.graalphp.nodes.function.PhpFunctionRootNode;
 import org.graalphp.nodes.localvar.PhpReadArgNode;
 import org.graalphp.nodes.localvar.PhpWriteVarNodeGen;
+import org.graalphp.nodes.unary.PhpConvertToBooleanNode;
 import org.graalphp.types.PhpFunction;
 import org.graalphp.util.Logger;
 import org.graalphp.util.PhpLogger;
@@ -262,6 +264,18 @@ public class StmtVisitor extends HierarchicalVisitor {
         setSourceSection(continueNode, continueStmt);
         stmts.add(continueNode);
         return false;
+    }
+
+    @Override
+    public boolean visit(DoStatement doStatement) {
+        final PhpConvertToBooleanNode condition = PhpConvertToBooleanNode.createAndWrap(
+                exprVisitor.createExprAst(doStatement.getCondition(), getCurrentScope()));
+
+        StmtVisitorContext beforeLoop =
+                new StmtVisitor(this.language).createPhpStmtAst(doStatement.getBody(),
+                        getCurrentScope());
+
+        return super.visit(doStatement);
     }
 
     /**
