@@ -35,11 +35,14 @@ public final class PhpWhileRepeatingNode extends Node implements RepeatingNode {
             // exit loop
             return false;
         }
-        bodyNode.executeVoid(frame);
-        // check next iteration
-        return true;
-
-        // TODO: check for break and continue exceptions
+        try {
+            bodyNode.executeVoid(frame);
+            return true;
+        } catch (PhpBreakException e) {
+            return false;
+        } catch (PhpContinueException e) {
+            return true;
+        }
     }
 
     private boolean evaluateCondition(VirtualFrame frame) {

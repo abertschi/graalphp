@@ -1,7 +1,7 @@
 package org.graalphp.nodes.controlflow;
 
-
 import com.oracle.truffle.api.frame.VirtualFrame;
+import com.oracle.truffle.api.nodes.NodeInfo;
 import org.graalphp.nodes.PhpExprNode;
 import org.graalphp.nodes.PhpStmtNode;
 import org.graalphp.types.PhpNull;
@@ -11,7 +11,8 @@ import org.graalphp.types.PhpNull;
  *
  * @author abertschi
  */
-public class PhpReturnNode extends PhpStmtNode {
+@NodeInfo(shortName = "return")
+public final class PhpReturnNode extends PhpStmtNode {
 
     @Child private PhpExprNode exec;
 

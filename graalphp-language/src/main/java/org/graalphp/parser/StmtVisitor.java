@@ -5,6 +5,8 @@ import com.oracle.truffle.api.frame.FrameDescriptor;
 import com.oracle.truffle.api.frame.FrameSlot;
 import com.oracle.truffle.api.frame.FrameSlotKind;
 import org.eclipse.php.core.ast.nodes.ASTNode;
+import org.eclipse.php.core.ast.nodes.BreakStatement;
+import org.eclipse.php.core.ast.nodes.ContinueStatement;
 import org.eclipse.php.core.ast.nodes.ExpressionStatement;
 import org.eclipse.php.core.ast.nodes.FormalParameter;
 import org.eclipse.php.core.ast.nodes.FunctionDeclaration;
@@ -19,6 +21,8 @@ import org.graalphp.nodes.EmptyExprNode;
 import org.graalphp.nodes.PhpExprNode;
 import org.graalphp.nodes.PhpStmtNode;
 import org.graalphp.nodes.StmtListNode;
+import org.graalphp.nodes.controlflow.PhpBreakNode;
+import org.graalphp.nodes.controlflow.PhpContinueNode;
 import org.graalphp.nodes.controlflow.PhpIfNode;
 import org.graalphp.nodes.controlflow.PhpReturnNode;
 import org.graalphp.nodes.controlflow.PhpWhileNode;
@@ -235,6 +239,28 @@ public class StmtVisitor extends HierarchicalVisitor {
         final StmtListNode stmtListNode = new StmtListNode(bodyContext.stmts);
         setSourceSection(stmtListNode, whileStmt.getBody());
         stmts.add(new PhpWhileNode(conditionNode, stmtListNode));
+        return false;
+    }
+
+    @Override
+    public boolean visit(BreakStatement breakStatement) {
+        if (breakStatement.getExpression() != null) {
+            throw new UnsupportedOperationException("Break with value not supported");
+        }
+        final PhpBreakNode breakNode = new PhpBreakNode();
+        setSourceSection(breakNode, breakStatement);
+        stmts.add(breakNode);
+        return false;
+    }
+
+    @Override
+    public boolean visit(ContinueStatement continueStmt) {
+        if (continueStmt.getExpression() != null) {
+            throw new UnsupportedOperationException("Continue with value not supported");
+        }
+        final PhpContinueNode continueNode = new PhpContinueNode();
+        setSourceSection(continueNode, continueStmt);
+        stmts.add(continueNode);
         return false;
     }
 

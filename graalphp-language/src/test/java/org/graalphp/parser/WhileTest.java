@@ -32,4 +32,24 @@ public class WhileTest {
         TestCommons.compareStdout("1111", "$i = 4; while($i > 0) {print 1; $i = $i -1;}" );
         TestCommons.compareStdout("", "$i = 4; while(false) {}" );
     }
+
+    @Test
+    public void testContinue() {
+        TestCommons.compareStdout("1", "$i = 1; while($i > 0) {print 1; $i = 0; continue; print 2;}" );
+    }
+
+    @Test
+    public void testBreak() {
+        TestCommons.compareStdout("1", "while(true) {print 1; break; print 2;}" );
+    }
+
+    @Test(expected = Exception.class)
+    public void testBreakNoLoop() {
+        TestCommons.compareStdout("", "break;" );
+    }
+
+    @Test(expected = Exception.class)
+    public void testContinueNoLoop() {
+        TestCommons.compareStdout("", "continue;" );
+    }
 }
