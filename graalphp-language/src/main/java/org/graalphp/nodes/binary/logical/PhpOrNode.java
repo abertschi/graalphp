@@ -15,7 +15,7 @@ public final class PhpOrNode extends PhpShortCircuitNode {
 
     @Override
     protected boolean shouldEvaluateRight(boolean left) {
-        return true;
+        return !left;
     }
 
     @Override
