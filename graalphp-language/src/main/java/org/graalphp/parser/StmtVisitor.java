@@ -8,7 +8,9 @@ import org.eclipse.php.core.ast.nodes.ASTNode;
 import org.eclipse.php.core.ast.nodes.BreakStatement;
 import org.eclipse.php.core.ast.nodes.ContinueStatement;
 import org.eclipse.php.core.ast.nodes.DoStatement;
+import org.eclipse.php.core.ast.nodes.Expression;
 import org.eclipse.php.core.ast.nodes.ExpressionStatement;
+import org.eclipse.php.core.ast.nodes.ForStatement;
 import org.eclipse.php.core.ast.nodes.FormalParameter;
 import org.eclipse.php.core.ast.nodes.FunctionDeclaration;
 import org.eclipse.php.core.ast.nodes.IfStatement;
@@ -25,6 +27,7 @@ import org.graalphp.nodes.StmtListNode;
 import org.graalphp.nodes.controlflow.PhpBreakNode;
 import org.graalphp.nodes.controlflow.PhpContinueNode;
 import org.graalphp.nodes.controlflow.PhpDoWhileNode;
+import org.graalphp.nodes.controlflow.PhpForWhileNode;
 import org.graalphp.nodes.controlflow.PhpIfNode;
 import org.graalphp.nodes.controlflow.PhpReturnNode;
 import org.graalphp.nodes.controlflow.PhpWhileNode;
@@ -278,8 +281,38 @@ public class StmtVisitor extends HierarchicalVisitor {
 
         final PhpDoWhileNode doWhileNode = new PhpDoWhileNode(stmtListNode, condition);
         setSourceSection(doWhileNode, doStatement);
+
         stmts.add(doWhileNode);
         return false;
+    }
+
+    @Override
+    public boolean visit(ForStatement forStmt) {
+        final List<PhpExprNode> initializers =
+                visitExpressions(this.exprVisitor, getCurrentScope(), forStmt.initializers());
+        final List<PhpExprNode> conditions =
+                visitExpressions(this.exprVisitor, getCurrentScope(), forStmt.conditions());
+        final List<PhpExprNode> updaters =
+                visitExpressions(this.exprVisitor, getCurrentScope(), forStmt.updaters());
+        final StmtVisitorContext bodyCtx = new StmtVisitor(this.language)
+                .createPhpStmtAst(forStmt.getBody(), getCurrentScope());
+        final PhpForWhileNode forNode =
+                new PhpForWhileNode(initializers, conditions, updaters, bodyCtx.stmts);
+
+        setSourceSection(forNode, forStmt);
+        stmts.add(forNode);
+
+        return false;
+    }
+
+    private List<PhpExprNode> visitExpressions(ExprVisitor visitor,
+                                               ParseScope scope,
+                                               List<Expression> exprs) {
+        List<PhpExprNode> nodes = new LinkedList<>();
+        for (Expression e : exprs) {
+            nodes.add(visitor.createExprAst(e, scope));
+        }
+        return nodes;
     }
 
     /**
