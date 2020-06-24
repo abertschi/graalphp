@@ -14,7 +14,10 @@ import org.graalphp.types.PhpNull;
 @NodeInfo(shortName = "return")
 public final class PhpReturnNode extends PhpStmtNode {
 
-    @Child private PhpExprNode exec;
+    // TODO: profiling
+
+    @Child
+    private PhpExprNode exec;
 
     public PhpReturnNode(PhpExprNode exec) {
         this.exec = exec;
@@ -24,7 +27,7 @@ public final class PhpReturnNode extends PhpStmtNode {
     public void executeVoid(VirtualFrame frame) {
         Object returnVal = null;
         if (exec != null) {
-             returnVal = exec.executeGeneric(frame);
+            returnVal = exec.executeGeneric(frame);
         } else {
             returnVal = PhpNull.SINGLETON;
         }

@@ -10,7 +10,8 @@ import org.graalphp.nodes.PhpStmtNode;
 @NodeInfo(shortName = "break")
 public final class PhpBreakNode extends PhpStmtNode {
 
-    // TODO: PHP supports break with an expression, we currently do not support this
+    // TODO: PHP supports break with an expression,
+    // we currently do not support this
 
     @Override
     public void executeVoid(VirtualFrame frame) {

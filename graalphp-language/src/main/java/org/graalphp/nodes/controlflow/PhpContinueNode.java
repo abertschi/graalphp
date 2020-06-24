@@ -10,7 +10,8 @@ import org.graalphp.nodes.PhpStmtNode;
 @NodeInfo(shortName = "continue")
 public final class PhpContinueNode extends PhpStmtNode {
 
-    // TODO: PHP supports continue with an expression, we currently do not support this
+    // TODO: PHP supports continue with an expression,
+    // we currently do not support this
 
     @Override
     public void executeVoid(VirtualFrame frame) {

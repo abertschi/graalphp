@@ -14,7 +14,7 @@ import org.graalphp.types.PhpNull;
  *
  * @author abertschi
  */
-public class PhpReturnBodyNode extends PhpExprNode {
+public final class PhpReturnBodyNode extends PhpExprNode {
 
     // TODO: add branch profiling
 

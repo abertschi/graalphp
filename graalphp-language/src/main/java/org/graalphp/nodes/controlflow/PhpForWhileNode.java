@@ -17,10 +17,10 @@ import java.util.List;
 public final class PhpForWhileNode extends PhpStmtNode {
 
     @Child
-    PhpStmtNode initNode;
+    private PhpStmtNode initNode;
 
     @Child
-    PhpWhileNode whileNode;
+    private PhpWhileNode whileNode;
 
     public PhpForWhileNode(List<PhpExprNode> inits,
                            List<PhpExprNode> conditions,

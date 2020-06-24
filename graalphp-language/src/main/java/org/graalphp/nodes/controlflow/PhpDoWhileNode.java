@@ -12,14 +12,17 @@ import org.graalphp.nodes.PhpStmtNode;
 public final class PhpDoWhileNode extends PhpStmtNode {
 
     @Child
-    PhpStmtNode body;
+    private PhpStmtNode body;
 
     @Child
-    PhpWhileNode whileNode;
+    private PhpWhileNode whileNode;
 
     public PhpDoWhileNode(PhpStmtNode body, PhpExprNode condition) {
         // XXX: can we store the same instance in two child fields?
         // or do we have to perform a deep copy?
+        // Alternatively we can model the first iteration within the body and add additional
+        // an additional condition, evaluate with benchmark
+
         this.body = body;
         this.whileNode = new PhpWhileNode(condition, body);
     }

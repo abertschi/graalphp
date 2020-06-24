@@ -11,7 +11,7 @@ import org.graalphp.types.PhpFunction;
  *
  * @author abertschi
  */
-public class PhpInvokeNode extends PhpExprNode {
+public final class PhpInvokeNode extends PhpExprNode {
 
     @Child
     protected PhpExprNode function;
