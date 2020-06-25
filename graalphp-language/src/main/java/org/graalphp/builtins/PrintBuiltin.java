@@ -14,7 +14,6 @@ import java.io.PrintWriter;
  *
  * @author abertschi
  */
-
 @NodeInfo(shortName = PrintBuiltin.NAME)
 public abstract class PrintBuiltin extends PhpBuiltinNode {
 

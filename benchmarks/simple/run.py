@@ -10,7 +10,7 @@ from datetime import datetime
 def run(exec_binary, script_path):
     print("=================================")
     print("+ benchmark for " + exec_binary)
-    print("+ sciprt: " + script_path)
+    print("+ script: " + script_path)
     print("\n")
     
     total_start = int(round(time.time() * 1000 * 1000))
