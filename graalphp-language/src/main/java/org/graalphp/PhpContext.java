@@ -6,7 +6,12 @@ import com.oracle.truffle.api.TruffleLanguage;
 import com.oracle.truffle.api.dsl.NodeFactory;
 import com.oracle.truffle.api.frame.FrameDescriptor;
 import org.graalphp.builtins.PhpBuiltinNode;
+import org.graalphp.builtins.PrintBuiltin;
 import org.graalphp.builtins.PrintBuiltinFactory;
+import org.graalphp.builtins.PrintlnBuiltin;
+import org.graalphp.builtins.PrintlnBuiltinFactory;
+import org.graalphp.builtins.TimeNsBuiltin;
+import org.graalphp.builtins.TimeNsBuiltinFactory;
 import org.graalphp.nodes.PhpExprNode;
 import org.graalphp.nodes.function.PhpFunctionRootNode;
 import org.graalphp.nodes.localvar.PhpReadArgNode;
@@ -41,7 +46,9 @@ public final class PhpContext {
     }
 
     private void installBuiltins() {
-        installBuiltin("print", PrintBuiltinFactory.getInstance());
+        installBuiltin(PrintBuiltin.NAME, PrintBuiltinFactory.getInstance());
+        installBuiltin(PrintlnBuiltin.NAME, PrintlnBuiltinFactory.getInstance());
+        installBuiltin(TimeNsBuiltin.NAME, TimeNsBuiltinFactory.getInstance());
     }
 
     public void installBuiltin(String name, NodeFactory<? extends PhpBuiltinNode> factory) {

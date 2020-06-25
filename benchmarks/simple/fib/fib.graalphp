@@ -1,0 +1,52 @@
+<?php
+
+function fib($a) {
+if ($a < 0) {
+   return 0;
+}
+if ($a < 2) {
+  return 1;
+}
+return fib($a - 1) + fib($a - 2);
+}
+
+fib(30);
+fib(30);
+fib(30);
+fib(30);
+fib(30);
+fib(30);
+fib(30);
+fib(30);
+fib(30);
+fib(30);
+fib(30);
+fib(30);
+fib(30);
+fib(30);
+fib(30);
+fib(30);
+fib(30);
+fib(30);
+fib(30);
+fib(30);
+fib(30);
+fib(30);
+fib(30);
+fib(30);
+fib(30);
+fib(30);
+fib(30);
+fib(30);
+
+$start = graalphp_time_ns();
+$val = fib(30);
+$stop = graalphp_time_ns();
+
+$res = ($stop - $start);
+println ($val);
+println ($res);
+println ($res / 1000.0);
+println ($res / 1000.0 / 1000.0);
+
+?>
