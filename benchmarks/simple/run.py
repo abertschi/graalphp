@@ -3,6 +3,9 @@ import os
 import sys
 import time
 import subprocess
+from datetime import date
+from datetime import datetime
+
 
 def run(exec_binary, script_path):
     print("=================================")
@@ -51,11 +54,16 @@ def run_sl(bm_dir):
     binary = os.path.join(SL_HOME, "sl")
     for f in get_files(bm_dir, ".sl"):
         run(binary, f)
-       
 
-dir = os.path.dirname(os.path.realpath(__file__))
-fib_benchmark = os.path.join(dir, 'fib')
 
-run_php(fib_benchmark)
-run_graalphp(fib_benchmark)
-run_sl(fib_benchmark)
+def do_benchmarks():
+    dir = os.path.dirname(os.path.realpath(__file__))
+    fib_benchmark = os.path.join(dir, 'fib')
+    print(datetime.now())
+
+    run_php(fib_benchmark)
+    run_graalphp(fib_benchmark)
+    run_sl(fib_benchmark)
+
+
+do_benchmarks()    

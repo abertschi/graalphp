@@ -1,0 +1,73 @@
+* Initial Run without Optimizations
+#+BEGIN_SRC txt
+2020-06-25 17:23:23.271935
+=================================
++ benchmark for php
++ sciprt: /home/b/beandata/pgm-eth/eth-s08-ba-graalphp/graalphp-public/benchmarks/simple/fib/fib-cold.php
+
+
+result value: 1346269
+result in ns 42256859
+result in us 42256.859
+result in ms 42.256859
+total us: 49790
+=================================
++ benchmark for php
++ sciprt: /home/b/beandata/pgm-eth/eth-s08-ba-graalphp/graalphp-public/benchmarks/simple/fib/fib.php
+
+
+result value: 1346269
+result in ns 43698550
+result in us 43698.55
+result in ms 43.69855
+total us: 1258505
+=================================
++ benchmark for /home/b/beandata-pgm-eth/eth-s08-ba-graalphp/graalphp-public/graalphp
++ sciprt: /home/b/beandata/pgm-eth/eth-s08-ba-graalphp/graalphp-public/benchmarks/simple/fib/fib.graalphp
+
+
++ /home/b/tools/graalvm/bin/java -Dtruffle.class.path.append=/home/b/beandata/pgm-eth/eth-s08-ba-graalphp/graalphp-public/graalphp-language/target/graalphp.jar -cp /home/b/beandata/pgm-eth/eth-s08-ba-graalphp/graalphp-public/graalphp-launcher/target/graalphp-launcher-20.0.0-SNAPSHOT.jar org.graalphp.launcher.GraalPhpMain /home/b/beandata/pgm-eth/eth-s08-ba-graalphp/graalphp-public/benchmarks/simple/fib/fib.graalphp
+1346269
+59340312
+59340.312
+59.340312
++ set +x
+total us: 2457466
+=================================
++ benchmark for /home/b/beandata-pgm-eth/eth-s08-ba-graalphp/graalphp-public/graalphp
++ sciprt: /home/b/beandata/pgm-eth/eth-s08-ba-graalphp/graalphp-public/benchmarks/simple/fib/fib-cold.graalphp
+
+
++ /home/b/tools/graalvm/bin/java -Dtruffle.class.path.append=/home/b/beandata/pgm-eth/eth-s08-ba-graalphp/graalphp-public/graalphp-language/target/graalphp.jar -cp /home/b/beandata/pgm-eth/eth-s08-ba-graalphp/graalphp-public/graalphp-launcher/target/graalphp-launcher-20.0.0-SNAPSHOT.jar org.graalphp.launcher.GraalPhpMain /home/b/beandata/pgm-eth/eth-s08-ba-graalphp/graalphp-public/benchmarks/simple/fib/fib-cold.graalphp
+1346269
+186684907
+186684.907
+186.684907
++ set +x
+total us: 596781
+=================================
++ benchmark for /home/b/beandata/pgm-eth/eth-s08-ba-graalphp/projects/simplelanguage/sl
++ sciprt: /home/b/beandata/pgm-eth/eth-s08-ba-graalphp/graalphp-public/benchmarks/simple/fib/fib-cold.sl
+
+
+20.0.0
+== running on org.graalvm.polyglot.Engine@3a5ed7a6
+1346269
+computation time ns: 179979558
+computation time us: 179979
+computation time ms: 179
+total us: 621011
+=================================
++ benchmark for /home/b/beandata/pgm-eth/eth-s08-ba-graalphp/projects/simplelanguage/sl
++ sciprt: /home/b/beandata/pgm-eth/eth-s08-ba-graalphp/graalphp-public/benchmarks/simple/fib/fib.sl
+
+
+20.0.0
+== running on org.graalvm.polyglot.Engine@7791a895
+1346269
+computation time ns: 8352861
+computation time us: 8352
+computation time ms: 8
+total us: 933477
+
+#+END_SRC
