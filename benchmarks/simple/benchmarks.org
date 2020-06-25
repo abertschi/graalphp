@@ -75,5 +75,6 @@ total us: 933477
 - unoptimized graalphp is not much slower than PHP
   - PHP 43.69855 ms
   - graalphp 59ms
+  - sl: 8ms
 - cold start is worse
 - the sl results show us what what we can expect when fully optimized
