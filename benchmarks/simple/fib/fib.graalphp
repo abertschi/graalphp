@@ -1,5 +1,4 @@
 <?php
-
 function fib($a) {
 if ($a < 2) {
   return 1;
@@ -7,37 +6,37 @@ if ($a < 2) {
 return fib($a - 1) + fib($a - 2);
 }
 
-fib(30);
-fib(30);
-fib(30);
-fib(30);
-fib(30);
-fib(30);
-fib(30);
-fib(30);
-fib(30);
-fib(30);
-fib(30);
-fib(30);
-fib(30);
-fib(30);
-fib(30);
-fib(30);
-fib(30);
-fib(30);
-fib(30);
-fib(30);
-fib(30);
-fib(30);
-fib(30);
-fib(30);
-fib(30);
-fib(30);
-fib(30);
-fib(30);
+fib(32);
+fib(32);
+fib(32);
+fib(32);
+fib(32);
+fib(32);
+fib(32);
+fib(32);
+fib(32);
+fib(32);
+fib(32);
+fib(32);
+fib(32);
+fib(32);
+fib(32);
+fib(32);
+fib(32);
+fib(32);
+fib(32);
+fib(32);
+fib(32);
+fib(32);
+fib(32);
+fib(32);
+fib(32);
+fib(32);
+fib(32);
+fib(32);
 
 $start = graalphp_time_ns();
-$val = fib(30);
+$val = fib(32);
 $stop = graalphp_time_ns();
 
 $res = ($stop - $start);

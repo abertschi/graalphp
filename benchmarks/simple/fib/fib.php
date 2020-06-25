@@ -7,37 +7,37 @@ if ($a < 2) {
 return fib($a - 1) + fib($a - 2);
 }
 
-fib(30);
-fib(30);
-fib(30);
-fib(30);
-fib(30);
-fib(30);
-fib(30);
-fib(30);
-fib(30);
-fib(30);
-fib(30);
-fib(30);
-fib(30);
-fib(30);
-fib(30);
-fib(30);
-fib(30);
-fib(30);
-fib(30);
-fib(30);
-fib(30);
-fib(30);
-fib(30);
-fib(30);
-fib(30);
-fib(30);
-fib(30);
-fib(30);
+fib(32);
+fib(32);
+fib(32);
+fib(32);
+fib(32);
+fib(32);
+fib(32);
+fib(32);
+fib(32);
+fib(32);
+fib(32);
+fib(32);
+fib(32);
+fib(32);
+fib(32);
+fib(32);
+fib(32);
+fib(32);
+fib(32);
+fib(32);
+fib(32);
+fib(32);
+fib(32);
+fib(32);
+fib(32);
+fib(32);
+fib(32);
+fib(32);
 
 $start=hrtime(true); // ns 
-$val = fib(30);
+$val = fib(32);
 $stop = hrtime(true);
 
 echo "result value: " . $val . "\n";

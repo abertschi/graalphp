@@ -8,7 +8,7 @@ function fib(n) {
 
 function main() {
     start = nanoTime();
-    val = fib(30);
+    val = fib(32);
     end = nanoTime();
     println(val);
     println("computation time ns: " + (end - start));
