@@ -13,7 +13,7 @@ import com.oracle.truffle.api.dsl.TypeSystem;
         double.class,
         PhpFunction.class
 })
-public class PhpTypes {
+public abstract class PhpTypes {
 
     PhpTypes() {
     }

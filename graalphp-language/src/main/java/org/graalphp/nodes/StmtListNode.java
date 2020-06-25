@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author abertschi
  */
-public class StmtListNode extends PhpStmtNode
+public final class StmtListNode extends PhpStmtNode
         implements BlockNode.ElementExecutor<PhpStmtNode> {
 
     /*

@@ -13,7 +13,7 @@ import org.graalphp.nodes.PhpExprNode;
  * @author abertschi
  */
 @NodeInfo(shortName = "double")
-public class PhpDoubleNode extends PhpExprNode {
+public final class PhpDoubleNode extends PhpExprNode {
 
     private final double val;
 

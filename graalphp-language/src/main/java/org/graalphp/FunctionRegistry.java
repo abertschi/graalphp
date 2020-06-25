@@ -16,7 +16,7 @@ import java.util.Map;
  *
  * @author abertschi
  */
-public class FunctionRegistry {
+public final class FunctionRegistry {
 
     private Map<String, PhpFunction> functions;
 

@@ -12,7 +12,7 @@ import org.graalphp.nodes.PhpExprNode;
  * @author abertschi
  */
 @NodeInfo(shortName = "long")
-public class PhpLongNode extends PhpExprNode {
+public final class PhpLongNode extends PhpExprNode {
 
     public static final long PHP_INT_SIZE = Long.SIZE;
     public static final long PHP_INT_MIN = Long.MIN_VALUE;

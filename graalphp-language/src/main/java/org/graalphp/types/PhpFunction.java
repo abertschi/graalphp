@@ -14,7 +14,7 @@ import org.graalphp.parser.ParseScope;
  *
  * @author abertschi
  */
-public class PhpFunction implements TruffleObject {
+public final class PhpFunction implements TruffleObject {
 
     // TODO: optimization: CyclicAssumption
     // TODO: truffleObject for interoperability?

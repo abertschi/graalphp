@@ -6,7 +6,7 @@ import org.graalphp.nodes.PhpExprNode;
 /**
  * @author abertschi
  */
-public class PhpBooleanNode extends PhpExprNode {
+public final class PhpBooleanNode extends PhpExprNode {
 
     private final boolean val;
 

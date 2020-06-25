@@ -16,7 +16,7 @@ import java.util.List;
  * @author abertschi
  */
 @NodeInfo(language = PhpLanguage.ID, description = "entry point to execute source code")
-public class PhpGlobalRootNode extends RootNode {
+public final class PhpGlobalRootNode extends RootNode {
 
     @Child
     private PhpStmtNode body;

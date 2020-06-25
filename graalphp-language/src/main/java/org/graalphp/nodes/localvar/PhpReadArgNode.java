@@ -8,7 +8,7 @@ import org.graalphp.nodes.PhpExprNode;
  *
  * @author abertschi
  */
-public class PhpReadArgNode extends PhpExprNode {
+public final class PhpReadArgNode extends PhpExprNode {
 
     private int index;
 
