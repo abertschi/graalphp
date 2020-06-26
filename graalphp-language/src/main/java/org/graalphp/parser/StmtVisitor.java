@@ -32,8 +32,8 @@ import org.graalphp.nodes.controlflow.PhpIfNode;
 import org.graalphp.nodes.controlflow.PhpReturnNode;
 import org.graalphp.nodes.controlflow.PhpWhileNode;
 import org.graalphp.nodes.function.PhpFunctionRootNode;
-import org.graalphp.nodes.localvar.PhpReadArgNode;
-import org.graalphp.nodes.localvar.PhpWriteVarNodeGen;
+import org.graalphp.nodes.localvar.ReadArgNode;
+import org.graalphp.nodes.localvar.WriteLocalVarNodeGen;
 import org.graalphp.types.PhpFunction;
 import org.graalphp.util.Logger;
 import org.graalphp.util.PhpLogger;
@@ -176,7 +176,7 @@ public class StmtVisitor extends HierarchicalVisitor {
     public boolean visit(FormalParameter formalParameter) {
         assert currFunctionParamExpr == null;
 
-        final PhpReadArgNode readArg = new PhpReadArgNode(this.currFunctionArgumentCount);
+        final ReadArgNode readArg = new ReadArgNode(this.currFunctionArgumentCount);
         final String name = new IdentifierVisitor()
                 .getIdentifierName(formalParameter.getParameterName()).getName();
         final PhpExprNode assignNode = createLocalAssignment(
@@ -201,7 +201,7 @@ public class StmtVisitor extends HierarchicalVisitor {
         scope.getVars().put(target, frameSlot);
 
         // TODO: source section?
-        final PhpExprNode assign = PhpWriteVarNodeGen.create(source, frameSlot);
+        final PhpExprNode assign = WriteLocalVarNodeGen.create(source, frameSlot);
         return assign;
     }
 

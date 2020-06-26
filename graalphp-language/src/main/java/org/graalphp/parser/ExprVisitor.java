@@ -31,8 +31,8 @@ import org.graalphp.nodes.binary.logical.PhpOrNode;
 import org.graalphp.nodes.function.PhpFunctionLookupNode;
 import org.graalphp.nodes.function.PhpInvokeNode;
 import org.graalphp.nodes.literal.PhpBooleanNode;
-import org.graalphp.nodes.localvar.PhpReadVarNodeGen;
-import org.graalphp.nodes.localvar.PhpWriteVarNodeGen;
+import org.graalphp.nodes.localvar.ReadLocalVarNodeGen;
+import org.graalphp.nodes.localvar.WriteLocalVarNodeGen;
 import org.graalphp.nodes.unary.PhpNegNodeGen;
 import org.graalphp.util.Logger;
 import org.graalphp.util.PhpLogger;
@@ -224,7 +224,7 @@ public class ExprVisitor extends HierarchicalVisitor {
             PhpException.undefVariableError(name, null);
         }
 
-        final PhpExprNode varNode = PhpReadVarNodeGen.create(varSlot);
+        final PhpExprNode varNode = ReadLocalVarNodeGen.create(varSlot);
         setSourceSection(varNode, variable);
 
         currExpr = varNode;
@@ -250,7 +250,7 @@ public class ExprVisitor extends HierarchicalVisitor {
                 FrameSlotKind.Illegal);
 
         scope.getVars().put(dest, frameSlot);
-        final PhpExprNode assignNode = PhpWriteVarNodeGen.create(source, frameSlot);
+        final PhpExprNode assignNode = WriteLocalVarNodeGen.create(source, frameSlot);
         setSourceSection(assignNode, ass);
 
         currExpr = assignNode;
