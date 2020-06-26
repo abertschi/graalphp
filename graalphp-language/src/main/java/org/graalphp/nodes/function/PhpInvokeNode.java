@@ -26,21 +26,22 @@ public final class PhpInvokeNode extends PhpExprNode {
     @CompilationFinal
     private DirectCallNode callNode;
 
+//    @Child private InteropLibrary library;
+
     // TODO Change this to an abstract nodes, introduce object [] types
     public PhpInvokeNode(PhpExprNode[] arguments, PhpExprNode function) {
         this.argNodes = arguments;
         this.function = function;
-        callNode = null;
+        this.callNode = null;
     }
 
     @ExplodeLoop
     @Override
     public Object executeGeneric(VirtualFrame frame) {
-        if (callNode == null) {
-            // TODO: improve this, avoid casting
-            PhpFunction fn = (PhpFunction) function.executeGeneric(frame);
-            this.callNode =  DirectCallNode.create(fn.getCallTarget());
+        if (this.callNode == null){
+            PhpFunction o = (PhpFunction) function.executeGeneric(frame);
             CompilerDirectives.transferToInterpreterAndInvalidate();
+            this.callNode = DirectCallNode.create(o.getCallTarget());
         }
 
         // for a single node, number of arguments is constant
