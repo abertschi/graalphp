@@ -19,12 +19,6 @@ public abstract class PhpSubNode extends PhpBinaryNode {
         return left - right;
     }
 
-    // slow track
-    @Specialization()
-    protected Object sub(Object left, Object right) {
-        throw new UnsupportedOperationException("we dont support sub. of other types than long yet");
-    }
-
     @Override
     public String toString() {
         return "PhpSubNode{" + toStringChildren() + "}";

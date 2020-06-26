@@ -19,11 +19,6 @@ public abstract class PhpMulNode extends PhpBinaryNode {
         return left * right;
     }
 
-    @Specialization
-    protected Object multiply(Object left, Object right) {
-        throw new UnsupportedOperationException();
-    }
-
     @Override
     public String toString() {
         return "PhpMulNode{" + toStringChildren() + "}";

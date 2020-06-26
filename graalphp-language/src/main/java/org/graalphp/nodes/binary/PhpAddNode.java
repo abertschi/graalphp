@@ -19,12 +19,6 @@ public abstract class PhpAddNode extends PhpBinaryNode {
         return left + right;
     }
 
-    // slow track
-    @Specialization()
-    protected Object add(Object left, Object right) {
-        throw new UnsupportedOperationException("Addition of objects not implemented");
-    }
-
     @Override
     public String toString() {
         return "PhpAddNode{" + toStringChildren() + "}";
