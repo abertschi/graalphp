@@ -23,21 +23,21 @@ public abstract class WriteLocalVarNode extends PhpExprNode {
     protected abstract FrameSlot getSlot();
 
     @Specialization(guards = "isSlotBoolOrIllegal(frame)")
-    public boolean writeBool(VirtualFrame frame, boolean val) {
+    protected boolean writeBool(VirtualFrame frame, boolean val) {
         frame.getFrameDescriptor().setFrameSlotKind(getSlot(), FrameSlotKind.Boolean);
         frame.setBoolean(getSlot(), val);
         return val;
     }
 
     @Specialization(guards = "isSlotLongOrIllegal(frame)")
-    public long writeLong(VirtualFrame frame, long value) {
+    protected long writeLong(VirtualFrame frame, long value) {
         frame.getFrameDescriptor().setFrameSlotKind(getSlot(), FrameSlotKind.Long);
         frame.setLong(getSlot(), value);
         return value;
     }
 
     @Specialization(guards = "isSlotDoubleOrIllegal(frame)")
-    public double writeDouble(VirtualFrame frame, double val) {
+    protected double writeDouble(VirtualFrame frame, double val) {
         frame.getFrameDescriptor().setFrameSlotKind(getSlot(), FrameSlotKind.Double);
         frame.setDouble(getSlot(), val);
         return val;
@@ -45,7 +45,7 @@ public abstract class WriteLocalVarNode extends PhpExprNode {
 
     // XXX: evaluate if we should keep the specializations, or use replace
     @Specialization(replaces = {"writeLong", "writeBool", "writeDouble"})
-    public Object write(VirtualFrame frame, Object value) {
+    protected Object write(VirtualFrame frame, Object value) {
         frame.getFrameDescriptor().setFrameSlotKind(getSlot(), FrameSlotKind.Object);
         frame.setObject(getSlot(), value);
         return value;
