@@ -17,7 +17,6 @@ import java.util.List;
 public final class PhpForWhileNode extends PhpStmtNode {
 
     @Child
-    // may be null if not init clause
     private PhpStmtNode initNode;
 
     @Child
@@ -28,12 +27,10 @@ public final class PhpForWhileNode extends PhpStmtNode {
                            List<PhpExprNode> updaters,
                            List<PhpStmtNode> loopBody) {
 
-        if (inits.size() > 0) {
-            this.initNode = new ExprGroupNode(inits);
-        }
-
+        this.initNode = new ExprGroupNode(inits);
         PhpExprNode condition = PhpConvertToBooleanNodeGen.create(new ExprGroupNode(conditions));
         PhpStmtNode updater = new ExprGroupNode(updaters);
+
         LinkedList<PhpStmtNode> bodyStmts = new LinkedList<>(loopBody);
         bodyStmts.add(updater);
 
@@ -42,9 +39,7 @@ public final class PhpForWhileNode extends PhpStmtNode {
     }
 
     public void executeVoid(VirtualFrame frame) {
-        if (initNode != null){
-            initNode.executeVoid(frame);
-        }
+        initNode.executeVoid(frame);
         whileNode.executeVoid(frame);
     }
 }

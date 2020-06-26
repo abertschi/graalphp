@@ -2,6 +2,7 @@ package org.graalphp.nodes.controlflow;
 
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.NodeInfo;
+import com.oracle.truffle.api.profiles.BranchProfile;
 import org.graalphp.nodes.PhpExprNode;
 import org.graalphp.nodes.PhpStmtNode;
 
@@ -16,6 +17,9 @@ public final class PhpDoWhileNode extends PhpStmtNode {
 
     @Child
     private PhpWhileNode whileNode;
+
+    private final BranchProfile continueTaken = BranchProfile.create();
+    private final BranchProfile breakTaken = BranchProfile.create();
 
     public PhpDoWhileNode(PhpStmtNode body, PhpExprNode condition) {
         // XXX: can we store the same instance in two child fields?
@@ -32,8 +36,10 @@ public final class PhpDoWhileNode extends PhpStmtNode {
         try {
             body.executeVoid(frame);
         } catch (PhpBreakException e) {
+            breakTaken.enter();
             return;
         } catch (PhpContinueException e) {
+            continueTaken.enter();
             // continue
         }
         whileNode.executeVoid(frame);

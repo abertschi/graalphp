@@ -151,3 +151,151 @@ computation time us: 20512
 computation time ms: 20
 total us: 1367062
 #+END_SRC
+
+* Specializations in read/write local vars
+#+begin_src text
+ ./run.py                                    ±[●●][feature/benchmark-initial]
+2020-06-26 17:47:15.581753
+=================================
++ benchmark for php
++ script: /home/b/beandata/pgm-eth/eth-s08-ba-graalphp/graalphp-public/benchmarks/simple/fib/fib-cold.php
+
+
+result value: 3524578
+result in ns 98194837
+result in us 98194.837
+result in ms 98.194837
+total us: 105995
+=================================
++ benchmark for php
++ script: /home/b/beandata/pgm-eth/eth-s08-ba-graalphp/graalphp-public/benchmarks/simple/fib/fib.php
+
+
+result value: 3524578
+result in ns 98375092
+result in us 98375.092
+result in ms 98.375092
+total us: 2859452
+=================================
++ benchmark for /home/b/beandata-pgm-eth/eth-s08-ba-graalphp/graalphp-public/graalphp
++ script: /home/b/beandata/pgm-eth/eth-s08-ba-graalphp/graalphp-public/benchmarks/simple/fib/fib.graalphp
+
+
++ /home/b/tools/graalvm/bin/java -Dtruffle.class.path.append=/home/b/beandata/pgm-eth/eth-s08-ba-graalphp/graalphp-public/graalphp-language/target/graalphp.jar -cp /home/b/beandata/pgm-eth/eth-s08-ba-graalphp/graalphp-public/graalphp-launcher/target/graalphp-launcher-20.0.0-SNAPSHOT.jar org.graalphp.launcher.GraalPhpMain /home/b/beandata/pgm-eth/eth-s08-ba-graalphp/graalphp-public/benchmarks/simple/fib/fib.graalphp
+3524578
+155862292
+155862.292
+155.862292
++ set +x
+total us: 5284194
+=================================
++ benchmark for /home/b/beandata-pgm-eth/eth-s08-ba-graalphp/graalphp-public/graalphp
++ script: /home/b/beandata/pgm-eth/eth-s08-ba-graalphp/graalphp-public/benchmarks/simple/fib/fib-cold.graalphp
+
+
++ /home/b/tools/graalvm/bin/java -Dtruffle.class.path.append=/home/b/beandata/pgm-eth/eth-s08-ba-graalphp/graalphp-public/graalphp-language/target/graalphp.jar -cp /home/b/beandata/pgm-eth/eth-s08-ba-graalphp/graalphp-public/graalphp-launcher/target/graalphp-launcher-20.0.0-SNAPSHOT.jar org.graalphp.launcher.GraalPhpMain /home/b/beandata/pgm-eth/eth-s08-ba-graalphp/graalphp-public/benchmarks/simple/fib/fib-cold.graalphp
+3524578
+330414501
+330414.501
+330.414501
++ set +x
+total us: 730642
+=================================
++ benchmark for /home/b/beandata/pgm-eth/eth-s08-ba-graalphp/projects/simplelanguage/sl
++ script: /home/b/beandata/pgm-eth/eth-s08-ba-graalphp/graalphp-public/benchmarks/simple/fib/fib-cold.sl
+
+
+20.0.0
+== running on org.graalvm.polyglot.Engine@7791a895
+3524578
+computation time ns: 204001105
+computation time us: 204001
+computation time ms: 204
+total us: 655262
+=================================
++ benchmark for /home/b/beandata/pgm-eth/eth-s08-ba-graalphp/projects/simplelanguage/sl
++ script: /home/b/beandata/pgm-eth/eth-s08-ba-graalphp/graalphp-public/benchmarks/simple/fib/fib.sl
+
+
+20.0.0
+== running on org.graalvm.polyglot.Engine@7791a895
+3524578
+computation time ns: 22142575
+computation time us: 22142
+computation time ms: 22
+total us: 1405759
+#+end_src
+
+* Branch Profiling
+#+begin_src text
+~/.../benchmarks/simple >>> ./run.py                                   ±[A2●][feature/benchmark-initial]
+2020-06-26 18:12:43.778753
+=================================
++ benchmark for php
++ script: /home/b/beandata/pgm-eth/eth-s08-ba-graalphp/graalphp-public/benchmarks/simple/fib/fib-cold.php
+
+
+result value: 3524578
+result in ns 97779926
+result in us 97779.926
+result in ms 97.779926
+total us: 105556
+=================================
++ benchmark for php
++ script: /home/b/beandata/pgm-eth/eth-s08-ba-graalphp/graalphp-public/benchmarks/simple/fib/fib.php
+
+
+result value: 3524578
+result in ns 98559005
+result in us 98559.005
+result in ms 98.559005
+total us: 2854554
+=================================
++ benchmark for /home/b/beandata-pgm-eth/eth-s08-ba-graalphp/graalphp-public/graalphp
++ script: /home/b/beandata/pgm-eth/eth-s08-ba-graalphp/graalphp-public/benchmarks/simple/fib/fib.graalphp
+
+
++ /home/b/tools/graalvm/bin/java -Dtruffle.class.path.append=/home/b/beandata/pgm-eth/eth-s08-ba-graalphp/graalphp-public/graalphp-language/target/graalphp.jar -cp /home/b/beandata/pgm-eth/eth-s08-ba-graalphp/graalphp-public/graalphp-launcher/target/graalphp-launcher-20.0.0-SNAPSHOT.jar org.graalphp.launcher.GraalPhpMain /home/b/beandata/pgm-eth/eth-s08-ba-graalphp/graalphp-public/benchmarks/simple/fib/fib.graalphp
+3524578
+159097527
+159097.527
+159.097527
++ set +x
+total us: 5212604
+=================================
++ benchmark for /home/b/beandata-pgm-eth/eth-s08-ba-graalphp/graalphp-public/graalphp
++ script: /home/b/beandata/pgm-eth/eth-s08-ba-graalphp/graalphp-public/benchmarks/simple/fib/fib-cold.graalphp
+
+
++ /home/b/tools/graalvm/bin/java -Dtruffle.class.path.append=/home/b/beandata/pgm-eth/eth-s08-ba-graalphp/graalphp-public/graalphp-language/target/graalphp.jar -cp /home/b/beandata/pgm-eth/eth-s08-ba-graalphp/graalphp-public/graalphp-launcher/target/graalphp-launcher-20.0.0-SNAPSHOT.jar org.graalphp.launcher.GraalPhpMain /home/b/beandata/pgm-eth/eth-s08-ba-graalphp/graalphp-public/benchmarks/simple/fib/fib-cold.graalphp
+3524578
+308291869
+308291.869
+308.291869
++ set +x
+total us: 711790
+=================================
++ benchmark for /home/b/beandata/pgm-eth/eth-s08-ba-graalphp/projects/simplelanguage/sl
++ script: /home/b/beandata/pgm-eth/eth-s08-ba-graalphp/graalphp-public/benchmarks/simple/fib/fib-cold.sl
+
+
+20.0.0
+== running on org.graalvm.polyglot.Engine@3a5ed7a6
+3524578
+computation time ns: 201515149
+computation time us: 201515
+computation time ms: 201
+total us: 646484
+=================================
++ benchmark for /home/b/beandata/pgm-eth/eth-s08-ba-graalphp/projects/simplelanguage/sl
++ script: /home/b/beandata/pgm-eth/eth-s08-ba-graalphp/graalphp-public/benchmarks/simple/fib/fib.sl
+
+
+20.0.0
+== running on org.graalvm.polyglot.Engine@3a5ed7a6
+3524578
+computation time ns: 23238368
+computation time us: 23238
+computation time ms: 23
+total us: 1316513
+#+end_src

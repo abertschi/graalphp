@@ -1,6 +1,7 @@
 package org.graalphp.nodes.localvar;
 
 import com.oracle.truffle.api.frame.VirtualFrame;
+import com.oracle.truffle.api.profiles.BranchProfile;
 import org.graalphp.nodes.PhpExprNode;
 
 /**
@@ -16,12 +17,15 @@ public final class ReadArgNode extends PhpExprNode {
         this.index = index;
     }
 
+    private final BranchProfile invalidArgumentProfile = BranchProfile.create();
+
     @Override
     public Object executeGeneric(VirtualFrame frame) {
         Object[] args = frame.getArguments();
         if (index < args.length) {
             return args[index];
         } else {
+            invalidArgumentProfile.enter();
             // TODO: we throw exception in strict mode
             throw new UnsupportedOperationException("invalid argument count given");
         }

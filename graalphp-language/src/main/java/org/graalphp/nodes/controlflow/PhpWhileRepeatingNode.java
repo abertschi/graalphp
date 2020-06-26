@@ -4,6 +4,7 @@ import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.nodes.RepeatingNode;
 import com.oracle.truffle.api.nodes.UnexpectedResultException;
+import com.oracle.truffle.api.profiles.BranchProfile;
 import org.graalphp.exception.PhpException;
 import org.graalphp.nodes.PhpStmtNode;
 import org.graalphp.nodes.unary.PhpConvertToBooleanNode;
@@ -15,7 +16,8 @@ import org.graalphp.nodes.unary.PhpConvertToBooleanNode;
  */
 public final class PhpWhileRepeatingNode extends Node implements RepeatingNode {
 
-    // TODO: add branch profiling
+    private final BranchProfile continueTaken = BranchProfile.create();
+    private final BranchProfile breakTaken = BranchProfile.create();
 
     @Child
     private PhpConvertToBooleanNode conditionNode;
@@ -32,6 +34,7 @@ public final class PhpWhileRepeatingNode extends Node implements RepeatingNode {
     @Override
     public boolean executeRepeating(VirtualFrame frame) {
         if (!evaluateCondition(frame)) {
+            // XXX: do we need profiling here or is it already applied by truffle?
             // exit loop
             return false;
         }
@@ -39,8 +42,10 @@ public final class PhpWhileRepeatingNode extends Node implements RepeatingNode {
             bodyNode.executeVoid(frame);
             return true;
         } catch (PhpBreakException e) {
+            breakTaken.enter();
             return false;
         } catch (PhpContinueException e) {
+            continueTaken.enter();
             return true;
         }
     }
