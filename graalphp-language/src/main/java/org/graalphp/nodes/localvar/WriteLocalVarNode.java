@@ -43,6 +43,7 @@ public abstract class WriteLocalVarNode extends PhpExprNode {
         return val;
     }
 
+    // XXX: evaluate if we should keep the specializations, or use replace
     @Specialization(replaces = {"writeLong", "writeBool", "writeDouble"})
     public Object write(VirtualFrame frame, Object value) {
         frame.getFrameDescriptor().setFrameSlotKind(getSlot(), FrameSlotKind.Object);
