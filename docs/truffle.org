@@ -105,3 +105,6 @@ themselves, and the compiler treats them specially.
 * Control Flow Exceptions
 - overwrite stacktrace generation: more lightweight
 - if graal sees throw and catch blow it can simply overflow
+* Library
+- good introduction :: https://github.com/oracle/graal/blob/master/truffle/docs/TruffleLibraries.md
+- question to solve :: how to impl. write and changing of implementation if no longer suitable
