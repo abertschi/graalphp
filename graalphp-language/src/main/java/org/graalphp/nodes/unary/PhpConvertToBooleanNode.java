@@ -1,7 +1,6 @@
 package org.graalphp.nodes.unary;
 
 import com.oracle.truffle.api.dsl.Specialization;
-import org.graalphp.exception.PhpTypeError;
 import org.graalphp.nodes.PhpExprNode;
 
 /**
@@ -21,23 +20,18 @@ public abstract class PhpConvertToBooleanNode extends PhpUnaryNode {
     }
 
     @Specialization
-    boolean doBoolean(boolean val) {
+    protected boolean doBoolean(boolean val) {
         return val;
     }
 
     @Specialization
-    boolean doLong(long val) {
+    protected boolean doLong(long val) {
         return val != 0;
     }
 
     @Specialization
-    boolean doDouble(double val) {
+    protected boolean doDouble(double val) {
         return val != 0.0;
-    }
-
-    @Specialization
-    boolean doGeneric(Object o) {
-        throw new PhpTypeError("Type error, cannot convert " + o + " to boolean", this);
     }
 
     @Override
