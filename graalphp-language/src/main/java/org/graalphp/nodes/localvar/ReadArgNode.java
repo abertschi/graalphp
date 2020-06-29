@@ -11,7 +11,7 @@ import org.graalphp.nodes.PhpExprNode;
  */
 public final class ReadArgNode extends PhpExprNode {
 
-    private int index;
+    private final int index;
 
     public ReadArgNode(int index) {
         this.index = index;
