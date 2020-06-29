@@ -20,10 +20,6 @@ $ export JAVA_HOME=/path/to/graalvm
 $ export GRAALPHP_BUILD_NATIVE="true"
 $ ./tools/build-local.sh
 ```
-
-### Status of Implemented Feature Set
-- see [PHP Language Specification](./docs/spec/lang-spec.org) at ./docs/specs/
-
 ### Benchmarks
 - Performance is going to be evaluated based on benchmarks by [The Computer Language
 Benchmarks Game](https://benchmarksgame-team.pages.debian.net/benchmarksgame/index.html)
