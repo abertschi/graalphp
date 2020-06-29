@@ -123,6 +123,7 @@ public class ExecuteValuesNode extends OzNode {
 currently no need to support this
 ** TODO Conditional Functions
 which are only active once execution flow reaches that part
+** What happens to arrays if they are passed by value
 * Design Noes
 ** Integer
 - implemented as java long type
@@ -164,3 +165,19 @@ Psy Shell v0.9.12 (PHP 7.4.6 — cli) by Justin Hileman
 => 7
 >>> (int) 5.99999999999999955 +
 #+end_src
+
+* Remaining Features
+** Benchmarks to use
+- binarytrees.php-1.php (bintree)
+- fannkuchredux.php-1.php (fannk)  
+** TODO access argv array (fannk)
+** TODO Introduce strings
+- implement printf (fannk)
+** TODO Implement Arrays
+- Implement 1D arrays with integer (fannk)
+  - array(val1, val) (fannk)
+  - list(name1, name2) = array (fannk)
+** TODO Implement Classes
+- New operator (bintree)
+- public attributes  bintree)
+  
