@@ -59,6 +59,28 @@ A materialized frame can escape compilation unit and is thus slower than a virtu
 #+end_src    
 ** TODO How can we pass a var arg of exprNodes to a node which uses NodeChild(args)
 and is abstract?
+** Do we need to add a class to the typesystem of truffle in order to use it in @NodeChild?
+#+begin_src java
+abstract class ExpressionNode extends Node {
+    abstract Object execute(VirtualFrame frame);
+}
+
+@NodeChild @NodeChild
+abstract class ArrayReadNode extends ExpressionNode {
+
+    @Specialization
+    int doBuffer(BufferArray array, int index) {
+        return array.buffer[index];
+    }
+
+    @Specialization
+    int doSequence(SequenceArray seq, int index) {
+        return seq.start + seq.stride * index;
+    }
+}
+#+end_src
+- nodechild are of type node, which are executed
+- does their value need to be added to typesystem?
 
 * Optimizations
 ** TODO See if specialisation for shift instead of div by 2 brings performance

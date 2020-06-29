@@ -1,4 +1,4 @@
-;; -*- mode: org;  fill-column: 80; -*-
+## -*- coding: utf-8;mode: org; fill-column: 80; -*- ## This file is best viewed with GNU Emacs Org-mode: http://orgmode.org/
 #+SEQ_TODO: TODO USE OPTIONAL | IMPLEMENTED CANCELLED DEFERRED
 
 * USE Feature set for fannkuchredux.php-1.php
@@ -29,7 +29,7 @@
   - [X] != operator
   - [X] * operator
   - [X] + operator
-      
+
 * USE Feature set for binarytrees.php-1.php
 :properties:
 :file: [[file:binarytrees.php-1.php][file:binarytrees.php-1.php]]
@@ -62,7 +62,12 @@
   - [ ] >>= operator
   - [ ] += operator
 - [X] addition of numbers
-- [ ] 
+
+
+** NOTE binarytrees.php-3.php does not use classes
+- uses 2D arrays instead
+-
+
 
 * USE Feature set for spectralnorm.php-2.php
 :properties:
@@ -97,36 +102,3 @@
   - [ ] sqrt
 - [ ] printf with string val
 
-
-* OPTIONAL Feature set for nbody.php-3.php
-** $pairs[] = array(&$bodies[$i], &$bodies[$j]);
-- complicated to implement
-** Features
-- [-] functions
-  - [ ] invocation
-  - [ ] pass by reference of array
-  - [X] return number
-- [ ] builtins
-  - [ ] sizeof()
-  - [ ] sqrt()
-- [ ] arrays
-  - [ ] array(val) keyword
-  - [ ] array of double
-  - [ ] array of arrays
-    - [ ] 1D is of type array of double
-    - [ ] 2D is of type array of double
-  - [ ] $arr[index][index]
-- [ ] argv[] access
-- [ ] for each loop ($array as &$a)
-  - [ ] $a is an array
-- [X] do while
-- [-] unary/ binary operators
-  - [ ] ++
-  - [ ] +=
-  - [ ] -=
-  - [X] +
-  - [X] -
-  - [X] *
-  - [X] /
-- [ ] strings
-  - [ ] printf(string)
