@@ -1,0 +1,109 @@
+* Features relevant for benchmarks
+- classes
+  - public attributes
+  - write object attributes
+  - read object attributes
+  - new operator
+- non-polymorphic functions
+  - function arguments
+  - return from functions
+  - function invocation
+  - default arguments
+  - argument by reference ? Do we really want to implement this (hack dropped it)
+- variables
+  - global variables
+  - function local variables
+- if/ else
+- if/ else short form
+- for loop
+- foreach with key => val
+- foreach with reference
+- do while loop
+- break out of loop
+- access argv/ argc
+- arrays
+  - argv
+  - nested arrays
+- binary operations
+  - shift left
+  - shift right
+  - equals (==)
+  - short hand >>=
+  - triple equals (===)
+  - addition
+  - subtraction
+  - multiplication
+  - division
+  - modulo
+  - ++, --
+- built in functions
+  - max
+  - printf
+  - unset
+  - global
+  - sqrt
+  - count
+  - list
+
+* Overview of Benchmarks
+** binarytrees.php-1.php
+- https://benchmarksgame-team.pages.debian.net/benchmarksgame/program/binarytrees-php-1.html
+- php -n -d memory_limit=4096M binarytrees.php 21 (increase memory
+  limit due to too low default)
+*** comments
+- argc/ argc
+- Classes
+- printf
+- unset of variables
+- bit shifting
+
+** nbody.php-3.php
+- https://benchmarksgame-team.pages.debian.net/benchmarksgame/program/nbody-php-3.html
+- php nbody.php-3.php 50000000
+*** comments
+- ob_implicit_flush(1);
+- ob_start(NULL, 4096);
+- array(), argv[], printf(), sqrt()
+
+** fannkuchredux.php-1.php
+- https://benchmarksgame-team.pages.debian.net/benchmarksgame/program/fannkuchredux-php-1.html
+- php -n fannkuchredux.php-1.php 12
+*** comments
+- array()
+- list():  Assign variables as if they were an array
+- printf
+- argv
+
+* More Benchmarks
+** spectralnorm.php-2.php
+- https://benchmarksgame-team.pages.debian.net/benchmarksgame/program/spectralnorm-php-2.html
+- php -n spectralnorm.php-2.php 5500
+*** comments
+- intval() - check if integer
+- argv/ argc
+- array_fill()
+- printf()
+
+** fasta.php-2.php
+- https://benchmarksgame-team.pages.debian.net/benchmarksgame/program/fasta-php-3.html
+*** comments
+- define()
+- gen_random()
+- sizeof()
+- 2d arrays
+- printf
+- strlen
+- argc/ argv
+
+** fasta.php-3.php
+- https://benchmarksgame-team.pages.debian.net/benchmarksgame/program/fasta-php-3.html
+- php fasta.php-3.php 25000000
+*** comments
+- ob_implicit_flush(1): Turn implicit flush on/off
+- ob_start: Turn on output buffering
+- str_repeat
+- global keyword
+- array_fill: Fill an array with values
+- strlen
+- printf
+- argc/ argv

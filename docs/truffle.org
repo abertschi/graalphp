@@ -86,7 +86,9 @@ themselves, and the compiler treats them specially.
 * Returning from Functions (truffle way)
 - Throw control flow exception, dont fill stacktrace for performance
 
-  
+* transferToInterpreterAndInvalidate  
+- replace subsequent code with jump to a deoptimized routine transfering the
+  execution back to interpreter
 * CompilerDirectives.transferToInterpreter()
 - ensures code is not included in compilation
 - 

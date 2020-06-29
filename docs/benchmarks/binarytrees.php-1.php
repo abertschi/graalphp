@@ -58,5 +58,4 @@ do
 }
 while($minDepth <= $maxDepth);
 
-printf("long lived tree of depth %d\t check: %d\n",
-$maxDepth, itemCheck($longLivedTree));
+printf("long lived tree of depth %d\t check: %d\n", $maxDepth, itemCheck($longLivedTree));

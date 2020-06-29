@@ -1,144 +1,132 @@
-* Benchmarks to choose
-- binarytrees.php-1.php
-  - has no reference operator
-  - classes
-- fannkuchredux.php-1.php
-  - has no reference operator
-* Features relevant for benchmarks
-- [ ] classes
-  - [ ] public attributes
-  - [ ] write object attributes
-  - [ ] read object attributes
-  - [ ] new operator
-- [-] non-polymorphic functions
-  - [X] function arguments
-  - [X] return from functions
-  - [X] function invocation
-  - [ ] default arguments
-  - [ ] argument by reference ? Do we really want to implement this (hack dropped it)
-- [-] variables
-  - [ ] global variables
-  - [X] function local variables
-- [ ] if/ else
-- [ ] if/ else short form
-- [ ] for loop
-- [ ] foreach with key => val
-- [ ] foreach with reference
-- [ ] do while loop
-- [ ] break out of loop
-- [ ] access argv/ argc
+;; -*- mode: org;  fill-column: 80; -*-
+#+SEQ_TODO: TODO USE OPTIONAL | IMPLEMENTED CANCELLED DEFERRED
+
+* USE Feature set for fannkuchredux.php-1.php
+:properties:
+:file: [[file:fannkuchredux.php-1.php][file:fannkuchredux.php-1.php]]
+:url: https://benchmarksgame-team.pages.debian.net/benchmarksgame/program/fannkuchredux-php-1.html
+:end:
+- [-] Function invocations
+  - [X] pass number to function
+  - [ ] return array from function
+- [X] integer variables
 - [ ] arrays
-  - [ ] argv
-  - [ ] nested arrays
-- [-] binary operations
-  - [ ] shift left
-  - [ ] shift right
-  - [ ] equals (==)
-  - [ ] short hand >>=
-  - [ ] triple equals (===)
-  - [X] addition
-  - [X] subtraction
-  - [X] multiplication
-  - [X] division
-  - [ ] modulo
-  - [ ] ++, --
-- [ ] built in functions
-  - [ ] max
-  - [ ] printf
-  - [ ] unset
-  - [ ] global
+  - [ ] integer arrays
+  - [ ] array();
+  - [ ] array(val1, val2)
+  - [ ] array access by index $arr[ind]
+  - [ ] array write by index $arr[ind] = val
+  - [ ] access argv
+- [X] for loop
+- [X] do while loop
+- [X] break
+- [ ] strings in printf
+- [ ] list builtin
+- [-] Arithmetic/ logical operations
+  - [ ] -- operator
+  - [ ] ++ operator
+  - [X] < operator
+  - [X] != operator
+  - [X] * operator
+  - [X] + operator
+      
+* USE Feature set for binarytrees.php-1.php
+:properties:
+:file: [[file:binarytrees.php-1.php][file:binarytrees.php-1.php]]
+:url: https://benchmarksgame-team.pages.debian.net/benchmarksgame/program/binarytrees-php-1.html
+:end:
+
+- [-] function definition
+  - [X] integer argument
+  - [ ] return an object
+- [ ] objects
+  - [ ] new Obj()
+  - [ ] Public attributes
+  - [ ] object->attibute access
+  - [ ] object->attribute assign
+  - [ ] obj->obj->attribute
+- [ ] (cond ? val1: val2) syntax
+- [ ] access argc
+- [ ] arrays
+  - [ ] access argv
+- [ ] max builtin
+- [ ] strings
+  - [ ] printf(string, args)
+- [ ] unset $var (however, not used functionally)
+- [X] for while
+- [X] do while
+- [-] Arithmetic/ logical operations
+  - [X] ! operator
+  - [ ] -- operator
+  - [ ] === operator
+  - [ ] >>= operator
+  - [ ] += operator
+- [X] addition of numbers
+- [ ] 
+
+* USE Feature set for spectralnorm.php-2.php
+:properties:
+:file: [[file:spectralnorm.php-2.php][file:spectralnorm.php-2.php]]
+:url: https://benchmarksgame-team.pages.debian.net/benchmarksgame/program/spectralnorm-php-2.html
+:end:
+
+- [ ] global variables
+- [-] functions
+  - [X] invocation
+  - [ ] pass by reference
+    - [ ] arrays
+    - [ ] integer
+    - [ ] does not assign value, only read
+- [ ] arrays
+  - [ ] $A[ind] = val
+  - [ ] array_fill
+- [-] arithmetic/ logical ops
+  - [ ] >>
+  - [X] +
+  - [X] /
+  - [ ] ++
+- [X] for loop
+- [ ] for each ($v as $key => $val)
+- [ ] for each ($v as $val)
+  - [ ] $v is array
+- [ ] argc
+- [ ] argv[] integer only
+- [ ] builtins
+  - [ ] intval
+  - [ ] array_fill(int, int, double)
   - [ ] sqrt
-  - [ ] count
-  - [ ] list
+- [ ] printf with string val
 
 
-- functions calls with args
-- global variables
-- if, else
-- return out of functions
-- equality test with ===
-- syntax sugar for if else with ?, :
-- printf
-- do while
-- for while
-- while
-- foreach
-- global
-- unset variables
-- arrays
-- array access with variables as index
-- array of arrays
-- list function
-- argv, argc
-- defines
-- string concatination
-- float numbers in in notation to the power of 10
-- OO
-  - Classes
-  - public attributes
-  - access attributes of objects
-
-
-* Benchmarks
-** binarytrees.php-1.php
-- https://benchmarksgame-team.pages.debian.net/benchmarksgame/program/binarytrees-php-1.html
-- php -n -d memory_limit=4096M binarytrees.php 21 (increase memory
-  limit due to too low default)
-*** comments
-- argc/ argc
-- Classes
-- printf
-- unset of variables
-- bit shifting
-
-** nbody.php-3.php
-- https://benchmarksgame-team.pages.debian.net/benchmarksgame/program/nbody-php-3.html
-- php nbody.php-3.php 50000000
-*** comments
-- ob_implicit_flush(1);
-- ob_start(NULL, 4096);
-- array(), argv[], printf(), sqrt()
-
-** fannkuchredux.php-1.php
-- https://benchmarksgame-team.pages.debian.net/benchmarksgame/program/fannkuchredux-php-1.html
-- php -n fannkuchredux.php-1.php 12
-*** comments
-- array()
-- list():  Assign variables as if they were an array
-- printf
-- argv
-
-* More Benchmarks
-** spectralnorm.php-2.php
-- https://benchmarksgame-team.pages.debian.net/benchmarksgame/program/spectralnorm-php-2.html
-- php -n spectralnorm.php-2.php 5500
-*** comments
-- intval() - check if integer
-- argv/ argc
-- array_fill()
-- printf()
-
-
-** fasta.php-2.php
-- https://benchmarksgame-team.pages.debian.net/benchmarksgame/program/fasta-php-3.html
-*** comments
-- define()
-- gen_random()
-- sizeof()
-- 2d arrays
-- printf
-- strlen
-- argc/ argv
-
-** fasta.php-3.php
-- https://benchmarksgame-team.pages.debian.net/benchmarksgame/program/fasta-php-3.html
-- php fasta.php-3.php 25000000
-*** comments
-- ob_implicit_flush(1): Turn implicit flush on/off
-- ob_start: Turn on output buffering
-- str_repeat
-- global keyword
-- array_fill: Fill an array with values
-- strlen
-- printf
-- argc/ argv
+* OPTIONAL Feature set for nbody.php-3.php
+** $pairs[] = array(&$bodies[$i], &$bodies[$j]);
+- complicated to implement
+** Features
+- [-] functions
+  - [ ] invocation
+  - [ ] pass by reference of array
+  - [X] return number
+- [ ] builtins
+  - [ ] sizeof()
+  - [ ] sqrt()
+- [ ] arrays
+  - [ ] array(val) keyword
+  - [ ] array of double
+  - [ ] array of arrays
+    - [ ] 1D is of type array of double
+    - [ ] 2D is of type array of double
+  - [ ] $arr[index][index]
+- [ ] argv[] access
+- [ ] for each loop ($array as &$a)
+  - [ ] $a is an array
+- [X] do while
+- [-] unary/ binary operators
+  - [ ] ++
+  - [ ] +=
+  - [ ] -=
+  - [X] +
+  - [X] -
+  - [X] *
+  - [X] /
+- [ ] strings
+  - [ ] printf(string)
