@@ -1,4 +1,4 @@
-;; -*- mode: org;  fill-column: 80; -*-
+## -*- coding: utf-8;mode: org; fill-column: 80; -*- ## This file is best viewed with GNU Emacs Org-mode: http://orgmode.org/
 #+SEQ_TODO: TODO USE OPTIONAL | IMPLEMENTED CANCELLED DEFERRED
 
 * USE Feature set for fannkuchredux.php-1.php
