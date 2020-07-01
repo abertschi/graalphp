@@ -8,37 +8,38 @@ if ($a < 2) {
 }
 }
 
-fib(32);
-fib(32);
-fib(32);
-fib(32);
-fib(32);
-fib(32);
-fib(32);
-fib(32);
-fib(32);
-fib(32);
-fib(32);
-fib(32);
-fib(32);
-fib(32);
-fib(32);
-fib(32);
-fib(32);
-fib(32);
-fib(32);
-fib(32);
-fib(32);
-fib(32);
-fib(32);
-fib(32);
-fib(32);
-fib(32);
-fib(32);
-fib(32);
+$n = 35;
+fib($n);
+fib($n);
+fib($n);
+fib($n);
+fib($n);
+fib($n);
+fib($n);
+fib($n);
+fib($n);
+fib($n);
+fib($n);
+fib($n);
+fib($n);
+fib($n);
+fib($n);
+fib($n);
+fib($n);
+fib($n);
+fib($n);
+fib($n);
+fib($n);
+fib($n);
+fib($n);
+fib($n);
+fib($n);
+fib($n);
+fib($n);
+fib($n);
 
 $start=hrtime(true); // ns 
-$val = fib(32);
+$val = fib($n);
 $stop = hrtime(true);
 
 echo "result value: " . $val . "\n";

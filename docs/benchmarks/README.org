@@ -63,7 +63,6 @@
   - [ ] += operator
 - [X] addition of numbers
 
-
 ** NOTE binarytrees.php-3.php does not use classes
 - uses 2D arrays instead
 -

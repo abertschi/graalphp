@@ -8,9 +8,9 @@ if ($a < 2) {
 }
 }
 
-
+$n = 35;
 $start=hrtime(true); // ns 
-$val = fib(32);
+$val = fib($n);
 $stop = hrtime(true);
 
 echo "result value: " . $val . "\n";
