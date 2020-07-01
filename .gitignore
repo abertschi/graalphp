@@ -28,3 +28,4 @@ graalphp-native/graalphp-native
 graalvm.tar.gz
 .#*
 /graalphp-parser/org.eclipse.php.core.parser/lib/jflex-1.6.1.zip
+graal_dumps

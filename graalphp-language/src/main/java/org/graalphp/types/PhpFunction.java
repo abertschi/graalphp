@@ -1,8 +1,10 @@
 package org.graalphp.types;
 
+import com.oracle.truffle.api.Assumption;
 import com.oracle.truffle.api.RootCallTarget;
 import com.oracle.truffle.api.Truffle;
 import com.oracle.truffle.api.interop.TruffleObject;
+import com.oracle.truffle.api.utilities.CyclicAssumption;
 import org.graalphp.PhpLanguage;
 import org.graalphp.nodes.function.UndefFunctionRootNode;
 import org.graalphp.parser.ParseScope;
@@ -25,6 +27,8 @@ public final class PhpFunction implements TruffleObject {
 
     private ParseScope scope;
 
+    private final CyclicAssumption callTargetStable;
+
     // is true if target is set properly
     private boolean init;
 
@@ -33,6 +37,7 @@ public final class PhpFunction implements TruffleObject {
         this.scope = scope;
         this.target = target;
         this.init = true;
+        this.callTargetStable = new CyclicAssumption(name);
     }
 
     public PhpFunction(PhpLanguage lang, String name) {
@@ -40,6 +45,8 @@ public final class PhpFunction implements TruffleObject {
         this.init = false;
         this.name = name;
         this.scope = null;
+        this.callTargetStable = new CyclicAssumption(name);
+
     }
 
     public boolean isInit() {
@@ -47,12 +54,18 @@ public final class PhpFunction implements TruffleObject {
     }
 
     public RootCallTarget getCallTarget() {
-        return target;
+        return this.target;
     }
+
+    public Assumption getCallTargetStable() {
+        return callTargetStable.getAssumption();
+    }
+
 
     public void setCallTarget(RootCallTarget target) {
         this.init = true;
         this.target = target;
+        callTargetStable.invalidate();
     }
 
     public ParseScope getScope() {

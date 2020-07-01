@@ -10,14 +10,14 @@ import org.graalphp.PhpLanguage;
 import java.io.PrintWriter;
 
 /**
- * Prints a value to stdout
+ * Graalphp specific builtin for case in development where no strings are supported yet
  *
  * @author abertschi
  */
-@NodeInfo(shortName = PrintBuiltin.NAME)
-public abstract class PrintBuiltin extends PhpBuiltinNode {
+@NodeInfo(shortName = PrintlnBuiltin.NAME)
+public abstract class PrintlnBuiltin extends PhpBuiltinNode {
 
-    public static final String NAME = "print";
+    public static final String NAME = "println";
 
     @Specialization
     public long doPrintLong(long val, @CachedContext(PhpLanguage.class) PhpContext ctx) {
@@ -33,13 +33,11 @@ public abstract class PrintBuiltin extends PhpBuiltinNode {
 
     @TruffleBoundary
     private static void printLong(PrintWriter out, long value) {
-        out.print(value);
-        out.flush(); // TODO: increase performance
+        out.println(value);
     }
 
     @TruffleBoundary
     private static void printDouble(PrintWriter out, double value) {
-        out.print(value);
-        out.flush(); // TODO: increase performance
+        out.println(value);
     }
 }

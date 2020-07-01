@@ -10,8 +10,7 @@ import com.oracle.truffle.api.dsl.TypeSystem;
 @TypeSystem({
         boolean.class,
         long.class,
-        double.class,
-        PhpFunction.class
+        double.class
 })
 public abstract class PhpTypes {
 

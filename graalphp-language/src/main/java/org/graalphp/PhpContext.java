@@ -6,10 +6,15 @@ import com.oracle.truffle.api.TruffleLanguage;
 import com.oracle.truffle.api.dsl.NodeFactory;
 import com.oracle.truffle.api.frame.FrameDescriptor;
 import org.graalphp.builtins.PhpBuiltinNode;
+import org.graalphp.builtins.PrintBuiltin;
 import org.graalphp.builtins.PrintBuiltinFactory;
+import org.graalphp.builtins.PrintlnBuiltin;
+import org.graalphp.builtins.PrintlnBuiltinFactory;
+import org.graalphp.builtins.TimeNsBuiltin;
+import org.graalphp.builtins.TimeNsBuiltinFactory;
 import org.graalphp.nodes.PhpExprNode;
 import org.graalphp.nodes.function.PhpFunctionRootNode;
-import org.graalphp.nodes.localvar.PhpReadArgNode;
+import org.graalphp.nodes.localvar.ReadArgNode;
 import org.graalphp.parser.ParseScope;
 import org.graalphp.types.PhpFunction;
 
@@ -41,14 +46,16 @@ public final class PhpContext {
     }
 
     private void installBuiltins() {
-        installBuiltin("print", PrintBuiltinFactory.getInstance());
+        installBuiltin(PrintBuiltin.NAME, PrintBuiltinFactory.getInstance());
+        installBuiltin(PrintlnBuiltin.NAME, PrintlnBuiltinFactory.getInstance());
+        installBuiltin(TimeNsBuiltin.NAME, TimeNsBuiltinFactory.getInstance());
     }
 
     public void installBuiltin(String name, NodeFactory<? extends PhpBuiltinNode> factory) {
         final int argCount = factory.getExecutionSignature().size();
         PhpExprNode[] arguments = new PhpExprNode[argCount];
         for (int i = 0; i < argCount; i++) {
-            arguments[i] = new PhpReadArgNode(i);
+            arguments[i] = new ReadArgNode(i);
         }
         PhpBuiltinNode builtin = factory.createNode((Object) arguments);
         FrameDescriptor functionDescriptor = new FrameDescriptor();

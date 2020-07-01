@@ -4,6 +4,7 @@ import com.oracle.truffle.api.CompilerAsserts;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.ExplodeLoop;
 import org.graalphp.nodes.PhpExprNode;
+import org.graalphp.types.PhpNull;
 
 import java.util.List;
 
@@ -32,6 +33,9 @@ public final class ExprGroupNode extends PhpExprNode {
     @ExplodeLoop
     public Object executeGeneric(VirtualFrame frame) {
         CompilerAsserts.partialEvaluationConstant(expressionNodes.length);
+        if (expressionNodes.length == 0) {
+            return PhpNull.SINGLETON;
+        }
         for (int i = 0; i < expressionNodes.length - 1; i++) {
             expressionNodes[i].executeGeneric(frame);
         }

@@ -27,11 +27,6 @@ public abstract class PhpDivNode extends PhpBinaryNode {
         return left / right;
     }
 
-    @Specialization()
-    protected Object div(Object left, Object right) {
-        throw new UnsupportedOperationException();
-    }
-
     @Override
     public String toString() {
         return "PhpDivNode{" + toStringChildren() + "}";

@@ -2,6 +2,7 @@ package org.graalphp.nodes.controlflow;
 
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.UnexpectedResultException;
+import com.oracle.truffle.api.profiles.ConditionProfile;
 import org.graalphp.exception.PhpException;
 import org.graalphp.nodes.PhpExprNode;
 import org.graalphp.nodes.PhpStmtNode;
@@ -22,6 +23,8 @@ public final class PhpIfNode extends PhpStmtNode {
     // XXX: may be null if no else branch
     private PhpStmtNode elseNode;
 
+    private final ConditionProfile condition = ConditionProfile.createCountingProfile();
+
     public PhpIfNode(PhpExprNode condition,
                      PhpStmtNode ifBranch,
                      PhpStmtNode elseBranch) {
@@ -32,9 +35,7 @@ public final class PhpIfNode extends PhpStmtNode {
 
     @Override
     public void executeVoid(VirtualFrame frame) {
-        // TODO: add branch profiling
-
-        if (evaluateCondition(frame)) {
+        if (condition.profile(evaluateCondition(frame))) {
             ifNode.executeVoid(frame);
         } else if (elseNode != null) {
             elseNode.executeVoid(frame);

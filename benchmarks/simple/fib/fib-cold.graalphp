@@ -1,0 +1,22 @@
+<?php
+
+function fib($a) {
+if ($a < 2) {
+  return 1;
+} else {
+return fib($a - 2) + fib($a - 1);
+}
+}
+
+
+$start = graalphp_time_ns();
+$val = fib(32);
+$stop = graalphp_time_ns();
+
+$res = ($stop - $start);
+println ($val);
+println ($res);
+println ($res / 1000.0);
+println ($res / 1000.0 / 1000.0);
+
+?>

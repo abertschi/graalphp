@@ -32,7 +32,7 @@ public final class PhpFunctionLookupNode extends PhpExprNode {
     }
 
     @Override
-    public Object executeGeneric(VirtualFrame frame) {
+    public PhpFunction executeGeneric(VirtualFrame frame) {
         if (function == null) {
             // TODO: we could make this a new type which we execute and expect instead
 

@@ -1,6 +1,7 @@
 package org.graalphp.nodes.function;
 
 import com.oracle.truffle.api.frame.VirtualFrame;
+import com.oracle.truffle.api.profiles.BranchProfile;
 import org.graalphp.nodes.PhpExprNode;
 import org.graalphp.nodes.PhpStmtNode;
 import org.graalphp.nodes.controlflow.PhpReturnException;
@@ -16,7 +17,7 @@ import org.graalphp.types.PhpNull;
  */
 public final class PhpReturnBodyNode extends PhpExprNode {
 
-    // TODO: add branch profiling
+    private final BranchProfile continueTaken = BranchProfile.create();
 
     @Child
     private PhpStmtNode body;
@@ -30,6 +31,7 @@ public final class PhpReturnBodyNode extends PhpExprNode {
         try {
             body.executeVoid(frame);
         } catch(PhpReturnException e){
+            continueTaken.enter();
             return e.getReturnValue();
         }
         return PhpNull.SINGLETON;

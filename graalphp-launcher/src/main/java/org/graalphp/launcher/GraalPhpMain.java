@@ -135,7 +135,7 @@ public final class GraalPhpMain {
 
         try {
             Value result = context.eval(source);
-            out.println(result.toString());
+            // out.println(result.toString());
             return 0;
         } catch (PolyglotException ex) {
             if (ex.isInternalError()) {
