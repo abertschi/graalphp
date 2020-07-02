@@ -3,6 +3,7 @@ package org.graalphp.parser;
 import com.oracle.truffle.api.frame.FrameSlot;
 import com.oracle.truffle.api.frame.FrameSlotKind;
 import org.eclipse.php.core.ast.nodes.ASTNode;
+import org.eclipse.php.core.ast.nodes.ArrayCreation;
 import org.eclipse.php.core.ast.nodes.Assignment;
 import org.eclipse.php.core.ast.nodes.Expression;
 import org.eclipse.php.core.ast.nodes.FunctionInvocation;
@@ -281,4 +282,18 @@ public class ExprVisitor extends HierarchicalVisitor {
         currExpr = invokeNode;
         return false;
     }
+
+    // ---------------- arrays --------------------
+
+    @Override
+    public boolean visit(ArrayCreation arrayCreation) {
+        if (arrayCreation.isHasArrayKey()) {
+            throw new UnsupportedOperationException("Arrays with keys not yet supported");
+        }
+        arrayCreation.elements();
+
+        return false;
+    }
+
+-
 }

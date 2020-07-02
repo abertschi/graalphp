@@ -1,9 +1,12 @@
 package org.graalphp.runtime.array;
 
+import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.dsl.GenerateUncached;
 import com.oracle.truffle.api.dsl.Specialization;
 import com.oracle.truffle.api.library.ExportLibrary;
 import com.oracle.truffle.api.library.ExportMessage;
+
+import java.util.Arrays;
 
 /**
  * @author abertschi
@@ -41,10 +44,21 @@ public class LongArrayLibrary {
     }
 
     @ExportMessage
+    @TruffleBoundary
+    protected static String arrayToString(long[] receiver) {
+        return Arrays.toString(receiver);
+    }
+
+    @ExportMessage
     static class GeneralizeForValue {
         @Specialization
         protected static ArrayAllocator generalizeForValue(long[] receiver, long newValue) {
             return LongArrayAllocator.ALLOCATOR;
+        }
+
+        @Specialization
+        protected static ArrayAllocator generalizeForValue(long[] receiver, Object newValue) {
+            return ObjectArrayAllocator.ALLOCATOR;
         }
     }
 }

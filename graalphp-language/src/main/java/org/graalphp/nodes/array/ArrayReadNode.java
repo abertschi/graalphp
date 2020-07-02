@@ -5,6 +5,7 @@ import com.oracle.truffle.api.dsl.Specialization;
 import com.oracle.truffle.api.library.CachedLibrary;
 import org.graalphp.nodes.PhpExprNode;
 import org.graalphp.runtime.array.ArrayLibrary;
+import org.graalphp.runtime.array.PhpArray;
 
 /**
  * @author abertschi
@@ -13,14 +14,14 @@ import org.graalphp.runtime.array.ArrayLibrary;
 @NodeChild(value = "index")
 public abstract class ArrayReadNode extends PhpExprNode {
 
-    // TODO update LIMIT based on backends
-    public static final String LIMIT = "2";
+    private static final String LIMIT = ArrayLibrary.SPECIALIZATION_LIMIT;
 
-    @Specialization(guards = "arrays.isArray(array)", limit = LIMIT)
-    Object doLookup(Object array, long index,
-                    @CachedLibrary("array") ArrayLibrary arrays) {
+    @Specialization(guards = "arrays.isArray(array.getBackend())", limit = LIMIT)
+    Object doLookup(PhpArray array,
+                    long index,
+                    @CachedLibrary("array.getBackend()") ArrayLibrary arrays) {
 
         // TODO: cast, we only support long types, but java cant have long array capacities
-        return arrays.read(array, (int) index);
+        return arrays.read(array.getBackend(), (int) index);
     }
 }

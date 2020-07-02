@@ -7,7 +7,10 @@ import com.oracle.truffle.api.library.LibraryFactory;
 
 @GenerateLibrary
 @DefaultExport(LongArrayLibrary.class)
+@DefaultExport(ObjectArrayLibrary.class)
 public abstract class ArrayLibrary extends Library {
+
+    public static final String SPECIALIZATION_LIMIT = "2";
 
     // TODO:
     //  - isMap
@@ -37,5 +40,15 @@ public abstract class ArrayLibrary extends Library {
     public abstract ArrayAllocator allocator(Object receiver);
 
     public abstract ArrayAllocator generalizeForValue(Object receiver, Object newValue);
+
+    public abstract String arrayToString(Object receiver);
+
+    public static ArrayAllocator getAllocatorForValue(Object obj) {
+        if (obj instanceof Long) {
+            return LongArrayAllocator.ALLOCATOR;
+        } else {
+            return ObjectArrayAllocator.ALLOCATOR;
+        }
+    }
 
 }
