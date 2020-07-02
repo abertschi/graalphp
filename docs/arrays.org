@@ -1,0 +1,32 @@
+## -*- coding: utf-8;mode: org; fill-column: 80;  -*-
+## This file is best viewed with GNU Emacs Org-mode: http://orgmode.org/
+
+#+TITLE: Array Design Notes
+
+* TransitionLimit in Export Library
+- https://github.com/oracle/graal/blob/master/truffle/src/com.oracle.truffle.api.library.test/src/com/oracle/truffle/api/library/test/AcceptsTransitionTest.java
+- feature not yet supported in our code base
+
+
+Thanks for your pointers. This already helps a bit. I sometimes have
+difficulties in following what's being done as the truffle DSL
+introduces some magic. I'm currently on api 20.0.0 which does not support transitionLimit in ExportMessage.
+I am not planning to update Truffle in the near future. I think i will look into the ruby example more closely.
+
+I currently do not support DynamicObjects yet. Only primitive datatypes.
+I reckon in order to use dispatch on the store, as it's done in ruby, i have to work
+with @Layout's and arrays would be TruffleObjects of type DynamicObjects.
+
+Is this the recommended way? Arrays in PHP do not have methods to
+call, or properties to and/remove at runtime. They are simply Map like
+containers.  Representing them internally as primitive arrays and only
+change them if mixed type values are added will hopefully boost
+performance. So i would like to try out Truffles Libraries.
+Unless you have some other pointers. Many thanks :)
+
+
+
+
+
+* How do libraries work
+ExportLibrary
