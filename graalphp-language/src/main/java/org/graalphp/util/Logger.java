@@ -8,4 +8,5 @@ public interface Logger {
     void info(String msg);
     void finest(String msg);
     void parserEnumerationError(String msg);
+    void warn(String msg);
 }

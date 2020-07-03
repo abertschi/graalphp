@@ -3,7 +3,9 @@ package org.graalphp.parser;
 import com.oracle.truffle.api.frame.FrameSlot;
 import com.oracle.truffle.api.frame.FrameSlotKind;
 import org.eclipse.php.core.ast.nodes.ASTNode;
+import org.eclipse.php.core.ast.nodes.ArrayAccess;
 import org.eclipse.php.core.ast.nodes.ArrayCreation;
+import org.eclipse.php.core.ast.nodes.ArrayElement;
 import org.eclipse.php.core.ast.nodes.Assignment;
 import org.eclipse.php.core.ast.nodes.Expression;
 import org.eclipse.php.core.ast.nodes.FunctionInvocation;
@@ -17,6 +19,10 @@ import org.graalphp.PhpLanguage;
 import org.graalphp.exception.PhpException;
 import org.graalphp.nodes.PhpExprNode;
 import org.graalphp.nodes.PhpStmtNode;
+import org.graalphp.nodes.array.ArrayReadNodeGen;
+import org.graalphp.nodes.array.ArrayWriteNodeGen;
+import org.graalphp.nodes.array.NewLongArrayNode;
+import org.graalphp.nodes.array.NewLongArrayNodeGen;
 import org.graalphp.nodes.binary.PhpAddNodeGen;
 import org.graalphp.nodes.binary.PhpDivNodeGen;
 import org.graalphp.nodes.binary.PhpMulNodeGen;
@@ -29,9 +35,11 @@ import org.graalphp.nodes.binary.logical.PhpLeNodeGen;
 import org.graalphp.nodes.binary.logical.PhpLtNodeGen;
 import org.graalphp.nodes.binary.logical.PhpNeqNodeGen;
 import org.graalphp.nodes.binary.logical.PhpOrNode;
+import org.graalphp.nodes.controlflow.ExprGroupNode;
 import org.graalphp.nodes.function.PhpFunctionLookupNode;
 import org.graalphp.nodes.function.PhpInvokeNode;
 import org.graalphp.nodes.literal.PhpBooleanNode;
+import org.graalphp.nodes.literal.PhpLongNode;
 import org.graalphp.nodes.localvar.ReadLocalVarNodeGen;
 import org.graalphp.nodes.localvar.WriteLocalVarNodeGen;
 import org.graalphp.nodes.unary.PhpNegNodeGen;
@@ -193,7 +201,7 @@ public class ExprVisitor extends HierarchicalVisitor {
                 if (NumberLiteralFactory.isBooleanLiteral(v)) {
                     currExpr = new PhpBooleanNode(NumberLiteralFactory.booleanLiteralToValue(v));
                 } else {
-                    LOG.parserEnumerationError("Strings not yet supported");
+                    throw new UnsupportedOperationException("Strings not yet supported: " + scalar);
                 }
                 break;
             default:
@@ -238,7 +246,7 @@ public class ExprVisitor extends HierarchicalVisitor {
     public boolean visit(Assignment ass) {
         if (!(ass.getLeftHandSide() instanceof Variable)) {
             throw new UnsupportedOperationException("Other variables than identifier not " +
-                    "supported");
+                    "supported: " + ass);
         }
 
         final String dest = new IdentifierVisitor()
@@ -287,13 +295,63 @@ public class ExprVisitor extends HierarchicalVisitor {
 
     @Override
     public boolean visit(ArrayCreation arrayCreation) {
-        if (arrayCreation.isHasArrayKey()) {
-            throw new UnsupportedOperationException("Arrays with keys not yet supported");
+        List<PhpExprNode> arrayInitVals = new LinkedList<>();
+        for (ArrayElement e : arrayCreation.elements()) {
+            final Expression key = e.getKey(); // TODO: no support for keys yet
+            if (key != null) {
+                throw new UnsupportedOperationException("Arrays with keys not yet supported");
+            }
+            final Expression val = e.getValue();
+            arrayInitVals.add(initAndAcceptExpr(val));
         }
-        arrayCreation.elements();
-
+        // XXX: We currently support long arrays by default and generalize if needed
+        NewLongArrayNode newArrayNode = NewLongArrayNodeGen.create();
+        if (arrayInitVals.size() == 0) {
+            setSourceSection(newArrayNode, arrayCreation);
+            currExpr = newArrayNode;
+        } else {
+            List<PhpExprNode> exprGroup = new LinkedList<>();
+            int index = 0;
+            for (PhpExprNode val : arrayInitVals) {
+                exprGroup.add(ArrayWriteNodeGen.create(newArrayNode, new PhpLongNode(index), val));
+                index++;
+            }
+            ExprGroupNode arrayInitGroup = new ExprGroupNode(exprGroup);
+            setSourceSection(arrayInitGroup, arrayCreation);
+            currExpr = arrayInitGroup;
+        }
         return false;
     }
 
--
+//    <Assignment start='161' length='11' operator='='>
+//									<ArrayAccess start='161' length='6' type='array'>
+//										<Variable start='161' length='2' isDollared='true'>
+//											<Identifier start='162' length='1' name='p'/>
+//										</Variable>
+//										<Index>
+//											<Variable start='164' length='2' isDollared='true'>
+//												<Identifier start='165' length='1' name='i'/>
+//											</Variable>
+//										</Index>
+//									</ArrayAccess>
+//									<Value>
+//										<Variable start='170' length='2' isDollared='true'>
+//											<Identifier start='171' length='1' name='i'/>
+//										</Variable>
+//									</Value>
+//								</Assignment>
+
+    @Override
+    public boolean visit(ArrayAccess arrayAccess) {
+        if (arrayAccess.getArrayType() == ArrayAccess.VARIABLE_HASHTABLE) {
+            throw new UnsupportedOperationException("ArrayAccess.VARIABLE_HASHTABLE not supported" +
+                    " in: " + arrayAccess.toString());
+        }
+        final PhpExprNode target = initAndAcceptExpr(arrayAccess.getName());
+        final PhpExprNode index = initAndAcceptExpr(arrayAccess.getIndex());
+        currExpr = ArrayReadNodeGen.create(target, index);
+        setSourceSection(currExpr, arrayAccess);
+
+        return false;
+    }
 }

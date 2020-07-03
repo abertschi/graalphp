@@ -51,6 +51,11 @@ public class PhpLogger implements Logger {
     }
 
     @Override
+    public void warn(String msg) {
+        System.err.println(format(msg, "warn"));
+    }
+
+    @Override
     public void parserEnumerationError(String msg) {
         System.err.println(format(msg, "ERROR"));
     }
