@@ -8,6 +8,8 @@ import org.eclipse.php.core.ast.nodes.Expression;
 import org.eclipse.php.core.ast.nodes.FunctionInvocation;
 import org.eclipse.php.core.ast.nodes.Identifier;
 import org.eclipse.php.core.ast.nodes.InfixExpression;
+import org.eclipse.php.core.ast.nodes.PostfixExpression;
+import org.eclipse.php.core.ast.nodes.PrefixExpression;
 import org.eclipse.php.core.ast.nodes.Scalar;
 import org.eclipse.php.core.ast.nodes.UnaryOperation;
 import org.eclipse.php.core.ast.nodes.Variable;
@@ -16,6 +18,7 @@ import org.graalphp.PhpLanguage;
 import org.graalphp.exception.PhpException;
 import org.graalphp.nodes.PhpExprNode;
 import org.graalphp.nodes.PhpStmtNode;
+import org.graalphp.nodes.binary.PhpAddNode;
 import org.graalphp.nodes.binary.PhpAddNodeGen;
 import org.graalphp.nodes.binary.PhpDivNodeGen;
 import org.graalphp.nodes.binary.PhpMulNodeGen;
@@ -28,9 +31,11 @@ import org.graalphp.nodes.binary.logical.PhpLeNodeGen;
 import org.graalphp.nodes.binary.logical.PhpLtNodeGen;
 import org.graalphp.nodes.binary.logical.PhpNeqNodeGen;
 import org.graalphp.nodes.binary.logical.PhpOrNode;
+import org.graalphp.nodes.controlflow.ExprGroupNode;
 import org.graalphp.nodes.function.PhpFunctionLookupNode;
 import org.graalphp.nodes.function.PhpInvokeNode;
 import org.graalphp.nodes.literal.PhpBooleanNode;
+import org.graalphp.nodes.literal.PhpLongNode;
 import org.graalphp.nodes.localvar.ReadLocalVarNodeGen;
 import org.graalphp.nodes.localvar.WriteLocalVarNodeGen;
 import org.graalphp.nodes.unary.PhpNegNodeGen;
@@ -46,6 +51,7 @@ import java.util.List;
 public class ExprVisitor extends HierarchicalVisitor {
 
     private static final Logger LOG = PhpLogger.getLogger(ExprVisitor.class.getSimpleName());
+    private static final String PREFIX_POSTFIX_LOCAL_STORE = "___tmp_postfix";
 
     // current expression
     private PhpExprNode currExpr = null;
@@ -79,6 +85,87 @@ public class ExprVisitor extends HierarchicalVisitor {
 
     private void setSourceSection(PhpStmtNode target, ASTNode n) {
         target.setSourceSection(n.getStart(), n.getLength());
+    }
+
+    @Override
+    public boolean visit(PostfixExpression postfixExpression) {
+        final String varName = new IdentifierVisitor()
+                .getIdentifierName(postfixExpression).getName();
+        final PhpExprNode variableNode = initAndAcceptExpr(postfixExpression.getVariable());
+
+        long op = 0;
+        switch (postfixExpression.getOperator()) {
+            case PostfixExpression.OP_INC:
+                op = 1;
+                break;
+            case PostfixExpression.OP_DEC:
+                op = -1;
+                break;
+            default:
+                throw new UnsupportedOperationException("Unexpected value: "
+                        + postfixExpression.getOperator() + ": " + postfixExpression);
+        }
+
+        /*
+         * we implement postfix semantic with temporary store
+         * $a++ <=> $_tmp = $a; $a = $a + 1; return $_tmp
+         */
+
+        // TODO: investigate if a node based approach is faster
+
+        // tmp store
+        final String tmp_var = PREFIX_POSTFIX_LOCAL_STORE + varName;
+        PhpExprNode tmpStoreNode = createLocalAssignment(scope, tmp_var, variableNode, null);
+
+        // do addition
+        final PhpAddNode postfixNode = PhpAddNodeGen.create(variableNode, new PhpLongNode(op));
+        setSourceSection(postfixNode, postfixExpression);
+
+        // assign addition
+        final PhpExprNode incrementNode = createLocalAssignment(scope, varName, postfixNode, null);
+        setSourceSection(incrementNode, postfixExpression);
+
+        // lookup tmp store
+        final PhpExprNode lookupTmp = ReadLocalVarNodeGen.create(scope.getVars().get(tmp_var));
+        setSourceSection(lookupTmp, postfixExpression);
+
+        final ExprGroupNode exprGroup =
+                new ExprGroupNode(new PhpExprNode[]{tmpStoreNode, incrementNode, lookupTmp});
+
+        setSourceSection(exprGroup, postfixExpression);
+        currExpr = exprGroup;
+
+        return false;
+    }
+
+    @Override
+    public boolean visit(PrefixExpression prefixExpression) {
+        // counter = ++$a
+        // $a = $a + 1; counter = $a;
+        final String varName =
+                new IdentifierVisitor().getIdentifierName(prefixExpression).getName();
+        final PhpExprNode variableNode = initAndAcceptExpr(prefixExpression.getVariable());
+
+        long op = 0;
+        switch (prefixExpression.getOperator()) {
+            case PrefixExpression.OP_INC:
+                op = 1;
+                break;
+            case PrefixExpression.OP_DEC:
+                op = -1;
+                break;
+            default:
+                throw new UnsupportedOperationException("Unexpected value: "
+                        + prefixExpression.getOperator() + ": " + prefixExpression);
+        }
+        final PhpAddNode prefixNode = PhpAddNodeGen.create(variableNode, new PhpLongNode(op));
+        setSourceSection(prefixNode, prefixExpression);
+
+        final PhpExprNode assignment = createLocalAssignment(scope, varName, prefixNode, null);
+        setSourceSection(assignment, prefixExpression);
+
+        currExpr = assignment;
+        return false;
     }
 
     @Override
@@ -239,22 +326,28 @@ public class ExprVisitor extends HierarchicalVisitor {
             throw new UnsupportedOperationException("Other variables than identifier not " +
                     "supported");
         }
-
         final String dest = new IdentifierVisitor()
                 .getIdentifierName(ass.getLeftHandSide()).getName();
 
         final PhpExprNode source = initAndAcceptExpr(ass.getRightHandSide());
-        final FrameSlot frameSlot = scope.getFrameDesc().findOrAddFrameSlot(
-                dest,
-                null,
-                FrameSlotKind.Illegal);
-
-        scope.getVars().put(dest, frameSlot);
-        final PhpExprNode assignNode = WriteLocalVarNodeGen.create(source, frameSlot);
+        final PhpExprNode assignNode = createLocalAssignment(scope, dest, source, null);
         setSourceSection(assignNode, ass);
-
         currExpr = assignNode;
         return false;
+    }
+
+    private PhpExprNode createLocalAssignment(ParseScope scope,
+                                              String target,
+                                              PhpExprNode source,
+                                              Integer argumentId) {
+        final FrameSlot frameSlot = scope.getFrameDesc()
+                .findOrAddFrameSlot(target, argumentId, FrameSlotKind.Illegal);
+
+        scope.getVars().put(target, frameSlot);
+
+        // TODO: source section?
+        final PhpExprNode assign = WriteLocalVarNodeGen.create(source, frameSlot);
+        return assign;
     }
 
     // ---------------- function invocations --------------------
