@@ -15,7 +15,7 @@ function Fannkuch($n){
             do {
                 $qq = $q[$q0];
                 if ($qq == 0){                                  // ... until 0th element is 0.
-                    $sum += $sign*$flips;
+                    $sum = $sum + $sign*$flips;
                     if ($flips > $maxflips) $maxflips = $flips;  // New maximum?
                     break;
                 }
@@ -45,15 +45,15 @@ function Fannkuch($n){
 }
 
 // $n = $argv[1];
-$n = 1;
+$n = 10;
 // list($checksum,$pf) = Fannkuch($n);
-$A = Fannkuch($n);
-$checksum = $A[0];
-$pf = $A[1];
-// list($checksum,$pf) = Fannkuch($n);
-// printf("%d\nPfannkuchen(%d) = %d", $checksum, $n, $pf);
-println($n);
-println($checksum);
-println($pf);
+// $A = Fannkuch($n);
+// $checksum = $A[0];
+// $pf = $A[1];
+list($checksum,$pf) = Fannkuch($n);
+printf("%d\nPfannkuchen(%d) = %d", $checksum, $n, $pf);
+// print($n);
+// print($checksum);
+// println($pf);
 
 ?>

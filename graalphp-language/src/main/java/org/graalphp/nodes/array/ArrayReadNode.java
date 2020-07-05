@@ -24,13 +24,4 @@ public abstract class ArrayReadNode extends PhpExprNode {
         // TODO: cast, we only support long types, but java cant have long array capacities
         return arrays.read(array.getBackend(), (int) index);
     }
-
-//    @Specialization
-//    Object fallback(PhpArray array,
-//                    long index
-//                   ) {
-//        System.out.println(array.toString());
-//        System.out.println(index);
-//        throw new UnsupportedOperationException();
-//    }
 }

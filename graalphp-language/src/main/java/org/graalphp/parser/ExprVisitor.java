@@ -343,6 +343,27 @@ public class ExprVisitor extends HierarchicalVisitor {
             throw new UnsupportedOperationException("Other variables than identifier not " +
                     "supported: " + ass);
         }
+        switch (ass.getOperator()) {
+            case Assignment.OP_EQUAL:
+                break;
+            case Assignment.OP_PLUS_EQUAL:
+            case Assignment.OP_MINUS_EQUAL:
+            case Assignment.OP_MUL_EQUAL:
+            case Assignment.OP_DIV_EQUAL:
+            case Assignment.OP_CONCAT_EQUAL:
+            case Assignment.OP_MOD_EQUAL:
+            case Assignment.OP_AND_EQUAL:
+            case Assignment.OP_OR_EQUAL:
+            case Assignment.OP_XOR_EQUAL:
+            case Assignment.OP_SL_EQUAL:
+            case Assignment.OP_SR_EQUAL:
+            case Assignment.OP_POW_EQUAL:
+            case Assignment.OP_COALESCE_EQUAL:
+            default:
+                throw new UnsupportedOperationException
+                        ("does not support: " + ass.getOperator() + ass);
+        }
+
         if (ass.getLeftHandSide() instanceof ArrayAccess) {
             currExpr = createArrayIndexWriteAssignment(ass);
         } else {
@@ -416,7 +437,6 @@ public class ExprVisitor extends HierarchicalVisitor {
                 exprGroup.add(ArrayWriteNodeGen.create(newArrayNode, new PhpLongNode(index), val));
                 index++;
             }
-
             ExprGroupNode arrayInitGroup = new ExprGroupNode(exprGroup);
             setSourceSection(arrayInitGroup, arrayCreation);
             currExpr = arrayInitGroup;
