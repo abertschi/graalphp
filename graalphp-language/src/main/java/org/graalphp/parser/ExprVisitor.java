@@ -18,7 +18,6 @@ import org.graalphp.PhpLanguage;
 import org.graalphp.exception.PhpException;
 import org.graalphp.nodes.PhpExprNode;
 import org.graalphp.nodes.PhpStmtNode;
-import org.graalphp.nodes.binary.PhpAddNode;
 import org.graalphp.nodes.binary.PhpAddNodeGen;
 import org.graalphp.nodes.binary.PhpDivNodeGen;
 import org.graalphp.nodes.binary.PhpMulNodeGen;
@@ -31,14 +30,16 @@ import org.graalphp.nodes.binary.logical.PhpLeNodeGen;
 import org.graalphp.nodes.binary.logical.PhpLtNodeGen;
 import org.graalphp.nodes.binary.logical.PhpNeqNodeGen;
 import org.graalphp.nodes.binary.logical.PhpOrNode;
-import org.graalphp.nodes.controlflow.ExprGroupNode;
 import org.graalphp.nodes.function.PhpFunctionLookupNode;
 import org.graalphp.nodes.function.PhpInvokeNode;
 import org.graalphp.nodes.literal.PhpBooleanNode;
-import org.graalphp.nodes.literal.PhpLongNode;
 import org.graalphp.nodes.localvar.ReadLocalVarNodeGen;
 import org.graalphp.nodes.localvar.WriteLocalVarNodeGen;
 import org.graalphp.nodes.unary.PhpNegNodeGen;
+import org.graalphp.nodes.unary.PostfixArithmeticNode;
+import org.graalphp.nodes.unary.PostfixArithmeticNodeGen;
+import org.graalphp.nodes.unary.PrefixArithmeticNode;
+import org.graalphp.nodes.unary.PrefixArithmeticNodeGen;
 import org.graalphp.util.Logger;
 import org.graalphp.util.PhpLogger;
 
@@ -51,7 +52,6 @@ import java.util.List;
 public class ExprVisitor extends HierarchicalVisitor {
 
     private static final Logger LOG = PhpLogger.getLogger(ExprVisitor.class.getSimpleName());
-    private static final String PREFIX_POSTFIX_LOCAL_STORE = "___tmp_postfix";
 
     // current expression
     private PhpExprNode currExpr = null;
@@ -63,7 +63,7 @@ public class ExprVisitor extends HierarchicalVisitor {
     // XXX: not thread safe
     public PhpExprNode createExprAst(Expression e, ParseScope scope) {
         if (scope == null) {
-            new IllegalArgumentException("scope. cant be null");
+            throw new IllegalArgumentException("scope. cant be null");
         }
         currExpr = null;
         this.scope = scope;
@@ -91,9 +91,8 @@ public class ExprVisitor extends HierarchicalVisitor {
     public boolean visit(PostfixExpression postfixExpression) {
         final String varName = new IdentifierVisitor()
                 .getIdentifierName(postfixExpression).getName();
-        final PhpExprNode variableNode = initAndAcceptExpr(postfixExpression.getVariable());
 
-        long op = 0;
+        int op = 0;
         switch (postfixExpression.getOperator()) {
             case PostfixExpression.OP_INC:
                 op = 1;
@@ -106,34 +105,12 @@ public class ExprVisitor extends HierarchicalVisitor {
                         + postfixExpression.getOperator() + ": " + postfixExpression);
         }
 
-        /*
-         * we implement postfix semantic with temporary store
-         * $a++ <=> $_tmp = $a; $a = $a + 1; return $_tmp
-         */
+        final FrameSlot frameSlot = scope.getFrameDesc()
+                .findOrAddFrameSlot(varName, null, FrameSlotKind.Illegal);
 
-        // TODO: investigate if a node based approach is faster
-
-        // tmp store
-        final String tmp_var = PREFIX_POSTFIX_LOCAL_STORE + varName;
-        PhpExprNode tmpStoreNode = createLocalAssignment(scope, tmp_var, variableNode, null);
-
-        // do addition
-        final PhpAddNode postfixNode = PhpAddNodeGen.create(variableNode, new PhpLongNode(op));
+        PostfixArithmeticNode postfixNode = PostfixArithmeticNodeGen.create(frameSlot, op);
         setSourceSection(postfixNode, postfixExpression);
-
-        // assign addition
-        final PhpExprNode incrementNode = createLocalAssignment(scope, varName, postfixNode, null);
-        setSourceSection(incrementNode, postfixExpression);
-
-        // lookup tmp store
-        final PhpExprNode lookupTmp = ReadLocalVarNodeGen.create(scope.getVars().get(tmp_var));
-        setSourceSection(lookupTmp, postfixExpression);
-
-        final ExprGroupNode exprGroup =
-                new ExprGroupNode(new PhpExprNode[]{tmpStoreNode, incrementNode, lookupTmp});
-
-        setSourceSection(exprGroup, postfixExpression);
-        currExpr = exprGroup;
+        currExpr = postfixNode;
 
         return false;
     }
@@ -144,9 +121,7 @@ public class ExprVisitor extends HierarchicalVisitor {
         // $a = $a + 1; counter = $a;
         final String varName =
                 new IdentifierVisitor().getIdentifierName(prefixExpression).getName();
-        final PhpExprNode variableNode = initAndAcceptExpr(prefixExpression.getVariable());
-
-        long op = 0;
+        int op = 0;
         switch (prefixExpression.getOperator()) {
             case PrefixExpression.OP_INC:
                 op = 1;
@@ -158,13 +133,12 @@ public class ExprVisitor extends HierarchicalVisitor {
                 throw new UnsupportedOperationException("Unexpected value: "
                         + prefixExpression.getOperator() + ": " + prefixExpression);
         }
-        final PhpAddNode prefixNode = PhpAddNodeGen.create(variableNode, new PhpLongNode(op));
+        final FrameSlot frameSlot = scope.getFrameDesc()
+                .findOrAddFrameSlot(varName, null, FrameSlotKind.Illegal);
+
+        final PrefixArithmeticNode prefixNode = PrefixArithmeticNodeGen.create(frameSlot, op);
         setSourceSection(prefixNode, prefixExpression);
-
-        final PhpExprNode assignment = createLocalAssignment(scope, varName, prefixNode, null);
-        setSourceSection(assignment, prefixExpression);
-
-        currExpr = assignment;
+        currExpr = prefixNode;
         return false;
     }
 
