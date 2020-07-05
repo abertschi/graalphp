@@ -33,7 +33,7 @@ public class ParseArrayTest {
     }
 
 
-    @Test
+//    @Test
     public void fannkuchExecTest() {
         String src = TestCommons.inputStreamToString(getClass().getResourceAsStream("fannkuch.bak.php"));
         TestCommons.compareStdout("", src, false);

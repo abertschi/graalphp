@@ -14,6 +14,6 @@ public abstract class NewLongArrayNode extends PhpExprNode {
     //    @ExplodeLoop
     @Specialization
     protected Object createNew() {
-        return new PhpArray(LongArrayAllocator.ALLOCATOR.allocate(30), 30);
+        return new PhpArray(LongArrayAllocator.ALLOCATOR.allocate(40), 40);
     }
 }

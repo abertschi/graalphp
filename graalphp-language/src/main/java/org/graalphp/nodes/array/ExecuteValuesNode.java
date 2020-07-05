@@ -8,7 +8,7 @@ import org.graalphp.nodes.PhpExprNode;
 /**
  * @author abertschi
  */
-public class ExecuteValuesNode extends PhpExprNode {
+public final class ExecuteValuesNode extends PhpExprNode {
 
     @Children
     private final PhpExprNode[] nodes;
