@@ -11,6 +11,8 @@ import org.eclipse.php.core.ast.nodes.Expression;
 import org.eclipse.php.core.ast.nodes.FunctionInvocation;
 import org.eclipse.php.core.ast.nodes.Identifier;
 import org.eclipse.php.core.ast.nodes.InfixExpression;
+import org.eclipse.php.core.ast.nodes.PostfixExpression;
+import org.eclipse.php.core.ast.nodes.PrefixExpression;
 import org.eclipse.php.core.ast.nodes.Scalar;
 import org.eclipse.php.core.ast.nodes.UnaryOperation;
 import org.eclipse.php.core.ast.nodes.Variable;
@@ -43,6 +45,10 @@ import org.graalphp.nodes.literal.PhpLongNode;
 import org.graalphp.nodes.localvar.ReadLocalVarNodeGen;
 import org.graalphp.nodes.localvar.WriteLocalVarNodeGen;
 import org.graalphp.nodes.unary.PhpNegNodeGen;
+import org.graalphp.nodes.unary.PostfixArithmeticNode;
+import org.graalphp.nodes.unary.PostfixArithmeticNodeGen;
+import org.graalphp.nodes.unary.PrefixArithmeticNode;
+import org.graalphp.nodes.unary.PrefixArithmeticNodeGen;
 import org.graalphp.util.Logger;
 import org.graalphp.util.PhpLogger;
 
@@ -66,7 +72,7 @@ public class ExprVisitor extends HierarchicalVisitor {
     // XXX: not thread safe
     public PhpExprNode createExprAst(Expression e, ParseScope scope) {
         if (scope == null) {
-            new IllegalArgumentException("scope. cant be null");
+            throw new IllegalArgumentException("scope. cant be null");
         }
         currExpr = null;
         this.scope = scope;
@@ -88,6 +94,61 @@ public class ExprVisitor extends HierarchicalVisitor {
 
     private void setSourceSection(PhpStmtNode target, ASTNode n) {
         target.setSourceSection(n.getStart(), n.getLength());
+    }
+
+    @Override
+    public boolean visit(PostfixExpression postfixExpression) {
+        final String varName = new IdentifierVisitor()
+                .getIdentifierName(postfixExpression).getName();
+
+        int op = 0;
+        switch (postfixExpression.getOperator()) {
+            case PostfixExpression.OP_INC:
+                op = 1;
+                break;
+            case PostfixExpression.OP_DEC:
+                op = -1;
+                break;
+            default:
+                throw new UnsupportedOperationException("Unexpected value: "
+                        + postfixExpression.getOperator() + ": " + postfixExpression);
+        }
+
+        final FrameSlot frameSlot = scope.getFrameDesc()
+                .findOrAddFrameSlot(varName, null, FrameSlotKind.Illegal);
+
+        PostfixArithmeticNode postfixNode = PostfixArithmeticNodeGen.create(frameSlot, op);
+        setSourceSection(postfixNode, postfixExpression);
+        currExpr = postfixNode;
+
+        return false;
+    }
+
+    @Override
+    public boolean visit(PrefixExpression prefixExpression) {
+        // counter = ++$a
+        // $a = $a + 1; counter = $a;
+        final String varName =
+                new IdentifierVisitor().getIdentifierName(prefixExpression).getName();
+        int op = 0;
+        switch (prefixExpression.getOperator()) {
+            case PrefixExpression.OP_INC:
+                op = 1;
+                break;
+            case PrefixExpression.OP_DEC:
+                op = -1;
+                break;
+            default:
+                throw new UnsupportedOperationException("Unexpected value: "
+                        + prefixExpression.getOperator() + ": " + prefixExpression);
+        }
+        final FrameSlot frameSlot = scope.getFrameDesc()
+                .findOrAddFrameSlot(varName, null, FrameSlotKind.Illegal);
+
+        final PrefixArithmeticNode prefixNode = PrefixArithmeticNodeGen.create(frameSlot, op);
+        setSourceSection(prefixNode, prefixExpression);
+        currExpr = prefixNode;
+        return false;
     }
 
     @Override
@@ -248,22 +309,28 @@ public class ExprVisitor extends HierarchicalVisitor {
             throw new UnsupportedOperationException("Other variables than identifier not " +
                     "supported: " + ass);
         }
-
         final String dest = new IdentifierVisitor()
                 .getIdentifierName(ass.getLeftHandSide()).getName();
 
         final PhpExprNode source = initAndAcceptExpr(ass.getRightHandSide());
-        final FrameSlot frameSlot = scope.getFrameDesc().findOrAddFrameSlot(
-                dest,
-                null,
-                FrameSlotKind.Illegal);
-
-        scope.getVars().put(dest, frameSlot);
-        final PhpExprNode assignNode = WriteLocalVarNodeGen.create(source, frameSlot);
+        final PhpExprNode assignNode = createLocalAssignment(scope, dest, source, null);
         setSourceSection(assignNode, ass);
-
         currExpr = assignNode;
         return false;
+    }
+
+    private PhpExprNode createLocalAssignment(ParseScope scope,
+                                              String target,
+                                              PhpExprNode source,
+                                              Integer argumentId) {
+        final FrameSlot frameSlot = scope.getFrameDesc()
+                .findOrAddFrameSlot(target, argumentId, FrameSlotKind.Illegal);
+
+        scope.getVars().put(target, frameSlot);
+
+        // TODO: source section?
+        final PhpExprNode assign = WriteLocalVarNodeGen.create(source, frameSlot);
+        return assign;
     }
 
     // ---------------- function invocations --------------------
