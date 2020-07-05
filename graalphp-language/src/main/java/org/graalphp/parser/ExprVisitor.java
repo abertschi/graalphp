@@ -303,19 +303,51 @@ public class ExprVisitor extends HierarchicalVisitor {
 
     // ---------------- local variable write --------------------
 
-    @Override
-    public boolean visit(Assignment ass) {
-        if (!(ass.getLeftHandSide() instanceof Variable)) {
-            throw new UnsupportedOperationException("Other variables than identifier not " +
-                    "supported: " + ass);
-        }
+    /**
+     * create assignment of form $A[$val] = ...
+     */
+    private PhpExprNode createArrayIndexWriteAssignment(Assignment ass) {
+        assert ass.getLeftHandSide() instanceof ArrayAccess : "needs array in lhs";
+        ArrayAccess arrayAccess = (ArrayAccess) ass.getLeftHandSide();
+
+        final String arrayVariableName = new IdentifierVisitor()
+                .getIdentifierName(arrayAccess.getName()).getName();
+        final PhpExprNode arrayTarget = initAndAcceptExpr(arrayAccess.getName());
+        final PhpExprNode index = initAndAcceptExpr(arrayAccess.getIndex());
+        final PhpExprNode rhs = initAndAcceptExpr(ass.getRightHandSide());
+
+        final PhpExprNode node = ArrayWriteNodeGen.create(arrayTarget, index, rhs);
+        setSourceSection(node, arrayAccess);
+
+        final PhpExprNode assignNode = createLocalAssignment(scope, arrayVariableName, node, null);
+        setSourceSection(assignNode, ass);
+        return assignNode;
+    }
+
+    /**
+     * create assignment of form $a = ..., where $a is not an array
+     */
+    private PhpExprNode createNonArrayAssignment(Assignment ass) {
         final String dest = new IdentifierVisitor()
                 .getIdentifierName(ass.getLeftHandSide()).getName();
 
         final PhpExprNode source = initAndAcceptExpr(ass.getRightHandSide());
         final PhpExprNode assignNode = createLocalAssignment(scope, dest, source, null);
         setSourceSection(assignNode, ass);
-        currExpr = assignNode;
+        return assignNode;
+    }
+
+    @Override
+    public boolean visit(Assignment ass) {
+        if (!(ass.getLeftHandSide() instanceof Variable)) {
+            throw new UnsupportedOperationException("Other variables than identifier not " +
+                    "supported: " + ass);
+        }
+        if (ass.getLeftHandSide() instanceof ArrayAccess) {
+            currExpr = createArrayIndexWriteAssignment(ass);
+        } else {
+            currExpr = createNonArrayAssignment(ass);
+        }
         return false;
     }
 
@@ -371,6 +403,7 @@ public class ExprVisitor extends HierarchicalVisitor {
             final Expression val = e.getValue();
             arrayInitVals.add(initAndAcceptExpr(val));
         }
+
         // XXX: We currently support long arrays by default and generalize if needed
         NewLongArrayNode newArrayNode = NewLongArrayNodeGen.create();
         if (arrayInitVals.size() == 0) {
@@ -383,6 +416,7 @@ public class ExprVisitor extends HierarchicalVisitor {
                 exprGroup.add(ArrayWriteNodeGen.create(newArrayNode, new PhpLongNode(index), val));
                 index++;
             }
+
             ExprGroupNode arrayInitGroup = new ExprGroupNode(exprGroup);
             setSourceSection(arrayInitGroup, arrayCreation);
             currExpr = arrayInitGroup;
@@ -390,23 +424,23 @@ public class ExprVisitor extends HierarchicalVisitor {
         return false;
     }
 
-//    <Assignment start='161' length='11' operator='='>
-//									<ArrayAccess start='161' length='6' type='array'>
-//										<Variable start='161' length='2' isDollared='true'>
-//											<Identifier start='162' length='1' name='p'/>
-//										</Variable>
-//										<Index>
-//											<Variable start='164' length='2' isDollared='true'>
-//												<Identifier start='165' length='1' name='i'/>
-//											</Variable>
-//										</Index>
-//									</ArrayAccess>
-//									<Value>
-//										<Variable start='170' length='2' isDollared='true'>
-//											<Identifier start='171' length='1' name='i'/>
-//										</Variable>
-//									</Value>
-//								</Assignment>
+    //    <Assignment start='161' length='11' operator='='>
+    //									<ArrayAccess start='161' length='6' type='array'>
+    //										<Variable start='161' length='2' isDollared='true'>
+    //											<Identifier start='162' length='1' name='p'/>
+    //										</Variable>
+    //										<Index>
+    //											<Variable start='164' length='2' isDollared='true'>
+    //												<Identifier start='165' length='1' name='i'/>
+    //											</Variable>
+    //										</Index>
+    //									</ArrayAccess>
+    //									<Value>
+    //										<Variable start='170' length='2' isDollared='true'>
+    //											<Identifier start='171' length='1' name='i'/>
+    //										</Variable>
+    //									</Value>
+    //								</Assignment>
 
     @Override
     public boolean visit(ArrayAccess arrayAccess) {
