@@ -40,7 +40,7 @@ polymorphic dispatch with specializations.
 ** Slack
 Hi there,
 
-I am referring to the initial entry I posted here in slack: [0] 
+I am referring to the initial entry I posted here on slack: [0] 
 
 I now implemented rudimentary array support using Truffle libraries for my PHP
 implementation. It already works satisfyingly :) Sometimes I had
@@ -50,8 +50,8 @@ resolved into a Nullpointer exception without further context.
 This was only a minor struggle though.
 
 I would be really glad if someone could give me feedback regarding how truffle
-idiomatic my implementation is. It does not have to be rigorous feedback, but
-considering my next design steps, it would help me alot if someone with more Truffle API/DSL
+idiomatic my implementation is. It does not have to be rigorous, but
+considering my next design steps, it would help me alot if someone with more Truffle DSL
 experience could take a look at it.
 
 Conceptually I implemented arrays in PHP as follows;
@@ -80,10 +80,3 @@ Thanks for any kind of help in advance, Truffle rocks! :)
 [2] ArrayWriteNode: https://github.com/abertschi/graalphp/blob/feature/arrays/graalphp-language/src/main/java/org/graalphp/nodes/array/ArrayWriteNode.java
 [3] ArrayReadNode: https://github.com/abertschi/graalphp/blob/feature/arrays/graalphp-language/src/main/java/org/graalphp/nodes/array/ArrayReadNode.java
 [4] NewArrayInitialValuesNode: https://github.com/abertschi/graalphp/blob/feature/arrays/graalphp-language/src/main/java/org/graalphp/nodes/array/NewArrayInitialValuesNode.java
-
-
-
-
-
-
-** 
