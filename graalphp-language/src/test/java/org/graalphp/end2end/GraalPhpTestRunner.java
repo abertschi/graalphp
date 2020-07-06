@@ -59,15 +59,17 @@ import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.ParentRunner;
 import org.junit.runners.model.InitializationError;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.io.StringReader;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -82,7 +84,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-
 
 /**
  * A JUnit Parent runner to execute php source files and compare their result
@@ -137,7 +138,8 @@ public class GraalPhpTestRunner extends ParentRunner<TestCase> {
         return testCases;
     }
 
-    protected static List<TestCase> createTests(final Class<?> c) throws IOException, InitializationError {
+    protected static List<TestCase> createTests(final Class<?> c) throws IOException,
+            InitializationError {
         GraalPhpTestSuite suite = c.getAnnotation(GraalPhpTestSuite.class);
         if (suite == null) {
             throw new InitializationError(
@@ -181,7 +183,8 @@ public class GraalPhpTestRunner extends ParentRunner<TestCase> {
             public FileVisitResult visitFile(Path sourceFile, BasicFileAttributes attrs) throws IOException {
                 String sourceName = sourceFile.getFileName().toString();
                 if (sourceName.endsWith(SOURCE_SUFFIX)) {
-                    String baseName = sourceName.substring(0, sourceName.length() - SOURCE_SUFFIX.length());
+                    String baseName = sourceName.substring(0,
+                            sourceName.length() - SOURCE_SUFFIX.length());
 
                     Path inputFile = sourceFile.resolveSibling(baseName + INPUT_SUFFIX);
                     String testInput = "";
@@ -194,7 +197,8 @@ public class GraalPhpTestRunner extends ParentRunner<TestCase> {
                     if (Files.exists(outputFile)) {
                         expectedOutput = readAllLines(outputFile);
                     }
-                    foundCases.add(new TestCase(c, baseName, sourceName, sourceFile, testInput, expectedOutput, options));
+                    foundCases.add(new TestCase(c, baseName, sourceName, sourceFile, testInput,
+                            expectedOutput, options));
                 }
                 return FileVisitResult.CONTINUE;
             }
@@ -238,11 +242,13 @@ public class GraalPhpTestRunner extends ParentRunner<TestCase> {
             while (entries.hasMoreElements()) {
                 JarEntry e = entries.nextElement();
                 if (!e.isDirectory()) {
-                    File path = new File(jarfileDir.toFile(), e.getName().replace('/', File.separatorChar));
+                    File path = new File(jarfileDir.toFile(), e.getName().replace('/',
+                            File.separatorChar));
                     File dir = path.getParentFile();
                     dir.mkdirs();
                     assert dir.exists();
-                    Files.copy(jarfile.getInputStream(e), path.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    Files.copy(jarfile.getInputStream(e), path.toPath(),
+                            StandardCopyOption.REPLACE_EXISTING);
                 }
             }
             return jarfileDir.toFile().getAbsolutePath();
@@ -268,7 +274,8 @@ public class GraalPhpTestRunner extends ParentRunner<TestCase> {
                 base = explodeJarToTempDir(jarfilePath);
             } else if (externalForm.startsWith("file:")) {
                 prefix = "file:";
-                base = externalForm.substring(prefix.length(), externalForm.length() - classPart.length());
+                base = externalForm.substring(prefix.length(),
+                        externalForm.length() - classPart.length());
             } else {
                 return null;
             }
@@ -283,15 +290,8 @@ public class GraalPhpTestRunner extends ParentRunner<TestCase> {
     }
 
     private static String readAllLines(Path file) throws IOException {
-        // fix line feeds for non unix os
-        StringBuilder outFile = new StringBuilder();
-        for (String line : Files.readAllLines(file, Charset.defaultCharset())) {
-             outFile.append(line);
-                     //.append(LF);
-        }
-        return outFile.toString();
+        return readLinesUniformNewline(file.toFile());
     }
-
 
     private static final List<NodeFactory<?>> builtins = new ArrayList<>();
 
@@ -322,11 +322,16 @@ public class GraalPhpTestRunner extends ParentRunner<TestCase> {
             run(context, testCase.path, printer);
             printer.flush();
 
-            String actualOutput = new String(out.toByteArray());
+            byte[] bytes = out.toByteArray();
+            String actualOutput = "";
+            if (bytes.length != 0) {
+             actualOutput= readLinesUniformNewline(new String(bytes));
+            }
             System.out.println(String.format("expect:\n'%s'", testCase.expectedOutput));
             System.out.println(String.format("actual:\n'%s'", actualOutput));
             System.out.println("success: " + testCase.expectedOutput.equals(actualOutput));
-             Assert.assertEquals(testCase.name.toString(), testCase.expectedOutput, actualOutput);
+            System.out.println(testCase.sourceName);
+            Assert.assertEquals(testCase.name.toString(), testCase.expectedOutput, actualOutput);
         } catch (Throwable ex) {
             notifier.fireTestFailure(new Failure(testCase.name, ex));
         } finally {
@@ -338,10 +343,37 @@ public class GraalPhpTestRunner extends ParentRunner<TestCase> {
         }
     }
 
+    private static String readLinesUniformNewline(BufferedReader reader) {
+        StringBuilder result = new StringBuilder("");
+        try {
+            result.append(reader.readLine()).append("\n");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return result.toString();
+    }
+
+    private static String readLinesUniformNewline(File f) {
+        try {
+            return readLinesUniformNewline(new BufferedReader(new FileReader(f)));
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static String readLinesUniformNewline(String s) {
+        try {
+            return readLinesUniformNewline(new BufferedReader(new StringReader(s)));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private static void run(Context context, Path path, PrintWriter out) throws IOException {
         try {
             /* Parse the source file. */
-            Source source = Source.newBuilder(PhpLanguage.ID, path.toFile()).interactive(true).build();
+            Source source =
+                    Source.newBuilder(PhpLanguage.ID, path.toFile()).interactive(true).build();
 
             /* Call the main entry point, without any arguments. */
             context.eval(source);
@@ -354,7 +386,8 @@ public class GraalPhpTestRunner extends ParentRunner<TestCase> {
         }
     }
 
-    public static void runInMain(Class<?> testClass, String[] args) throws InitializationError, NoTestsRemainException {
+    public static void runInMain(Class<?> testClass, String[] args) throws InitializationError,
+            NoTestsRemainException {
         JUnitCore core = new JUnitCore();
         core.addListener(new TextListener(System.out));
         GraalPhpTestRunner suite = new GraalPhpTestRunner(testClass);

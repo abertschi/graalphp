@@ -2,7 +2,6 @@ package org.graalphp.nodes;
 
 import com.oracle.truffle.api.dsl.TypeSystemReference;
 import com.oracle.truffle.api.frame.VirtualFrame;
-import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.nodes.NodeInfo;
 import org.graalphp.types.PhpTypes;
 
@@ -15,7 +14,7 @@ import org.graalphp.types.PhpTypes;
  */
 @NodeInfo(description = "Abstract base node for all PHP nodes")
 @TypeSystemReference(PhpTypes.class)
-public abstract class PhpStmtNode extends Node {
+public abstract class PhpStmtNode extends PhpNode {
 
     private static final int SRC_SECTION_NOT_SET = -1;
 

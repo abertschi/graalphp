@@ -3,6 +3,9 @@ package org.graalphp.parser;
 import com.oracle.truffle.api.frame.FrameSlot;
 import com.oracle.truffle.api.frame.FrameSlotKind;
 import org.eclipse.php.core.ast.nodes.ASTNode;
+import org.eclipse.php.core.ast.nodes.ArrayAccess;
+import org.eclipse.php.core.ast.nodes.ArrayCreation;
+import org.eclipse.php.core.ast.nodes.ArrayElement;
 import org.eclipse.php.core.ast.nodes.Assignment;
 import org.eclipse.php.core.ast.nodes.Expression;
 import org.eclipse.php.core.ast.nodes.FunctionInvocation;
@@ -19,6 +22,10 @@ import org.graalphp.PhpLanguage;
 import org.graalphp.exception.PhpException;
 import org.graalphp.nodes.PhpExprNode;
 import org.graalphp.nodes.PhpStmtNode;
+import org.graalphp.nodes.array.ArrayReadNodeGen;
+import org.graalphp.nodes.array.ArrayWriteNodeGen;
+import org.graalphp.nodes.array.NewArrayInitialValuesNodeGen;
+import org.graalphp.nodes.array.NewArrayNode;
 import org.graalphp.nodes.binary.PhpAddNodeGen;
 import org.graalphp.nodes.binary.PhpDivNodeGen;
 import org.graalphp.nodes.binary.PhpMulNodeGen;
@@ -257,7 +264,7 @@ public class ExprVisitor extends HierarchicalVisitor {
                 if (NumberLiteralFactory.isBooleanLiteral(v)) {
                     currExpr = new PhpBooleanNode(NumberLiteralFactory.booleanLiteralToValue(v));
                 } else {
-                    LOG.parserEnumerationError("Strings not yet supported");
+                    throw new UnsupportedOperationException("Strings not yet supported: " + scalar);
                 }
                 break;
             default:
@@ -298,19 +305,72 @@ public class ExprVisitor extends HierarchicalVisitor {
 
     // ---------------- local variable write --------------------
 
-    @Override
-    public boolean visit(Assignment ass) {
-        if (!(ass.getLeftHandSide() instanceof Variable)) {
-            throw new UnsupportedOperationException("Other variables than identifier not " +
-                    "supported" + ass);
-        }
+    /**
+     * create assignment of form $A[$val] = ...
+     */
+    private PhpExprNode createArrayIndexWriteAssignment(Assignment ass) {
+        assert ass.getLeftHandSide() instanceof ArrayAccess : "needs array in lhs";
+        ArrayAccess arrayAccess = (ArrayAccess) ass.getLeftHandSide();
+
+        final String arrayVariableName = new IdentifierVisitor()
+                .getIdentifierName(arrayAccess.getName()).getName();
+        final PhpExprNode arrayTarget = initAndAcceptExpr(arrayAccess.getName());
+        final PhpExprNode index = initAndAcceptExpr(arrayAccess.getIndex());
+        final PhpExprNode rhs = initAndAcceptExpr(ass.getRightHandSide());
+
+        final PhpExprNode node = ArrayWriteNodeGen.create(arrayTarget, index, rhs);
+        setSourceSection(node, arrayAccess);
+
+        final PhpExprNode assignNode = createLocalAssignment(scope, arrayVariableName, node, null);
+        setSourceSection(assignNode, ass);
+        return assignNode;
+    }
+
+    /**
+     * create assignment of form $a = ..., where $a is not an array
+     */
+    private PhpExprNode createNonArrayAssignment(Assignment ass) {
         final String dest = new IdentifierVisitor()
                 .getIdentifierName(ass.getLeftHandSide()).getName();
 
         final PhpExprNode source = initAndAcceptExpr(ass.getRightHandSide());
         final PhpExprNode assignNode = createLocalAssignment(scope, dest, source, null);
         setSourceSection(assignNode, ass);
-        currExpr = assignNode;
+        return assignNode;
+    }
+
+    @Override
+    public boolean visit(Assignment ass) {
+        if (!(ass.getLeftHandSide() instanceof Variable)) {
+            throw new UnsupportedOperationException("Other variables than identifier not " +
+                    "supported: " + ass);
+        }
+        switch (ass.getOperator()) {
+            case Assignment.OP_EQUAL:
+                break;
+            case Assignment.OP_PLUS_EQUAL:
+            case Assignment.OP_MINUS_EQUAL:
+            case Assignment.OP_MUL_EQUAL:
+            case Assignment.OP_DIV_EQUAL:
+            case Assignment.OP_CONCAT_EQUAL:
+            case Assignment.OP_MOD_EQUAL:
+            case Assignment.OP_AND_EQUAL:
+            case Assignment.OP_OR_EQUAL:
+            case Assignment.OP_XOR_EQUAL:
+            case Assignment.OP_SL_EQUAL:
+            case Assignment.OP_SR_EQUAL:
+            case Assignment.OP_POW_EQUAL:
+            case Assignment.OP_COALESCE_EQUAL:
+            default:
+                throw new UnsupportedOperationException
+                        ("does not support: " + ass.getOperator() + ass);
+        }
+
+        if (ass.getLeftHandSide() instanceof ArrayAccess) {
+            currExpr = createArrayIndexWriteAssignment(ass);
+        } else {
+            currExpr = createNonArrayAssignment(ass);
+        }
         return false;
     }
 
@@ -350,6 +410,46 @@ public class ExprVisitor extends HierarchicalVisitor {
         setSourceSection(invokeNode, fn);
 
         currExpr = invokeNode;
+        return false;
+    }
+
+    // ---------------- arrays --------------------
+
+    @Override
+    public boolean visit(ArrayCreation arrayCreation) {
+        List<PhpExprNode> arrayInitVals = new LinkedList<>();
+        for (ArrayElement e : arrayCreation.elements()) {
+            final Expression key = e.getKey(); // TODO: no support for keys yet
+            if (key != null) {
+                throw new UnsupportedOperationException("Arrays with keys not yet supported");
+            }
+            final Expression val = e.getValue();
+            arrayInitVals.add(initAndAcceptExpr(val));
+        }
+
+        // XXX: We currently support long arrays by default and generalize if needed
+        final PhpExprNode newArrayNode;
+        if (arrayInitVals.size() == 0) {
+            newArrayNode = new NewArrayNode();
+        } else {
+            newArrayNode = NewArrayInitialValuesNodeGen.create(arrayInitVals);
+        }
+        setSourceSection(newArrayNode, arrayCreation);
+        currExpr = newArrayNode;
+        return false;
+    }
+
+    @Override
+    public boolean visit(ArrayAccess arrayAccess) {
+        if (arrayAccess.getArrayType() == ArrayAccess.VARIABLE_HASHTABLE) {
+            throw new UnsupportedOperationException("ArrayAccess.VARIABLE_HASHTABLE not supported" +
+                    " in: " + arrayAccess.toString());
+        }
+        final PhpExprNode target = initAndAcceptExpr(arrayAccess.getName());
+        final PhpExprNode index = initAndAcceptExpr(arrayAccess.getIndex());
+        currExpr = ArrayReadNodeGen.create(target, index);
+        setSourceSection(currExpr, arrayAccess);
+
         return false;
     }
 

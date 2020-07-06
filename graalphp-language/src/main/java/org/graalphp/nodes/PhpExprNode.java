@@ -3,6 +3,7 @@ package org.graalphp.nodes;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.NodeInfo;
 import com.oracle.truffle.api.nodes.UnexpectedResultException;
+import org.graalphp.runtime.array.PhpArray;
 import org.graalphp.types.PhpTypesGen;
 
 /**
@@ -35,7 +36,7 @@ public abstract class PhpExprNode extends PhpStmtNode {
         return PhpTypesGen.expectDouble(this.executeGeneric(f));
     }
 
-//    public PhpFunction executePhpFunction(VirtualFrame f) throws UnexpectedResultException {
-//        return PhpTypesGen.expectPhpFunction(this.executeGeneric(f));
-//    }
+    public PhpArray executePhpArray(VirtualFrame f) throws UnexpectedResultException {
+        return PhpTypesGen.expectPhpArray(this.executeGeneric(f));
+    }
 }

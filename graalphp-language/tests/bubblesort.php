@@ -24,7 +24,7 @@ function bubbleSort($arr, $size) {
     return $arr;
 }
 
-function printArray($arr, int $size) {
+function printArray($arr, $size) {
     // int n;
     // int i;
     $n = $size;
@@ -32,20 +32,15 @@ function printArray($arr, int $size) {
     $i = 0;
     while ($i < $n) {
         write($arr[$i]);
-        writeln();
         $i = $i + 1;
     }
 
 }
 
 function write($a) {
-    print($a);
+    println($a);
 }
 
-function writeln() {
-    println();
-// echo "\n";
-}
 
 $size = 10;
     

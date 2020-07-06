@@ -3,6 +3,7 @@ package org.graalphp.types;
 import com.oracle.truffle.api.dsl.ImplicitCast;
 import com.oracle.truffle.api.dsl.TypeCast;
 import com.oracle.truffle.api.dsl.TypeSystem;
+import org.graalphp.runtime.array.PhpArray;
 
 /**
  * @author abertschi
@@ -10,7 +11,9 @@ import com.oracle.truffle.api.dsl.TypeSystem;
 @TypeSystem({
         boolean.class,
         long.class,
-        double.class
+        double.class,
+        PhpArray.class,
+        Object[].class
 })
 public abstract class PhpTypes {
 

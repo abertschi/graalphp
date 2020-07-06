@@ -1,0 +1,38 @@
+## -*- coding: utf-8;mode: org; fill-column: 80;  -*-
+## This file is best viewed with GNU Emacs Org-mode: http://orgmode.org/
+
+#+TITLE: Array Design Notes
+
+* TransitionLimit in Export Library
+- https://github.com/oracle/graal/blob/master/truffle/src/com.oracle.truffle.api.library.test/src/com/oracle/truffle/api/library/test/AcceptsTransitionTest.java
+
+
+* Array Behavior
+- Arrays are copied by value by default
+- our current implementation assigns PhpArray which is an instance. We do not copy yet.
+  - ideally we implement a copy on write mechanism as copying is expensive.
+
+* Current Implementation Details (initial PR, 6.7.2020)
+We introduce Array behavior. Arrays in PHP are Map like. This PR does not fully
+implement Arrays as they are specified.  But introduces an initial
+implementation which works for most cases (and suffices our benchmark requirements)
+
+Arrays are represented by different backends making use of Truffle Libraries for
+polymorphic dispatch with specializations.
+
+- [x] array()
+- [X] array(val1, val2, ...)
+- [X] support for nested arrays of long, or Object type (Object can store mixed values; long, boolean, double, or arrays itself)
+- [X] arrays are initially backed by a long[] based implementation and generalized if needed
+- [X] we support long[] and Object[] based backends
+- [ ] Map like backends (for $A = array(); $A[-1] = ..., like behavior is not implemented yet)
+  - [ ] No key/ value backend
+- [X] array backends have initial capacity and are grown if capacity is exceeded.
+- [ ] there is currently no support for exceptions if an unwritten field is read.
+  - [ ] i.e. ... = $A[10000]; this may work if backend has capacity allocated for index.
+  - [ ] PHP throws an error if an uninitialized index is accessed, this can easily be implemented for Object[] based backend.
+  - [ ] for primitive backends we may have to keep track of inits with bitmaps or the like.
+  - [X] any positive index can be written, array is automatically grown to given size.
+    - If index is too large, transition to a Map like backend may be more performant  
+- PHP has a copy by value behavior if an array is assigned to another value
+  - [ ] we currently copy by reference
