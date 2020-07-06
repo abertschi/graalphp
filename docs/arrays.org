@@ -36,3 +36,50 @@ polymorphic dispatch with specializations.
     - If index is too large, transition to a Map like backend may be more performant  
 - PHP has a copy by value behavior if an array is assigned to another value
   - [ ] we currently copy by reference
+
+** Slack
+Hi there,
+
+I am referring to the initial entry I posted here in slack: [0] 
+
+I now implemented a rudimentary array support using Truffle libraries for my PHP
+implementation. It already works satisfyingly :) Sometimes I had
+struggles interpreting Nullpointer exceptions caused by wrongly instructed
+Truffle DSL annotations.  In some cases involving Libraries, an issue simply
+resolved into a Nullpointer exception without further context.
+This was only a minor struggle though.
+
+I would be really glad if someone could give me feedback regarding how truffle
+idiomatic my implementation is. It does not have to be rigorous feedback, but
+considering my next design steps, it would help me alot if someone with more API/DSL
+experience could take a look at it.
+
+Conceptually I implemented arrays in PHP as follows;
+- We have backends for different array representations; currently long[] and Object[]
+- A backend is represented as a PhpArray class with backend: Object, and capacity:int
+- We have a Truffle Library implementation called ArrayLibrary ([1]),
+  - it defines behavior for arrays; read, write, grow, copy, tostring, ...
+  - Implementations of this library use receiverType = Object[].class/
+    long[].class and do dispatch on the backend array
+  - each implementation is able to generalize to a more abstract representation
+    
+- We have nodes to write array entries (ArrayWriteNode [2]), read entries
+  (ArrayReadNode [3]) and create arrays (NewArrayNode [4])
+
+The array relevant code is in the PR;
+https://github.com/abertschi/graalphp/pull/28
+
+Thanks for any kind of help in advance, Truffle rocks! :)
+
+[0] slack;  https://graalvm.slack.com/archives/CNQSB2DHD/p1593623989411800
+[1] ArrayLibrary: https://github.com/abertschi/graalphp/blob/feature/arrays/graalphp-language/src/main/java/org/graalphp/runtime/array/ArrayLibrary.java
+[2] ArrayWriteNode: https://github.com/abertschi/graalphp/blob/feature/arrays/graalphp-language/src/main/java/org/graalphp/nodes/array/ArrayWriteNode.java
+[3] ArrayReadNode: https://github.com/abertschi/graalphp/blob/feature/arrays/graalphp-language/src/main/java/org/graalphp/nodes/array/ArrayReadNode.java
+[4] NewArrayInitialValuesNode: https://github.com/abertschi/graalphp/blob/feature/arrays/graalphp-language/src/main/java/org/graalphp/nodes/array/NewArrayInitialValuesNode.java
+
+
+
+
+
+
+** 

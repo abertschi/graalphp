@@ -46,12 +46,10 @@ public abstract class ReadLocalVarNode extends PhpExprNode {
             CompilerDirectives.transferToInterpreter();
             Object result = frame.getValue(getSlot());
             frame.setObject(getSlot(), result);
-//            L.info("readGeneric in ReadLocalVarNode: " + result);
             return result;
         }
 
         Object objectSafe = FrameUtil.getObjectSafe(frame, getSlot());
-//        L.info("readGeneric in ReadLocalVarNode: " + objectSafe);
         return objectSafe;
 
     }
