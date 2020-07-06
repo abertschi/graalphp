@@ -42,7 +42,7 @@ Hi there,
 
 I am referring to the initial entry I posted here in slack: [0] 
 
-I now implemented a rudimentary array support using Truffle libraries for my PHP
+I now implemented rudimentary array support using Truffle libraries for my PHP
 implementation. It already works satisfyingly :) Sometimes I had
 struggles interpreting Nullpointer exceptions caused by wrongly instructed
 Truffle DSL annotations.  In some cases involving Libraries, an issue simply
@@ -51,7 +51,7 @@ This was only a minor struggle though.
 
 I would be really glad if someone could give me feedback regarding how truffle
 idiomatic my implementation is. It does not have to be rigorous feedback, but
-considering my next design steps, it would help me alot if someone with more API/DSL
+considering my next design steps, it would help me alot if someone with more Truffle API/DSL
 experience could take a look at it.
 
 Conceptually I implemented arrays in PHP as follows;
@@ -64,10 +64,14 @@ Conceptually I implemented arrays in PHP as follows;
   - each implementation is able to generalize to a more abstract representation
     
 - We have nodes to write array entries (ArrayWriteNode [2]), read entries
-  (ArrayReadNode [3]) and create arrays (NewArrayNode [4])
+  (ArrayReadNode [3]) and create arrays (NewArrayNode [4]).
 
 The array relevant code is in the PR;
-https://github.com/abertschi/graalphp/pull/28
+https://github.com/abertschi/graalphp/pull/28,
+
+in particular, these classes;
+- runtime: https://github.com/abertschi/graalphp/tree/feature/arrays/graalphp-language/src/main/java/org/graalphp/runtime/array
+- nodes: https://github.com/abertschi/graalphp/tree/feature/arrays/graalphp-language/src/main/java/org/graalphp/nodes/array
 
 Thanks for any kind of help in advance, Truffle rocks! :)
 
