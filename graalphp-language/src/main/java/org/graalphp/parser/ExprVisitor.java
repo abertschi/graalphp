@@ -23,8 +23,8 @@ import org.graalphp.nodes.PhpExprNode;
 import org.graalphp.nodes.PhpStmtNode;
 import org.graalphp.nodes.array.ArrayReadNodeGen;
 import org.graalphp.nodes.array.ArrayWriteNodeGen;
+import org.graalphp.nodes.array.NewArrayInitialValuesNodeGen;
 import org.graalphp.nodes.array.NewArrayNode;
-import org.graalphp.nodes.array.NewArrayNodeGen;
 import org.graalphp.nodes.binary.PhpAddNodeGen;
 import org.graalphp.nodes.binary.PhpDivNodeGen;
 import org.graalphp.nodes.binary.PhpMulNodeGen;
@@ -37,11 +37,9 @@ import org.graalphp.nodes.binary.logical.PhpLeNodeGen;
 import org.graalphp.nodes.binary.logical.PhpLtNodeGen;
 import org.graalphp.nodes.binary.logical.PhpNeqNodeGen;
 import org.graalphp.nodes.binary.logical.PhpOrNode;
-import org.graalphp.nodes.controlflow.ExprGroupNode;
 import org.graalphp.nodes.function.PhpFunctionLookupNode;
 import org.graalphp.nodes.function.PhpInvokeNode;
 import org.graalphp.nodes.literal.PhpBooleanNode;
-import org.graalphp.nodes.literal.PhpLongNode;
 import org.graalphp.nodes.localvar.ReadLocalVarNodeGen;
 import org.graalphp.nodes.localvar.WriteLocalVarNodeGen;
 import org.graalphp.nodes.unary.PhpNegNodeGen;
@@ -426,41 +424,16 @@ public class ExprVisitor extends HierarchicalVisitor {
         }
 
         // XXX: We currently support long arrays by default and generalize if needed
-        NewArrayNode newArrayNode = NewArrayNodeGen.create();
+        final PhpExprNode newArrayNode;
         if (arrayInitVals.size() == 0) {
-            setSourceSection(newArrayNode, arrayCreation);
-            currExpr = newArrayNode;
+            newArrayNode = new NewArrayNode();
         } else {
-            List<PhpExprNode> exprGroup = new LinkedList<>();
-            int index = 0;
-            for (PhpExprNode val : arrayInitVals) {
-                exprGroup.add(ArrayWriteNodeGen.create(newArrayNode, new PhpLongNode(index), val));
-                index++;
-            }
-            ExprGroupNode arrayInitGroup = new ExprGroupNode(exprGroup);
-            setSourceSection(arrayInitGroup, arrayCreation);
-            currExpr = arrayInitGroup;
+            newArrayNode = NewArrayInitialValuesNodeGen.create(arrayInitVals);
         }
+        setSourceSection(newArrayNode, arrayCreation);
+        currExpr = newArrayNode;
         return false;
     }
-
-    //    <Assignment start='161' length='11' operator='='>
-    //									<ArrayAccess start='161' length='6' type='array'>
-    //										<Variable start='161' length='2' isDollared='true'>
-    //											<Identifier start='162' length='1' name='p'/>
-    //										</Variable>
-    //										<Index>
-    //											<Variable start='164' length='2' isDollared='true'>
-    //												<Identifier start='165' length='1' name='i'/>
-    //											</Variable>
-    //										</Index>
-    //									</ArrayAccess>
-    //									<Value>
-    //										<Variable start='170' length='2' isDollared='true'>
-    //											<Identifier start='171' length='1' name='i'/>
-    //										</Variable>
-    //									</Value>
-    //								</Assignment>
 
     @Override
     public boolean visit(ArrayAccess arrayAccess) {

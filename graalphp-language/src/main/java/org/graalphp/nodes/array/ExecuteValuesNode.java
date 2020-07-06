@@ -5,16 +5,22 @@ import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.ExplodeLoop;
 import org.graalphp.nodes.PhpExprNode;
 
+import java.util.List;
+
 /**
  * @author abertschi
  */
 public final class ExecuteValuesNode extends PhpExprNode {
 
     @Children
-    private final PhpExprNode[] nodes;
+    private PhpExprNode[] nodes;
 
     public ExecuteValuesNode(PhpExprNode[] nodes) {
         this.nodes = nodes;
+    }
+
+    public ExecuteValuesNode(List<PhpExprNode> nodes) {
+        this.nodes = nodes.toArray(new PhpExprNode[nodes.size()]);
     }
 
     @ExplodeLoop

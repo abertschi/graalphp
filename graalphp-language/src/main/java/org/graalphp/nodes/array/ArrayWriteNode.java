@@ -35,6 +35,10 @@ public abstract class ArrayWriteNode extends PhpExprNode {
         L.info(msg);
     }
 
+    public static ArrayWriteNode create() {
+        return ArrayWriteNodeGen.create(null, null, null);
+    }
+
     public abstract Object executeWrite(PhpArray array, long index, Object value);
 
     /**
