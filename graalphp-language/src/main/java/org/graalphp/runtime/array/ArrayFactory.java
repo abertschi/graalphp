@@ -12,4 +12,9 @@ public final class ArrayFactory {
         PhpArray array = new PhpArray(LongArrayAllocator.ALLOCATOR.allocate(capacity), capacity);
         return array;
     }
+
+    public static PhpArray newArray(int cap) {
+        PhpArray array = new PhpArray(LongArrayAllocator.ALLOCATOR.allocate(cap), cap);
+        return array;
+    }
 }

@@ -11,7 +11,7 @@ import org.graalphp.runtime.array.PhpArray;
  * @author abertschi
  */
 public final class NewArrayNode extends PhpExprNode {
-
+    
     @Override
     public PhpArray executeGeneric(VirtualFrame frame) {
         return ArrayFactory.newArray();
