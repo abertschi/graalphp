@@ -1,6 +1,8 @@
 package org.graalphp.runtime.array;
 
 /**
+ * Allocation strategy for long[].
+ *
  * @author abertschi
  */
 public class LongArrayAllocator implements ArrayAllocator {

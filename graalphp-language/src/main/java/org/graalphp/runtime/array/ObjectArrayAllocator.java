@@ -1,6 +1,8 @@
 package org.graalphp.runtime.array;
 
 /**
+ * Receiver allocation for Object[] arrays
+ *
  * @author abertschi
  */
 public class ObjectArrayAllocator implements ArrayAllocator {

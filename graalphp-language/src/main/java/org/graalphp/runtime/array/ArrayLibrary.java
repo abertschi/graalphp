@@ -101,6 +101,9 @@ public abstract class ArrayLibrary extends Library {
         }
     }
 
+    /**
+     * to string
+     **/
     public abstract String arrayToString(Object receiver);
 
 }

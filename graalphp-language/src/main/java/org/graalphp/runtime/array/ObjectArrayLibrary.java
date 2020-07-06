@@ -9,6 +9,8 @@ import com.oracle.truffle.api.library.ExportMessage;
 import java.util.Arrays;
 
 /**
+ * Array backend for generic Object[] values
+ *
  * @author abertschi
  */
 @ExportLibrary(value = ArrayLibrary.class, receiverType = Object[].class)
@@ -30,21 +32,10 @@ public class ObjectArrayLibrary {
         return receiver[index];
     }
 
-//    @Specialization
     @ExportMessage
     protected static void write(Object[] receiver, int index, Object value) {
         receiver[index] = value;
     }
-
-
-//    static class Write {
-
-
-//        @Specialization
-//        protected static void write(Object[] receiver, int index, Object value) {
-//            receiver[index] = value;
-//        }
-//    }
 
     @ExportMessage
     @TruffleBoundary

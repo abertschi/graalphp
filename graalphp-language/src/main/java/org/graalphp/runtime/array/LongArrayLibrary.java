@@ -10,6 +10,8 @@ import com.oracle.truffle.api.library.ExportMessage;
 import java.util.Arrays;
 
 /**
+ * Array backend for long[] based values
+ *
  * @author abertschi
  */
 @ExportLibrary(value = ArrayLibrary.class, receiverType = long[].class)
