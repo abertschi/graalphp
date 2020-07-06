@@ -1,5 +1,7 @@
 package org.graalphp.util;
 
+import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
+
 /**
  * @author abertschi
  * <p>
@@ -33,29 +35,34 @@ public class PhpLogger implements Logger {
     }
 
     @Override
+    @TruffleBoundary
     public void fine(String msg) {
         if (DISABLE || DISABLE_FINE) return;
         System.err.println(format(msg, "fine"));
     }
 
     @Override
+    @TruffleBoundary
     public void info(String msg) {
         if (DISABLE) return;
         System.err.println(format(msg, "info"));
     }
 
     @Override
+    @TruffleBoundary
     public void finest(String msg) {
         if (DISABLE || DISABLE_FINEST) return;
         System.err.println(format(msg, "finest"));
     }
 
     @Override
+    @TruffleBoundary
     public void warn(String msg) {
         System.err.println(format(msg, "warn"));
     }
 
     @Override
+    @TruffleBoundary
     public void parserEnumerationError(String msg) {
         System.err.println(format(msg, "ERROR"));
     }

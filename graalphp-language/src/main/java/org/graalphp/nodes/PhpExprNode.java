@@ -39,8 +39,4 @@ public abstract class PhpExprNode extends PhpStmtNode {
     public PhpArray executePhpArray(VirtualFrame f) throws UnexpectedResultException {
         return PhpTypesGen.expectPhpArray(this.executeGeneric(f));
     }
-
-    //    public PhpFunction executePhpFunction(VirtualFrame f) throws UnexpectedResultException {
-    //        return PhpTypesGen.expectPhpFunction(this.executeGeneric(f));
-    //    }
 }
