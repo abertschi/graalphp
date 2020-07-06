@@ -38,4 +38,27 @@ public class ParseArrayTest {
         String src = TestCommons.inputStreamToString(getClass().getResourceAsStream("fannkuch.bak.php"));
         TestCommons.compareStdout("", src, false);
     }
+
+    @Test(expected = Exception.class)
+    public void arrayInvalidIndex() {
+        // TODO in order to be php compliant, this test later on must work, array must be converted to map
+        String code = TestCommons.php("$a = array(); $a[-1] = 1;");
+        TestCommons.compareStdout("", code, false);
+
+    }
+
+    @Test()
+    public void arrayAccessSimple() {
+        String code = TestCommons.php("$a = array(); $a[0] = 1337; print($a[0]);");
+        TestCommons.compareStdout("1337", code, false);
+
+    }
+
+    // TODO: this is supposed to fail if php compliant
+//    @Test(expected = Exception.class)
+    public void arrayReadEmpty() {
+        String code = TestCommons.php("$a = array();  print($a[0]);");
+        TestCommons.compareStdout("", code, false);
+
+    }
 }
