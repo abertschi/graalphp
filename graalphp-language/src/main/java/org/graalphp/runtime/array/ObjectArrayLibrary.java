@@ -22,7 +22,7 @@ public class ObjectArrayLibrary {
 
     @ExportMessage
     protected static boolean acceptsValue(Object[] receiver, Object value) {
-        return value instanceof Long;
+        return true;
     }
 
     @ExportMessage
@@ -30,13 +30,21 @@ public class ObjectArrayLibrary {
         return receiver[index];
     }
 
+//    @Specialization
     @ExportMessage
-    static class Write {
-        @Specialization
-        protected static void write(Object[] receiver, int index, long value) {
-            receiver[index] = value;
-        }
+    protected static void write(Object[] receiver, int index, Object value) {
+        receiver[index] = value;
     }
+
+
+//    static class Write {
+
+
+//        @Specialization
+//        protected static void write(Object[] receiver, int index, Object value) {
+//            receiver[index] = value;
+//        }
+//    }
 
     @ExportMessage
     @TruffleBoundary
@@ -56,4 +64,15 @@ public class ObjectArrayLibrary {
             return ObjectArrayAllocator.ALLOCATOR;
         }
     }
+
+    @ExportMessage
+    protected static int capacity(Object[] receiver) {
+        return receiver.length;
+    }
+
+    @ExportMessage
+    protected static Object[] grow(Object[] receiver, int newSize) {
+        return Arrays.copyOf(receiver, newSize);
+    }
+
 }

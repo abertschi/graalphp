@@ -16,12 +16,15 @@ public abstract class ArrayReadNode extends PhpExprNode {
 
     private static final String LIMIT = ArrayLibrary.SPECIALIZATION_LIMIT;
 
+    // TODO: the smallest unit for integer numbers are long, java cant have long array length.
+    // we currently cast to int. for better error handling add error handling if not fit within int.
+    // return arrays.read(array.getBackend(), (int) index);
+
     @Specialization(guards = "arrays.isArray(array.getBackend())", limit = LIMIT)
     Object doLookup(PhpArray array,
                     long index,
                     @CachedLibrary("array.getBackend()") ArrayLibrary arrays) {
 
-        // TODO: cast, we only support long types, but java cant have long array capacities
         return arrays.read(array.getBackend(), (int) index);
     }
 }
