@@ -36,10 +36,7 @@ function Fannkuch($n){
                 $sx = $s[$i];
                 if ($sx != 0){ $s[$i] = $sx-1; break; }
                 if ($i == $m)  {
-                $res = array();
-                $res[0] = $sum;
-                $res[1] = $maxflips;
-                return $res;
+                return  array($sum, $maxflips);
                 }
                 $s[$i] = $i;
                 // Rotate 0<-...<-i+1.

@@ -8,6 +8,8 @@ import org.graalphp.nodes.PhpExprNode;
 import java.util.List;
 
 /**
+ * Execute a list of expressions and return result as Object[]
+ *
  * @author abertschi
  */
 public final class ExecuteValuesNode extends PhpExprNode {

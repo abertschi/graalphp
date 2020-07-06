@@ -1,5 +1,4 @@
 package org.graalphp.runtime.array;
-
 import com.oracle.truffle.api.interop.TruffleObject;
 
 /**
