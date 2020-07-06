@@ -7,8 +7,12 @@ import org.graalphp.nodes.PhpExprNode;
 import org.graalphp.runtime.PhpRuntime;
 import org.graalphp.runtime.array.ArrayLibrary;
 import org.graalphp.runtime.array.PhpArray;
+import org.graalphp.util.Logger;
+import org.graalphp.util.PhpLogger;
 
 /**
+ * Array write node uses variable array backends and generalizes if needed
+ *
  * @author abertschi
  */
 @NodeChild(value = "receiver")
@@ -16,12 +20,22 @@ import org.graalphp.runtime.array.PhpArray;
 @NodeChild(value = "value")
 public abstract class ArrayWriteNode extends PhpExprNode {
 
+    private static final Logger L = PhpLogger.getLogger(ArrayWriteNode.class.getSimpleName());
+    private static final boolean DO_TRACE = true;
+
     public static final String LIMIT = ArrayLibrary.SPECIALIZATION_LIMIT;
     private static final int DEFAULT_CAPACITY_INCREASE = PhpRuntime.INITIAL_ARRAY_CAPACITY;
 
     // TODO: the smallest unit for integer numbers are long, java cant have long array length.
     // we currently cast to int. for better error handling add error handling if not fit within int.
     // library.write(array.getBackend(), (int) index, value);
+
+    private static void log(String msg) {
+        if (!DO_TRACE) return;
+        L.info(msg);
+    }
+
+    public abstract Object executeWrite(PhpArray array, long index, Object value);
 
     /**
      * write within bounds of same type
@@ -37,6 +51,8 @@ public abstract class ArrayWriteNode extends PhpExprNode {
             long index,
             Object value,
             @CachedLibrary("array.getBackend()") ArrayLibrary library) {
+        log("writeInBoundsSameType");
+
         library.write(array.getBackend(), (int) index, value);
         return array;
     }
@@ -57,9 +73,17 @@ public abstract class ArrayWriteNode extends PhpExprNode {
             @CachedLibrary("array.getBackend()") ArrayLibrary library,
             @CachedLibrary(limit = LIMIT) ArrayLibrary newLibrary) {
 
-        array.setBackend(library.generalizeForValue(array.getBackend(), value)
-                .allocate(array.getCapacity()));
-        newLibrary.write(array.getBackend(), (int) index, value);
+        log("writeInBoundsWrongType");
+
+        final int len = array.getCapacity();
+        final Object oldBackend = array.getBackend();
+        final Object newBackend = library
+                .generalizeForValue(array.getBackend(), value).allocate(len);
+
+        library.copyContents(oldBackend, newBackend, len);
+        newLibrary.write(newBackend, (int) index, value);
+        array.setBackend(newBackend);
+
         return array;
     }
 
@@ -78,10 +102,12 @@ public abstract class ArrayWriteNode extends PhpExprNode {
             Object value,
             @CachedLibrary("array.getBackend()") ArrayLibrary library) {
 
-        int newCap = array.getCapacity() + DEFAULT_CAPACITY_INCREASE;
-        array.setBackend(library.grow(array.getBackend(),
-                newCap));
-        array.setCapacity(newCap);
+        log("appendByOneSameType");
+
+        final int newLength = array.getCapacity() + DEFAULT_CAPACITY_INCREASE;
+        array.setBackend(library.grow(array.getBackend(), newLength));
+        array.setCapacity(newLength);
+
         library.write(array.getBackend(), (int) index, value);
         return array;
     }
@@ -101,20 +127,19 @@ public abstract class ArrayWriteNode extends PhpExprNode {
             Object value,
             @CachedLibrary("array.getBackend()") ArrayLibrary library,
             @CachedLibrary(limit = LIMIT) ArrayLibrary newLibrary) {
-        final int oldLength = array.getCapacity();
-        final int newLength = array.getCapacity() + DEFAULT_CAPACITY_INCREASE;
-        final Object newBackend = library.generalizeForValue(array.getBackend(), value)
-                .allocate(newLength);
-        final Object oldBackend = array.getBackend();
 
-        System.err.println(oldBackend);
-        System.err.println(newBackend);
-//        System.err.println(library);
-//        System.err.println(newLibrary);
+        log("appendByOneDifferentType");
+
+        final int oldLength = array.getCapacity();
+        final int newLength = oldLength + DEFAULT_CAPACITY_INCREASE;
+        final Object oldBackend = array.getBackend();
+        final Object newBackend = library
+                .generalizeForValue(array.getBackend(), value).allocate(newLength);
 
         library.copyContents(oldBackend, newBackend, oldLength);
         newLibrary.write(newBackend, (int) index, value);
         array.setBackend(newBackend);
+        array.setCapacity(newLength);
         return array;
     }
 

@@ -27,11 +27,15 @@ public abstract class ArrayLibrary extends Library {
 
     public static final String SPECIALIZATION_LIMIT = "2";
 
-    // TODO:
-    //  - isMap
-    //  - use String in specialization as key
-    //  - migrate
-    //  - increase size
+    // TODO for spec compliance;
+    //  - Implement Map like backend for string keys, and irregular indices (i.e. -1)
+    //  - capacity may be larger than currently set. PHP throws an error if an uninitialized
+    //    entry is accessed
+    //    - with primitive implementations this cannot easily be achieved. We could keep track of
+    //      written indices with bitmap
+    //    - for Object, never written <=> java null
+    //  - PHP copies arrays by default when assigned in new variable. we currently assign reference
+    //    - investigate copy on write with proxies
 
     private static final LibraryFactory<ArrayLibrary> FACTORY =
             LibraryFactory.resolve(ArrayLibrary.class);
@@ -70,7 +74,6 @@ public abstract class ArrayLibrary extends Library {
      * upgrade a receiver to store more generalized types, for example. long[] -> Object[]
      **/
     public abstract ArrayAllocator generalizeForValue(Object receiver, Object newValue);
-
 
     public void copyContents(Object receiver, Object target, int length) {
         throw new UnsupportedOperationException();

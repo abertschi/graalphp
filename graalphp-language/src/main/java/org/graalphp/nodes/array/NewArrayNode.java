@@ -7,9 +7,14 @@ import org.graalphp.runtime.array.LongArrayAllocator;
 import org.graalphp.runtime.array.PhpArray;
 
 /**
+ * Creates a new long based array node, which generalizes if needed.
+ *
  * @author abertschi
  */
-public abstract class NewLongArrayNode extends PhpExprNode {
+public abstract class NewArrayNode extends PhpExprNode {
+
+//    @Child
+//    ArrayWriteNode initialValueWrite;
 
     @Specialization
     protected Object createNew() {

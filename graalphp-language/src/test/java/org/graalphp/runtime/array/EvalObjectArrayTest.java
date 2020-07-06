@@ -9,8 +9,8 @@ import org.graalphp.nodes.array.ArrayReadNode;
 import org.graalphp.nodes.array.ArrayReadNodeGen;
 import org.graalphp.nodes.array.ArrayWriteNode;
 import org.graalphp.nodes.array.ArrayWriteNodeGen;
-import org.graalphp.nodes.array.NewLongArrayNode;
-import org.graalphp.nodes.array.NewLongArrayNodeGen;
+import org.graalphp.nodes.array.NewArrayNode;
+import org.graalphp.nodes.array.NewArrayNodeGen;
 import org.graalphp.nodes.literal.PhpLongNode;
 import org.junit.Test;
 
@@ -42,7 +42,7 @@ public class EvalObjectArrayTest {
                 new PhpLongNode(2)
         };
 
-        NewLongArrayNode newArray = NewLongArrayNodeGen.create();
+        NewArrayNode newArray = NewArrayNodeGen.create();
 
         ArrayWriteNode arrayWriteNode = ArrayWriteNodeGen.create(newArray, new PhpLongNode(0),
                 new PhpLongNode(1337));

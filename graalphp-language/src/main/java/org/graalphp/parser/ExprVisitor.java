@@ -23,8 +23,8 @@ import org.graalphp.nodes.PhpExprNode;
 import org.graalphp.nodes.PhpStmtNode;
 import org.graalphp.nodes.array.ArrayReadNodeGen;
 import org.graalphp.nodes.array.ArrayWriteNodeGen;
-import org.graalphp.nodes.array.NewLongArrayNode;
-import org.graalphp.nodes.array.NewLongArrayNodeGen;
+import org.graalphp.nodes.array.NewArrayNode;
+import org.graalphp.nodes.array.NewArrayNodeGen;
 import org.graalphp.nodes.binary.PhpAddNodeGen;
 import org.graalphp.nodes.binary.PhpDivNodeGen;
 import org.graalphp.nodes.binary.PhpMulNodeGen;
@@ -426,7 +426,7 @@ public class ExprVisitor extends HierarchicalVisitor {
         }
 
         // XXX: We currently support long arrays by default and generalize if needed
-        NewLongArrayNode newArrayNode = NewLongArrayNodeGen.create();
+        NewArrayNode newArrayNode = NewArrayNodeGen.create();
         if (arrayInitVals.size() == 0) {
             setSourceSection(newArrayNode, arrayCreation);
             currExpr = newArrayNode;

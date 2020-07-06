@@ -83,7 +83,6 @@ public class LongArrayLibrary {
             for (int i = 0; i < length; i++) {
                 destinationLibrary.write(destination, i, receiver[i]);
             }
-
         }
     }
 }
