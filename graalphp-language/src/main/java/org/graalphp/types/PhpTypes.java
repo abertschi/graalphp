@@ -20,18 +20,6 @@ public abstract class PhpTypes {
     PhpTypes() {
     }
 
-    //    @ImplicitCast
-    //    public static boolean longToBoolean(long val) {
-    //        // XXX: according to 08-conversions.md#converting-to-boolean-type
-    //        return val != 0;
-    //    }
-    //
-    //    @ImplicitCast
-    //    public static boolean doubleToBoolean(double val) {
-    //        // XXX: according to 08-conversions.md#converting-to-boolean-type
-    //        return val != 0.0;
-    //    }
-
     @ImplicitCast
     public static double longToDouble(long val) {
         return (double) val;
@@ -57,10 +45,4 @@ public abstract class PhpTypes {
     public static long asLong(Object value) {
         return ((Long) value).longValue();
     }
-
-    //    @TypeCast(boolean.class)
-    //    public static long asBoolean(Object value) {
-    //        if ()
-    //        return ((Long) value).longValue();
-    //    }
 }
