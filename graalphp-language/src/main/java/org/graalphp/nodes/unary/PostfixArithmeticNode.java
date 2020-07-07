@@ -34,10 +34,20 @@ public abstract class PostfixArithmeticNode extends PhpExprNode {
         return val;
     }
 
-    @Specialization(guards = "f.isLong(getSlot())")
+    // we convert to double if overflow
+    @Specialization(guards = "f.isLong(getSlot())", rewriteOn = ArithmeticException.class)
     protected long readLong(VirtualFrame f) {
         long val = FrameUtil.getLongSafe(f, getSlot());
-        f.setLong(getSlot(), val + getOperator());
+        long newVal = Math.addExact(val, getOperator());
+        f.setLong(getSlot(), newVal);
+        return val;
+    }
+
+    @Specialization(guards = "f.isLong(getSlot())")
+    protected double readLongOverUnderflow(VirtualFrame f) {
+        double val = FrameUtil.getLongSafe(f, getSlot());
+        f.getFrameDescriptor().setFrameSlotKind(getSlot(), FrameSlotKind.Double);
+        f.setDouble(getSlot(), val + getOperator());
         return val;
     }
 
