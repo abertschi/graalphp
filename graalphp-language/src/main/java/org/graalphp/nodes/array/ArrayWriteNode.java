@@ -3,6 +3,7 @@ package org.graalphp.nodes.array;
 import com.oracle.truffle.api.dsl.NodeChild;
 import com.oracle.truffle.api.dsl.Specialization;
 import com.oracle.truffle.api.library.CachedLibrary;
+import org.graalphp.exception.ArrayCapacityExceededException;
 import org.graalphp.nodes.PhpExprNode;
 import org.graalphp.runtime.PhpRuntime;
 import org.graalphp.runtime.array.ArrayLibrary;
@@ -20,15 +21,10 @@ import org.graalphp.util.PhpLogger;
 @NodeChild(value = "value")
 public abstract class ArrayWriteNode extends PhpExprNode {
 
+    public static final String LIMIT = ArrayLibrary.SPECIALIZATION_LIMIT;
     private static final Logger L = PhpLogger.getLogger(ArrayWriteNode.class.getSimpleName());
     private static final boolean DO_TRACE = true;
-
-    public static final String LIMIT = ArrayLibrary.SPECIALIZATION_LIMIT;
     private static final int DEFAULT_CAPACITY_INCREASE = PhpRuntime.INITIAL_ARRAY_CAPACITY;
-
-    // TODO: the smallest unit for integer numbers are long, java cant have long array length.
-    // we currently cast to int. for better error handling add error handling if not fit within int.
-    // library.write(array.getBackend(), (int) index, value);
 
     private static void log(String msg) {
         if (!DO_TRACE) return;
@@ -55,9 +51,10 @@ public abstract class ArrayWriteNode extends PhpExprNode {
             long index,
             Object value,
             @CachedLibrary("array.getBackend()") ArrayLibrary library) {
+
         log("writeInBoundsSameType");
 
-        library.write(array.getBackend(), (int) index, value);
+        library.write(array.getBackend(), convertToInt(index), value);
         return array;
     }
 
@@ -85,7 +82,7 @@ public abstract class ArrayWriteNode extends PhpExprNode {
                 .generalizeForValue(array.getBackend(), value).allocate(len);
 
         library.copyContents(oldBackend, newBackend, len);
-        newLibrary.write(newBackend, (int) index, value);
+        newLibrary.write(newBackend, convertToInt(index), value);
         array.setBackend(newBackend);
 
         return array;
@@ -112,7 +109,7 @@ public abstract class ArrayWriteNode extends PhpExprNode {
         array.setBackend(library.grow(array.getBackend(), newLength));
         array.setCapacity(newLength);
 
-        library.write(array.getBackend(), (int) index, value);
+        library.write(array.getBackend(), convertToInt(index), value);
         return array;
     }
 
@@ -141,7 +138,7 @@ public abstract class ArrayWriteNode extends PhpExprNode {
                 .generalizeForValue(array.getBackend(), value).allocate(newLength);
 
         library.copyContents(oldBackend, newBackend, oldLength);
-        newLibrary.write(newBackend, (int) index, value);
+        newLibrary.write(newBackend, convertToInt(index), value);
         array.setBackend(newBackend);
         array.setCapacity(newLength);
         return array;
@@ -153,5 +150,14 @@ public abstract class ArrayWriteNode extends PhpExprNode {
 
     protected static boolean canAppendByOne(PhpArray array, long index) {
         return array.getCapacity() == index;
+    }
+
+    private int convertToInt(long val) {
+        if (val < Integer.MAX_VALUE && val > Integer.MIN_VALUE) {
+            return (int) val;
+        } else {
+            throw new ArrayCapacityExceededException("array index is too large for java arrays",
+                    this);
+        }
     }
 }
