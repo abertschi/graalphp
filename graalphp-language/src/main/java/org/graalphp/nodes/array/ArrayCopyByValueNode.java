@@ -24,6 +24,10 @@ public abstract class ArrayCopyByValueNode extends PhpExprNode {
     private static final Logger LOG =
             PhpLogger.getLogger(ArrayCopyByValueNode.class.getSimpleName());
 
+    public static ArrayCopyByValueNode create(PhpExprNode source) {
+        return  ArrayCopyByValueNodeGen.create(source);
+    }
+
     @Specialization
     protected boolean forwardBool(boolean val) {
         return val;
@@ -45,7 +49,7 @@ public abstract class ArrayCopyByValueNode extends PhpExprNode {
                                        ArrayLibrary.SPECIALIZATION_LIMIT)
                                        ArrayLibrary lib) {
 
-        LOG.info("Write by value: " + lib.arrayToString(array.getBackend()));
+//        LOG.info("Write by value: " + lib.arrayToString(array.getBackend()));
 
         ArrayAllocator allocator = lib.allocator(array.getBackend());
         Object newBackend = allocator.allocate(array.getCapacity());

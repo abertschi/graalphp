@@ -2,8 +2,6 @@ package org.graalphp.parser;
 
 import com.oracle.truffle.api.Truffle;
 import com.oracle.truffle.api.frame.FrameDescriptor;
-import com.oracle.truffle.api.frame.FrameSlot;
-import com.oracle.truffle.api.frame.FrameSlotKind;
 import org.eclipse.php.core.ast.nodes.ASTNode;
 import org.eclipse.php.core.ast.nodes.BreakStatement;
 import org.eclipse.php.core.ast.nodes.ContinueStatement;
@@ -32,8 +30,7 @@ import org.graalphp.nodes.controlflow.PhpIfNode;
 import org.graalphp.nodes.controlflow.PhpReturnNode;
 import org.graalphp.nodes.controlflow.PhpWhileNode;
 import org.graalphp.nodes.function.PhpFunctionRootNode;
-import org.graalphp.nodes.localvar.ReadArgNode;
-import org.graalphp.nodes.localvar.WriteLocalVarNodeGen;
+import org.graalphp.nodes.localvar.ReadArgCopyByValueNode;
 import org.graalphp.types.PhpFunction;
 import org.graalphp.util.Logger;
 import org.graalphp.util.PhpLogger;
@@ -101,9 +98,9 @@ public class StmtVisitor extends HierarchicalVisitor {
         if (ret.getExpression() == null) {
             returnNode = new PhpReturnNode(new EmptyExprNode());
         } else {
-            final PhpExprNode ex = this.exprVisitor
-                    .createExprAst(ret.getExpression(), getCurrentScope());
-            returnNode = new PhpReturnNode(ex);
+            final PhpExprNode ex =
+                    this.exprVisitor.createExprAst(ret.getExpression(), getCurrentScope());
+            returnNode = new PhpReturnNode(VisitorHelpers.createArrayCopyNode(ex));
         }
         stmts.add(returnNode);
         return false;
@@ -176,33 +173,20 @@ public class StmtVisitor extends HierarchicalVisitor {
     public boolean visit(FormalParameter formalParameter) {
         assert currFunctionParamExpr == null;
 
-        final ReadArgNode readArg = new ReadArgNode(this.currFunctionArgumentCount);
-        final String name = new IdentifierVisitor()
-                .getIdentifierName(formalParameter.getParameterName()).getName();
-        final PhpExprNode assignNode = createLocalAssignment(
+        final PhpExprNode readArg = new ReadArgCopyByValueNode(this.currFunctionArgumentCount);
+        final String name =
+                new IdentifierVisitor().getIdentifierName(formalParameter.getParameterName()).getName();
+        final PhpExprNode assignNode = VisitorHelpers.createLocalAssignment(
                 this.currFunctionScope,
                 name,
                 readArg,
-                this.currFunctionArgumentCount);
+                this.currFunctionArgumentCount,
+                formalParameter);
         setSourceSection(assignNode, formalParameter);
 
         this.currFunctionArgumentCount++;
         currFunctionParamExpr = assignNode;
         return false;
-    }
-
-    private PhpExprNode createLocalAssignment(ParseScope scope,
-                                              String target,
-                                              PhpExprNode source,
-                                              Integer argumentId) {
-        final FrameSlot frameSlot = scope.getFrameDesc()
-                .findOrAddFrameSlot(target, argumentId, FrameSlotKind.Illegal);
-
-        scope.getVars().put(target, frameSlot);
-
-        // TODO: source section?
-        final PhpExprNode assign = WriteLocalVarNodeGen.create(source, frameSlot);
-        return assign;
     }
 
     /**
