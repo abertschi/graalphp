@@ -346,7 +346,11 @@ public class GraalPhpTestRunner extends ParentRunner<TestCase> {
     private static String readLinesUniformNewline(BufferedReader reader) {
         StringBuilder result = new StringBuilder("");
         try {
-            result.append(reader.readLine()).append("\n");
+            String line = reader.readLine();
+            while (line != null){
+                result.append(line).append("\n");
+                line = reader.readLine();
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

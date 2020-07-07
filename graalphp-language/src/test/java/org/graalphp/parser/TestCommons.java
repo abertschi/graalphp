@@ -20,7 +20,7 @@ public class TestCommons {
         return "<?php " + stmts + "?>";
     }
 
-    private static final double DELTA = 0000000000.1;
+    private static final double DELTA = 2 >> 30;
 
     public static double evalInteger(long expected, String src) {
         Context ctx = Context.create("php");

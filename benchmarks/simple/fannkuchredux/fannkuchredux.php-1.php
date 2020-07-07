@@ -5,18 +5,13 @@
       */
 
 // modifications to version on benchmarksgame website
-// replace += operator to ... = .. + ...;
-// $p = $q = $s = array(); => $p = array(); $q  = array(); s = array();
 // remove list() builtin and assign variables explicitly
 // remove strings from printf and print result values directly
 // use a fixed N instead of command line argument
 // introduce warm up and timing
 
 function Fannkuch($n){
-    $p = array();
-    $q = array();
-    $s = array();
-
+    $p = $q = $s = array();
     $sign = 1; $maxflips = $sum = 0; $m = $n-1;
     for ($i=0; $i<$n; $i++){ $p[$i] = $i; $q[$i] = $i; $s[$i] = $i; }
     do {
@@ -28,7 +23,7 @@ function Fannkuch($n){
             do {
                 $qq = $q[$q0];
                 if ($qq == 0){                                  // ... until 0th element is 0.
-                    $sum = $sum + $sign*$flips;
+                    $sum += $sign*$flips;
                     if ($flips > $maxflips) $maxflips = $flips;  // New maximum?
                     break;
                 }
@@ -56,6 +51,7 @@ function Fannkuch($n){
         }
     } while (true);
 }
+
 
 $N = 8;
 

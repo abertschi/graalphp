@@ -34,8 +34,6 @@ public abstract class ArrayLibrary extends Library {
     //    - with primitive implementations this cannot easily be achieved. We could keep track of
     //      written indices with bitmap
     //    - for Object, never written <=> java null
-    //  - PHP copies arrays by default when assigned in new variable. we currently assign reference
-    //    - investigate copy on write with proxies
 
     private static final LibraryFactory<ArrayLibrary> FACTORY =
             LibraryFactory.resolve(ArrayLibrary.class);
