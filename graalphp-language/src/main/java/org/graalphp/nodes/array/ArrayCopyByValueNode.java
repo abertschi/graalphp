@@ -48,9 +48,6 @@ public abstract class ArrayCopyByValueNode extends PhpExprNode {
                                @CachedLibrary(limit =
                                        ArrayLibrary.SPECIALIZATION_LIMIT)
                                        ArrayLibrary lib) {
-
-//        LOG.info("Write by value: " + lib.arrayToString(array.getBackend()));
-
         ArrayAllocator allocator = lib.allocator(array.getBackend());
         Object newBackend = allocator.allocate(array.getCapacity());
         lib.copyContents(array.getBackend(), newBackend, array.getCapacity());

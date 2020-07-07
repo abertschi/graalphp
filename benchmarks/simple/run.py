@@ -75,4 +75,5 @@ def do_fannkuchredux_benchmark():
     run_graalphp(fib_benchmark)
 
 
-do_fib_benchmark()
+# do_fib_benchmark()
+do_fannkuchredux_benchmark()
