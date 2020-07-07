@@ -8,8 +8,6 @@ import org.graalphp.nodes.PhpExprNode;
 import org.graalphp.runtime.PhpRuntime;
 import org.graalphp.runtime.array.ArrayLibrary;
 import org.graalphp.runtime.array.PhpArray;
-import org.graalphp.util.Logger;
-import org.graalphp.util.PhpLogger;
 
 /**
  * Array write node uses variable array backends and generalizes if needed
@@ -22,14 +20,7 @@ import org.graalphp.util.PhpLogger;
 public abstract class ArrayWriteNode extends PhpExprNode {
 
     public static final String LIMIT = ArrayLibrary.SPECIALIZATION_LIMIT;
-    private static final Logger L = PhpLogger.getLogger(ArrayWriteNode.class.getSimpleName());
-    private static final boolean DO_TRACE = true;
     private static final int DEFAULT_CAPACITY_INCREASE = PhpRuntime.INITIAL_ARRAY_CAPACITY;
-
-    private static void log(String msg) {
-        if (!DO_TRACE) return;
-        L.info(msg);
-    }
 
     public static ArrayWriteNode create() {
         return ArrayWriteNodeGen.create(null, null, null);
@@ -52,8 +43,6 @@ public abstract class ArrayWriteNode extends PhpExprNode {
             Object value,
             @CachedLibrary("array.getBackend()") ArrayLibrary library) {
 
-        log("writeInBoundsSameType");
-
         library.write(array.getBackend(), convertToInt(index), value);
         return array;
     }
@@ -73,8 +62,6 @@ public abstract class ArrayWriteNode extends PhpExprNode {
             Object value,
             @CachedLibrary("array.getBackend()") ArrayLibrary library,
             @CachedLibrary(limit = LIMIT) ArrayLibrary newLibrary) {
-
-        log("writeInBoundsWrongType");
 
         final int len = array.getCapacity();
         final Object oldBackend = array.getBackend();
@@ -103,8 +90,6 @@ public abstract class ArrayWriteNode extends PhpExprNode {
             Object value,
             @CachedLibrary("array.getBackend()") ArrayLibrary library) {
 
-        log("appendByOneSameType");
-
         final int newLength = array.getCapacity() + DEFAULT_CAPACITY_INCREASE;
         array.setBackend(library.grow(array.getBackend(), newLength));
         array.setCapacity(newLength);
@@ -128,8 +113,6 @@ public abstract class ArrayWriteNode extends PhpExprNode {
             Object value,
             @CachedLibrary("array.getBackend()") ArrayLibrary library,
             @CachedLibrary(limit = LIMIT) ArrayLibrary newLibrary) {
-
-        log("appendByOneDifferentType");
 
         final int oldLength = array.getCapacity();
         final int newLength = oldLength + DEFAULT_CAPACITY_INCREASE;
