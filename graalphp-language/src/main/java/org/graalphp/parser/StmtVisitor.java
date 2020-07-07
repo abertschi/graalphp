@@ -100,6 +100,8 @@ public class StmtVisitor extends HierarchicalVisitor {
         } else {
             final PhpExprNode ex =
                     this.exprVisitor.createExprAst(ret.getExpression(), getCurrentScope());
+            // XXX: For most cases, it makes sense not to copy the array but rather return
+            // the reference, because function scope ends here
             returnNode = new PhpReturnNode(VisitorHelpers.createArrayCopyNode(ex));
         }
         stmts.add(returnNode);
