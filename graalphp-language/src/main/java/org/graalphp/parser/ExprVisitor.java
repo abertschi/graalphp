@@ -21,6 +21,7 @@ import org.graalphp.PhpLanguage;
 import org.graalphp.exception.PhpException;
 import org.graalphp.nodes.PhpExprNode;
 import org.graalphp.nodes.PhpStmtNode;
+import org.graalphp.nodes.array.ArrayCopyByValueNodeGen;
 import org.graalphp.nodes.array.ArrayReadNodeGen;
 import org.graalphp.nodes.array.ArrayWriteNodeGen;
 import org.graalphp.nodes.array.NewArrayInitialValuesNodeGen;
@@ -299,6 +300,8 @@ public class ExprVisitor extends HierarchicalVisitor {
         return false;
     }
 
+    // A[0] = B;
+    // C = B;
     // ---------------- local variable write --------------------
 
     /**
@@ -312,9 +315,11 @@ public class ExprVisitor extends HierarchicalVisitor {
                 .getIdentifierName(arrayAccess.getName()).getName();
         final PhpExprNode arrayTarget = initAndAcceptExpr(arrayAccess.getName());
         final PhpExprNode index = initAndAcceptExpr(arrayAccess.getIndex());
-        final PhpExprNode rhs = initAndAcceptExpr(ass.getRightHandSide());
+        final PhpExprNode rhsSource = initAndAcceptExpr(ass.getRightHandSide());
+        // TODO: generalize
+        final PhpExprNode rhsCopyArray = ArrayCopyByValueNodeGen.create(rhsSource);
 
-        final PhpExprNode node = ArrayWriteNodeGen.create(arrayTarget, index, rhs);
+        final PhpExprNode node = ArrayWriteNodeGen.create(arrayTarget, index, rhsCopyArray);
         setSourceSection(node, arrayAccess);
 
         final PhpExprNode assignNode = createLocalAssignment(scope, arrayVariableName, node, null);
@@ -330,7 +335,8 @@ public class ExprVisitor extends HierarchicalVisitor {
                 .getIdentifierName(ass.getLeftHandSide()).getName();
 
         final PhpExprNode source = initAndAcceptExpr(ass.getRightHandSide());
-        final PhpExprNode assignNode = createLocalAssignment(scope, dest, source, null);
+        final PhpExprNode rhsCopyArray = ArrayCopyByValueNodeGen.create(source);
+        final PhpExprNode assignNode = createLocalAssignment(scope, dest, rhsCopyArray, null);
         setSourceSection(assignNode, ass);
         return assignNode;
     }
@@ -361,6 +367,8 @@ public class ExprVisitor extends HierarchicalVisitor {
                 throw new UnsupportedOperationException
                         ("does not support: " + ass.getOperator() + ass);
         }
+
+
 
         if (ass.getLeftHandSide() instanceof ArrayAccess) {
             currExpr = createArrayIndexWriteAssignment(ass);

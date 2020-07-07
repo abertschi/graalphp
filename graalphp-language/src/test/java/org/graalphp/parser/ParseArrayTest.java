@@ -91,6 +91,13 @@ public class ParseArrayTest {
                 "$A = array(); $B = array(); $B[0] = 1337; $A[0] = $B; print($A[0][0]);");
     }
 
+
+    @Test
+    public void arrayCopyByValue() {
+        TestCommons.compareStdout("13371336",
+                "$B = array(); $B[0] = 1337; $A = $B; $B[0] = 1336; print($A[0]); print($B[0]);");
+    }
+
     // TODO: this is supposed to fail if php compliant
     //    @Test(expected = Exception.class)
     public void arrayReadEmpty() {
