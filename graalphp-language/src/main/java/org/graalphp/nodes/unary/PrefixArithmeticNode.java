@@ -39,11 +39,20 @@ public abstract class PrefixArithmeticNode extends PhpExprNode {
         return val;
     }
 
-    @Specialization(guards = "f.isLong(getSlot())")
+    @Specialization(guards = "f.isLong(getSlot())", rewriteOn = ArithmeticException.class)
     protected long readLong(VirtualFrame f) {
         long val = FrameUtil.getLongSafe(f, getSlot());
-        val = val + getOperator();
+        val = Math.addExact(val, getOperator());
         f.setLong(getSlot(), val);
+        return val;
+    }
+
+    @Specialization(guards = "f.isLong(getSlot())")
+    protected double readLongOverflow(VirtualFrame f) {
+        double val = FrameUtil.getLongSafe(f, getSlot());
+        val = val + getOperator();
+        f.getFrameDescriptor().setFrameSlotKind(getSlot(), FrameSlotKind.Double); // slow path
+        f.setDouble(getSlot(), val);
         return val;
     }
 

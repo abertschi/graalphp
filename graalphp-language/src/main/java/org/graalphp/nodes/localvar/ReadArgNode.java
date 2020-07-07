@@ -26,7 +26,6 @@ public final class ReadArgNode extends PhpExprNode {
             return args[index];
         } else {
             invalidArgumentProfile.enter();
-            // TODO: we throw exception in strict mode
             throw new UnsupportedOperationException("invalid argument count given");
         }
     }
