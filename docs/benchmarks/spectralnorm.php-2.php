@@ -7,11 +7,11 @@ modified by anon
 */
 
 
-function A(&$i, &$j){
+function A($i, $j){
    return 1.0 / ( ( ( ($i+$j) * ($i+$j+1) ) >> 1 ) + $i + 1 );
 }
 
-function Av(&$n,&$v){
+function Av($n,$v){
    global $_tpl;
    $Av = $_tpl;
    for ($i = 0; $i < $n; ++$i) {
@@ -24,7 +24,7 @@ function Av(&$n,&$v){
    return $Av;
 }
 
-function Atv(&$n,&$v){
+function Atv($n,$v){
    global $_tpl;
    $Atv = $_tpl;
    for($i = 0; $i < $n; ++$i) {
@@ -37,7 +37,7 @@ function Atv(&$n,&$v){
    return $Atv;
 }
 
-function AtAv(&$n,&$v){
+function AtAv($n,$v){
    $tmp = Av($n,$v);
    return Atv($n, $tmp);
 }
@@ -54,6 +54,7 @@ for ($i=0; $i<10; $i++){
 $vBv = 0.0;
 $vv = 0.0;
 $i = 0;
+var_dump($v);
 foreach($v as $val) {
    $vBv += $u[$i]*$val;
    $vv += $val*$val;
