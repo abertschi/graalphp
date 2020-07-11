@@ -16,7 +16,7 @@ public class ExpectsSingleVariable extends HierarchicalVisitor {
     private Identifier id;
 
     public String resolveName(ASTNode node) {
-        visit(node);
+        node.accept(this);
         if (var != null && var.isDollared()) {
             return id.getName();
         }
