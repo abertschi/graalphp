@@ -1,0 +1,125 @@
+## -*- coding: utf-8;mode: org; fill-column: 80;  -*-
+## This file is best viewed with GNU Emacs Org-mode: http://orgmode.org/
+
+#+TITLE: Array Design Notes
+
+* TransitionLimit in Export Library
+- https://github.com/oracle/graal/blob/master/truffle/src/com.oracle.truffle.api.library.test/src/com/oracle/truffle/api/library/test/AcceptsTransitionTest.java
+
+* Array Behavior
+- Arrays are copied by value by default
+- our current implementation assigns PhpArray which is an instance. We do not copy yet.
+  - ideally we implement a copy on write mechanism as copying is expensive.
+
+* Current Implementation Details (initial PR, 6.7.2020)
+We introduce Array behavior. Arrays in PHP are Map like. This PR does not fully
+implement Arrays as they are specified.  But introduces an initial
+implementation which works for most cases (and suffices our benchmark requirements)
+
+Arrays are represented by different backends making use of Truffle Libraries for
+polymorphic dispatch with specializations.
+
+- [x] array()
+- [X] array(val1, val2, ...)
+- [X] support for nested arrays of long, or Object type (Object can store mixed values; long, boolean, double, or arrays itself)
+- [X] arrays are initially backed by a long[] based implementation and generalized if needed
+- [X] we support long[] and Object[] based backends
+- [ ] Map like backends (for $A = array(); $A[-1] = ..., like behavior is not implemented yet)
+  - [ ] No key/ value backend
+- [X] array backends have initial capacity and are grown if capacity is exceeded.
+- [ ] there is currently no support for exceptions if an unwritten field is read.
+  - [ ] i.e. ... = $A[10000]; this may work if backend has capacity allocated for index.
+  - [ ] PHP throws an error if an uninitialized index is accessed, this can easily be implemented for Object[] based backend.
+  - [ ] for primitive backends we may have to keep track of inits with bitmaps or the like.
+  - [X] any positive index can be written, array is automatically grown to given size.
+    - If index is too large, transition to a Map like backend may be more performant
+- PHP has a copy by value behavior if an array is assigned to another value
+  - [ ] we currently copy by reference
+
+** Slack Input
+Hi there,
+
+I am referring to the initial entry I posted here on slack: [0]
+
+I now implemented rudimentary array support using Truffle libraries for my PHP
+implementation. It already works satisfyingly :) Sometimes I had
+struggles interpreting Nullpointer exceptions caused by wrongly instructed
+Truffle DSL annotations.  In some cases involving Libraries, an issue simply
+resolved into a Nullpointer exception without further context.
+This was only a minor struggle though.
+
+I would be really glad if someone could give me feedback regarding how truffle
+idiomatic my implementation is. It does not have to be rigorous, but
+considering my next design steps, it would help me alot if someone with more Truffle DSL
+experience could take a look at it.
+
+Conceptually I implemented arrays in PHP as follows;
+- We have backends for different array representations; currently long[] and Object[]
+- A backend is represented as a PhpArray class with backend: Object, and capacity:int
+- We have a Truffle Library implementation called ArrayLibrary ([1]),
+  - it defines behavior for arrays; read, write, grow, copy, tostring, ...
+  - Implementations of this library use receiverType = Object[].class/
+    long[].class and do dispatch on the backend array
+  - each implementation is able to generalize to a more abstract representation
+
+- We have nodes to write array entries (ArrayWriteNode [2]), read entries
+  (ArrayReadNode [3]) and create arrays (NewArrayNode [4]).
+
+The array relevant code is in the PR;
+https://github.com/abertschi/graalphp/pull/28,
+
+in particular, these classes;
+- runtime: https://github.com/abertschi/graalphp/tree/feature/arrays/graalphp-language/src/main/java/org/graalphp/runtime/array
+- nodes: https://github.com/abertschi/graalphp/tree/feature/arrays/graalphp-language/src/main/java/org/graalphp/nodes/array
+
+Thanks for any kind of help in advance, Truffle rocks! :)
+
+[0] slack;  https://graalvm.slack.com/archives/CNQSB2DHD/p1593623989411800
+[1] ArrayLibrary: https://github.com/abertschi/graalphp/blob/feature/arrays/graalphp-language/src/main/java/org/graalphp/runtime/array/ArrayLibrary.java
+[2] ArrayWriteNode: https://github.com/abertschi/graalphp/blob/feature/arrays/graalphp-language/src/main/java/org/graalphp/nodes/array/ArrayWriteNode.java
+[3] ArrayReadNode: https://github.com/abertschi/graalphp/blob/feature/arrays/graalphp-language/src/main/java/org/graalphp/nodes/array/ArrayReadNode.java
+[4] NewArrayInitialValuesNode: https://github.com/abertschi/graalphp/blob/feature/arrays/graalphp-language/src/main/java/org/graalphp/nodes/array/NewArrayInitialValuesNode.java
+
+* Array Copy By Value/ Reference Design Notes
+- PHP does copy by value for arrays
+- For performance reasons, a copy on write mechanism should be considered
+
+** Implementing Copy By Value
+We represent an Array as a PhpArray class which stores a backend and a capacity.
+So by default, an assignment of a PhpArray copies the reference to the array.
+
+In order to implement copy by value, a proxy node is needed which forwards all
+other values but arrays and makes a copy of the array first.
+
+
+This proxy node is needed wherever an assignment with an array on the right hand side takes place.
+The only exception is if the array is created initially. There no such copy is needed as the array is new.
+
+Sketch;
+#+begin_src java
+@Specialization
+    protected Object copyArray(PhpArray array,
+                               @CachedLibrary(limit =
+                                       ArrayLibrary.SPECIALIZATION_LIMIT)
+                                       ArrayLibrary lib) {
+
+        LOG.info("Write by value: " + lib.arrayToString(array.getBackend()));
+
+        ArrayAllocator allocator = lib.allocator(array.getBackend());
+        Object newBackend = allocator.allocate(array.getCapacity());
+        lib.copyContents(array.getBackend(), newBackend, array.getCapacity());
+        PhpArray newArray = ArrayFactory.newArray(newBackend, array.getCapacity());
+        return newArray;
+    }
+
+#+end_src
+
+Locations where the node is needed;
+- Assignment of plain variables where RHS is array; `$A = $B, // where $B is array;`
+- Assignment into an array where RHS is array; `$A[0] = $B; // $B is array`
+- function arguments; foo($A);
+- function return values;
+* Steps for thesis
+- We should probably implement copy by value even if it is not needed for our benchmarks
+- Think about input given in slack/ issue to separate arraylibrary into array
+  library and storage library

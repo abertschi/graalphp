@@ -7,6 +7,8 @@ import com.oracle.truffle.api.frame.FrameSlot;
 import com.oracle.truffle.api.frame.FrameUtil;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import org.graalphp.nodes.PhpExprNode;
+import org.graalphp.util.Logger;
+import org.graalphp.util.PhpLogger;
 
 /**
  * Node to read a local variable from the current frame.
@@ -15,6 +17,8 @@ import org.graalphp.nodes.PhpExprNode;
  */
 @NodeField(name = "slot", type = FrameSlot.class)
 public abstract class ReadLocalVarNode extends PhpExprNode {
+
+    private static final Logger L = PhpLogger.getLogger(ReadLocalVarNode.class.getSimpleName());
 
     protected abstract FrameSlot getSlot();
 
@@ -44,7 +48,9 @@ public abstract class ReadLocalVarNode extends PhpExprNode {
             frame.setObject(getSlot(), result);
             return result;
         }
-        return FrameUtil.getObjectSafe(frame, getSlot());
+
+        Object objectSafe = FrameUtil.getObjectSafe(frame, getSlot());
+        return objectSafe;
 
     }
 }

@@ -8,6 +8,8 @@ import com.oracle.truffle.api.frame.FrameSlot;
 import com.oracle.truffle.api.frame.FrameSlotKind;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import org.graalphp.nodes.PhpExprNode;
+import org.graalphp.util.Logger;
+import org.graalphp.util.PhpLogger;
 
 /**
  * Truffle idiomatic way to write a variable onto the stack (Truffle frame)
@@ -18,6 +20,8 @@ import org.graalphp.nodes.PhpExprNode;
 @NodeChild(value = "srcNode", type = PhpExprNode.class)
 @NodeField(name = "slot", type = FrameSlot.class)
 public abstract class WriteLocalVarNode extends PhpExprNode {
+
+    private static final Logger LOG = PhpLogger.getLogger(WriteLocalVarNode.class.getSimpleName());
 
     // storage slot in frame
     protected abstract FrameSlot getSlot();

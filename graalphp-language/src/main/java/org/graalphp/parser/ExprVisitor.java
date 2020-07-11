@@ -3,6 +3,9 @@ package org.graalphp.parser;
 import com.oracle.truffle.api.frame.FrameSlot;
 import com.oracle.truffle.api.frame.FrameSlotKind;
 import org.eclipse.php.core.ast.nodes.ASTNode;
+import org.eclipse.php.core.ast.nodes.ArrayAccess;
+import org.eclipse.php.core.ast.nodes.ArrayCreation;
+import org.eclipse.php.core.ast.nodes.ArrayElement;
 import org.eclipse.php.core.ast.nodes.Assignment;
 import org.eclipse.php.core.ast.nodes.Expression;
 import org.eclipse.php.core.ast.nodes.FunctionInvocation;
@@ -18,6 +21,10 @@ import org.graalphp.PhpLanguage;
 import org.graalphp.exception.PhpException;
 import org.graalphp.nodes.PhpExprNode;
 import org.graalphp.nodes.PhpStmtNode;
+import org.graalphp.nodes.array.ArrayReadNodeGen;
+import org.graalphp.nodes.array.ArrayWriteNodeGen;
+import org.graalphp.nodes.array.NewArrayInitialValuesNodeGen;
+import org.graalphp.nodes.array.NewArrayNode;
 import org.graalphp.nodes.binary.PhpAddNodeGen;
 import org.graalphp.nodes.binary.PhpDivNodeGen;
 import org.graalphp.nodes.binary.PhpMulNodeGen;
@@ -34,7 +41,6 @@ import org.graalphp.nodes.function.PhpFunctionLookupNode;
 import org.graalphp.nodes.function.PhpInvokeNode;
 import org.graalphp.nodes.literal.PhpBooleanNode;
 import org.graalphp.nodes.localvar.ReadLocalVarNodeGen;
-import org.graalphp.nodes.localvar.WriteLocalVarNodeGen;
 import org.graalphp.nodes.unary.PhpNegNodeGen;
 import org.graalphp.nodes.unary.PostfixArithmeticNode;
 import org.graalphp.nodes.unary.PostfixArithmeticNodeGen;
@@ -84,7 +90,9 @@ public class ExprVisitor extends HierarchicalVisitor {
     }
 
     private void setSourceSection(PhpStmtNode target, ASTNode n) {
-        target.setSourceSection(n.getStart(), n.getLength());
+        if (target.hasSourceSection()) {
+            target.setSourceSection(n.getStart(), n.getLength());
+        }
     }
 
     @Override
@@ -147,62 +155,60 @@ public class ExprVisitor extends HierarchicalVisitor {
         final PhpExprNode left, right;
         left = initAndAcceptExpr(expr.getLeft());
         right = initAndAcceptExpr(expr.getRight());
-
-        currExpr = createInfixExpression(expr, left, right);
+        BinaryOperators op = BinaryOperators.fromInfixExpressionOperator(expr.getOperator());
+        currExpr = createBinaryOperationNode(op, left, right, expr);
         return false;
     }
 
-    private PhpExprNode createInfixExpression(final InfixExpression expr,
-                                              final PhpExprNode left,
-                                              final PhpExprNode right) {
+    private PhpExprNode createBinaryOperationNode(final BinaryOperators op,
+                                                  final PhpExprNode left,
+                                                  final PhpExprNode right,
+                                                  final Expression sourceSection) {
         PhpExprNode result = null;
-        boolean exprHasSource = true;
-
-        switch (expr.getOperator()) {
-            case InfixExpression.OP_PLUS: /* + */
+        switch (op) {
+            case OP_PLUS: /* + */
                 result = PhpAddNodeGen.create(left, right);
                 break;
-            case InfixExpression.OP_MINUS: /* - */
+            case OP_MINUS: /* - */
                 result = PhpSubNodeGen.create(left, right);
                 break;
-            case InfixExpression.OP_MUL:
+            case OP_MUL:
                 result = PhpMulNodeGen.create(left, right);
                 break;
-            case InfixExpression.OP_DIV:
+            case OP_DIV:
                 result = PhpDivNodeGen.create(left, right);
                 break;
-            case InfixExpression.OP_IS_EQUAL:
+            case OP_IS_EQUAL:
                 result = PhpEqNodeGen.create(left, right);
                 break;
-            case InfixExpression.OP_IS_NOT_EQUAL:
+            case OP_IS_NOT_EQUAL:
                 result = PhpNeqNodeGen.create(left, right);
                 break;
-            case InfixExpression.OP_LGREATER:
+            case OP_LGREATER:
                 result = PhpGtNodeGen.create(left, right);
                 break;
-            case InfixExpression.OP_RGREATER:
+            case OP_RGREATER:
                 result = PhpLtNodeGen.create(left, right);
                 break;
-            case InfixExpression.OP_IS_SMALLER_OR_EQUAL:
+            case OP_IS_SMALLER_OR_EQUAL:
                 result = PhpLeNodeGen.create(left, right);
                 break;
-            case InfixExpression.OP_IS_GREATER_OR_EQUAL:
+            case OP_IS_GREATER_OR_EQUAL:
                 result = PhpGeNodeGen.create(left, right);
                 break;
-            case InfixExpression.OP_BOOL_AND:
+            case OP_BOOL_AND:
                 result = new PhpAndNode(left, right);
                 break;
-            case InfixExpression.OP_BOOL_OR:
+            case OP_BOOL_OR:
                 result = new PhpOrNode(left, right);
                 break;
+            case OP_NOT_IMPLEMENTED:
+                // XXX: Not yet all operators implemented
             default:
-                exprHasSource = false;
-                LOG.parserEnumerationError("infix expression operand not implemented: " +
-                        InfixExpression.getOperator(expr.getOperator()));
+                String msg = "infix expr operand not implemented: " + op + "/" + sourceSection;
+                throw new UnsupportedOperationException(msg);
         }
-        if (exprHasSource) {
-            result.setSourceSection(expr.getStart(), expr.getLength());
-        }
+        setSourceSection(result, sourceSection);
         return result;
     }
 
@@ -253,7 +259,7 @@ public class ExprVisitor extends HierarchicalVisitor {
                 if (NumberLiteralFactory.isBooleanLiteral(v)) {
                     currExpr = new PhpBooleanNode(NumberLiteralFactory.booleanLiteralToValue(v));
                 } else {
-                    LOG.parserEnumerationError("Strings not yet supported");
+                    throw new UnsupportedOperationException("Strings not yet supported: " + scalar);
                 }
                 break;
             default:
@@ -274,17 +280,14 @@ public class ExprVisitor extends HierarchicalVisitor {
         assert (currExpr == null);
 
         if (!(variable.getName() instanceof Identifier)) {
-            throw new UnsupportedOperationException("Other variables than identifier not " +
-                    "supported");
+            throw new UnsupportedOperationException("Other vars than identifier not supported");
         }
-
-        // TODO: support global vars
+        // TODO: we currently do not support global variables
         final String name = ((Identifier) variable.getName()).getName();
         FrameSlot varSlot = scope.getVars().get(name);
         if (varSlot == null) {
             PhpException.undefVariableError(name, null);
         }
-
         final PhpExprNode varNode = ReadLocalVarNodeGen.create(varSlot);
         setSourceSection(varNode, variable);
 
@@ -297,31 +300,59 @@ public class ExprVisitor extends HierarchicalVisitor {
     @Override
     public boolean visit(Assignment ass) {
         if (!(ass.getLeftHandSide() instanceof Variable)) {
-            throw new UnsupportedOperationException("Other variables than identifier not " +
-                    "supported");
+            throw new UnsupportedOperationException("Other vars. than Variable not supported:" + ass);
         }
-        final String dest = new IdentifierVisitor()
-                .getIdentifierName(ass.getLeftHandSide()).getName();
-
-        final PhpExprNode source = initAndAcceptExpr(ass.getRightHandSide());
-        final PhpExprNode assignNode = createLocalAssignment(scope, dest, source, null);
-        setSourceSection(assignNode, ass);
-        currExpr = assignNode;
+        currExpr = createAssignmentNode(ass);
         return false;
     }
 
-    private PhpExprNode createLocalAssignment(ParseScope scope,
-                                              String target,
-                                              PhpExprNode source,
-                                              Integer argumentId) {
-        final FrameSlot frameSlot = scope.getFrameDesc()
-                .findOrAddFrameSlot(target, argumentId, FrameSlotKind.Illegal);
+    private PhpExprNode createAssignmentNode(Assignment ass) {
+        final PhpExprNode rhsNode = createAssignmentEvalRhs(ass);
+        final String assignName;
+        final PhpExprNode assignNode;
 
-        scope.getVars().put(target, frameSlot);
+        // Array lookup expression $A[$val] = ...
+        if (ass.getLeftHandSide() instanceof ArrayAccess) {
+            final ArrayAccess lhs = (ArrayAccess) ass.getLeftHandSide();
+            assignName = new IdentifierVisitor().getIdentifierName(lhs.getName()).getName();
+            assignNode = createArrayWriteNode(lhs.getName(), lhs.getIndex(), rhsNode, ass);
+        } else {
+            // variable expression $A = ...
+            assignName = new IdentifierVisitor().getIdentifierName(ass.getLeftHandSide()).getName();
+            assignNode = rhsNode;
+        }
+        return VisitorHelpers.createLocalAssignment(scope, assignName, assignNode, null, ass);
+    }
 
-        // TODO: source section?
-        final PhpExprNode assign = WriteLocalVarNodeGen.create(source, frameSlot);
-        return assign;
+    private PhpExprNode createAssignmentEvalRhs(Assignment ass) {
+        final PhpExprNode rhsNode;
+        if (ass.getOperator() != Assignment.OP_EQUAL) {
+            // expression: $a += ...
+            final BinaryOperators rhsOpType =
+                    BinaryOperators.fromAssignmentOperator(ass.getOperator());
+            final PhpExprNode rhsOp1 = initAndAcceptExpr(ass.getLeftHandSide());
+            final PhpExprNode rhsOp2 = initAndAcceptExpr(ass.getRightHandSide());
+            rhsNode = VisitorHelpers.createArrayCopyNode(
+                    createBinaryOperationNode(rhsOpType, rhsOp1, rhsOp2, ass));
+        } else {
+            // expression: $a = ...
+            rhsNode = VisitorHelpers.createArrayCopyNode(initAndAcceptExpr(ass.getRightHandSide()));
+        }
+        setSourceSection(rhsNode, ass);
+        return rhsNode;
+    }
+
+    // create Node which writes value at index into array, $A[val] = ...
+    private PhpExprNode createArrayWriteNode(Expression arrayTarget,
+                                             Expression arrayIndex,
+                                             PhpExprNode value,
+                                             Expression sourceSection) {
+        final PhpExprNode arrayTargetNode = initAndAcceptExpr(arrayTarget);
+        final PhpExprNode arrayIndexNode = initAndAcceptExpr(arrayIndex);
+        final PhpExprNode arrayWriteNode =
+                ArrayWriteNodeGen.create(arrayTargetNode, arrayIndexNode, value);
+        setSourceSection(arrayWriteNode, sourceSection);
+        return arrayWriteNode;
     }
 
     // ---------------- function invocations --------------------
@@ -341,11 +372,51 @@ public class ExprVisitor extends HierarchicalVisitor {
 
         final PhpFunctionLookupNode lookupNode = new PhpFunctionLookupNode(fnId.getName(), scope);
         setSourceSection(lookupNode, fn);
-        final PhpInvokeNode invokeNode = new PhpInvokeNode(args.toArray(new PhpExprNode[0]),
-                lookupNode);
+        final PhpInvokeNode invokeNode =
+                new PhpInvokeNode(args.toArray(new PhpExprNode[0]), lookupNode);
         setSourceSection(invokeNode, fn);
 
         currExpr = invokeNode;
+        return false;
+    }
+
+    // ---------------- arrays --------------------
+
+    @Override
+    public boolean visit(ArrayCreation arrayCreation) {
+        List<PhpExprNode> arrayInitVals = new LinkedList<>();
+        for (ArrayElement e : arrayCreation.elements()) {
+            final Expression key = e.getKey(); // TODO: no support for keys yet
+            if (key != null) {
+                throw new UnsupportedOperationException("Arrays with keys not yet supported");
+            }
+            final Expression val = e.getValue();
+            arrayInitVals.add(initAndAcceptExpr(val));
+        }
+
+        // XXX: We currently support long arrays by default and generalize if needed
+        final PhpExprNode newArrayNode;
+        if (arrayInitVals.size() == 0) {
+            newArrayNode = new NewArrayNode();
+        } else {
+            newArrayNode = NewArrayInitialValuesNodeGen.create(arrayInitVals);
+        }
+        setSourceSection(newArrayNode, arrayCreation);
+        currExpr = newArrayNode;
+        return false;
+    }
+
+    @Override
+    public boolean visit(ArrayAccess arrayAccess) {
+        if (arrayAccess.getArrayType() == ArrayAccess.VARIABLE_HASHTABLE) {
+            throw new UnsupportedOperationException("ArrayAccess.VARIABLE_HASHTABLE not supported" +
+                    " in: " + arrayAccess.toString());
+        }
+        final PhpExprNode target = initAndAcceptExpr(arrayAccess.getName());
+        final PhpExprNode index = initAndAcceptExpr(arrayAccess.getIndex());
+        currExpr = ArrayReadNodeGen.create(target, index);
+        setSourceSection(currExpr, arrayAccess);
+
         return false;
     }
 }

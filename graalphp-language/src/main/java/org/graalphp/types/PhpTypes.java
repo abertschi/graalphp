@@ -3,6 +3,7 @@ package org.graalphp.types;
 import com.oracle.truffle.api.dsl.ImplicitCast;
 import com.oracle.truffle.api.dsl.TypeCast;
 import com.oracle.truffle.api.dsl.TypeSystem;
+import org.graalphp.runtime.array.PhpArray;
 
 /**
  * @author abertschi
@@ -10,24 +11,14 @@ import com.oracle.truffle.api.dsl.TypeSystem;
 @TypeSystem({
         boolean.class,
         long.class,
-        double.class
+        double.class,
+        PhpArray.class,
+        Object[].class
 })
 public abstract class PhpTypes {
 
     PhpTypes() {
     }
-
-    //    @ImplicitCast
-    //    public static boolean longToBoolean(long val) {
-    //        // XXX: according to 08-conversions.md#converting-to-boolean-type
-    //        return val != 0;
-    //    }
-    //
-    //    @ImplicitCast
-    //    public static boolean doubleToBoolean(double val) {
-    //        // XXX: according to 08-conversions.md#converting-to-boolean-type
-    //        return val != 0.0;
-    //    }
 
     @ImplicitCast
     public static double longToDouble(long val) {
@@ -54,10 +45,4 @@ public abstract class PhpTypes {
     public static long asLong(Object value) {
         return ((Long) value).longValue();
     }
-
-    //    @TypeCast(boolean.class)
-    //    public static long asBoolean(Object value) {
-    //        if ()
-    //        return ((Long) value).longValue();
-    //    }
 }

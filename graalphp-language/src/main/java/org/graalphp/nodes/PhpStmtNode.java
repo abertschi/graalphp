@@ -2,7 +2,6 @@ package org.graalphp.nodes;
 
 import com.oracle.truffle.api.dsl.TypeSystemReference;
 import com.oracle.truffle.api.frame.VirtualFrame;
-import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.nodes.NodeInfo;
 import org.graalphp.types.PhpTypes;
 
@@ -15,7 +14,7 @@ import org.graalphp.types.PhpTypes;
  */
 @NodeInfo(description = "Abstract base node for all PHP nodes")
 @TypeSystemReference(PhpTypes.class)
-public abstract class PhpStmtNode extends Node {
+public abstract class PhpStmtNode extends PhpNode {
 
     private static final int SRC_SECTION_NOT_SET = -1;
 
@@ -29,7 +28,7 @@ public abstract class PhpStmtNode extends Node {
     public abstract void executeVoid(VirtualFrame frame);
 
     public final void setSourceSection(int charLeft, int len) {
-        assert (srcSectionStart == SRC_SECTION_NOT_SET);
+        assert (srcSectionStart == SRC_SECTION_NOT_SET) : "source section already set";
 
         if (charLeft < 0) {
             throw new IllegalArgumentException("charleft < 0");
@@ -38,5 +37,9 @@ public abstract class PhpStmtNode extends Node {
         }
         this.srcSectionStart = charLeft;
         this.srcSectionLen = len;
+    }
+
+    public final boolean hasSourceSection() {
+        return srcSectionStart != SRC_SECTION_NOT_SET;
     }
 }

@@ -26,9 +26,6 @@ public final class PhpInvokeNode extends PhpExprNode {
     @CompilationFinal
     private DirectCallNode callNode;
 
-//    @Child private InteropLibrary library;
-
-    // TODO Change this to an abstract nodes, introduce object [] types
     public PhpInvokeNode(PhpExprNode[] arguments, PhpExprNode function) {
         this.argNodes = arguments;
         this.function = function;
@@ -51,7 +48,6 @@ public final class PhpInvokeNode extends PhpExprNode {
         for (int i = 0; i < argNodes.length; i++) {
             argVals[i] = argNodes[i].executeGeneric(frame);
         }
-        // TODO: do polymorphic inline cache technique here
         return this.callNode.call(argVals);
     }
 }
