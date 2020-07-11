@@ -6,7 +6,6 @@
 * TransitionLimit in Export Library
 - https://github.com/oracle/graal/blob/master/truffle/src/com.oracle.truffle.api.library.test/src/com/oracle/truffle/api/library/test/AcceptsTransitionTest.java
 
-
 * Array Behavior
 - Arrays are copied by value by default
 - our current implementation assigns PhpArray which is an instance. We do not copy yet.
@@ -33,14 +32,14 @@ polymorphic dispatch with specializations.
   - [ ] PHP throws an error if an uninitialized index is accessed, this can easily be implemented for Object[] based backend.
   - [ ] for primitive backends we may have to keep track of inits with bitmaps or the like.
   - [X] any positive index can be written, array is automatically grown to given size.
-    - If index is too large, transition to a Map like backend may be more performant  
+    - If index is too large, transition to a Map like backend may be more performant
 - PHP has a copy by value behavior if an array is assigned to another value
   - [ ] we currently copy by reference
 
-** Slack
+** Slack Input
 Hi there,
 
-I am referring to the initial entry I posted here on slack: [0] 
+I am referring to the initial entry I posted here on slack: [0]
 
 I now implemented rudimentary array support using Truffle libraries for my PHP
 implementation. It already works satisfyingly :) Sometimes I had
@@ -62,7 +61,7 @@ Conceptually I implemented arrays in PHP as follows;
   - Implementations of this library use receiverType = Object[].class/
     long[].class and do dispatch on the backend array
   - each implementation is able to generalize to a more abstract representation
-    
+
 - We have nodes to write array entries (ArrayWriteNode [2]), read entries
   (ArrayReadNode [3]) and create arrays (NewArrayNode [4]).
 
@@ -80,3 +79,47 @@ Thanks for any kind of help in advance, Truffle rocks! :)
 [2] ArrayWriteNode: https://github.com/abertschi/graalphp/blob/feature/arrays/graalphp-language/src/main/java/org/graalphp/nodes/array/ArrayWriteNode.java
 [3] ArrayReadNode: https://github.com/abertschi/graalphp/blob/feature/arrays/graalphp-language/src/main/java/org/graalphp/nodes/array/ArrayReadNode.java
 [4] NewArrayInitialValuesNode: https://github.com/abertschi/graalphp/blob/feature/arrays/graalphp-language/src/main/java/org/graalphp/nodes/array/NewArrayInitialValuesNode.java
+
+* Array Copy By Value/ Reference Design Notes
+- PHP does copy by value for arrays
+- For performance reasons, a copy on write mechanism should be considered
+
+** Implementing Copy By Value
+We represent an Array as a PhpArray class which stores a backend and a capacity.
+So by default, an assignment of a PhpArray copies the reference to the array.
+
+In order to implement copy by value, a proxy node is needed which forwards all
+other values but arrays and makes a copy of the array first.
+
+
+This proxy node is needed wherever an assignment with an array on the right hand side takes place.
+The only exception is if the array is created initially. There no such copy is needed as the array is new.
+
+Sketch;
+#+begin_src java
+@Specialization
+    protected Object copyArray(PhpArray array,
+                               @CachedLibrary(limit =
+                                       ArrayLibrary.SPECIALIZATION_LIMIT)
+                                       ArrayLibrary lib) {
+
+        LOG.info("Write by value: " + lib.arrayToString(array.getBackend()));
+
+        ArrayAllocator allocator = lib.allocator(array.getBackend());
+        Object newBackend = allocator.allocate(array.getCapacity());
+        lib.copyContents(array.getBackend(), newBackend, array.getCapacity());
+        PhpArray newArray = ArrayFactory.newArray(newBackend, array.getCapacity());
+        return newArray;
+    }
+
+#+end_src
+
+Locations where the node is needed;
+- Assignment of plain variables where RHS is array; `$A = $B, // where $B is array;`
+- Assignment into an array where RHS is array; `$A[0] = $B; // $B is array`
+- function arguments; foo($A);
+- function return values;
+* Steps for thesis
+- We should probably implement copy by value even if it is not needed for our benchmarks
+- Think about input given in slack/ issue to separate arraylibrary into array
+  library and storage library

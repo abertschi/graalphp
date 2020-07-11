@@ -56,7 +56,7 @@ def run_sl(bm_dir):
         run(binary, f)
 
 
-def do_benchmarks():
+def do_fib_benchmark():
     dir = os.path.dirname(os.path.realpath(__file__))
     fib_benchmark = os.path.join(dir, 'fib')
     print(datetime.now())
@@ -66,4 +66,14 @@ def do_benchmarks():
     run_sl(fib_benchmark)
 
 
-do_benchmarks()    
+def do_fannkuchredux_benchmark():
+    dir = os.path.dirname(os.path.realpath(__file__))
+    fib_benchmark = os.path.join(dir, 'fannkuchredux')
+    print(datetime.now())
+
+    run_php(fib_benchmark)
+    run_graalphp(fib_benchmark)
+
+
+# do_fib_benchmark()
+do_fannkuchredux_benchmark()

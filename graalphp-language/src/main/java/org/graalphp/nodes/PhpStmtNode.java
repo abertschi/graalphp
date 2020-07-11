@@ -28,7 +28,7 @@ public abstract class PhpStmtNode extends PhpNode {
     public abstract void executeVoid(VirtualFrame frame);
 
     public final void setSourceSection(int charLeft, int len) {
-        assert (srcSectionStart == SRC_SECTION_NOT_SET);
+        assert (srcSectionStart == SRC_SECTION_NOT_SET) : "source section already set";
 
         if (charLeft < 0) {
             throw new IllegalArgumentException("charleft < 0");
@@ -37,5 +37,9 @@ public abstract class PhpStmtNode extends PhpNode {
         }
         this.srcSectionStart = charLeft;
         this.srcSectionLen = len;
+    }
+
+    public final boolean hasSourceSection() {
+        return srcSectionStart != SRC_SECTION_NOT_SET;
     }
 }

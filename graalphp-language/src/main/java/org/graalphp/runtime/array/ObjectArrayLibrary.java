@@ -3,6 +3,7 @@ package org.graalphp.runtime.array;
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.dsl.GenerateUncached;
 import com.oracle.truffle.api.dsl.Specialization;
+import com.oracle.truffle.api.library.CachedLibrary;
 import com.oracle.truffle.api.library.ExportLibrary;
 import com.oracle.truffle.api.library.ExportMessage;
 
@@ -66,4 +67,16 @@ public class ObjectArrayLibrary {
         return Arrays.copyOf(receiver, newSize);
     }
 
+    @ExportMessage
+    static class CopyContents {
+        @Specialization(limit = ArrayLibrary.SPECIALIZATION_LIMIT)
+        protected static void copyContents(Object[] receiver,
+                                           Object destination,
+                                           int length,
+                                           @CachedLibrary("destination") ArrayLibrary destinationLibrary) {
+            for (int i = 0; i < length; i++) {
+                destinationLibrary.write(destination, i, receiver[i]);
+            }
+        }
+    }
 }

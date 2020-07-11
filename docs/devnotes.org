@@ -115,6 +115,9 @@ public class ExecuteValuesNode extends OzNode {
 ** TODO branch profiling
 ** TODO loop unrolling
 ** TODO ensure finals in nodes
+** TODO Array Copy by Value
+- we currently copy arrays by value
+- for function returns it may make sense to return reference instead.
 * Testing/ CI
 * Doc
 ** TODO update list of implemented features to facebook spec
