@@ -29,6 +29,8 @@ If we overflow we can either follow spec and convert number into float or use
 big integer exact size of int is undefined (4 or 8 bytes), and conversion to
 float leads to rounding errors big integer may be more suitable, however, it is
 slower.
+** TODO continuation of non fatal errors
+If either operand does not have type int, its value is first converted to that type. If either or both operands were leading-numeric or non-numeric strings, a non-fatal error MUST be produced for each.
 
 *** Integer
 **** TODO make PHP_INT_SIZE, PHP_INT_MIN and PHP_INT_MAX available as constants
