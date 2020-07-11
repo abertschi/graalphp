@@ -11,6 +11,7 @@ import org.eclipse.php.core.ast.nodes.Expression;
 import org.eclipse.php.core.ast.nodes.FunctionInvocation;
 import org.eclipse.php.core.ast.nodes.Identifier;
 import org.eclipse.php.core.ast.nodes.InfixExpression;
+import org.eclipse.php.core.ast.nodes.ParenthesisExpression;
 import org.eclipse.php.core.ast.nodes.PostfixExpression;
 import org.eclipse.php.core.ast.nodes.PrefixExpression;
 import org.eclipse.php.core.ast.nodes.Scalar;
@@ -42,6 +43,7 @@ import org.graalphp.nodes.function.PhpInvokeNode;
 import org.graalphp.nodes.literal.PhpBooleanNode;
 import org.graalphp.nodes.localvar.ReadLocalVarNodeGen;
 import org.graalphp.nodes.unary.PhpNegNodeGen;
+import org.graalphp.nodes.unary.PhpPosNodeGen;
 import org.graalphp.nodes.unary.PostfixArithmeticNode;
 import org.graalphp.nodes.unary.PostfixArithmeticNodeGen;
 import org.graalphp.nodes.unary.PrefixArithmeticNode;
@@ -219,7 +221,6 @@ public class ExprVisitor extends HierarchicalVisitor {
         initAndAcceptExpr(op.getExpression());
         PhpExprNode child = currExpr;
         currExpr = createUnaryExpression(op, child);
-
         return false;
     }
 
@@ -230,6 +231,9 @@ public class ExprVisitor extends HierarchicalVisitor {
         switch (op.getOperator()) {
             case UnaryOperation.OP_MINUS:
                 node = PhpNegNodeGen.create(child);
+                break;
+            case UnaryOperation.OP_PLUS:
+                node = PhpPosNodeGen.create(child);
                 break;
             default:
                 hasSource = false;
@@ -280,7 +284,8 @@ public class ExprVisitor extends HierarchicalVisitor {
         assert (currExpr == null);
 
         if (!(variable.getName() instanceof Identifier)) {
-            throw new UnsupportedOperationException("Other vars than identifier not supported");
+            throw new UnsupportedOperationException("Other variables than identifier not " +
+                    "supported" + variable);
         }
         // TODO: we currently do not support global variables
         final String name = ((Identifier) variable.getName()).getName();
@@ -417,6 +422,12 @@ public class ExprVisitor extends HierarchicalVisitor {
         currExpr = ArrayReadNodeGen.create(target, index);
         setSourceSection(currExpr, arrayAccess);
 
+        return false;
+    }
+
+    @Override
+    public boolean visit(ParenthesisExpression parenthesisExpression) {
+        currExpr = initAndAcceptExpr(parenthesisExpression.getExpression());
         return false;
     }
 }
