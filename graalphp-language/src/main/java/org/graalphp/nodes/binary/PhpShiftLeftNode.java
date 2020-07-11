@@ -16,12 +16,15 @@ import org.graalphp.nodes.unary.ConvertToLongNode;
  * @author abertschi
  */
 @NodeInfo(shortName = "<<")
-public abstract class PhpLeftShiftNode extends PhpBinaryNode {
+public abstract class PhpShiftLeftNode extends PhpBinaryNode {
 
     private final BranchProfile exceptionReached = BranchProfile.create();
 
-    public static PhpLeftShiftNode create(PhpExprNode n) {
-        return PhpLeftShiftNodeGen.create(ConvertToLongNode.createAndWrap(n));
+    public static PhpShiftLeftNode create(PhpExprNode e1, PhpExprNode e2) {
+        return PhpShiftLeftNodeGen.create(
+                ConvertToLongNode.createAndWrap(e1),
+                ConvertToLongNode.createAndWrap(e2)
+        );
     }
 
     @Specialization
