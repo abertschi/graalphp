@@ -28,7 +28,9 @@ function doAlgorithm($n) {
     $stretchDepth = $maxDepth + 1;
 
     $stretchTree = bottomUpTree($stretchDepth);
-    printf("stretch tree of depth %d\t check: %d\n", $stretchDepth, itemCheck($stretchTree));
+    println($stretchDepth);
+    println(itemCheck($stretchTree));
+    // printf("stretch tree of depth %d\t check: %d\n", $stretchDepth, itemCheck($stretchTree));
     unset($stretchTree);
 
     $longLivedTree = bottomUpTree($maxDepth);
@@ -43,15 +45,20 @@ function doAlgorithm($n) {
             $check += itemCheck($t);
             unset($t);
         }
-   
-        printf("%d\t trees of depth %d\t check: %d\n", $iterations, $minDepth, $check);
+        
+        println($iterations);
+        println($minDepth);
+        println($check);
+        // printf("%d\t trees of depth %d\t check: %d\n", $iterations, $minDepth, $check);
    
         $minDepth += 2;
         $iterations >>= 2;
     }
     while($minDepth <= $maxDepth);
 
-    printf("long lived tree of depth %d\t check: %d\n", $maxDepth, itemCheck($longLivedTree));
+    // printf("long lived tree of depth %d\t check: %d\n", $maxDepth, itemCheck($longLivedTree));
+    println($maxDepth);
+    println(itemCheck($longLivedTree));
     
 }
 
