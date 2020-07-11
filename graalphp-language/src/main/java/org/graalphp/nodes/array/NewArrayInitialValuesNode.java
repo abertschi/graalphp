@@ -27,8 +27,11 @@ public abstract class NewArrayInitialValuesNode extends PhpExprNode {
     @Specialization
     protected PhpArray createNew(Object[] values,
                                  @Cached ArrayWriteNode writeNode) {
+
+        // XXX: We may want to include length in initial array size
         PhpArray array = ArrayFactory.newArray();
         if (values != null) {
+
             for (int i = 0; i < values.length; i++) {
                 writeNode.executeWrite(array, i, values[i]);
             }
