@@ -62,6 +62,19 @@ public class ParseScope {
         return slot;
     }
 
+    // XXX: Lookup variable slot in current and global scope
+    public FrameSlot resolveAndRemoveVariable(String name) {
+        FrameSlot slot = this.vars.get(name);
+        if (slot != null) {
+            this.vars.remove(name);
+            return slot;
+        }
+        if (!isGlobalScope()) {
+            slot = this.global.resolveVariable(name);
+        }
+        return slot;
+    }
+
     public FunctionRegistry getFunctions() {
         return this.functions;
     }

@@ -17,16 +17,9 @@ public class IdentifierVisitor extends HierarchicalVisitor {
 
     public Identifier getIdentifierName(Expression e) {
         e.accept(this);
-        assert (id != null);
+        assert (id != null) : "No variable identifier found in " + e;
         return id;
     }
-
-//    @Override
-//    public boolean visit(ArrayAccess arrayAccess) {
-//
-//        arrayAccess.getName().accept(this);
-//        return false;
-//    }
 
     @Override
     public boolean visit(Identifier identifier) {
@@ -35,7 +28,6 @@ public class IdentifierVisitor extends HierarchicalVisitor {
                     String.format("multiple identifiers in expression. " +
                             "Already visited: %s, new %s", id, identifier);
             LOG.info(msg);
-
             return false;
         }
         this.id = identifier;

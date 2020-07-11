@@ -6,7 +6,10 @@ import com.oracle.truffle.api.dsl.Specialization;
 import com.oracle.truffle.api.frame.FrameSlot;
 import com.oracle.truffle.api.frame.FrameUtil;
 import com.oracle.truffle.api.frame.VirtualFrame;
+import com.oracle.truffle.api.profiles.BranchProfile;
+import org.graalphp.exception.PhpException;
 import org.graalphp.nodes.PhpExprNode;
+import org.graalphp.runtime.PhpUnset;
 import org.graalphp.util.Logger;
 import org.graalphp.util.PhpLogger;
 
@@ -19,6 +22,7 @@ import org.graalphp.util.PhpLogger;
 public abstract class ReadLocalVarNode extends PhpExprNode {
 
     private static final Logger L = PhpLogger.getLogger(ReadLocalVarNode.class.getSimpleName());
+    private final BranchProfile unsetWasRead = BranchProfile.create();
 
     protected abstract FrameSlot getSlot();
 
@@ -48,9 +52,13 @@ public abstract class ReadLocalVarNode extends PhpExprNode {
             frame.setObject(getSlot(), result);
             return result;
         }
-
         Object objectSafe = FrameUtil.getObjectSafe(frame, getSlot());
-        return objectSafe;
-
+        if (objectSafe != PhpUnset.SINGLETON) {
+            return objectSafe;
+        } else {
+            unsetWasRead.enter();
+            throw new PhpException("Trying to read an undefined variable (previously unset): " +
+                    getSlot().getIdentifier().toString(), this);
+        }
     }
 }

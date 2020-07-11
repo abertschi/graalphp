@@ -48,6 +48,8 @@ import org.graalphp.nodes.unary.PostfixArithmeticNode;
 import org.graalphp.nodes.unary.PostfixArithmeticNodeGen;
 import org.graalphp.nodes.unary.PrefixArithmeticNode;
 import org.graalphp.nodes.unary.PrefixArithmeticNodeGen;
+import org.graalphp.runtime.PhpUnsetNode;
+import org.graalphp.runtime.PhpUnsetNodeGen;
 import org.graalphp.util.Logger;
 import org.graalphp.util.PhpLogger;
 
@@ -60,6 +62,8 @@ import java.util.List;
 public class ExprVisitor extends HierarchicalVisitor {
 
     private static final Logger LOG = PhpLogger.getLogger(ExprVisitor.class.getSimpleName());
+
+    private static final String UNSET_OPERATOR = "unset";
 
     // current expression
     private PhpExprNode currExpr = null;
@@ -369,20 +373,47 @@ public class ExprVisitor extends HierarchicalVisitor {
         if (fnId == null) {
             throw new UnsupportedOperationException("we dont support function lookup in vars");
         }
-        List<PhpExprNode> args = new LinkedList<>();
-        for (Expression e : fn.parameters()) {
-            final PhpExprNode arg = initAndAcceptExpr(e);
-            args.add(arg);
+        if (isLanguageFunctionOperator(fnId.getName())) {
+            currExpr = buildLanguageFunctionOperator(fn, fnId.getName());
+
+        } else {
+            List<PhpExprNode> args = new LinkedList<>();
+            for (Expression e : fn.parameters()) {
+                final PhpExprNode arg = initAndAcceptExpr(e);
+                args.add(arg);
+            }
+            final PhpFunctionLookupNode lookupNode =
+                    new PhpFunctionLookupNode(fnId.getName(), scope);
+            setSourceSection(lookupNode, fn);
+            final PhpInvokeNode invokeNode =
+                    new PhpInvokeNode(args.toArray(new PhpExprNode[0]), lookupNode);
+            setSourceSection(invokeNode, fn);
+            currExpr = invokeNode;
         }
-
-        final PhpFunctionLookupNode lookupNode = new PhpFunctionLookupNode(fnId.getName(), scope);
-        setSourceSection(lookupNode, fn);
-        final PhpInvokeNode invokeNode =
-                new PhpInvokeNode(args.toArray(new PhpExprNode[0]), lookupNode);
-        setSourceSection(invokeNode, fn);
-
-        currExpr = invokeNode;
         return false;
+    }
+
+    private boolean isLanguageFunctionOperator(String name) {
+        return name.equals(UNSET_OPERATOR);
+    }
+
+    private PhpExprNode buildLanguageFunctionOperator(FunctionInvocation fn, String name) {
+        if (name.equals(UNSET_OPERATOR)) {
+            List<String> varNames = new LinkedList<>();
+            for (Expression e : fn.parameters()) {
+                String id = new ExpectsSingleVariable().resolveName(e);
+                if (id == null) {
+                    throw new PhpException("No identifier found in unset operator: " + e + " / " + fn, null);
+                }
+                varNames.add(id);
+            }
+            PhpUnsetNode unsetNode =
+                    PhpUnsetNodeGen.create(varNames.toArray(new String[varNames.size()]), scope);
+            setSourceSection(unsetNode, fn);
+            return unsetNode;
+        } else {
+            throw new IllegalArgumentException("unsupported language function invocation: " + name);
+        }
     }
 
     // ---------------- arrays --------------------

@@ -21,8 +21,6 @@ import org.graalphp.util.Logger;
         contextPolicy = ContextPolicy.SHARED,
         fileTypeDetectors = PhpFileDetector.class)
 
-
-// TODO: add tags
 public final class PhpLanguage extends TruffleLanguage<PhpContext> {
 
     public static final String ID = "php";
