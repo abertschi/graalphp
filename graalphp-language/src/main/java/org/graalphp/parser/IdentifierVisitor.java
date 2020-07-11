@@ -7,6 +7,8 @@ import org.graalphp.util.Logger;
 import org.graalphp.util.PhpLogger;
 
 /**
+ * Resolves an identifier in an AST.
+ *
  * @author abertschi
  */
 public class IdentifierVisitor extends HierarchicalVisitor {
