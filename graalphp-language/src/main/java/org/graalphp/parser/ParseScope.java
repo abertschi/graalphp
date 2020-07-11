@@ -44,13 +44,22 @@ public class ParseScope {
         this.functions = new FunctionRegistry();
     }
 
-    // TODO: we currently do not support nested functions
+    // XXX: Lookup function in current and global scope
     public PhpFunction resolveFunction(String name) {
         PhpFunction fn = this.functions.getFunction(name);
         if (fn == null && !isGlobalScope()) {
             return this.global.resolveFunction(name);
         }
         return fn;
+    }
+
+    // XXX: Lookup variable slot in current and global scope
+    public FrameSlot resolveVariable(String name) {
+        FrameSlot slot = this.vars.get(name);
+        if (slot == null && !isGlobalScope()) {
+            return this.global.resolveVariable(name);
+        }
+        return slot;
     }
 
     public FunctionRegistry getFunctions() {
