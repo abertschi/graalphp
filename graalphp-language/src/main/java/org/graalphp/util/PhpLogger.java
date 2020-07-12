@@ -13,8 +13,8 @@ public class PhpLogger implements Logger {
     private final String name;
 
     public static boolean DISABLE = false;
-    public static boolean DISABLE_FINEST = false;
-    public static boolean DISABLE_FINE = false;
+    public static boolean DISABLE_FINEST = true;
+    public static boolean DISABLE_FINE = true;
 
     public static synchronized void disable() {
         DISABLE = false;
