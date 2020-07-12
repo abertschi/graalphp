@@ -40,4 +40,17 @@ public class ParseUnaryTest {
         TestCommons.evalDouble(smallerThanMin, "$a = " + Long.MIN_VALUE + "; --$a; print $a;");
         TestCommons.evalDouble(largerThanMax, "$a = " + Long.MAX_VALUE + "; ++$a; print $a;");
     }
+
+    @Test
+    public void testNotOperator() {
+        TestCommons.compareStdout("2", "print(!1 ? 1 : 2);", true);
+        TestCommons.compareStdout("1", "print(!0 ? 1 : 2);", true);
+    }
+
+    @Test
+    public void testNotOperatorDouble() {
+        TestCommons.compareStdout("2", "print(!1.1 ? 1 : 2);", true);
+        TestCommons.compareStdout("2", "print(!0.1 ? 1 : 2);", true);
+        TestCommons.compareStdout("1", "print(!0.0 ? 1 : 2);", true);
+    }
 }

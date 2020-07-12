@@ -29,9 +29,9 @@ import org.graalphp.nodes.array.NewArrayInitialValuesNodeGen;
 import org.graalphp.nodes.array.NewArrayNode;
 import org.graalphp.nodes.binary.PhpAddNodeGen;
 import org.graalphp.nodes.binary.PhpDivNodeGen;
-import org.graalphp.nodes.binary.PhpShiftLeftNodeGen;
 import org.graalphp.nodes.binary.PhpMulNodeGen;
 import org.graalphp.nodes.binary.PhpRightShiftNodeGen;
+import org.graalphp.nodes.binary.PhpShiftLeftNodeGen;
 import org.graalphp.nodes.binary.PhpSubNodeGen;
 import org.graalphp.nodes.binary.logical.PhpAndNode;
 import org.graalphp.nodes.binary.logical.PhpEqNodeGen;
@@ -47,6 +47,7 @@ import org.graalphp.nodes.function.PhpInvokeNode;
 import org.graalphp.nodes.literal.PhpBooleanNode;
 import org.graalphp.nodes.localvar.ReadLocalVarNodeGen;
 import org.graalphp.nodes.unary.PhpNegNodeGen;
+import org.graalphp.nodes.unary.PhpNotNode;
 import org.graalphp.nodes.unary.PhpPosNodeGen;
 import org.graalphp.nodes.unary.PostfixArithmeticNode;
 import org.graalphp.nodes.unary.PostfixArithmeticNodeGen;
@@ -247,6 +248,9 @@ public class ExprVisitor extends HierarchicalVisitor {
             case UnaryOperation.OP_PLUS:
                 node = PhpPosNodeGen.create(child);
                 break;
+                case UnaryOperation.OP_NOT:
+                    node = PhpNotNode.createAndConvertToBoolean(child);
+                    break;
             default:
                 throw new UnsupportedOperationException("unary expression operand not implemented: "
                         + op);
