@@ -20,7 +20,7 @@ public abstract class PhpShiftLeftNode extends PhpBinaryNode {
 
     private final BranchProfile exceptionReached = BranchProfile.create();
 
-    public static PhpShiftLeftNode create(PhpExprNode e1, PhpExprNode e2) {
+    public static PhpShiftLeftNode createAndConvertToLong(PhpExprNode e1, PhpExprNode e2) {
         return PhpShiftLeftNodeGen.create(
                 ConvertToLongNode.createAndWrap(e1),
                 ConvertToLongNode.createAndWrap(e2)

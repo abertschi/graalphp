@@ -211,10 +211,10 @@ public class ExprVisitor extends HierarchicalVisitor {
                 result = new PhpOrNode(left, right);
                 break;
             case OP_SL:
-                result = PhpShiftLeftNodeGen.create(left, right);
+                result = PhpShiftLeftNodeGen.createAndConvertToLong(left, right);
                 break;
             case OP_SR:
-                result = PhpRightShiftNodeGen.create(left, right);
+                result = PhpRightShiftNodeGen.createAndConvertToLong(left, right);
                 break;
             case OP_NOT_IMPLEMENTED:
                 // XXX: Not yet all operators implemented

@@ -21,7 +21,11 @@ public abstract class PhpRightShiftNode extends PhpBinaryNode {
     private final BranchProfile exceptionProfile = BranchProfile.create();
     private final BranchProfile shiftTooLargeProfile = BranchProfile.create();
 
-    public static PhpRightShiftNode create(PhpExprNode e1, PhpExprNode e2) {
+    /**
+     * Create a node which converts children to long.
+     * This is required for this node as shift expects long values
+     */
+    public static PhpRightShiftNode createAndConvertToLong(PhpExprNode e1, PhpExprNode e2) {
         return PhpRightShiftNodeGen.create(
                 ConvertToLongNode.createAndWrap(e1),
                 ConvertToLongNode.createAndWrap(e2)
@@ -41,9 +45,9 @@ public abstract class PhpRightShiftNode extends PhpBinaryNode {
         // even if there is no native processor support for this.
         if (e2 > 64) {
             shiftTooLargeProfile.enter();
-            return e1 >= 0 ? 1 : -1;
+            return e1 >= 0 ? 0 : -1;
         }
-        return e1 >>> e2;
+        return e1 >> e2;
     }
 
     @Specialization

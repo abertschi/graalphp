@@ -29,7 +29,7 @@ public abstract class ConvertToLongNode extends PhpUnaryNode {
     }
 
     @Specialization
-    protected long doDouble(double val) {
+    protected long doDouble(double val){
         return (long) val;
     }
 
