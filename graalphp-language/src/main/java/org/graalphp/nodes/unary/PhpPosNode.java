@@ -1,5 +1,6 @@
 package org.graalphp.nodes.unary;
 
+import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.dsl.Specialization;
 import com.oracle.truffle.api.nodes.NodeInfo;
 
@@ -22,6 +23,7 @@ public abstract class PhpPosNode extends PhpUnaryNode {
     }
 
     @Override
+    @TruffleBoundary
     public String toString() {
         return "PhpPosNode{" + getValueNode() + "}";
     }

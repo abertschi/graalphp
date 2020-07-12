@@ -7,6 +7,7 @@ import org.eclipse.php.core.ast.nodes.ArrayAccess;
 import org.eclipse.php.core.ast.nodes.ArrayCreation;
 import org.eclipse.php.core.ast.nodes.ArrayElement;
 import org.eclipse.php.core.ast.nodes.Assignment;
+import org.eclipse.php.core.ast.nodes.ConditionalExpression;
 import org.eclipse.php.core.ast.nodes.Expression;
 import org.eclipse.php.core.ast.nodes.FunctionInvocation;
 import org.eclipse.php.core.ast.nodes.Identifier;
@@ -40,6 +41,7 @@ import org.graalphp.nodes.binary.logical.PhpLeNodeGen;
 import org.graalphp.nodes.binary.logical.PhpLtNodeGen;
 import org.graalphp.nodes.binary.logical.PhpNeqNodeGen;
 import org.graalphp.nodes.binary.logical.PhpOrNode;
+import org.graalphp.nodes.controlflow.PhpIfInlineNode;
 import org.graalphp.nodes.function.PhpFunctionLookupNode;
 import org.graalphp.nodes.function.PhpInvokeNode;
 import org.graalphp.nodes.literal.PhpBooleanNode;
@@ -247,7 +249,7 @@ public class ExprVisitor extends HierarchicalVisitor {
                 break;
             default:
                 throw new UnsupportedOperationException("unary expression operand not implemented: "
-                        + InfixExpression.getOperator(op.getOperator()));
+                        + op);
         }
         node.setSourceSection(op.getStart(), op.getLength());
         return node;
@@ -462,6 +464,23 @@ public class ExprVisitor extends HierarchicalVisitor {
     @Override
     public boolean visit(ParenthesisExpression parenthesisExpression) {
         currExpr = initAndAcceptExpr(parenthesisExpression.getExpression());
+        return false;
+    }
+
+    // ----------------- inline if/else ----------------
+    @Override
+    public boolean visit(ConditionalExpression expr) {
+        // XXX: We currently only support A ? B : C; conditional expressions
+        if (expr.getOperatorType() != ConditionalExpression.OP_TERNARY) {
+            String msg = "Conditional Expression not supported: " + expr;
+            throw new UnsupportedOperationException(msg);
+        }
+        final PhpIfInlineNode node = new PhpIfInlineNode(
+                initAndAcceptExpr(expr.getCondition()),
+                initAndAcceptExpr(expr.getIfTrue()),
+                initAndAcceptExpr(expr.getIfFalse()));
+        setSourceSection(node, expr);
+        currExpr = node;
         return false;
     }
 }
