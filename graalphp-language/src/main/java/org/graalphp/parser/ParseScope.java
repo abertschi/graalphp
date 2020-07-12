@@ -70,7 +70,8 @@ public class ParseScope {
             return slot;
         }
         if (!isGlobalScope()) {
-            slot = this.global.resolveVariable(name);
+            slot = this.global.resolveAndRemoveVariable(name);
+            System.out.println(this + " / " + this.global + " / " + isGlobalScope());
         }
         return slot;
     }

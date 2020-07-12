@@ -4,6 +4,7 @@ import com.oracle.truffle.api.dsl.Specialization;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.NodeInfo;
 import org.graalphp.nodes.binary.PhpBinaryNode;
+import org.graalphp.runtime.array.PhpArray;
 
 /**
  * @author abertschi
@@ -21,8 +22,13 @@ public abstract class PhpEqNode extends PhpBinaryNode {
         return a == b;
     }
 
+    @Specialization
+    public boolean doEqArray(VirtualFrame f, PhpArray a, PhpArray b) {
+        throw new UnsupportedOperationException("Array Equality not implemented");
+    }
+
     @Specialization()
     protected Object fallback(Object left, Object right) {
-        throw new UnsupportedOperationException("Generic Equals (==) is not yet supported");
+        return left == right;
     }
 }
