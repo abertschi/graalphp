@@ -1,5 +1,6 @@
 package org.graalphp.runtime;
 
+import com.oracle.truffle.api.CompilerDirectives;
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.dsl.NodeField;
 import com.oracle.truffle.api.dsl.Specialization;
@@ -54,6 +55,10 @@ public abstract class PhpUnsetNode extends PhpExprNode {
             // we ignore unset of non existing variables
             return;
         }
+        /* XXX: investigate if we should keep frame slot alive and only overwrite
+         * value with PhpUnset in order not to transfer to interpreter
+         */
+        CompilerDirectives.transferToInterpreterAndInvalidate();
         f.getFrameDescriptor().removeFrameSlot(name);
         f.getFrameDescriptor().setFrameSlotKind(frameSlot, FrameSlotKind.Object);
         f.setObject(frameSlot, PhpUnset.SINGLETON);
