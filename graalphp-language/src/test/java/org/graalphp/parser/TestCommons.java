@@ -66,10 +66,19 @@ public class TestCommons {
     }
 
     public static double evalDouble(double expected, String src) {
+        return evalDouble(expected, src, DELTA);
+    }
+
+    public static double evalDouble(double expected, String src, double delta) {
         Context ctx = Context.create("php");
         Value val = ctx.eval("php", php(src));
-        Assert.assertEquals(expected, val.asDouble(), DELTA);
-        return val.asDouble();
+        if (val.fitsInLong()) {
+            Assert.assertEquals(expected, val.asLong(), delta);
+            return val.asLong();
+        } else {
+            Assert.assertEquals(expected, val.asDouble(), delta);
+            return val.asDouble();
+        }
     }
 
     public static String inputStreamToString(InputStream in) {

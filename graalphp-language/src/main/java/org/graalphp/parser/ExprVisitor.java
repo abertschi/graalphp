@@ -471,8 +471,14 @@ public class ExprVisitor extends HierarchicalVisitor {
     @Override
     public boolean visit(ConditionalExpression expr) {
         // XXX: We currently only support A ? B : C; conditional expressions
+        // XXX: B may not exist, in that case we have a coalesce like operator
+
         if (expr.getOperatorType() != ConditionalExpression.OP_TERNARY) {
             String msg = "Conditional Expression not supported: " + expr;
+            throw new UnsupportedOperationException(msg);
+        }
+        if (expr.getIfTrue() == null) {
+            String msg = "Conditional Expression with coalesce behavior not supported: " + expr;
             throw new UnsupportedOperationException(msg);
         }
         final PhpIfInlineNode node = new PhpIfInlineNode(
