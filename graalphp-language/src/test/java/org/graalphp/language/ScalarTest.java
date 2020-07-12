@@ -1,4 +1,4 @@
-package org.graalphp.parser;
+package org.graalphp.language;
 
 import org.graalphp.PhpLanguage;
 import org.graalvm.polyglot.Context;
@@ -10,7 +10,7 @@ import java.io.IOException;
 /**
  * @author abertschi
  */
-public class ParseSkalarTest {
+public class ScalarTest {
     @Test
     public void parserSkalar() throws IOException {
         PhpLanguage.RETURN_LAST_EXPR = true;

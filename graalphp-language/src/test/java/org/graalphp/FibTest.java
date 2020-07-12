@@ -1,6 +1,6 @@
 package org.graalphp;
 
-import org.graalphp.parser.TestCommons;
+import org.graalphp.language.TestCommons;
 import org.junit.Test;
 
 /**

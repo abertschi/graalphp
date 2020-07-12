@@ -1,4 +1,4 @@
-package org.graalphp.parser;
+package org.graalphp.language;
 
 import org.junit.Test;
 

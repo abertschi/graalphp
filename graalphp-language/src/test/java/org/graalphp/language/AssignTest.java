@@ -1,16 +1,18 @@
-package org.graalphp.parser;
+package org.graalphp.language;
 
 import org.eclipse.php.core.PHPVersion;
 import org.eclipse.php.core.ast.error.BailoutErrorListener;
 import org.eclipse.php.core.ast.error.ConsoleErrorListener;
 import org.eclipse.php.core.ast.nodes.ASTParser;
 import org.eclipse.php.core.ast.nodes.Program;
+import org.graalphp.parser.ParseScope;
+import org.graalphp.parser.StmtVisitor;
 import org.junit.Test;
 
 /**
  * @author abertschi
  */
-public class ParseAssignTest {
+public class AssignTest {
 
     @Test
     public void testAssignIntegerSuccess() {

@@ -1,4 +1,4 @@
-package org.graalphp.parser;
+package org.graalphp.language;
 
 import org.eclipse.php.core.PHPVersion;
 import org.eclipse.php.core.ast.error.BailoutErrorListener;
@@ -6,17 +6,18 @@ import org.eclipse.php.core.ast.error.ConsoleErrorListener;
 import org.eclipse.php.core.ast.nodes.ASTParser;
 import org.eclipse.php.core.ast.nodes.Program;
 import org.graalphp.nodes.PhpStmtNode;
+import org.graalphp.parser.ParseScope;
+import org.graalphp.parser.StmtVisitor;
 import org.junit.Assert;
 import org.junit.Test;
 
 /**
  * @author abertschi
  */
-public class ParseIfElseTest {
+public class IfElseTest {
 
     @Test
     public void testParsing() throws Exception {
-//        String src = TestCommons.php("if (1) {return 1;} return 2;");
         String src = TestCommons.php("if (10 + 1) { return 1; } return 3;");
         System.out.println(src);
         ASTParser parser = ASTParser.newParser(PHPVersion.PHP7_4);

@@ -1,7 +1,9 @@
-package org.graalphp.parser;
+package org.graalphp.language;
 
 import org.eclipse.php.core.ast.nodes.Program;
 import org.graalphp.nodes.PhpStmtNode;
+import org.graalphp.parser.ParseScope;
+import org.graalphp.parser.StmtVisitor;
 import org.graalphp.runtime.PhpUnsetNode;
 import org.junit.Assert;
 import org.junit.Test;

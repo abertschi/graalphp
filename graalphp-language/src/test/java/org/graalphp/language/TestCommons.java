@@ -1,4 +1,4 @@
-package org.graalphp.parser;
+package org.graalphp.language;
 
 import org.eclipse.php.core.PHPVersion;
 import org.eclipse.php.core.ast.error.BailoutErrorListener;
