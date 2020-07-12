@@ -66,6 +66,5 @@ function doAlgorithm($n) {
 $n = 21;
 doAlgorithm($n);
 
-
 ?>
     

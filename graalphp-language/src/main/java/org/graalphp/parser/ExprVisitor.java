@@ -237,9 +237,7 @@ public class ExprVisitor extends HierarchicalVisitor {
     }
 
     private PhpExprNode createUnaryExpression(final UnaryOperation op, final PhpExprNode child) {
-        boolean hasSource = true;
         PhpExprNode node = null;
-
         switch (op.getOperator()) {
             case UnaryOperation.OP_MINUS:
                 node = PhpNegNodeGen.create(child);
@@ -248,13 +246,10 @@ public class ExprVisitor extends HierarchicalVisitor {
                 node = PhpPosNodeGen.create(child);
                 break;
             default:
-                hasSource = false;
-                LOG.parserEnumerationError("unary expression operand not implemented: " +
-                        InfixExpression.getOperator(op.getOperator()));
+                throw new UnsupportedOperationException("unary expression operand not implemented: "
+                        + InfixExpression.getOperator(op.getOperator()));
         }
-        if (hasSource) {
-            node.setSourceSection(op.getStart(), op.getLength());
-        }
+        node.setSourceSection(op.getStart(), op.getLength());
         return node;
     }
 
