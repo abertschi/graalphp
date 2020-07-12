@@ -20,6 +20,14 @@ public class ShiftTest {
     }
 
     @Test
+    public void convertToNumber() {
+        TestCommons.evalDouble(1, "1 << 0.1;");
+        TestCommons.evalDouble(1, "1 >> 0.1;");
+        TestCommons.evalDouble(1, "2 >> 1.1;");
+        TestCommons.evalDouble(4, "2 << 1.1;");
+    }
+
+    @Test
     public void shiftNothing() {
         TestCommons.compareStdout("1", "print(1 << 0);", true);
         TestCommons.compareStdout("1", "print(1 >> 0);", true);

@@ -82,8 +82,11 @@ public class StmtVisitor extends HierarchicalVisitor {
     public boolean visit(ExpressionStatement expressionStatement) {
         PhpExprNode phpExpr = exprVisitor.createExprAst(expressionStatement.getExpression(), scope);
         if (phpExpr == null) {
-            LOG.info("exprVisitor.createExprAst returned null. " +
-                    "This is fine as long as not all features impl. " + expressionStatement.toString());
+            StringBuilder msg = new StringBuilder()
+                    .append("ExprVisitor returned null. This is due to lack of feature support")
+                    .append("expression: ")
+                    .append(expressionStatement.toString());
+            throw new UnsupportedOperationException(msg.toString());
         } else {
             stmts.add(phpExpr);
         }
