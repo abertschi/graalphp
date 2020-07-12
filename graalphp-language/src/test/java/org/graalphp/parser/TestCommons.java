@@ -1,5 +1,10 @@
 package org.graalphp.parser;
 
+import org.eclipse.php.core.PHPVersion;
+import org.eclipse.php.core.ast.error.BailoutErrorListener;
+import org.eclipse.php.core.ast.error.ConsoleErrorListener;
+import org.eclipse.php.core.ast.nodes.ASTParser;
+import org.eclipse.php.core.ast.nodes.Program;
 import org.graalphp.PhpLanguage;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.Value;
@@ -73,5 +78,17 @@ public class TestCommons {
             text = scanner.useDelimiter("\\A").next();
         }
         return text;
+    }
+
+    public static Program parseProgram(String code, boolean addTags) throws Exception {
+        if (addTags) {
+            code = php(code);
+        }
+        ASTParser parser = ASTParser.newParser(PHPVersion.PHP7_4);
+        parser.setSource(code.toCharArray());
+        parser.addErrorListener(new ConsoleErrorListener());
+        parser.addErrorListener(new BailoutErrorListener());
+        Program pgm = parser.parsePhpProgram();
+        return pgm;
     }
 }

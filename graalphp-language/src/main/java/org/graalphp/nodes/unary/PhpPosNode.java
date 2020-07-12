@@ -1,7 +1,7 @@
 package org.graalphp.nodes.unary;
 
 import com.oracle.truffle.api.dsl.Specialization;
-import org.graalvm.compiler.nodeinfo.NodeInfo;
+import com.oracle.truffle.api.nodes.NodeInfo;
 
 /**
  * Pos unary node. Does not do anything. for completeness it is added.

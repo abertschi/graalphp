@@ -28,7 +28,8 @@ public final class PhpForWhileNode extends PhpStmtNode {
                            List<PhpStmtNode> loopBody) {
 
         this.initNode = new ExprGroupNode(inits);
-        PhpExprNode condition = PhpConvertToBooleanNodeGen.create(new ExprGroupNode(conditions));
+        PhpExprNode condition =
+                PhpConvertToBooleanNodeGen.createAndWrap(new ExprGroupNode(conditions));
         PhpStmtNode updater = new ExprGroupNode(updaters);
 
         LinkedList<PhpStmtNode> bodyStmts = new LinkedList<>(loopBody);

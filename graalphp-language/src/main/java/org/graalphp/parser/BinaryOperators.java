@@ -91,6 +91,10 @@ public enum BinaryOperators {
                 return OP_MUL;
             case Assignment.OP_DIV_EQUAL:
                 return OP_DIV;
+            case Assignment.OP_SL_EQUAL:
+                return OP_SL;
+            case Assignment.OP_SR_EQUAL:
+                return OP_SR;
             default:
                 return OP_NOT_IMPLEMENTED;
         }

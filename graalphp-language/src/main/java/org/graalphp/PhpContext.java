@@ -5,13 +5,17 @@ import com.oracle.truffle.api.Truffle;
 import com.oracle.truffle.api.TruffleLanguage;
 import com.oracle.truffle.api.dsl.NodeFactory;
 import com.oracle.truffle.api.frame.FrameDescriptor;
+import org.graalphp.builtins.MaxBuiltin;
+import org.graalphp.builtins.MaxBuiltinFactory;
+import org.graalphp.builtins.MinBuiltin;
+import org.graalphp.builtins.MinBuiltinFactory;
 import org.graalphp.builtins.PhpBuiltinNode;
-import org.graalphp.builtins.PrintBuiltin;
-import org.graalphp.builtins.PrintBuiltinFactory;
-import org.graalphp.builtins.PrintlnBuiltin;
-import org.graalphp.builtins.PrintlnBuiltinFactory;
 import org.graalphp.builtins.TimeNsBuiltin;
 import org.graalphp.builtins.TimeNsBuiltinFactory;
+import org.graalphp.builtins.language.PrintBuiltin;
+import org.graalphp.builtins.language.PrintBuiltinFactory;
+import org.graalphp.builtins.language.PrintlnBuiltin;
+import org.graalphp.builtins.language.PrintlnBuiltinFactory;
 import org.graalphp.nodes.PhpExprNode;
 import org.graalphp.nodes.function.PhpFunctionRootNode;
 import org.graalphp.nodes.localvar.ReadArgCopyByValueNode;
@@ -49,6 +53,8 @@ public final class PhpContext {
         installBuiltin(PrintBuiltin.NAME, PrintBuiltinFactory.getInstance());
         installBuiltin(PrintlnBuiltin.NAME, PrintlnBuiltinFactory.getInstance());
         installBuiltin(TimeNsBuiltin.NAME, TimeNsBuiltinFactory.getInstance());
+        installBuiltin(MinBuiltin.NAME, MinBuiltinFactory.getInstance());
+        installBuiltin(MaxBuiltin.NAME, MaxBuiltinFactory.getInstance());
     }
 
     public void installBuiltin(String name, NodeFactory<? extends PhpBuiltinNode> factory) {
