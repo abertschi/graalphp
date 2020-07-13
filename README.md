@@ -20,6 +20,22 @@ $ export JAVA_HOME=/path/to/graalvm
 $ export GRAALPHP_BUILD_NATIVE="true"
 $ ./tools/build-local.sh
 ```
+
+### Feature Set
+High Level Overview of implemented features.
+
+- Implemented features are chosen to support execution of Benchmark Game Benchmarks.
+
+- [x] Functions
+- [X] Arrays of integer, float, Arrays of Arrays
+- [X] Variable Scoped Variables, unset, assign
+- [X] Binary Operators
+- [X] Unary Operators
+- [ ] try/ catch
+- [ ] Classes
+- [ ] Namespace
+- [ ] PHP Runtime
+
 ### Benchmarks
 - Performance is going to be evaluated based on benchmarks by [The Computer Language
 Benchmarks Game](https://benchmarksgame-team.pages.debian.net/benchmarksgame/index.html)
