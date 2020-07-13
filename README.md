@@ -26,15 +26,15 @@ High Level Overview of implemented features, current runtime code base. ca. 4000
 
 - Implemented features are chosen to support execution of Benchmark Game Benchmarks.
 
-- [x] Functions
-- [X] Arrays of integer, float, Arrays of Arrays
-- [X] Variable Scoped Variables, unset, assign
-- [X] Binary Operators
-- [X] Unary Operators
-- [ ] try/ catch
-- [ ] Classes
-- [ ] Namespaces
-- [ ] PHP Runtime
++ [x] Functions
++ [X] Arrays of integer, float, Arrays of Arrays
++ [X] Variable Scoped Variables, unset, assign
++ [X] Binary Operators
++ [X] Unary Operators
++ [ ] try/ catch
++ [ ] Classes
++ [ ] Namespaces
++ [ ] PHP Runtime
 
 ### Benchmarks
 - Performance is going to be evaluated based on benchmarks by [The Computer Language
