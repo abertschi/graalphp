@@ -22,7 +22,7 @@ $ ./tools/build-local.sh
 ```
 
 ### Feature Set
-High Level Overview of implemented features.
+High Level Overview of implemented features, current runtime code base. ca. 4000 LOC.
 
 - Implemented features are chosen to support execution of Benchmark Game Benchmarks.
 
@@ -33,7 +33,7 @@ High Level Overview of implemented features.
 - [X] Unary Operators
 - [ ] try/ catch
 - [ ] Classes
-- [ ] Namespace
+- [ ] Namespaces
 - [ ] PHP Runtime
 
 ### Benchmarks
