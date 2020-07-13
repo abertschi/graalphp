@@ -20,11 +20,14 @@ import org.eclipse.php.core.ast.nodes.UnaryOperation;
 import org.eclipse.php.core.ast.nodes.Variable;
 import org.eclipse.php.core.ast.visitor.HierarchicalVisitor;
 import org.graalphp.PhpLanguage;
+import org.graalphp.builtins.language.PrintArgsBuiltin;
+import org.graalphp.builtins.language.PrintArgsBuiltinNodeGen;
 import org.graalphp.exception.PhpException;
 import org.graalphp.nodes.PhpExprNode;
 import org.graalphp.nodes.PhpStmtNode;
 import org.graalphp.nodes.array.ArrayReadNodeGen;
 import org.graalphp.nodes.array.ArrayWriteNodeGen;
+import org.graalphp.nodes.array.ExecuteValuesNode;
 import org.graalphp.nodes.array.NewArrayInitialValuesNodeGen;
 import org.graalphp.nodes.array.NewArrayNode;
 import org.graalphp.nodes.binary.PhpAddNodeGen;
@@ -248,9 +251,9 @@ public class ExprVisitor extends HierarchicalVisitor {
             case UnaryOperation.OP_PLUS:
                 node = PhpPosNodeGen.create(child);
                 break;
-                case UnaryOperation.OP_NOT:
-                    node = PhpNotNode.createAndConvertToBoolean(child);
-                    break;
+            case UnaryOperation.OP_NOT:
+                node = PhpNotNode.createAndConvertToBoolean(child);
+                break;
             default:
                 throw new UnsupportedOperationException("unary expression operand not implemented: "
                         + op);
@@ -403,25 +406,48 @@ public class ExprVisitor extends HierarchicalVisitor {
     }
 
     private boolean isLanguageFunctionOperator(String name) {
-        return name.equals(UNSET_OPERATOR);
+        return name.equals(UNSET_OPERATOR) || name.equals(PrintArgsBuiltin.NAME);
     }
 
     private PhpExprNode buildLanguageFunctionOperator(FunctionInvocation fn, String name) {
-        if (name.equals(UNSET_OPERATOR)) {
-            List<String> varNames = new LinkedList<>();
-            for (Expression e : fn.parameters()) {
-                String id = new ExpectsSingleVariable().resolveName(e);
-                if (id == null) {
-                    throw new PhpException("No identifier found in unset operator: " + e + " / " + fn, null);
+        switch (name) {
+            case UNSET_OPERATOR:
+                List<String> names = new LinkedList<>();
+                for (Expression e : fn.parameters()) {
+                    String id = new ExpectsSingleVariable().resolveName(e);
+                    if (id == null) {
+                        String msg = "No identifier found in unset operator: " + e + " / " + fn;
+                        throw new PhpException(msg, null);
+                    }
+                    names.add(id);
                 }
-                varNames.add(id);
-            }
-            PhpUnsetNode unsetNode =
-                    PhpUnsetNodeGen.create(varNames.toArray(new String[varNames.size()]), scope);
-            setSourceSection(unsetNode, fn);
-            return unsetNode;
-        } else {
-            throw new IllegalArgumentException("unsupported language function invocation: " + name);
+                final PhpUnsetNode unsetNode =
+                        PhpUnsetNodeGen.create(names.toArray(new String[names.size()]), scope);
+                setSourceSection(unsetNode, fn);
+                return unsetNode;
+
+            /*
+             * Builtin function to print a string along with values
+             * Used to run benchmarks. Obsolete once we support strings
+             */
+            case PrintArgsBuiltin.NAME:
+                if (fn.parameters().size() < 1 || !(fn.parameters().get(0) instanceof Scalar)) {
+                    String msg = PrintArgsBuiltin.NAME + "needs string as first arg";
+                    throw new IllegalArgumentException(msg);
+                }
+                String title = ((Scalar) fn.parameters().get(0)).getStringValue();
+                final List<PhpExprNode> nodeArgs = new LinkedList<>();
+                for (int i = 1; i < fn.parameters().size(); i++) {
+                    nodeArgs.add(initAndAcceptExpr(fn.parameters().get(i)));
+                }
+                final ExecuteValuesNode executeValsNode = new ExecuteValuesNode(nodeArgs);
+                setSourceSection(executeValsNode, fn);
+                final PrintArgsBuiltin printNode =
+                        PrintArgsBuiltinNodeGen.create(executeValsNode, title);
+                setSourceSection(printNode, fn);
+                return printNode;
+            default:
+                throw new IllegalArgumentException("unsupported language function invocation: " + name);
         }
     }
 

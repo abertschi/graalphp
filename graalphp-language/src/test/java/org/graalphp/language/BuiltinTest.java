@@ -1,12 +1,7 @@
 package org.graalphp.language;
 
-import org.eclipse.php.core.PHPVersion;
-import org.eclipse.php.core.ast.error.BailoutErrorListener;
-import org.eclipse.php.core.ast.nodes.ASTParser;
 import org.eclipse.php.core.ast.nodes.Program;
-import org.graalphp.nodes.PhpStmtNode;
-import org.graalphp.parser.ParseScope;
-import org.graalphp.parser.StmtVisitor;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -14,20 +9,12 @@ import org.junit.Test;
  */
 public class BuiltinTest {
 
-
     @Test
     public void parseBuiltin() throws Exception {
-        String src = TestCommons.php("echo 1;");
-        ASTParser parser = ASTParser.newParser(PHPVersion.PHP7_4);
-        parser.setSource(src.toCharArray());
-        parser.addErrorListener(new BailoutErrorListener());
-        Program pgm = parser.parsePhpProgram();
-        StmtVisitor visitor = new StmtVisitor(null);
-        System.out.println(pgm.toString());
-        StmtVisitor.StmtVisitorContext phpAst = visitor.createPhpAst(pgm, ParseScope.newGlobalScope());
-        for(PhpStmtNode s: phpAst.getStmts()) {
-            System.out.println(s.toString());
-        }
+        Program pgm = TestCommons.parseProgram("foo(\"test\", 1);",
+                true);
+        Assert.assertNotNull(pgm);
+        System.out.println(pgm);
     }
 
     @Test
