@@ -53,53 +53,56 @@ function Fannkuch($n){
 }
 
 
-$N = 8;
+$N = 12;
 
 // warm up
 
-Fannkuch($N);
-Fannkuch($N);
-Fannkuch($N);
-Fannkuch($N);
-Fannkuch($N);
-Fannkuch($N);
-Fannkuch($N);
-Fannkuch($N);
-Fannkuch($N);
-Fannkuch($N);
-Fannkuch($N);
-Fannkuch($N);
-Fannkuch($N);
-Fannkuch($N);
-Fannkuch($N);
-Fannkuch($N);
-Fannkuch($N);
-Fannkuch($N);
-Fannkuch($N);
+measure($N);
+measure($N);
+measure($N);
+measure($N);
+measure($N);
+measure($N);
+measure($N);
+measure($N);
+measure($N);
+measure($N);
+measure($N);
+measure($N);
+measure($N);
+measure($N);
+measure($N);
+measure($N);
+measure($N);
+measure($N);
+measure($N);
 
 // benchmark
 
-$start=hrtime(true); // ns
-$A = Fannkuch($N);
-$stop=hrtime(true); // ns
-
-
-$res = ($stop - $start);
-
-$checksum = $A[0];
-$pf = $A[1];
-
-println ($N);
-println($checksum);
-println($pf);
-
-println("timing ns/us/ms:");
-
-println ($res);
-println ($res / 1000.0);
-println ($res / 1000.0 / 1000.0);
 
 function println($a) {
 echo $a . "\n";
+}
+
+function measure($N) {
+    $start=hrtime(true); // ns
+    $A = Fannkuch($N);
+    $stop=hrtime(true); // ns
+
+
+    $res = ($stop - $start);
+
+    $checksum = $A[0];
+    $pf = $A[1];
+
+    println ($N);
+    println($checksum);
+    println($pf);
+
+    println("timing ns/us/ms:");
+
+    println ($res);
+    println ($res / 1000.0);
+    println ($res / 1000.0 / 1000.0);    
 }
 ?>

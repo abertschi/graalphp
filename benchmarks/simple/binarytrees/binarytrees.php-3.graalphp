@@ -64,30 +64,44 @@ function doAlgorithm($n) {
 
 // $n = ($argc == 2) ? $argv[1] : 1;
 $n = 21;
-doAlgorithm($n);
-doAlgorithm($n);
-doAlgorithm($n);
-doAlgorithm($n);
-doAlgorithm($n);
-doAlgorithm($n);
-doAlgorithm($n);
-doAlgorithm($n);
-doAlgorithm($n);
-doAlgorithm($n);
-doAlgorithm($n);
-doAlgorithm($n);
-doAlgorithm($n);
-doAlgorithm($n);
+measure($n);
+measure($n);
+measure($n);
+measure($n);
+measure($n);
+measure($n);
+measure($n);
+measure($n);
+measure($n);
+measure($n);
+measure($n);
+measure($n);
+measure($n);
+measure($n);
+measure($n);
 
+
+// $start = graalphp_time_ns();
+// doAlgorithm($n);
+// $stop = graalphp_time_ns();
+
+// $res = ($stop - $start);
+// // println ($res);
+// // println ($res / 1000.0);
+
+// println ($res / 1000.0 / 1000.0);
+
+function measure($n) {
 $start = graalphp_time_ns();
 doAlgorithm($n);
 $stop = graalphp_time_ns();
 
 $res = ($stop - $start);
+// println ($res);
+// println ($res / 1000.0);
 
-println ($res);
-println ($res / 1000.0);
 println ($res / 1000.0 / 1000.0);
+}
 
 ?>
     

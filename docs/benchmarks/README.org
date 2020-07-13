@@ -6,25 +6,25 @@
 :file: [[file:fannkuchredux.php-1.php][file:fannkuchredux.php-1.php]]
 :url: https://benchmarksgame-team.pages.debian.net/benchmarksgame/program/fannkuchredux-php-1.html
 :end:
-- [-] Function invocations
+- [X] Function invocations
   - [X] pass number to function
-  - [ ] return array from function
+  - [X] return array from function
 - [X] integer variables
-- [ ] arrays
-  - [ ] integer arrays
-  - [ ] array();
-  - [ ] array(val1, val2)
-  - [ ] array access by index $arr[ind]
-  - [ ] array write by index $arr[ind] = val
+- [-] arrays
+  - [X] integer arrays
+  - [X] array();
+  - [X] array(val1, val2)
+  - [X] array access by index $arr[ind]
+  - [X] array write by index $arr[ind] = val
   - [ ] access argv
 - [X] for loop
 - [X] do while loop
 - [X] break
 - [ ] strings in printf
 - [ ] list builtin
-- [-] Arithmetic/ logical operations
-  - [ ] -- operator
-  - [ ] ++ operator
+- [X] Arithmetic/ logical operations
+  - [X] -- operator
+  - [X] ++ operator
   - [X] < operator
   - [X] != operator
   - [X] * operator
@@ -45,29 +45,47 @@
   - [ ] object->attibute access
   - [ ] object->attribute assign
   - [ ] obj->obj->attribute
-- [ ] (cond ? val1: val2) syntax
+- [X] (cond ? val1: val2) syntax
 - [ ] access argc
-- [ ] arrays
-  - [ ] access argv
-- [ ] max builtin
+- [X] arrays
+- [X] max builtin
 - [ ] strings
   - [ ] printf(string, args)
-- [ ] unset $var (however, not used functionally)
+- [X] unset $var (however, not used functionally)
 - [X] for while
 - [X] do while
-- [-] Arithmetic/ logical operations
+- [X] Arithmetic/ logical operations
   - [X] ! operator
-  - [ ] -- operator
-  - [ ] === operator
-  - [ ] >>= operator
-  - [ ] += operator
+  - [X] -- operator
+  - [X] === operator -> use == instead
+  - [X] >>= operator
+  - [X] += operator
 - [X] addition of numbers
 
 ** NOTE binarytrees.php-3.php does not use classes
-- uses 2D arrays instead
--
+- The same benchmark is also implemented using arrays instead of objects
+- It uses 2D arrays instead
+- We work with this implementation
 
-
+- [X] function definition
+  - [X] integer argument
+  - [X] return an array
+- [X] (cond ? val1: val2) syntax
+- [ ] access argc
+- [X] arrays
+- [X] max builtin
+- [ ] strings
+  - [ ] printf(string, args)
+- [X] unset $var (however, not used functionally)
+- [X] for while
+- [X] do while
+- [X] Arithmetic/ logical operations
+  - [X] ! operator
+  - [X] -- operator
+  - [X] === operator -> we use == operator
+  - [X] >>= operator
+  - [X] += operator
+- [X] addition of numbers
 * USE Feature set for spectralnorm.php-2.php
 :properties:
 :file: [[file:spectralnorm.php-2.php][file:spectralnorm.php-2.php]]
@@ -81,14 +99,14 @@
     - [ ] arrays
     - [ ] integer
     - [ ] does not assign value, only read
-- [ ] arrays
-  - [ ] $A[ind] = val
+- [-] arrays
+  - [X] $A[ind] = val
   - [ ] array_fill
-- [-] arithmetic/ logical ops
-  - [ ] >>
+- [X] arithmetic/ logical ops
+  - [X] >>
   - [X] +
   - [X] /
-  - [ ] ++
+  - [X] ++
 - [X] for loop
 - [ ] for each ($v as $key => $val)
 - [ ] for each ($v as $val)

@@ -64,21 +64,21 @@ function doAlgorithm($n) {
 
 // $n = ($argc == 2) ? $argv[1] : 1;
 $n = 21;
-doAlgorithm($n);
-doAlgorithm($n);
-doAlgorithm($n);
-doAlgorithm($n);
-doAlgorithm($n);
-doAlgorithm($n);
-doAlgorithm($n);
-doAlgorithm($n);
-doAlgorithm($n);
-doAlgorithm($n);
-doAlgorithm($n);
-doAlgorithm($n);
-doAlgorithm($n);
-doAlgorithm($n);
-doAlgorithm($n);
+// doAlgorithm($n);
+// doAlgorithm($n);
+// doAlgorithm($n);
+// doAlgorithm($n);
+// doAlgorithm($n);
+// doAlgorithm($n);
+// doAlgorithm($n);
+// doAlgorithm($n);
+// doAlgorithm($n);
+// doAlgorithm($n);
+// doAlgorithm($n);
+// doAlgorithm($n);
+// doAlgorithm($n);
+// doAlgorithm($n);
+// doAlgorithm($n);
 
 // benchmark
 
@@ -89,10 +89,10 @@ $stop=hrtime(true); // ns
 
 $res = ($stop - $start);
 
-println("timing ns/us/ms:");
+println("timing ms:");
 
-println ($res);
-println ($res / 1000.0);
+// println ($res);
+// println ($res / 1000.0);
 println ($res / 1000.0 / 1000.0);
 
 function println($a) {
