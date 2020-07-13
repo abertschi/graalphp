@@ -12,15 +12,16 @@ https://github.com/php/php-langspec/blob/master/spec/11-statements.md#the-unset-
 - [ ] unset by ref variables
 - [ ] unset array entries
 - [ ] unset object properties
+
+
 * Implementation
 - We assign an instance of Undefined to the field and throw an
   exception if we try to read it, this overwrites the original
   value. Making it available for Javas GC to clean.
-- There is currently (we are not aware) of a better way to implement this.
-- Ideally we can delete the variable from the frame and make all frameslots invalid
-  - Read notes have reference to frame slots
-  - so we can remove the frame slot from the descriptor, but the frame
-    itself may still have the variables stored in its internal array and a lookup succeeds.
+
+If we unset a variable we fall back to interpreter.  This is not considered
+fast. So in order to write idiomatic code, one should leave unsetting of
+variables to GC.
 
 * Initial Work on Unset
 In order to run our second benchmark (binary trees), we need to be
