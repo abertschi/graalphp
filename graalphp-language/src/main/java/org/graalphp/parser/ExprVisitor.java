@@ -329,20 +329,21 @@ public class ExprVisitor extends HierarchicalVisitor {
 
     private PhpExprNode createAssignmentNode(Assignment ass) {
         final PhpExprNode rhsNode = createAssignmentEvalRhs(ass);
-        final String assignName;
-        final PhpExprNode assignNode;
 
         // Array lookup expression $A[$val] = ...
         if (ass.getLeftHandSide() instanceof ArrayAccess) {
+            // XXX: $A[...] = X will return X not Array
             final ArrayAccess lhs = (ArrayAccess) ass.getLeftHandSide();
-            assignName = new IdentifierVisitor().getIdentifierName(lhs.getName()).getName();
-            assignNode = createArrayWriteNode(lhs.getName(), lhs.getIndex(), rhsNode, ass);
+            return createArrayWriteNode(lhs.getName(), lhs.getIndex(), rhsNode, ass);
         } else {
             // variable expression $A = ...
-            assignName = new IdentifierVisitor().getIdentifierName(ass.getLeftHandSide()).getName();
-            assignNode = rhsNode;
+            final String assignName = new IdentifierVisitor()
+                    .getIdentifierName(ass.getLeftHandSide()).getName();
+
+            // XXX: We dont need local assignment if we write into arrays
+            // we already have their reference
+            return VisitorHelpers.createLocalAssignment(scope, assignName, rhsNode, null, ass);
         }
-        return VisitorHelpers.createLocalAssignment(scope, assignName, assignNode, null, ass);
     }
 
     private PhpExprNode createAssignmentEvalRhs(Assignment ass) {

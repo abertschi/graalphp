@@ -61,4 +61,11 @@ public abstract class ReadLocalVarNode extends PhpExprNode {
                     getSlot().getIdentifier().toString(), this);
         }
     }
+
+    @Override
+    public String toString() {
+        return "ReadLocalVarNode{" +
+                "slot: " + getSlot() +
+                '}';
+    }
 }

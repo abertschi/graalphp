@@ -46,34 +46,23 @@ public abstract class ArrayLibrary extends Library {
         return FACTORY.getUncached();
     }
 
-    public abstract boolean isArray(Object receiver);
+    // Semantic messages
+
+    public boolean isArray(Object receiver) {
+        return false;
+    }
 
     /**
      * read from receiver at index index
      **/
-    public abstract Object read(Object receiver, int index);
+    public Object read(Object receiver, int index) {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * write to receiver at index index
      **/
-    public abstract void write(Object receiver, int index, Object value);
-
-    /**
-     * returns true if receiver supports given value
-     **/
-    public abstract boolean acceptsValue(Object receiver, Object value);
-
-    /**
-     * allocator to create new receiver
-     **/
-    public abstract ArrayAllocator allocator(Object receiver);
-
-    /**
-     * upgrade a receiver to store more generalized types, for example. long[] -> Object[]
-     **/
-    public abstract ArrayAllocator generalizeForValue(Object receiver, Object newValue);
-
-    public void copyContents(Object receiver, Object target, int length) {
+    public void write(Object receiver, int index, Object value) {
         throw new UnsupportedOperationException();
     }
 
@@ -81,6 +70,48 @@ public abstract class ArrayLibrary extends Library {
      * get current capacity
      **/
     public int capacity(Object receiver) {
+        throw new UnsupportedOperationException();
+    }
+
+    // Implementation specific messages
+
+    /**
+     * returns true if receiver supports given value
+     **/
+    public boolean acceptsValue(Object receiver, Object value) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * allocator to create new receiver
+     **/
+    public ArrayAllocator allocator(Object receiver) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * upgrade a receiver to store more generalized types, for example. long[] -> Object[]
+     **/
+    public ArrayAllocator generalizeForValue(Object receiver, Object newValue) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Create a shallow copy of receiver and write it into target
+     * A shallow copy here is as follows;
+     * if receiver contains an array of an array, we simply copy the most outer array.
+     * This means the target shares the nested array.
+     *
+     * @see #copyDeepContents(Object, Object, int)
+     */
+    public void copyContents(Object receiver, Object target, int length) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Create a deep copy by copy arrays of arrays.
+     */
+    public void copyDeepContents(Object receiver, Object target, int length) {
         throw new UnsupportedOperationException();
     }
 
@@ -102,6 +133,8 @@ public abstract class ArrayLibrary extends Library {
     /**
      * to string
      **/
-    public abstract String arrayToString(Object receiver);
+    public String arrayToString(Object receiver) {
+        throw new UnsupportedOperationException();
+    }
 
 }

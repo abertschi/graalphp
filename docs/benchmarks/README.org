@@ -30,62 +30,37 @@
   - [X] * operator
   - [X] + operator
 
-* USE Feature set for binarytrees.php-1.php
+* USE Feature set for binarytrees.php-3.php
 :properties:
-:file: [[file:binarytrees.php-1.php][file:binarytrees.php-1.php]]
-:url: https://benchmarksgame-team.pages.debian.net/benchmarksgame/program/binarytrees-php-1.html
+:file: [[file:binarytrees.php-1.php][file:binarytrees.php-3.php]]
+:url: https://benchmarksgame-team.pages.debian.net/benchmarksgame/program/binarytrees-php-3.html
 :end:
 
 - [-] function definition
   - [X] integer argument
   - [ ] return an object
-- [ ] objects
-  - [ ] new Obj()
-  - [ ] Public attributes
-  - [ ] object->attibute access
-  - [ ] object->attribute assign
-  - [ ] obj->obj->attribute
+- [X] arrays
+  - [X] arrays of arrays
+  - [X] read array
+  - [X] write array
 - [X] (cond ? val1: val2) syntax
 - [ ] access argc
-- [X] arrays
 - [X] max builtin
 - [ ] strings
   - [ ] printf(string, args)
-- [X] unset $var (however, not used functionally)
+- [X] unset $var
 - [X] for while
 - [X] do while
-- [X] Arithmetic/ logical operations
+- [-] Arithmetic/ logical operations
   - [X] ! operator
   - [X] -- operator
-  - [X] === operator -> use == instead
+  - [ ] === operator -> we can use == instead
   - [X] >>= operator
   - [X] += operator
 - [X] addition of numbers
 
-** NOTE binarytrees.php-3.php does not use classes
-- The same benchmark is also implemented using arrays instead of objects
-- It uses 2D arrays instead
-- We work with this implementation
+** NOTE binarytrees.php-1.php implements similar behavior but uses classes
 
-- [X] function definition
-  - [X] integer argument
-  - [X] return an array
-- [X] (cond ? val1: val2) syntax
-- [ ] access argc
-- [X] arrays
-- [X] max builtin
-- [ ] strings
-  - [ ] printf(string, args)
-- [X] unset $var (however, not used functionally)
-- [X] for while
-- [X] do while
-- [X] Arithmetic/ logical operations
-  - [X] ! operator
-  - [X] -- operator
-  - [X] === operator -> we use == operator
-  - [X] >>= operator
-  - [X] += operator
-- [X] addition of numbers
 * USE Feature set for spectralnorm.php-2.php
 :properties:
 :file: [[file:spectralnorm.php-2.php][file:spectralnorm.php-2.php]]
