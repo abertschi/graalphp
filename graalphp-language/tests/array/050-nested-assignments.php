@@ -20,10 +20,10 @@ foo($C);
 
 println($C[1]);
 println($C[2]);
-println($C[0][1]);
+println($C[0][1]); // here we get 101 from foo, but should be 100
 println($C[0][2]);
 
-println($C[0][0][0]);
+println($C[0][0][0]); // here we get 1.1 but should be 1
 println($C[0][0][1]);
 println($C[0][0][2]);
 

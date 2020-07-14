@@ -76,13 +76,6 @@ public abstract class ArrayLibrary extends Library {
     // Implementation specific messages
 
     /**
-     * True if backend can only store primitive values
-     */
-    public boolean storesPrimitivesOnly(Object receiver) {
-        return false;
-    }
-
-    /**
      * returns true if receiver supports given value
      **/
     public boolean acceptsValue(Object receiver, Object value) {
