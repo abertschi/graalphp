@@ -39,6 +39,11 @@ public class ObjectArrayLibrary {
     }
 
     @ExportMessage
+    protected static boolean storesPrimitivesOnly(Object[] receiver) {
+        return false;
+    }
+
+    @ExportMessage
     @TruffleBoundary
     protected static String arrayToString(Object[] receiver) {
         return Arrays.toString(receiver);
@@ -70,31 +75,49 @@ public class ObjectArrayLibrary {
     @ExportMessage
     static class CopyContents {
         @Specialization(limit = ArrayLibrary.SPECIALIZATION_LIMIT)
-        protected static void copyContentsObject(Object[] receiver,
-                                                 Object destination,
-                                                 int length,
-                                                 @CachedLibrary("destination") ArrayLibrary destinationLibrary) {
+        protected static void copyContentsObject(
+                Object[] receiver,
+                Object destination,
+                int length,
+                @CachedLibrary("destination") ArrayLibrary destinationLibrary) {
+
             for (int i = 0; i < length; i++) {
+                destinationLibrary.write(destination, i, receiver[i]);
+            }
+        }
+    }
+
+    @ExportMessage
+    static class CopyDeepContents {
+        @Specialization(limit = ArrayLibrary.SPECIALIZATION_LIMIT)
+        protected static void copyDeepContents(Object[] receiver,
+                                               Object destination,
+                                               int length,
+                                               @CachedLibrary("destination") ArrayLibrary destinationLibrary) {
+            for (int i = 0; i < length; i++) {
+                //                if (destinationLibrary.storesPrimitivesOnly(receiver[i])) {
+
+                //                }
                 if (receiver[i] instanceof Object[]) {
                     Object nestedBackend =
                             destinationLibrary.allocator(receiver[i]).allocate(destinationLibrary.capacity(receiver[i]));
-                    destinationLibrary.copyContents(nestedBackend, receiver[i], destinationLibrary.capacity(receiver[i]));
+                    destinationLibrary.copyContents(nestedBackend, receiver[i],
+                            destinationLibrary.capacity(receiver[i]));
                     destinationLibrary.write(destination, i, nestedBackend);
                 } else {
                     destinationLibrary.write(destination, i, receiver[i]);
                 }
             }
         }
-
-
-//        @Specialization(limit = ArrayLibrary.SPECIALIZATION_LIMIT)
-//        protected static void copyContents(Object[] receiver,
-//                                           Object destination,
-//                                           int length,
-//                                           @CachedLibrary("destination") ArrayLibrary destinationLibrary) {
-//            for (int i = 0; i < length; i++) {
-//                destinationLibrary.write(destination, i, receiver[i]);
-//            }
-//        }
+        //        @Specialization(limit = ArrayLibrary.SPECIALIZATION_LIMIT)
+        //        protected static void copyContents(Object[] receiver,
+        //                                           Object destination,
+        //                                           int length,
+        //                                           @CachedLibrary("destination") ArrayLibrary
+        //                                           destinationLibrary) {
+        //            for (int i = 0; i < length; i++) {
+        //                destinationLibrary.write(destination, i, receiver[i]);
+        //            }
+        //        }
     }
 }
