@@ -7,8 +7,8 @@ import com.oracle.truffle.api.nodes.RootNode;
 import org.graalphp.nodes.PhpExprNode;
 import org.graalphp.nodes.array.ArrayReadNode;
 import org.graalphp.nodes.array.ArrayReadNodeGen;
-import org.graalphp.nodes.array.ArrayWriteNode;
-import org.graalphp.nodes.array.ArrayWriteNodeGen;
+import org.graalphp.nodes.array.ArrayWriteReturnArrayNode;
+import org.graalphp.nodes.array.ArrayWriteReturnArrayNodeGen;
 import org.graalphp.nodes.array.NewArrayNode;
 import org.graalphp.nodes.literal.PhpLongNode;
 import org.junit.Test;
@@ -37,14 +37,10 @@ public class EvalObjectArrayTest {
 
     @Test
     public void evalArr() {
-        PhpExprNode[] nodes = {
-                new PhpLongNode(2)
-        };
-
         NewArrayNode newArray = new NewArrayNode();
-
-        ArrayWriteNode arrayWriteNode = ArrayWriteNodeGen.create(newArray, new PhpLongNode(0),
-                new PhpLongNode(1337));
+        ArrayWriteReturnArrayNode arrayWriteNode =
+                ArrayWriteReturnArrayNodeGen
+                        .create(newArray, new PhpLongNode(0), new PhpLongNode(1337));
 
         ArrayReadNode arrayReadNode = ArrayReadNodeGen.create(arrayWriteNode, new PhpLongNode(0));
 
