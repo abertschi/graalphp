@@ -88,10 +88,11 @@ def do_binarytrees_benchmark():
     fib_benchmark = os.path.join(dir, 'binarytrees')
     out(datetime.now())
 
-    run_php(fib_benchmark, ['-n', '-d', 'memory_limit=4096M'])
+
     run_graalphp(fib_benchmark)
+    run_php(fib_benchmark, ['-n', '-d', 'memory_limit=4096M'])
     
 
 # do_fib_benchmark()
-do_fannkuchredux_benchmark()
-# do_binarytrees_benchmark()
+# do_fannkuchredux_benchmark()
+do_binarytrees_benchmark()
