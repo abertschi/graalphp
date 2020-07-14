@@ -18,14 +18,11 @@ import java.util.Arrays;
 @GenerateUncached
 public class LongArrayLibrary {
 
+    // Semantic messages
+
     @ExportMessage
     protected static boolean isArray(long[] store) {
         return true;
-    }
-
-    @ExportMessage
-    protected static boolean acceptsValue(long[] receiver, Object value) {
-        return value instanceof Long;
     }
 
     @ExportMessage
@@ -39,6 +36,13 @@ public class LongArrayLibrary {
         protected static void write(long[] store, int index, long value) {
             store[index] = value;
         }
+    }
+
+    // technical messages
+
+    @ExportMessage
+    protected static boolean acceptsValue(long[] receiver, Object value) {
+        return value instanceof Long;
     }
 
     @ExportMessage
@@ -82,6 +86,20 @@ public class LongArrayLibrary {
                                            Object destination,
                                            int length,
                                            @CachedLibrary("destination") ArrayLibrary destinationLibrary) {
+            for (int i = 0; i < length; i++) {
+                destinationLibrary.write(destination, i, receiver[i]);
+            }
+        }
+    }
+
+    @ExportMessage
+    static class CopyDeepContents {
+        // XXX: Same as copy contents as long[] cannot store other arrays
+        @Specialization(limit = ArrayLibrary.SPECIALIZATION_LIMIT)
+        protected static void copyDeepContents(long[] receiver,
+                                               Object destination,
+                                               int length,
+                                               @CachedLibrary("destination") ArrayLibrary destinationLibrary) {
             for (int i = 0; i < length; i++) {
                 destinationLibrary.write(destination, i, receiver[i]);
             }

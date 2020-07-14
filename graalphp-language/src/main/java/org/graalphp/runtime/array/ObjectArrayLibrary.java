@@ -24,11 +24,6 @@ public class ObjectArrayLibrary {
     }
 
     @ExportMessage
-    protected static boolean acceptsValue(Object[] receiver, Object value) {
-        return true;
-    }
-
-    @ExportMessage
     protected static Object read(Object[] receiver, int index) {
         return receiver[index];
     }
@@ -42,6 +37,11 @@ public class ObjectArrayLibrary {
     @TruffleBoundary
     protected static String arrayToString(Object[] receiver) {
         return Arrays.toString(receiver);
+    }
+
+    @ExportMessage
+    protected static boolean acceptsValue(Object[] receiver, Object value) {
+        return true;
     }
 
     @ExportMessage
@@ -70,12 +70,46 @@ public class ObjectArrayLibrary {
     @ExportMessage
     static class CopyContents {
         @Specialization(limit = ArrayLibrary.SPECIALIZATION_LIMIT)
-        protected static void copyContents(Object[] receiver,
-                                           Object destination,
-                                           int length,
-                                           @CachedLibrary("destination") ArrayLibrary destinationLibrary) {
+        protected static void copyContentsObject(
+                Object[] receiver,
+                Object destination,
+                int length,
+                @CachedLibrary("destination") ArrayLibrary destinationLibrary) {
+
             for (int i = 0; i < length; i++) {
                 destinationLibrary.write(destination, i, receiver[i]);
+            }
+        }
+    }
+
+    @ExportMessage
+    static class CopyDeepContents {
+        @Specialization(limit = ArrayLibrary.SPECIALIZATION_LIMIT)
+        protected static void copyDeepContents(
+                Object[] receiver,
+                Object destination,
+                int length,
+                @CachedLibrary(limit = ArrayLibrary.SPECIALIZATION_LIMIT) ArrayLibrary destinationLibrary) {
+
+            for (int i = 0; i < length; i++) {
+                /*
+                 * We need to deep copy nested arrays
+                 * create a new backend and call copyDeepContents on nested array
+                 */
+                if (receiver[i] instanceof PhpArray) {
+                    final PhpArray array = (PhpArray) receiver[i];
+                    final Object backendCopy = destinationLibrary
+                            .allocator(array.getBackend())
+                            .allocate(array.getCapacity());
+                    final PhpArray arrayCopy = ArrayFactory
+                            .newArray(backendCopy, array.getCapacity());
+
+                    destinationLibrary.copyDeepContents(array.getBackend(),
+                            arrayCopy.getBackend(), array.getCapacity());
+                    destinationLibrary.write(destination, i, arrayCopy);
+                } else {
+                    destinationLibrary.write(destination, i, receiver[i]);
+                }
             }
         }
     }

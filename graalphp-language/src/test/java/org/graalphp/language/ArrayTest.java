@@ -36,11 +36,12 @@ public class ArrayTest {
         Assert.assertTrue(phpAst.getStmts().size() > 0);
     }
 
-    //    @Test
-    public void fannkuchExecTest() {
-        String src = TestCommons.inputStreamToString(getClass().getResourceAsStream("fannkuch.bak" +
-                ".php"));
-        TestCommons.compareStdout("", src, false);
+    @Test
+    public void parseNestedArrays() throws Exception {
+        String code = "$A = array(array()); $A[0][0] = 1;";
+        Program program = TestCommons.parseProgram(code, true);
+        System.out.println(program);
+        System.out.println(TestCommons.createTruffleAst(program).getStmts());
     }
 
     @Test(expected = Exception.class)
@@ -56,7 +57,6 @@ public class ArrayTest {
     public void arrayAccessSimple() {
         String code = TestCommons.php("$a = array(); $a[0] = 1337; print($a[0]);");
         TestCommons.compareStdout("1337", code, false);
-
     }
 
     @Test()
@@ -86,13 +86,11 @@ public class ArrayTest {
         TestCommons.compareStdout("", code, false);
     }
 
-    // Arrays are by default copied. We currently do not copy them
     @Test
     public void array2DTestSimple() {
         TestCommons.compareStdout("1337",
                 "$A = array(); $B = array(); $B[0] = 1337; $A[0] = $B; print($A[0][0]);");
     }
-
 
     @Test
     public void arrayCopyByValue() {
@@ -101,10 +99,17 @@ public class ArrayTest {
     }
 
     // TODO: this is supposed to fail if php compliant
-    //    @Test(expected = Exception.class)
+    @Test()
     public void arrayReadEmpty() {
         String code = TestCommons.php("$a = array();  print($a[0]);");
-        TestCommons.compareStdout("", code, false);
+        TestCommons.compareStdout("0", code, false);
 
+    }
+
+    @Test
+    public void testNestedAssign() {
+        String code = "$B = array(10); $C = array($B, 20);  print($C[1]); $a = $C[0][0] = -1; " +
+                "print($C[1]);  print($a);";
+        TestCommons.compareStdout("2020-1", code, true);
     }
 }
