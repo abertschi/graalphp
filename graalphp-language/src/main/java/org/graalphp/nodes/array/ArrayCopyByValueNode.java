@@ -25,7 +25,7 @@ public abstract class ArrayCopyByValueNode extends PhpExprNode {
             PhpLogger.getLogger(ArrayCopyByValueNode.class.getSimpleName());
 
     public static ArrayCopyByValueNode create(PhpExprNode source) {
-        return  ArrayCopyByValueNodeGen.create(source);
+        return ArrayCopyByValueNodeGen.create(source);
     }
 
     @Specialization
@@ -44,10 +44,10 @@ public abstract class ArrayCopyByValueNode extends PhpExprNode {
     }
 
     @Specialization
-    protected Object copyArray(PhpArray array,
-                               @CachedLibrary(limit =
-                                       ArrayLibrary.SPECIALIZATION_LIMIT)
-                                       ArrayLibrary lib) {
+    protected Object copyArray(
+            PhpArray array,
+            @CachedLibrary(limit = ArrayLibrary.SPECIALIZATION_LIMIT) ArrayLibrary lib) {
+
         ArrayAllocator allocator = lib.allocator(array.getBackend());
         Object newBackend = allocator.allocate(array.getCapacity());
         lib.copyContents(array.getBackend(), newBackend, array.getCapacity());
