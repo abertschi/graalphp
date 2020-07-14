@@ -136,11 +136,11 @@ public abstract class ArrayWriteNode extends PhpExprNode {
     }
 
     private int convertToInt(long val) {
-        if (val < Integer.MAX_VALUE && val > Integer.MIN_VALUE) {
-            return (int) val;
-        } else {
-            throw new ArrayCapacityExceededException("array index is too large for java arrays",
-                    this);
+        try {
+            return Math.toIntExact(val);
+        } catch (ArithmeticException e) {
+            throw new ArrayCapacityExceededException("array index is too large for java arrays"
+                    , this);
         }
     }
 }
