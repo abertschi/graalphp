@@ -73,7 +73,22 @@ public abstract class ArrayLibrary extends Library {
      **/
     public abstract ArrayAllocator generalizeForValue(Object receiver, Object newValue);
 
+    /**
+     * Create a shallow copy of receiver and write it into target
+     * A shallow copy here is as follows;
+     * if receiver contains an array of an array, we simply copy the most outer array.
+     * This means the target shares the nested array.
+     *
+     * @see #copyDeepContents(Object, Object, int)
+     */
     public void copyContents(Object receiver, Object target, int length) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Create a deep copy by copy arrays of arrays.
+     */
+    public void copyDeepContents(Object receiver, Object target, int length) {
         throw new UnsupportedOperationException();
     }
 
