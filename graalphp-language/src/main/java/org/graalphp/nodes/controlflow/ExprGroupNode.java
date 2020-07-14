@@ -21,12 +21,12 @@ public final class ExprGroupNode extends PhpExprNode {
     @Children
     private PhpExprNode[] expressionNodes;
 
-    public ExprGroupNode(PhpExprNode[] nodes) {
+    public ExprGroupNode(PhpExprNode... nodes) {
         this.expressionNodes = nodes;
     }
 
     public ExprGroupNode(List<PhpExprNode> nodes) {
-        this.expressionNodes = nodes.toArray(new PhpExprNode[nodes.size()]);
+        this(nodes.toArray(new PhpExprNode[nodes.size()]));
     }
 
     @Override

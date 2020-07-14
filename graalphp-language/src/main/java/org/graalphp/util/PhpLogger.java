@@ -12,7 +12,8 @@ public class PhpLogger implements Logger {
 
     private final String name;
 
-    public static boolean DISABLE = false;
+    public static boolean DISABLE = true;
+
     public static boolean DISABLE_FINEST = true;
     public static boolean DISABLE_FINE = true;
 
@@ -34,37 +35,37 @@ public class PhpLogger implements Logger {
         return new PhpLogger(name);
     }
 
-    @Override
     @TruffleBoundary
+    private void doLog(String msg, String lvl) {
+        System.err.println(format(msg, lvl));
+    }
+
+    @Override
     public void fine(String msg) {
         if (DISABLE || DISABLE_FINE) return;
-        System.err.println(format(msg, "fine"));
+        doLog(msg, "fine");
     }
 
     @Override
-    @TruffleBoundary
     public void info(String msg) {
         if (DISABLE) return;
-        System.err.println(format(msg, "info"));
+        doLog(msg, "info");
     }
 
     @Override
-    @TruffleBoundary
     public void finest(String msg) {
         if (DISABLE || DISABLE_FINEST) return;
-        System.err.println(format(msg, "finest"));
+        doLog(msg, "finest");
     }
 
     @Override
-    @TruffleBoundary
     public void warn(String msg) {
-        System.err.println(format(msg, "warn"));
+        doLog(msg, "warn");
     }
 
     @Override
-    @TruffleBoundary
     public void parserEnumerationError(String msg) {
-        System.err.println(format(msg, "ERROR"));
+        doLog(msg, "error");
     }
 
     private String format(String msg, String lvl) {

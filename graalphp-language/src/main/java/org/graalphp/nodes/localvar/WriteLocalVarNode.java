@@ -23,6 +23,8 @@ public abstract class WriteLocalVarNode extends PhpExprNode {
 
     private static final Logger LOG = PhpLogger.getLogger(WriteLocalVarNode.class.getSimpleName());
 
+    protected abstract PhpExprNode getSrcNode();
+
     // storage slot in frame
     protected abstract FrameSlot getSlot();
 
@@ -71,5 +73,10 @@ public abstract class WriteLocalVarNode extends PhpExprNode {
         final FrameDescriptor desc = frame.getFrameDescriptor();
         final FrameSlotKind kind = desc.getFrameSlotKind(getSlot());
         return kind == FrameSlotKind.Double || kind == FrameSlotKind.Illegal;
+    }
+
+    @Override
+    public String toString() {
+        return "WriteLocalVarNode{slot: " + getSlot() + "; value: " + getSrcNode() + "}";
     }
 }

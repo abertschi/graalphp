@@ -28,6 +28,8 @@ public abstract class ArrayCopyByValueNode extends PhpExprNode {
         return ArrayCopyByValueNodeGen.create(source);
     }
 
+    protected abstract PhpExprNode getSource();
+
     @Specialization
     protected boolean forwardBool(boolean val) {
         return val;
@@ -64,4 +66,8 @@ public abstract class ArrayCopyByValueNode extends PhpExprNode {
         return !(o instanceof PhpArray);
     }
 
+    @Override
+    public String toString() {
+        return "ArrayCopyByValueNode{" + getSource() + "}";
+    }
 }
