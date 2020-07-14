@@ -3,6 +3,7 @@ package org.graalphp.nodes.array;
 import com.oracle.truffle.api.dsl.NodeChild;
 import com.oracle.truffle.api.dsl.Specialization;
 import com.oracle.truffle.api.library.CachedLibrary;
+import com.oracle.truffle.api.nodes.Node;
 import org.graalphp.exception.ArrayCapacityExceededException;
 import org.graalphp.nodes.PhpExprNode;
 import org.graalphp.runtime.PhpRuntime;
@@ -10,7 +11,15 @@ import org.graalphp.runtime.array.ArrayLibrary;
 import org.graalphp.runtime.array.PhpArray;
 
 /**
- * Array write node uses variable array backends and generalizes if needed
+ * Array write node uses variable array backends and generalizes if
+ * needed
+ * <p>
+ * Semantically, a array write expression returns the value to write
+ * not the array.
+ * <p>
+ * $a = array(1, 2, 3);
+ * $b = $a[0] = 1;
+ * print($b); // 1
  *
  * @author abertschi
  */
@@ -37,14 +46,14 @@ public abstract class ArrayWriteNode extends PhpExprNode {
                     , "isArrayInBounds(array, index)"
             },
             limit = LIMIT)
-    protected PhpArray writeInBoundsSameType(
+    protected Object writeInBoundsSameType(
             PhpArray array,
             long index,
             Object value,
             @CachedLibrary("array.getBackend()") ArrayLibrary library) {
 
         library.write(array.getBackend(), convertToInt(index), value);
-        return array;
+        return value;
     }
 
     /**
@@ -56,7 +65,7 @@ public abstract class ArrayWriteNode extends PhpExprNode {
                     , "isArrayInBounds(array, index)"
             },
             limit = LIMIT)
-    protected PhpArray writeInBoundsWrongType(
+    protected Object writeInBoundsWrongType(
             PhpArray array,
             long index,
             Object value,
@@ -72,7 +81,7 @@ public abstract class ArrayWriteNode extends PhpExprNode {
         newLibrary.write(newBackend, convertToInt(index), value);
         array.setBackend(newBackend);
 
-        return array;
+        return value;
     }
 
     /**
@@ -84,7 +93,7 @@ public abstract class ArrayWriteNode extends PhpExprNode {
                     , "canAppendByOne(array, index)"
             },
             limit = LIMIT)
-    protected PhpArray appendByOneSameType(
+    protected Object appendByOneSameType(
             PhpArray array,
             long index,
             Object value,
@@ -95,7 +104,7 @@ public abstract class ArrayWriteNode extends PhpExprNode {
         array.setCapacity(newLength);
 
         library.write(array.getBackend(), convertToInt(index), value);
-        return array;
+        return value;
     }
 
     /**
@@ -107,7 +116,7 @@ public abstract class ArrayWriteNode extends PhpExprNode {
                     , "canAppendByOne(array, index)"
             },
             limit = LIMIT)
-    protected PhpArray appendByOneDifferentType(
+    protected Object appendByOneDifferentType(
             PhpArray array,
             long index,
             Object value,
@@ -124,7 +133,7 @@ public abstract class ArrayWriteNode extends PhpExprNode {
         newLibrary.write(newBackend, convertToInt(index), value);
         array.setBackend(newBackend);
         array.setCapacity(newLength);
-        return array;
+        return value;
     }
 
     protected static boolean isArrayInBounds(PhpArray array, long index) {
@@ -142,5 +151,20 @@ public abstract class ArrayWriteNode extends PhpExprNode {
             throw new ArrayCapacityExceededException("array index is too large for java arrays",
                     this);
         }
+    }
+
+    protected abstract Node getReceiver();
+
+    protected abstract Node getIndex();
+
+    protected abstract Node getValue();
+
+    @Override
+    public String toString() {
+        return "ArrayWriteNode{"
+                + "Array: " + getReceiver()
+                + "; Index: " + getIndex()
+                + "; Value: " + getValue()
+                + "}";
     }
 }

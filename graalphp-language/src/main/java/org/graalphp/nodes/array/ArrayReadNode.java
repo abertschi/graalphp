@@ -3,6 +3,7 @@ package org.graalphp.nodes.array;
 import com.oracle.truffle.api.dsl.NodeChild;
 import com.oracle.truffle.api.dsl.Specialization;
 import com.oracle.truffle.api.library.CachedLibrary;
+import com.oracle.truffle.api.nodes.Node;
 import org.graalphp.exception.ArrayCapacityExceededException;
 import org.graalphp.nodes.PhpExprNode;
 import org.graalphp.runtime.array.ArrayLibrary;
@@ -16,6 +17,10 @@ import org.graalphp.runtime.array.PhpArray;
 public abstract class ArrayReadNode extends PhpExprNode {
 
     private static final String LIMIT = ArrayLibrary.SPECIALIZATION_LIMIT;
+
+    protected abstract Node getBackend();
+
+    protected abstract Node getIndex();
 
     // XXX: We currently support no Map like fallback containers if array capacity is exceeded
     @Specialization(limit = LIMIT,
@@ -34,5 +39,10 @@ public abstract class ArrayReadNode extends PhpExprNode {
             throw new ArrayCapacityExceededException("array index is too large for java arrays",
                     this);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "ArrayReadNode{backend: " + getBackend() + "; index; " + getIndex() + "}";
     }
 }

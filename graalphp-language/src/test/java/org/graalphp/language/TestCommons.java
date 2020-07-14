@@ -6,6 +6,9 @@ import org.eclipse.php.core.ast.error.ConsoleErrorListener;
 import org.eclipse.php.core.ast.nodes.ASTParser;
 import org.eclipse.php.core.ast.nodes.Program;
 import org.graalphp.PhpLanguage;
+import org.graalphp.parser.ParseScope;
+import org.graalphp.parser.StmtVisitor;
+import org.graalphp.parser.StmtVisitor.StmtVisitorContext;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.Value;
 import org.junit.Assert;
@@ -99,5 +102,12 @@ public class TestCommons {
         parser.addErrorListener(new BailoutErrorListener());
         Program pgm = parser.parsePhpProgram();
         return pgm;
+    }
+
+    public static StmtVisitorContext createTruffleAst(Program p) {
+        StmtVisitor visitor = new StmtVisitor(null);
+        StmtVisitor.StmtVisitorContext phpAst = visitor.createPhpAst(p,
+                ParseScope.newGlobalScope());
+        return phpAst;
     }
 }
