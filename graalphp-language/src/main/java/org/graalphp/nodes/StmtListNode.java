@@ -1,5 +1,6 @@
 package org.graalphp.nodes;
 
+import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.BlockNode;
 
@@ -51,11 +52,13 @@ public final class StmtListNode extends PhpStmtNode
     }
 
     @Override
+    @TruffleBoundary
     public String toString() {
         StringBuilder buf = new StringBuilder();
         buf.append(getClass().getSimpleName()).append(": ");
         for (PhpStmtNode s : getStatements()) {
             buf.append(s.toString());
+            buf.append(";");
         }
         return buf.toString();
 
