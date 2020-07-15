@@ -53,8 +53,10 @@ public abstract class ArrayCopyByValueNode extends PhpExprNode {
         ArrayAllocator allocator = lib.allocator(array.getBackend());
         Object newBackend = allocator.allocate(array.getCapacity());
         lib.copyDeepContents(array.getBackend(), newBackend, array.getCapacity());
-        PhpArray newArray = ArrayFactory.newArray(newBackend, array.getCapacity());
-        return newArray;
+        lib.copyContents(array.getBackend(), newBackend, array.getCapacity());
+        array.setBackend(null);
+        array.setCapacity(0);
+        return ArrayFactory.newArray(newBackend, array.getCapacity());
     }
 
     @Specialization(guards = "notArray(val)")
