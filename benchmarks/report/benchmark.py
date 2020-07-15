@@ -88,13 +88,13 @@ def run_binary_trees():
     php_src = os.path.join(fannkuch_folder, "binarytrees.php-3.php")
     graalphp_src = os.path.join(fannkuch_folder, "binarytrees.php-3.graalphp")
 
-    php_result = run_single_test(prefix, 'php', PHP_BINARY, '-n -d memory_limit=4096M', php_src)
+    # php_result = run_single_test(prefix, 'php', PHP_BINARY, '-n -d memory_limit=4096M', php_src)
     graalphp_result = run_single_test(prefix, 'graalphp', GRAALPHP_BINARY, '', graalphp_src)
-    graalphp_native_result = run_single_test(prefix, 'graalphp-native', GRAALPHP_NATIVE_BINARY, '', graalphp_src)
+    # graalphp_native_result = run_single_test(prefix, 'graalphp-native', GRAALPHP_NATIVE_BINARY, '', graalphp_src)
 
     # process_fannkuch_bench(php_result)
 
 
 
-run_fannkuch_bench()
+# run_fannkuch_bench()
 run_binary_trees()
