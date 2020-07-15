@@ -66,6 +66,7 @@ public class ParseScope {
 
     // XXX: Lookup variable slot in current and global scope
     // XXX: we dont use recursion such that inlining is possible
+    @TruffleBoundary
     public FrameSlot resolveAndRemoveVariable(String name) {
         FrameSlot slot = resolveAndRemoveVariable(this, name);
         if (slot == null && !isGlobalScope()) {
