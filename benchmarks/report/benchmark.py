@@ -46,7 +46,7 @@ def get_bench_time():
 
 
 def get_test_prefix(name):
-    return '{}-{}'.format(name, get_bench_time())
+    return '{}-{}'.format(get_bench_time(), name)
 
 
 def run_fannkuch_bench():
@@ -56,12 +56,12 @@ def run_fannkuch_bench():
     php_src = os.path.join(fannkuch_folder, "fannkuchredux.php-1.php")
     graalphp_src = os.path.join(fannkuch_folder, "fannkuchredux.php-1.graalphp")
 
-    php_result = run_single_test(prefix, 'php', PHP_BINARY, '', php_src)
+    
     graalphp_result = run_single_test(prefix, 'graalphp', GRAALPHP_BINARY, '', graalphp_src)
     graalphp_native_result = run_single_test(prefix, 'graalphp-native', GRAALPHP_NATIVE_BINARY, '', graalphp_src)
+    php_result = run_single_test(prefix, 'php', PHP_BINARY, '', php_src)
 
-    process_fannkuch_bench(php_result)
-
+    # process_fannkuch_bench(php_result)
 
 def process_fannkuch_bench(path):
     print('[i] - processing ' + path)
@@ -80,4 +80,21 @@ def process_fannkuch_bench(path):
     file.close()
 
 
+
+def run_binary_trees():
+    prefix = get_test_prefix('binary-trees')
+    fannkuch_folder = os.path.join(DIR, 'bench/binary-trees')
+
+    php_src = os.path.join(fannkuch_folder, "binarytrees.php-3.php")
+    graalphp_src = os.path.join(fannkuch_folder, "binarytrees.php-3.graalphp")
+
+    php_result = run_single_test(prefix, 'php', PHP_BINARY, '-n -d memory_limit=4096M', php_src)
+    graalphp_result = run_single_test(prefix, 'graalphp', GRAALPHP_BINARY, '', graalphp_src)
+    graalphp_native_result = run_single_test(prefix, 'graalphp-native', GRAALPHP_NATIVE_BINARY, '', graalphp_src)
+
+    # process_fannkuch_bench(php_result)
+
+
+
 run_fannkuch_bench()
+run_binary_trees()
