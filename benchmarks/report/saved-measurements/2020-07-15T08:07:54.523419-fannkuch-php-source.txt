@@ -52,51 +52,20 @@ function Fannkuch($n){
     } while (true);
 }
 
+
 $N = 12;
+$iter = 10;
 
-// warm up
-
-measure($N);
-measure($N);
-measure($N);
-measure($N);
-measure($N);
-measure($N);
-measure($N);
-measure($N);
-measure($N);
-measure($N);
-measure($N);
-measure($N);
-measure($N);
-measure($N);
-measure($N);
-measure($N);
-measure($N);
-measure($N);
-measure($N);
-
-
-// benchmark
-
-function measure($N) {
-    $start = graalphp_time_ns();
+for($i = 0; $i < $iter; $i ++) {
+    $start=hrtime(true);
     $A = Fannkuch($N);
-    $stop = graalphp_time_ns();
+    $stop=hrtime(true);
 
-    $res = ($stop - $start);
-
-    $checksum = $A[0];
-    $pf = $A[1];
-
-    println($N);
-    println($checksum);
-    println($pf);
-
-    println ($res);
-    println ($res / 1000.0);
-    println ($res / 1000.0 / 1000.0);
+    $res = ($stop - $start) / 1000.0 / 1000.0;
+    output($N, $iter, $i, $res);
 }
 
-
+function output($N, $iters, $iter, $val) {
+    echo "fannkuch N/iters/iter/val;" . $N . ";" . $iters . ";" . $iter . ";" . $val . ";" . "\n";
+}
 ?>

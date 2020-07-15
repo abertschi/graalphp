@@ -16,7 +16,7 @@ function bottomUpTree($depth)
       bottomUpTree($depth));
 }
 
-function itemCheck($treeNode) { 
+function itemCheck($treeNode) {
    return 1
       + ($treeNode[0][0] == -1 ? 1 : itemCheck($treeNode[0]))
       + ($treeNode[1][0] == -1 ? 1 : itemCheck($treeNode[1]));
@@ -28,10 +28,10 @@ function doAlgorithm($n) {
     $stretchDepth = $maxDepth + 1;
 
     $stretchTree = bottomUpTree($stretchDepth);
-    println($stretchDepth);
-    println(itemCheck($stretchTree));
+    echo $stretchDepth . "\n";
+    echo itemCheck($stretchTree) . "\n";
     // printf("stretch tree of depth %d\t check: %d\n", $stretchDepth, itemCheck($stretchTree));
-    // unset($stretchTree);
+    unset($stretchTree);
 
     $longLivedTree = bottomUpTree($maxDepth);
 
@@ -43,12 +43,12 @@ function doAlgorithm($n) {
         {
             $t = bottomUpTree($minDepth);
             $check += itemCheck($t);
-            // unset($t);
+            unset($t);
         }
         
-        println($iterations);
-        println($minDepth);
-        println($check);
+        echo $iterations . "\n";
+        echo $minDepth . "\n";
+        echo $check . "\n";
         // printf("%d\t trees of depth %d\t check: %d\n", $iterations, $minDepth, $check);
    
         $minDepth += 2;
@@ -57,50 +57,26 @@ function doAlgorithm($n) {
     while($minDepth <= $maxDepth);
 
     // printf("long lived tree of depth %d\t check: %d\n", $maxDepth, itemCheck($longLivedTree));
-    println($maxDepth);
-    println(itemCheck($longLivedTree));
+    echo $maxDepth . "\n";
+    echo itemCheck($longLivedTree) . "\n";
     
 }
+// benchmark
 
-// $n = ($argc == 2) ? $argv[1] : 1;
-$n = 21;
-measure($n);
-measure($n);
-measure($n);
-measure($n);
-measure($n);
-measure($n);
-measure($n);
-measure($n);
-measure($n);
-measure($n);
-measure($n);
-measure($n);
-measure($n);
-measure($n);
-measure($n);
+$N = 21;
+$iter = 10;
 
+for($i = 0; $i < $iter; $i ++) {
+    $start=hrtime(true);
+    doAlgorithm($N);
+    $stop=hrtime(true);
 
-// $start = graalphp_time_ns();
-// doAlgorithm($n);
-// $stop = graalphp_time_ns();
+    $res = ($stop - $start) / 1000.0 / 1000.0;
+    output($N, $iter, $i, $res);
+}
 
-// $res = ($stop - $start);
-// // println ($res);
-// // println ($res / 1000.0);
-
-// println ($res / 1000.0 / 1000.0);
-
-function measure($n) {
-$start = graalphp_time_ns();
-doAlgorithm($n);
-$stop = graalphp_time_ns();
-
-$res = ($stop - $start);
-// println ($res);
-// println ($res / 1000.0);
-
-println ($res / 1000.0 / 1000.0);
+function output($N, $iters, $iter, $val) {
+    echo "binary-trees N/iters/iter/val;" . $N . ";" . $iters . ";" . $iter . ";" . $val . ";" . "\n";
 }
 
 ?>

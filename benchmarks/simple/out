@@ -1,0 +1,19 @@
+020-07-13 12:31:07.539026
+=================================
++ benchmark for php
++ script: /home/b/beandata/pgm-eth/eth-s08-ba-graalphp/graalphp-public/benchmarks/simple/fannkuchredux/fannkuchredux.php-1.cold.php
+
+
+12
+3968050
+65
+timing ns/us/ms:
+373663369673
+373663369.673
+373663.369673
+total us: 373670356
+=================================
++ benchmark for php
++ script: /home/b/beandata/pgm-eth/eth-s08-ba-graalphp/graalphp-public/benchmarks/simple/fannkuchredux/fannkuchredux.php-1.php
+
+
