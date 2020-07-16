@@ -62,4 +62,12 @@ public class UnsetTest {
         TestCommons.compareStdout("", "function a() {return 1;}; unset(a());", true);
 
     }
+
+    @Test
+    public void unsetLoop() {
+        String src = TestCommons.inputStreamToString(getClass()
+                .getResourceAsStream("unset-loop.php"));
+
+        TestCommons.compareStdout("21", src, false);
+    }
 }

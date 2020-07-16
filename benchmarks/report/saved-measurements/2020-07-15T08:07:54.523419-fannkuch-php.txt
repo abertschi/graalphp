@@ -1,0 +1,10 @@
+fannkuch N/iters/iter/val;12;10;0;358139.745502;
+fannkuch N/iters/iter/val;12;10;1;358143.790094;
+fannkuch N/iters/iter/val;12;10;2;358376.117888;
+fannkuch N/iters/iter/val;12;10;3;358602.092189;
+fannkuch N/iters/iter/val;12;10;4;358052.093598;
+fannkuch N/iters/iter/val;12;10;5;358011.055958;
+fannkuch N/iters/iter/val;12;10;6;358354.872572;
+fannkuch N/iters/iter/val;12;10;7;358571.641975;
+fannkuch N/iters/iter/val;12;10;8;358133.34686;
+fannkuch N/iters/iter/val;12;10;9;357992.038037;

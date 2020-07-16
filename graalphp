@@ -60,6 +60,8 @@ fi
 # Parse arguments, prepare Java command and execute
 #######################################################################
 
+trace=0
+
 if [[ "$GRAALVM_VERSION" != "" ]]; then
     PROGRAM_ARGS=()
     JAVA_ARGS=()
@@ -67,6 +69,8 @@ if [[ "$GRAALVM_VERSION" != "" ]]; then
     for opt in "$@"
     do
       case $opt in
+        -trace)
+          trace=1 ;;
         -debug)
             JAVA_ARGS+=("-Xdebug" "-Xrunjdwp:transport=dt_socket,server=y,address=8000,suspend=y") ;;
         -dump)
@@ -80,9 +84,13 @@ if [[ "$GRAALVM_VERSION" != "" ]]; then
             PROGRAM_ARGS+=("$opt") ;;
       esac
     done
-    set -x
+
+    if [[ $trace == 1 ]]; then set -x;  fi
+
     "$JAVACMD" "${JAVA_ARGS[@]}" -Dtruffle.class.path.append="$LANGUAGE_PATH" -cp "$LAUNCHER_PATH" "$MAIN_CLASS" "${PROGRAM_ARGS[@]}"
-    set +x
+
+    if [[ $trace == 1 ]]; then set +x; fi
+
 
 else
     echo "Warning: Could not find GraalVM on $JAVA_HOME. Running on JDK without support for compilation."
@@ -93,6 +101,8 @@ else
     for opt in "$@"
     do
       case $opt in
+      -trace)
+          trace=1 ;;
         -debug)
             JAVA_ARGS+=("-Xdebug" "-Xrunjdwp:transport=dt_socket,server=y,address=8000,suspend=y") ;;
         -dump)
@@ -112,7 +122,9 @@ else
     fi
     GRAAL_SDK_PATH="$HOME/.m2/repository/org/graalvm/sdk/graal-sdk/$VERSION/graal-sdk-$VERSION.jar"
     TRUFFLE_API_PATH="$HOME/.m2/repository/org/graalvm/truffle/truffle-api/$VERSION/truffle-api-$VERSION.jar"
-    set -x
+    if [[ $trace == 1 ]] ; then set -x;  fi
+
     "$JAVACMD" "${JAVA_ARGS[@]}" -cp "$GRAAL_SDK_PATH":"$LAUNCHER_PATH":"$LANGUAGE_PATH":"$TRUFFLE_API_PATH" "$MAIN_CLASS" "${PROGRAM_ARGS[@]}"
-    set +x
+
+    if [[ $trace == 1 ]] ; then set +x;  fi
 fi

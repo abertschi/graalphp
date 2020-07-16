@@ -1,5 +1,6 @@
 package org.graalphp.parser;
 
+import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.frame.FrameDescriptor;
 import com.oracle.truffle.api.frame.FrameSlot;
 import org.graalphp.FunctionRegistry;
@@ -45,6 +46,7 @@ public class ParseScope {
     }
 
     // XXX: Lookup function in current and global scope
+    @TruffleBoundary
     public PhpFunction resolveFunction(String name) {
         PhpFunction fn = this.functions.getFunction(name);
         if (fn == null && !isGlobalScope()) {
@@ -57,20 +59,26 @@ public class ParseScope {
     public FrameSlot resolveVariable(String name) {
         FrameSlot slot = this.vars.get(name);
         if (slot == null && !isGlobalScope()) {
-            return this.global.resolveVariable(name);
+            return this.global.vars.get(name);
         }
         return slot;
     }
 
     // XXX: Lookup variable slot in current and global scope
+    // XXX: we dont use recursion such that inlining is possible
+    @TruffleBoundary
     public FrameSlot resolveAndRemoveVariable(String name) {
-        FrameSlot slot = this.vars.get(name);
-        if (slot != null) {
-            this.vars.remove(name);
-            return slot;
+        FrameSlot slot = resolveAndRemoveVariable(this, name);
+        if (slot == null && !isGlobalScope()) {
+            slot = resolveAndRemoveVariable(this.global, name);
         }
-        if (!isGlobalScope()) {
-            slot = this.global.resolveVariable(name);
+        return slot;
+    }
+
+    private FrameSlot resolveAndRemoveVariable(ParseScope scope, String name) {
+        FrameSlot slot = scope.vars.get(name);
+        if (slot != null) {
+            scope.vars.remove(name);
         }
         return slot;
     }

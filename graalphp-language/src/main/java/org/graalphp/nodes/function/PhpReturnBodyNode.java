@@ -10,7 +10,7 @@ import org.graalphp.types.PhpNull;
 /**
  * Node to represent a construct in PHP which can return a value
  * (function, or return from global scope)
- *
+ * <p>
  * Uses Truffle idiomatic way to wrap return type into Control Flow exception.
  *
  * @author abertschi
@@ -30,10 +30,17 @@ public final class PhpReturnBodyNode extends PhpExprNode {
     public Object executeGeneric(VirtualFrame frame) {
         try {
             body.executeVoid(frame);
-        } catch(PhpReturnException e){
+        } catch (PhpReturnException e) {
             continueTaken.enter();
             return e.getReturnValue();
         }
         return PhpNull.SINGLETON;
+    }
+
+    @Override
+    public String toString() {
+        return "PhpReturnBodyNode{" +
+                ", body=" + body +
+                '}';
     }
 }

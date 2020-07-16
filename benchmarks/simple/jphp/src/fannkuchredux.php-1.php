@@ -1,4 +1,4 @@
-<?php /* The Computer Language Benchmarks Game
+p<?php /* The Computer Language Benchmarks Game
          https://salsa.debian.org/benchmarksgame-team/benchmarksgame/
 
          contributed by Isaac Gouy, transliterated from Mike Pall's Lua program
@@ -52,7 +52,10 @@ function Fannkuch($n){
     } while (true);
 }
 
+
 $N = 12;
+
+println("Starting benchmark, N=" .$N);
 
 // warm up
 
@@ -76,27 +79,31 @@ measure($N);
 measure($N);
 measure($N);
 
-
 // benchmark
 
+
+function println($a) {
+echo $a . "\n";
+}
+
 function measure($N) {
-    $start = graalphp_time_ns();
+    $start=microtime(1);
     $A = Fannkuch($N);
-    $stop = graalphp_time_ns();
+    $stop=microtime(1);
+
 
     $res = ($stop - $start);
 
     $checksum = $A[0];
     $pf = $A[1];
 
-    println($N);
+    println ($N);
     println($checksum);
     println($pf);
 
+    println("timing us/ ms:");
+
     println ($res);
-    println ($res / 1000.0);
-    println ($res / 1000.0 / 1000.0);
+    println ($res * 1000);
 }
-
-
 ?>

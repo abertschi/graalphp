@@ -30,3 +30,5 @@ graalvm.tar.gz
 /graalphp-parser/org.eclipse.php.core.parser/lib/jflex-1.6.1.zip
 graal_dumps
 /graalphp-component/jartmp7318173110672002863.tmp
+/vendor/
+tmp/

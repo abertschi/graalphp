@@ -53,7 +53,7 @@ function Fannkuch($n){
 }
 
 
-$N = 8;
+$N = 12;
 
 // warm up
 
