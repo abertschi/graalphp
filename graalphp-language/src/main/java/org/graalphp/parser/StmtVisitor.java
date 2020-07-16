@@ -13,6 +13,7 @@ import org.eclipse.php.core.ast.nodes.FormalParameter;
 import org.eclipse.php.core.ast.nodes.FunctionDeclaration;
 import org.eclipse.php.core.ast.nodes.IfStatement;
 import org.eclipse.php.core.ast.nodes.Program;
+import org.eclipse.php.core.ast.nodes.Reference;
 import org.eclipse.php.core.ast.nodes.ReturnStatement;
 import org.eclipse.php.core.ast.nodes.Statement;
 import org.eclipse.php.core.ast.nodes.WhileStatement;
@@ -30,7 +31,8 @@ import org.graalphp.nodes.controlflow.PhpIfNode;
 import org.graalphp.nodes.controlflow.PhpReturnNode;
 import org.graalphp.nodes.controlflow.PhpWhileNode;
 import org.graalphp.nodes.function.PhpFunctionRootNode;
-import org.graalphp.nodes.localvar.ReadArgCopyByValueNode;
+import org.graalphp.nodes.localvar.ReadArgNode;
+import org.graalphp.runtime.assign.AssignRuntimeFactory;
 import org.graalphp.types.PhpFunction;
 import org.graalphp.util.Logger;
 import org.graalphp.util.PhpLogger;
@@ -135,11 +137,9 @@ public class StmtVisitor extends HierarchicalVisitor {
 
     @Override
     public boolean visit(FunctionDeclaration fnParse) {
-        // TODO: ignore nullable
-        // TODO: ignore return Type
+        // TODO: langauge feature: parameter hints
 
         final String fnName = fnParse.getFunctionName().getName();
-        final PhpFunctionRootNode fnRoot;
         this.currFunctionArgumentCount = 0;
         this.currFunctionScope = new ParseScope(new FrameDescriptor(), this.scope.getGlobal());
         List<PhpStmtNode> bodyStmts = parseParameters(fnParse.formalParameters());
@@ -150,11 +150,13 @@ public class StmtVisitor extends HierarchicalVisitor {
                     currFunctionScope);
             bodyStmts.addAll(body.stmts);
         }
-        fnRoot = PhpFunctionRootNode.createFromStmts(language, currFunctionScope.getFrameDesc(),
-                fnName,
-                bodyStmts);
+
+        final PhpFunctionRootNode fnRoot = PhpFunctionRootNode
+                .createFromStmts(language, currFunctionScope.getFrameDesc(), fnName, bodyStmts);
+
         final PhpFunction function = new PhpFunction(fnName, scope,
                 Truffle.getRuntime().createCallTarget(fnRoot));
+        function.setReturnReference(fnParse.isReference());
 
         scope.getFunctions().register(fnName, function, false);
         LOG.fine("create call target for " + fnName);
@@ -174,17 +176,25 @@ public class StmtVisitor extends HierarchicalVisitor {
         return bodyStmts;
     }
 
+    private boolean isParameterReference(FormalParameter p) {
+        return p.getParameterName() instanceof Reference;
+    }
+
     @Override
     public boolean visit(FormalParameter formalParameter) {
         assert currFunctionParamExpr == null;
 
-        final PhpExprNode readArg = new ReadArgCopyByValueNode(this.currFunctionArgumentCount);
-        final String name =
-                new IdentifierVisitor().getIdentifierName(formalParameter.getParameterName()).getName();
+        // XXX: We currently support copy by reference semantics for Arrays
+        boolean isRef = isParameterReference(formalParameter);
+        final PhpExprNode readArgNode = AssignRuntimeFactory
+                .createForwardValueNode(isRef, new ReadArgNode(this.currFunctionArgumentCount));
+
+        final String name = formalParameter.getParameterNameIdentifier().getName();
+
         final PhpExprNode assignNode = VisitorHelpers.createLocalAssignment(
                 this.currFunctionScope,
                 name,
-                readArg,
+                readArgNode,
                 this.currFunctionArgumentCount,
                 formalParameter);
         setSourceSection(assignNode, formalParameter);

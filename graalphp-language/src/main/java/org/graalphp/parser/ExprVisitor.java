@@ -381,28 +381,30 @@ public class ExprVisitor extends HierarchicalVisitor {
 
     @Override
     public boolean visit(FunctionInvocation fn) {
-        final Identifier fnId =
-                new IdentifierVisitor().getIdentifierName(fn.getFunctionName().getName());
+        final Identifier fnId = new IdentifierVisitor()
+                .getIdentifierName(fn.getFunctionName().getName());
         if (fnId == null) {
             throw new UnsupportedOperationException("we dont support function lookup in vars");
         }
+
+        // builtin functions which need special care
         if (isLanguageFunctionOperator(fnId.getName())) {
             currExpr = buildLanguageFunctionOperator(fn, fnId.getName());
-
-        } else {
-            List<PhpExprNode> args = new LinkedList<>();
-            for (Expression e : fn.parameters()) {
-                final PhpExprNode arg = initAndAcceptExpr(e);
-                args.add(arg);
-            }
-            final PhpFunctionLookupNode lookupNode =
-                    new PhpFunctionLookupNode(fnId.getName(), scope);
-            setSourceSection(lookupNode, fn);
-            final PhpInvokeNode invokeNode =
-                    new PhpInvokeNode(args.toArray(new PhpExprNode[0]), lookupNode);
-            setSourceSection(invokeNode, fn);
-            currExpr = invokeNode;
+            return false;
         }
+
+        List<PhpExprNode> args = new LinkedList<>();
+        for (Expression e : fn.parameters()) {
+            final PhpExprNode arg = initAndAcceptExpr(e);
+            args.add(arg);
+        }
+        final PhpFunctionLookupNode lookupNode = new PhpFunctionLookupNode(fnId.getName(), scope);
+        setSourceSection(lookupNode, fn);
+
+        final PhpInvokeNode invokeNode =
+                new PhpInvokeNode(args.toArray(new PhpExprNode[0]), lookupNode);
+        setSourceSection(invokeNode, fn);
+        currExpr = invokeNode;
         return false;
     }
 

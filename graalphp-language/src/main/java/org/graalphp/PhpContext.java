@@ -18,8 +18,9 @@ import org.graalphp.builtins.language.PrintlnBuiltin;
 import org.graalphp.builtins.language.PrintlnBuiltinFactory;
 import org.graalphp.nodes.PhpExprNode;
 import org.graalphp.nodes.function.PhpFunctionRootNode;
-import org.graalphp.nodes.localvar.ReadArgCopyByValueNode;
+import org.graalphp.nodes.localvar.ReadArgNode;
 import org.graalphp.parser.ParseScope;
+import org.graalphp.runtime.assign.AssignRuntimeFactory;
 import org.graalphp.types.PhpFunction;
 
 import java.io.BufferedReader;
@@ -61,7 +62,8 @@ public final class PhpContext {
         final int argCount = factory.getExecutionSignature().size();
         PhpExprNode[] arguments = new PhpExprNode[argCount];
         for (int i = 0; i < argCount; i++) {
-            arguments[i] = new ReadArgCopyByValueNode(i);
+            // XXX: Builtin functions currently always get values assigned by value
+            arguments[i] = AssignRuntimeFactory.createForwardValueNode(false, new ReadArgNode(i));
         }
         PhpBuiltinNode builtin = factory.createNode((Object) arguments);
         FrameDescriptor functionDescriptor = new FrameDescriptor();
