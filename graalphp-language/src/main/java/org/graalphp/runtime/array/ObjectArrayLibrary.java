@@ -84,31 +84,51 @@ public class ObjectArrayLibrary {
 
     @ExportMessage
     static class CopyDeepContents {
+
+        // XXX: We need to introduce a truffle boundary
+        // otherwise we run into PermanentBailoutException if we try to copy
+        // deeply nested arrays
+        @TruffleBoundary(allowInlining = true)
+        protected static void copyNested(
+                PhpArray sourceArray,
+                PhpArray targetArray,
+                ArrayLibrary destinationLibrary) {
+
+            destinationLibrary.copyDeepContents(
+                    sourceArray.getBackend(),
+                    targetArray.getBackend(),
+                    sourceArray.getCapacity());
+        }
+
         @Specialization(limit = ArrayLibrary.SPECIALIZATION_LIMIT)
         protected static void copyDeepContents(
                 Object[] receiver,
                 Object destination,
                 int length,
-                @CachedLibrary(limit = ArrayLibrary.SPECIALIZATION_LIMIT) ArrayLibrary destinationLibrary) {
+                @CachedLibrary("destination") ArrayLibrary destinations,
+                @CachedLibrary(limit = ArrayLibrary.SPECIALIZATION_LIMIT) ArrayLibrary helpers) {
 
             for (int i = 0; i < length; i++) {
                 /*
                  * We need to deep copy nested arrays
                  * create a new backend and call copyDeepContents on nested array
+                 * For a nested array an element stores a PhpArray itself
                  */
                 if (receiver[i] instanceof PhpArray) {
                     final PhpArray array = (PhpArray) receiver[i];
-                    final Object backendCopy = destinationLibrary
-                            .allocator(array.getBackend())
-                            .allocate(array.getCapacity());
+                    final Object backendCopy =
+                            helpers.allocator(array.getBackend())
+                                    .allocate(array.getCapacity());
+
                     final PhpArray arrayCopy = ArrayFactory
                             .newArray(backendCopy, array.getCapacity());
 
-                    destinationLibrary.copyDeepContents(array.getBackend(),
-                            arrayCopy.getBackend(), array.getCapacity());
-                    destinationLibrary.write(destination, i, arrayCopy);
+                    // XXX: Copy nested arrays
+                    copyNested(array, arrayCopy, helpers);
+
+                    destinations.write(destination, i, arrayCopy);
                 } else {
-                    destinationLibrary.write(destination, i, receiver[i]);
+                    destinations.write(destination, i, receiver[i]);
                 }
             }
         }
