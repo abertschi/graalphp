@@ -7,7 +7,7 @@
    *reset*
 */
 
-function &bottomUpTree(&$depth)
+function bottomUpTree($depth)
 {
    if (!$depth) return array(-1,-1);
    $depth--;
@@ -16,7 +16,7 @@ function &bottomUpTree(&$depth)
       bottomUpTree($depth));
 }
 
-function &itemCheck(&$treeNode) { 
+function itemCheck($treeNode) {
    return 1
       + ($treeNode[0][0] == -1 ? 1 : itemCheck($treeNode[0]))
       + ($treeNode[1][0] == -1 ? 1 : itemCheck($treeNode[1]));
