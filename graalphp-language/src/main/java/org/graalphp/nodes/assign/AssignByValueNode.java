@@ -16,7 +16,11 @@ import org.graalphp.runtime.array.PhpArray;
  * @author abertschi
  */
 @NodeChild(value = "source", type = PhpExprNode.class)
-public abstract class AssignByValueNode extends PhpExprNode {
+public abstract class AssignByValueNode extends AssignSemanticNode {
+
+    public static AssignByValueNode createWithoutChild() {
+        return AssignByValueNodeGen.create(null);
+    }
 
     @Specialization
     protected boolean forwardBool(boolean val) {

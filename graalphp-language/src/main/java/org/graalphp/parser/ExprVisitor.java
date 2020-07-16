@@ -15,6 +15,7 @@ import org.eclipse.php.core.ast.nodes.InfixExpression;
 import org.eclipse.php.core.ast.nodes.ParenthesisExpression;
 import org.eclipse.php.core.ast.nodes.PostfixExpression;
 import org.eclipse.php.core.ast.nodes.PrefixExpression;
+import org.eclipse.php.core.ast.nodes.Reference;
 import org.eclipse.php.core.ast.nodes.Scalar;
 import org.eclipse.php.core.ast.nodes.UnaryOperation;
 import org.eclipse.php.core.ast.nodes.Variable;
@@ -58,6 +59,7 @@ import org.graalphp.nodes.unary.PrefixArithmeticNode;
 import org.graalphp.nodes.unary.PrefixArithmeticNodeGen;
 import org.graalphp.runtime.PhpUnsetNode;
 import org.graalphp.runtime.PhpUnsetNodeGen;
+import org.graalphp.runtime.assign.AssignRuntimeFactory;
 import org.graalphp.util.Logger;
 import org.graalphp.util.PhpLogger;
 
@@ -346,20 +348,25 @@ public class ExprVisitor extends HierarchicalVisitor {
         }
     }
 
+    private boolean isAssignmentByReference(Assignment ass) {
+        return ass.getRightHandSide() instanceof Reference;
+    }
+
     private PhpExprNode createAssignmentEvalRhs(Assignment ass) {
-        final PhpExprNode rhsNode;
+        PhpExprNode rhsNode;
         if (ass.getOperator() != Assignment.OP_EQUAL) {
             // expression: $a += ...
             final BinaryOperators rhsOpType =
                     BinaryOperators.fromAssignmentOperator(ass.getOperator());
             final PhpExprNode rhsOp1 = initAndAcceptExpr(ass.getLeftHandSide());
             final PhpExprNode rhsOp2 = initAndAcceptExpr(ass.getRightHandSide());
-            rhsNode = VisitorHelpers.createArrayCopyNode(
-                    createBinaryOperationNode(rhsOpType, rhsOp1, rhsOp2, ass));
+            rhsNode = createBinaryOperationNode(rhsOpType, rhsOp1, rhsOp2, ass);
         } else {
             // expression: $a = ...
-            rhsNode = VisitorHelpers.createArrayCopyNode(initAndAcceptExpr(ass.getRightHandSide()));
+            rhsNode = initAndAcceptExpr(ass.getRightHandSide());
         }
+        rhsNode = AssignRuntimeFactory
+                .createForwardValueNode(isAssignmentByReference(ass), rhsNode);
         setSourceSection(rhsNode, ass);
         return rhsNode;
     }
@@ -403,6 +410,7 @@ public class ExprVisitor extends HierarchicalVisitor {
 
         final PhpInvokeNode invokeNode =
                 new PhpInvokeNode(args.toArray(new PhpExprNode[0]), lookupNode);
+
         setSourceSection(invokeNode, fn);
         currExpr = invokeNode;
         return false;

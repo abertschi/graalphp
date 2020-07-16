@@ -13,6 +13,7 @@ import org.graalphp.runtime.array.PhpArray;
         long.class,
         double.class,
         PhpArray.class,
+        PhpFunction.class,
         Object[].class
 })
 public abstract class PhpTypes {

@@ -22,6 +22,17 @@ public class ReferenceTest {
     }
 
     @Test
+    public void refAssignment() throws Exception {
+        // return type reference: FunctionDeclaration: isReference = true
+        // assign reference: assignment(variable, value : wrapped in a reference)
+
+        String code = "$A = array(array()); $B = &$A;";
+        Program program = TestCommons.parseProgram(code, true);
+        Assert.assertNotNull(program);
+        System.out.println(program);
+    }
+
+    @Test
     public void refFunctionArgParsing() throws Exception {
         // parameter is wrapped within reference
         String code = "function foo(&$A) {  }";

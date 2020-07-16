@@ -103,11 +103,13 @@ public class StmtVisitor extends HierarchicalVisitor {
         if (ret.getExpression() == null) {
             returnNode = new PhpReturnNode(new EmptyExprNode());
         } else {
-            final PhpExprNode ex =
-                    this.exprVisitor.createExprAst(ret.getExpression(), getCurrentScope());
-            // XXX: For most cases, it makes sense not to copy the array but rather return
-            // the reference, because function scope ends here
-            returnNode = new PhpReturnNode(VisitorHelpers.createArrayCopyNode(ex));
+            final PhpExprNode ex = this.exprVisitor
+                    .createExprAst(ret.getExpression(), getCurrentScope());
+            // XXX: By reference or by value semantics are defined by invoke node not by return node
+            // this is due to semantics in invoke node always overwrite function definition,
+            // i.e. we need to define by-ref in function definition
+            // *and* apply it in invoke stmt in order to pass by reference
+            returnNode = new PhpReturnNode(ex);
         }
         stmts.add(returnNode);
         return false;

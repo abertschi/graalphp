@@ -18,12 +18,14 @@ import org.graalphp.runtime.array.PhpArray;
  *
  * @author abertschi
  */
-@NodeChild(value = "source")
-public abstract class AssignByReferenceNode extends PhpExprNode {
+@NodeChild(value = "source", type = PhpExprNode.class)
+public abstract class AssignByReferenceNode extends AssignSemanticNode {
+
+    public static AssignByReferenceNode createWithoutChild() {
+        return AssignByReferenceNodeGen.create(null);
+    }
 
     protected abstract Node getSource();
-
-    public abstract Object executeAssign(Object source);
 
     @Specialization
     protected Object forwardArray(
