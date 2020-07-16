@@ -62,8 +62,6 @@ fi
 
 trace=0
 
-if [[ $trace == 1 ]]; then echo "hi" ;fi
-
 if [[ "$GRAALVM_VERSION" != "" ]]; then
     PROGRAM_ARGS=()
     JAVA_ARGS=()
