@@ -1,4 +1,4 @@
-<?php 
+<?php
 /* The Computer Language Benchmarks Game
    https://salsa.debian.org/benchmarksgame-team/benchmarksgame/
 
@@ -9,14 +9,18 @@
 
 function &bottomUpTree($depth)
 {
-   if (!$depth) return array(-1,-1);
+   if (!$depth) {
+   $A =  array(-1,-1);
+   return $A;
+   }
    $depth--;
-   return array(
+   $A = array(
       bottomUpTree($depth),
       bottomUpTree($depth));
+      return $A;
 }
 
-function itemCheck(&$treeNode) { 
+function itemCheck(&$treeNode) {
    return 1
       + ($treeNode[0][0] == -1 ? 1 : itemCheck($treeNode[0]))
       + ($treeNode[1][0] == -1 ? 1 : itemCheck($treeNode[1]));
@@ -45,12 +49,12 @@ function doAlgorithm($n) {
             $check += itemCheck($t);
             unset($t);
         }
-        
+
         println($iterations);
         println($minDepth);
         println($check);
         // printf("%d\t trees of depth %d\t check: %d\n", $iterations, $minDepth, $check);
-   
+
         $minDepth += 2;
         $iterations >>= 2;
     }
@@ -59,23 +63,10 @@ function doAlgorithm($n) {
     // printf("long lived tree of depth %d\t check: %d\n", $maxDepth, itemCheck($longLivedTree));
     println($maxDepth);
     println(itemCheck($longLivedTree));
-    
-}
-
-$N = 21;
-$iter = 30;
-
-for($i = 0; $i < $iter; $i ++) {
-    $start=graalphp_time_ns();
-    doAlgorithm($N);
-    $stop=graalphp_time_ns();
-
-    $res = ($stop - $start) / 1000.0 / 1000.0;
-    output($N, $iter, $i, $res);
-}
-
-function output($N, $iters, $iter, $val) {
-    graalphp_print_args("binary-trees N/iters/iter/val", $N , $iters ,  $iter, $val);
 
 }
-?>
+doAlgorithm(13);
+
+// function println($a) {
+// echo $a . "\n";
+// }

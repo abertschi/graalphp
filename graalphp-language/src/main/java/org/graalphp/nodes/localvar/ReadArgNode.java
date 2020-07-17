@@ -8,6 +8,7 @@ import org.graalphp.nodes.PhpExprNode;
  * Node which returns argument from truffle frame
  *
  * @author abertschi
+ * @see org.graalphp.runtime.assign.AssignRuntimeFactory for wrappers to assign by reference/ value
  */
 public final class ReadArgNode extends PhpExprNode {
 

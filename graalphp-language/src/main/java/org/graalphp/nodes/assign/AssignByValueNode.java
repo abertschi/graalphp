@@ -1,4 +1,4 @@
-package org.graalphp.nodes.array;
+package org.graalphp.nodes.assign;
 
 import com.oracle.truffle.api.dsl.NodeChild;
 import com.oracle.truffle.api.dsl.Specialization;
@@ -8,27 +8,19 @@ import org.graalphp.runtime.array.ArrayAllocator;
 import org.graalphp.runtime.array.ArrayFactory;
 import org.graalphp.runtime.array.ArrayLibrary;
 import org.graalphp.runtime.array.PhpArray;
-import org.graalphp.util.Logger;
-import org.graalphp.util.PhpLogger;
 
 /**
- * Node which forwards all values but arrays
- * and copy arrays before forwarding.
- * This fulfills PHPs copy by value behavior for arrays.
+ * Node which forwards all values but arrays and copy arrays before forwarding.
+ * This implements PHP default assign by value semantics
  *
  * @author abertschi
  */
 @NodeChild(value = "source", type = PhpExprNode.class)
-public abstract class ArrayCopyByValueNode extends PhpExprNode {
+public abstract class AssignByValueNode extends AssignSemanticNode {
 
-    private static final Logger LOG =
-            PhpLogger.getLogger(ArrayCopyByValueNode.class.getSimpleName());
-
-    public static ArrayCopyByValueNode create(PhpExprNode source) {
-        return ArrayCopyByValueNodeGen.create(source);
+    public static AssignByValueNode createWithoutChild() {
+        return AssignByValueNodeGen.create(null);
     }
-
-    protected abstract PhpExprNode getSource();
 
     @Specialization
     protected boolean forwardBool(boolean val) {
@@ -58,6 +50,7 @@ public abstract class ArrayCopyByValueNode extends PhpExprNode {
 
     @Specialization(guards = "notArray(val)")
     protected Object forwardObject(Object val) {
+        // Objects are copied by reference (their reference is copied)
         return val;
     }
 
@@ -65,8 +58,10 @@ public abstract class ArrayCopyByValueNode extends PhpExprNode {
         return !(o instanceof PhpArray);
     }
 
+    protected abstract PhpExprNode getSource();
+
     @Override
     public String toString() {
-        return "ArrayCopyByValueNode{" + getSource() + "}";
+        return "AssignByValueNode{" + getSource() + "}";
     }
 }

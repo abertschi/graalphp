@@ -5,7 +5,6 @@ import com.oracle.truffle.api.frame.FrameSlotKind;
 import org.eclipse.php.core.ast.nodes.ASTNode;
 import org.graalphp.nodes.PhpExprNode;
 import org.graalphp.nodes.PhpStmtNode;
-import org.graalphp.nodes.array.ArrayCopyByValueNodeGen;
 import org.graalphp.nodes.localvar.WriteLocalVarNodeGen;
 
 /**
@@ -36,10 +35,5 @@ public class VisitorHelpers {
             setSourceSection(node, sourceSection);
         }
         return node;
-    }
-
-    public static PhpExprNode createArrayCopyNode(PhpExprNode source) {
-        // XXX: we currently copy everything by value. This can later by improved with copy-on-write
-        return ArrayCopyByValueNodeGen.create(source);
     }
 }

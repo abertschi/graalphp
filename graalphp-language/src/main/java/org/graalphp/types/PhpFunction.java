@@ -18,14 +18,25 @@ import org.graalphp.parser.ParseScope;
  */
 public final class PhpFunction implements TruffleObject {
 
-    // TODO: optimization: CyclicAssumption
-    // TODO: truffleObject for interoperability?
-
+    /**
+     * Function Name
+     */
     private String name;
 
+    /**
+     * Truffle Call Target
+     */
     private RootCallTarget target;
 
+    /**
+     * Scope representing function body
+     */
     private ParseScope scope;
+
+    /**
+     * True if function returns a reference (has & keyword in definition)
+     */
+    private boolean returnReference = false;
 
     private final CyclicAssumption callTargetStable;
 
@@ -61,7 +72,6 @@ public final class PhpFunction implements TruffleObject {
         return callTargetStable.getAssumption();
     }
 
-
     public void setCallTarget(RootCallTarget target) {
         this.init = true;
         this.target = target;
@@ -79,4 +89,13 @@ public final class PhpFunction implements TruffleObject {
     public String getName() {
         return name;
     }
+
+    public void setReturnReference(boolean b) {
+        this.returnReference = b;
+    }
+
+    public boolean isReturnReference() {
+        return this.returnReference;
+    }
+
 }
