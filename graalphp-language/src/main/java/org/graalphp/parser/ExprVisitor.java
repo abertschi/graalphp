@@ -380,18 +380,34 @@ public class ExprVisitor extends HierarchicalVisitor {
         // copy by value again here in order to store in variable
         // FunctionAssignmentBehaviorNode skips copy by value
         // if we immediately assign function result to a variable.
-        PhpExprNode resultNode;
+        // We do not know function definition yet. as it may appear below assignment
+        // this is why we have to look up function at runtime
         if (enableOptimization && ass.getRightHandSide() instanceof FunctionInvocation) {
-            final Identifier fnName = getFunctionName((FunctionInvocation) ass.getRightHandSide());
-            final PhpFunctionLookupNode lookupNode =
-                    setSource(new PhpFunctionLookupNode(fnName.getName(), scope), ass);
-            resultNode = setSource(new FunctionAssignmentBehaviorNode(lookupNode, source), ass);
+            return copyBehaviorForAssignmentOptimized(source, ass);
         } else {
-            // default behavior
-            resultNode = setSource(AssignRuntimeFactory
-                    .createForwardValueNode(isAssignmentByReference(ass), source), ass);
+            return copyBehaviorForAssignmentDefault(source, ass);
         }
-        return resultNode;
+    }
+
+    // create a copy if we dont assign by reference and are not assigning function result
+    // $A [&] = foo();
+    private PhpExprNode copyBehaviorForAssignmentOptimized(PhpExprNode source, Assignment ass) {
+        final Identifier fnName = getFunctionName((FunctionInvocation) ass.getRightHandSide());
+        final PhpFunctionLookupNode lookupNode =
+                setSource(new PhpFunctionLookupNode(fnName.getName(), scope), ass);
+
+        final PhpExprNode node = new FunctionAssignmentBehaviorNode(
+                isAssignmentByReference(ass),
+                lookupNode,
+                source);
+        return setSource(node, ass);
+    }
+
+    // default behavior, create a copy if we dont assign by reference
+    // $A [&] = ... // not a function
+    private PhpExprNode copyBehaviorForAssignmentDefault(PhpExprNode source, Assignment ass) {
+        return setSource(AssignRuntimeFactory
+                .createForwardValueNode(isAssignmentByReference(ass), source), ass);
     }
 
     // create Node which writes value at index into array, $A[val] = ...
