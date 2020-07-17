@@ -6,6 +6,8 @@ import com.oracle.truffle.api.CompilerDirectives.CompilationFinal;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.DirectCallNode;
 import com.oracle.truffle.api.nodes.ExplodeLoop;
+import com.oracle.truffle.api.nodes.UnexpectedResultException;
+import org.graalphp.exception.PhpException;
 import org.graalphp.nodes.PhpExprNode;
 import org.graalphp.nodes.assign.AssignByReferenceNode;
 import org.graalphp.nodes.assign.AssignByValueNode;
@@ -27,7 +29,7 @@ public final class PhpInvokeNode extends PhpExprNode {
 
     @Child
     @CompilationFinal
-    private DirectCallNode callNode;
+    protected DirectCallNode callNode;
 
     // Forward node dictates semantics of forwarding values; either by-ref or by-value
     @Child
@@ -43,7 +45,7 @@ public final class PhpInvokeNode extends PhpExprNode {
     @Override
     public Object executeGeneric(VirtualFrame frame) {
         if (this.callNode == null) {
-            PhpFunction fun = (PhpFunction) functionNode.executeGeneric(frame);
+            PhpFunction fun = getFunction(frame);
             CompilerDirectives.transferToInterpreterAndInvalidate();
             this.callNode = DirectCallNode.create(fun.getCallTarget());
             createForwardingNode(fun.isReturnReference());
@@ -67,4 +69,11 @@ public final class PhpInvokeNode extends PhpExprNode {
         }
     }
 
+    private PhpFunction getFunction(VirtualFrame f) {
+        try {
+            return functionNode.executePhpFunction(f);
+        } catch (UnexpectedResultException e) {
+            throw new PhpException("Illegal, PhpFunctionNode must return PhpFunction object", this);
+        }
+    }
 }

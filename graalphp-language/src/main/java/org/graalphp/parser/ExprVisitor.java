@@ -31,6 +31,7 @@ import org.graalphp.nodes.array.ArrayWriteNodeGen;
 import org.graalphp.nodes.array.ExecuteValuesNode;
 import org.graalphp.nodes.array.NewArrayInitialValuesNodeGen;
 import org.graalphp.nodes.array.NewArrayNode;
+import org.graalphp.nodes.assign.FunctionAssignmentBehaviorNode;
 import org.graalphp.nodes.binary.PhpAddNodeGen;
 import org.graalphp.nodes.binary.PhpDivNodeGen;
 import org.graalphp.nodes.binary.PhpMulNodeGen;
@@ -105,10 +106,11 @@ public class ExprVisitor extends HierarchicalVisitor {
         return currExpr;
     }
 
-    private void setSourceSection(PhpStmtNode target, ASTNode n) {
-        if (target.hasSourceSection()) {
+    private <T extends PhpStmtNode> T setSource(T target, ASTNode n) {
+        if (!target.hasSourceSection()) {
             target.setSourceSection(n.getStart(), n.getLength());
         }
+        return target;
     }
 
     @Override
@@ -133,7 +135,7 @@ public class ExprVisitor extends HierarchicalVisitor {
                 .findOrAddFrameSlot(varName, null, FrameSlotKind.Illegal);
 
         PostfixArithmeticNode postfixNode = PostfixArithmeticNodeGen.create(frameSlot, op);
-        setSourceSection(postfixNode, postfixExpression);
+        setSource(postfixNode, postfixExpression);
         currExpr = postfixNode;
 
         return false;
@@ -161,7 +163,7 @@ public class ExprVisitor extends HierarchicalVisitor {
                 .findOrAddFrameSlot(varName, null, FrameSlotKind.Illegal);
 
         final PrefixArithmeticNode prefixNode = PrefixArithmeticNodeGen.create(frameSlot, op);
-        setSourceSection(prefixNode, prefixExpression);
+        setSource(prefixNode, prefixExpression);
         currExpr = prefixNode;
         return false;
     }
@@ -230,7 +232,7 @@ public class ExprVisitor extends HierarchicalVisitor {
                 String msg = "infix expr operand not implemented: " + op + "/" + sourceSection;
                 throw new UnsupportedOperationException(msg);
         }
-        setSourceSection(result, sourceSection);
+        setSource(result, sourceSection);
         return result;
     }
 
@@ -312,7 +314,7 @@ public class ExprVisitor extends HierarchicalVisitor {
             PhpException.undefVariableError(name, null);
         }
         final PhpExprNode varNode = ReadLocalVarNodeGen.create(varSlot);
-        setSourceSection(varNode, variable);
+        setSource(varNode, variable);
 
         currExpr = varNode;
         return false;
@@ -365,10 +367,31 @@ public class ExprVisitor extends HierarchicalVisitor {
             // expression: $a = ...
             rhsNode = initAndAcceptExpr(ass.getRightHandSide());
         }
-        rhsNode = AssignRuntimeFactory
-                .createForwardValueNode(isAssignmentByReference(ass), rhsNode);
-        setSourceSection(rhsNode, ass);
+        setSource(rhsNode, ass);
+        rhsNode = copyBehaviorForAssignment(rhsNode, ass);
         return rhsNode;
+    }
+
+    // optimization
+    private PhpExprNode copyBehaviorForAssignment(PhpExprNode source, Assignment ass) {
+        boolean enableOptimization = true;
+        // XXX: We potentially copy arrays twice if we assign by value
+        // from function return (1st copy from invoke node) and
+        // copy by value again here in order to store in variable
+        // FunctionAssignmentBehaviorNode skips copy by value
+        // if we immediately assign function result to a variable.
+        PhpExprNode resultNode;
+        if (enableOptimization && ass.getRightHandSide() instanceof FunctionInvocation) {
+            final Identifier fnName = getFunctionName((FunctionInvocation) ass.getRightHandSide());
+            final PhpFunctionLookupNode lookupNode =
+                    setSource(new PhpFunctionLookupNode(fnName.getName(), scope), ass);
+            resultNode = setSource(new FunctionAssignmentBehaviorNode(lookupNode, source), ass);
+        } else {
+            // default behavior
+            resultNode = setSource(AssignRuntimeFactory
+                    .createForwardValueNode(isAssignmentByReference(ass), source), ass);
+        }
+        return resultNode;
     }
 
     // create Node which writes value at index into array, $A[val] = ...
@@ -380,19 +403,24 @@ public class ExprVisitor extends HierarchicalVisitor {
         final PhpExprNode arrayIndexNode = initAndAcceptExpr(arrayIndex);
         final PhpExprNode arrayWriteNode =
                 ArrayWriteNodeGen.create(arrayTargetNode, arrayIndexNode, value);
-        setSourceSection(arrayWriteNode, sourceSection);
+        setSource(arrayWriteNode, sourceSection);
         return arrayWriteNode;
     }
 
     // ---------------- function invocations --------------------
 
+    private Identifier getFunctionName(FunctionInvocation invoke) {
+        final Identifier fnId = new IdentifierVisitor()
+                .getIdentifierName(invoke.getFunctionName().getName());
+        if (fnId == null) {
+            throw new UnsupportedOperationException("we dont support function lookup in vars" + invoke);
+        }
+        return fnId;
+    }
+
     @Override
     public boolean visit(FunctionInvocation fn) {
-        final Identifier fnId = new IdentifierVisitor()
-                .getIdentifierName(fn.getFunctionName().getName());
-        if (fnId == null) {
-            throw new UnsupportedOperationException("we dont support function lookup in vars");
-        }
+        final Identifier fnId = getFunctionName(fn);
 
         // builtin functions which need special care
         if (isLanguageFunctionOperator(fnId.getName())) {
@@ -406,16 +434,17 @@ public class ExprVisitor extends HierarchicalVisitor {
             args.add(arg);
         }
         final PhpFunctionLookupNode lookupNode = new PhpFunctionLookupNode(fnId.getName(), scope);
-        setSourceSection(lookupNode, fn);
+        setSource(lookupNode, fn);
 
         final PhpInvokeNode invokeNode =
                 new PhpInvokeNode(args.toArray(new PhpExprNode[0]), lookupNode);
 
-        setSourceSection(invokeNode, fn);
+        setSource(invokeNode, fn);
         currExpr = invokeNode;
         return false;
     }
 
+    // some builtin functions cannot be treated as regular functions
     private boolean isLanguageFunctionOperator(String name) {
         return name.equals(UNSET_OPERATOR) || name.equals(PrintArgsBuiltin.NAME);
     }
@@ -434,7 +463,7 @@ public class ExprVisitor extends HierarchicalVisitor {
                 }
                 final PhpUnsetNode unsetNode =
                         PhpUnsetNodeGen.create(names.toArray(new String[names.size()]), scope);
-                setSourceSection(unsetNode, fn);
+                setSource(unsetNode, fn);
                 return unsetNode;
 
             /*
@@ -452,10 +481,10 @@ public class ExprVisitor extends HierarchicalVisitor {
                     nodeArgs.add(initAndAcceptExpr(fn.parameters().get(i)));
                 }
                 final ExecuteValuesNode executeValsNode = new ExecuteValuesNode(nodeArgs);
-                setSourceSection(executeValsNode, fn);
+                setSource(executeValsNode, fn);
                 final PrintArgsBuiltin printNode =
                         PrintArgsBuiltinNodeGen.create(executeValsNode, title);
-                setSourceSection(printNode, fn);
+                setSource(printNode, fn);
                 return printNode;
             default:
                 throw new IllegalArgumentException("unsupported language function invocation: " + name);
@@ -483,7 +512,7 @@ public class ExprVisitor extends HierarchicalVisitor {
         } else {
             newArrayNode = NewArrayInitialValuesNodeGen.create(arrayInitVals);
         }
-        setSourceSection(newArrayNode, arrayCreation);
+        setSource(newArrayNode, arrayCreation);
         currExpr = newArrayNode;
         return false;
     }
@@ -497,7 +526,7 @@ public class ExprVisitor extends HierarchicalVisitor {
         final PhpExprNode target = initAndAcceptExpr(arrayAccess.getName());
         final PhpExprNode index = initAndAcceptExpr(arrayAccess.getIndex());
         currExpr = ArrayReadNodeGen.create(target, index);
-        setSourceSection(currExpr, arrayAccess);
+        setSource(currExpr, arrayAccess);
 
         return false;
     }
@@ -526,7 +555,7 @@ public class ExprVisitor extends HierarchicalVisitor {
                 initAndAcceptExpr(expr.getCondition()),
                 initAndAcceptExpr(expr.getIfTrue()),
                 initAndAcceptExpr(expr.getIfFalse()));
-        setSourceSection(node, expr);
+        setSource(node, expr);
         currExpr = node;
         return false;
     }

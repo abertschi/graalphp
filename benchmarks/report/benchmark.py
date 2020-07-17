@@ -86,15 +86,17 @@ def run_binary_trees():
     fannkuch_folder = os.path.join(DIR, 'bench/binary-trees')
 
     php_src = os.path.join(fannkuch_folder, "binarytrees.php-3.php")
+    php_ref_src = os.path.join(fannkuch_folder, "binarytrees.php-3-ref.php")
     graalphp_src = os.path.join(fannkuch_folder, "binarytrees.php-3.graalphp")
+    graalphp_ref_src = os.path.join(fannkuch_folder, "binarytrees.php-3-ref.graalphp")
 
-    # php_result = run_single_test(prefix, 'php', PHP_BINARY, '-n -d memory_limit=4096M', php_src)
+    php_result = run_single_test(prefix, 'php', PHP_BINARY, '-n -d memory_limit=4096M', php_src)
     graalphp_result = run_single_test(prefix, 'graalphp', GRAALPHP_BINARY, '', graalphp_src)
-    # graalphp_native_result = run_single_test(prefix, 'graalphp-native', GRAALPHP_NATIVE_BINARY, '', graalphp_src)
+    graalphp_native_result = run_single_test(prefix, 'graalphp-native', GRAALPHP_NATIVE_BINARY, '', graalphp_src)
 
-    # process_fannkuch_bench(php_result)
+    php_ref_result = run_single_test(prefix, 'php-ref', PHP_BINARY, '-n -d memory_limit=4096M', php_ref_src)
+    graalphp_ref_result = run_single_test(prefix, 'graalphp-ref', GRAALPHP_BINARY, '', graalphp_ref_src)
+    graalphp_native_ref_result = run_single_test(prefix, 'graalphp-native-ref', GRAALPHP_NATIVE_BINARY, '', graalphp_ref_src)
 
-
-
-# run_fannkuch_bench()
+run_fannkuch_bench()
 run_binary_trees()
