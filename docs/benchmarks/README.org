@@ -1,4 +1,4 @@
-## -*- coding: utf-8;mode: org; fill-column: 80; -*- ## This file is best viewed with GNU Emacs Org-mode: http://orgmode.org/. Metadata not shown on github.
+## -*- coding: utf-8;mode: org; fill-column: 80; -*- ## This file is best viewed with GNU Emacs Org-mode: http://orgmode.org/.
 #+SEQ_TODO: TODO USE OPTIONAL | IMPLEMENTED CANCELLED DEFERRED
 
 This file lists the implemented feature set to run our benchmarks. In order to
