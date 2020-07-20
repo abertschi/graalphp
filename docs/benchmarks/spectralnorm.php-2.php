@@ -68,4 +68,4 @@ for($i = 0; $i < $n; $i ++) {
     $vv += $val*$val;
 }
 
-printf("%0.9f\n", sqrt($vBv/$vv));
+print(sqrt($vBv/$vv));
