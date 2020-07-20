@@ -65,24 +65,6 @@ def run_fannkuch_bench():
     graalphp_native_result = run_single_test(prefix, 'graalphp-native', GRAALPHP_NATIVE_BINARY, '', graalphp_src)
     php_result = run_single_test(prefix, 'php', PHP_BINARY, '', php_src)
 
-    # process_fannkuch_bench(php_result)
-
-
-def process_fannkuch_bench(path):
-    print('[i] - processing ' + path)
-
-    res = []
-    min = sys.maxsize
-    max = 0
-    N = 0
-    sum = 0
-
-    file = open(path, "r")
-    l = file.readline()
-    while l:
-        l = file.readline()
-    file.close()
-
 
 def run_binary_trees():
     prefix = get_test_prefix('binary-trees')
@@ -140,5 +122,9 @@ def extract_measurements(timings):
     print("max: {}".format(max(timings)))
 
 
-path = 'measurements/out.txt'
-extract_measurements(unify_binary_trees(parse_values(path)))
+# path = 'measurements/out.txt'
+# extract_measurements(unify_binary_trees(parse_values(path)))
+
+
+run_binary_trees()
+run_fannkuch_bench()
