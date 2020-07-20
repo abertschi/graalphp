@@ -27,7 +27,7 @@
 - binary operations
   - shift left
   - shift right
-  - equals (==)
+  - eqpuals (==)
   - short hand >>=
   - triple equals (===)
   - addition
@@ -107,37 +107,35 @@
 - strlen
 - printf
 - argc/ argv
-
-
 * OPTIONAL Feature set for nbody.php-3.php
 ** $pairs[] = array(&$bodies[$i], &$bodies[$j]);
 - complicated to implement
 ** Features
-- [-] functions
-  - [ ] invocation
-  - [ ] pass by reference of array
-  - [X] return number
-- [ ] builtins
-  - [ ] sizeof()
-  - [ ] sqrt()
-- [ ] arrays
-  - [ ] array(val) keyword
-  - [ ] array of double
-  - [ ] array of arrays
-    - [ ] 1D is of type array of double
-    - [ ] 2D is of type array of double
-  - [ ] $arr[index][index]
-- [ ] argv[] access
-- [ ] for each loop ($array as &$a)
-  - [ ] $a is an array
-- [X] do while
-- [-] unary/ binary operators
-  - [ ] ++
-  - [ ] +=
-  - [ ] -=
-  - [X] +
-  - [X] -
-  - [X] *
-  - [X] /
-- [ ] strings
-  - [ ] printf(string)
+- functions
+  - invocation
+  - pass by reference of array
+  - return number
+- builtins
+  - sizeof()
+  - sqrt()
+- arrays
+  - array(val) keyword
+  - array of double
+  - array of arrays
+    - 1D is of type array of double
+    - 2D is of type array of double
+  - $arr[index][index]
+- argv[] access
+- for each loop ($array as &$a)
+  - $a is an array
+- do while
+- unary/ binary operators
+  - ++
+  - +=
+  - -=
+  - +
+  - -
+  - *
+  - /
+- strings
+  - printf(string)

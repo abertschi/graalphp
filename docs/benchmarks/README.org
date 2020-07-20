@@ -1,7 +1,10 @@
-## -*- coding: utf-8;mode: org; fill-column: 80; -*- ## This file is best viewed with GNU Emacs Org-mode: http://orgmode.org/
+## -*- coding: utf-8;mode: org; fill-column: 80; -*- ## This file is best viewed with GNU Emacs Org-mode: http://orgmode.org/. Metadata not shown on github.
 #+SEQ_TODO: TODO USE OPTIONAL | IMPLEMENTED CANCELLED DEFERRED
 
-* USE Feature set for fannkuchredux.php-1.php
+This file lists the implemented feature set to run our benchmarks. In order to
+see all metadata browse in Emacs or as plain text.
+
+* IMPLEMENTED Feature set for fannkuchredux.php-1.php
 :properties:
 :file: [[file:fannkuchredux.php-1.php][file:fannkuchredux.php-1.php]]
 :url: https://benchmarksgame-team.pages.debian.net/benchmarksgame/program/fannkuchredux-php-1.html
@@ -16,12 +19,12 @@
   - [X] array(val1, val2)
   - [X] array access by index $arr[ind]
   - [X] array write by index $arr[ind] = val
-  - [ ] access argv
+  - [ ] +access argv+
 - [X] for loop
 - [X] do while loop
 - [X] break
-- [ ] strings in printf
-- [ ] list builtin
+- [ ] +strings in printf+
+- [ ] +list builtin+
 - [X] Arithmetic/ logical operations
   - [X] -- operator
   - [X] ++ operator
@@ -30,50 +33,62 @@
   - [X] * operator
   - [X] + operator
 
-* USE Feature set for binarytrees.php-3.php
+*** Modifications
+- Have script arguments already in file
+- Assign variables explicitly, do not use list builtin
+- Simplified version of printf; print values without text
+
+* IMPLEMENTED Feature set for binarytrees.php-3.php
 :properties:
 :file: [[file:binarytrees.php-1.php][file:binarytrees.php-3.php]]
 :url: https://benchmarksgame-team.pages.debian.net/benchmarksgame/program/binarytrees-php-3.html
 :end:
 
-- [-] function definition
+- [X] function definition
   - [X] integer argument
-  - [ ] return an object
+  - [X] return an array
 - [X] arrays
   - [X] arrays of arrays
   - [X] read array
   - [X] write array
 - [X] (cond ? val1: val2) syntax
-- [ ] access argc
+- [ ] +access argc+
 - [X] max builtin
-- [ ] strings
-  - [ ] printf(string, args)
+- [ ] +strings+
+  - [ ] +printf(string, args)+
 - [X] unset $var
 - [X] for while
 - [X] do while
 - [-] Arithmetic/ logical operations
   - [X] ! operator
   - [X] -- operator
-  - [ ] === operator -> we can use == instead
+  - [ ] +=== operator -> we can use == instead+
   - [X] >>= operator
   - [X] += operator
 - [X] addition of numbers
 
-** NOTE binarytrees.php-1.php implements similar behavior but uses classes
+*** Modifications
+- Have script arguments in file already (argv)
+- Simplified version of printf, print values without comments
+- === operator (identity) replaced with == (equality)
+*** Notes
+- binarytrees.php-1.php is the same benchmark but uses classes instead of arrays
+- https://benchmarksgame-team.pages.debian.net/benchmarksgame/program/binarytrees-php-1.html
 
 * USE Feature set for spectralnorm.php-2.php
 :properties:
 :file: [[file:spectralnorm.php-2.php][file:spectralnorm.php-2.php]]
+:file-original: [[file:spectralnorm.php-2.php][file:spectralnorm.php-2.orig.php]]
 :url: https://benchmarksgame-team.pages.debian.net/benchmarksgame/program/spectralnorm-php-2.html
 :end:
 
-- [ ] global variables
+- [ ] +global variables+
 - [-] functions
   - [X] invocation
-  - [ ] pass by reference
-    - [ ] arrays
-    - [ ] integer
-    - [ ] does not assign value, only read
+  - [-] pass by reference
+    - [X] arrays
+    - [ ] +integer+
+    - [X] does not assign value, only read
 - [-] arrays
   - [X] $A[ind] = val
   - [ ] array_fill
@@ -83,14 +98,20 @@
   - [X] /
   - [X] ++
 - [X] for loop
-- [ ] for each ($v as $key => $val)
-- [ ] for each ($v as $val)
-  - [ ] $v is array
-- [ ] argc
-- [ ] argv[] integer only
+- [ ] +for each ($v as $key => $val)+
+- [ ] +for each ($v as $val)+
+  - $v is array
+- [ ] +argc+
+- [ ] +argv[] integer only+
 - [ ] builtins
   - [ ] intval
   - [ ] array_fill(int, int, double)
   - [ ] sqrt
-- [ ] printf with string val
+- [ ] +printf with string val+
 
+*** Modifications:
+- Pass global variable by reference instead of declaring it as global
+- Pass integer variables by value instead of by reference (default behavior)
+- replace for-each keyword by for keyword
+- Define command line arguments within script already (argv)
+- Print result value without additional text
