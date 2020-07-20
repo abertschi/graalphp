@@ -84,7 +84,6 @@ def run_binary_trees():
     graalphp_native_ref_result = run_single_test(prefix, 'graalphp-native-ref', GRAALPHP_NATIVE_BINARY, '',
                                                  graalphp_ref_src)
 
-
 def parse_values(path):
     pd.set_option('display.max_rows', None)
     file = open(path, "r")
@@ -109,8 +108,7 @@ def unify_binary_trees(columns):
 
 
 def extract_measurements(timings):
-
-    print(timings)
+    # print(timings)
     timings = timings[15:]
     print(timings)
 
@@ -122,9 +120,220 @@ def extract_measurements(timings):
     print("max: {}".format(max(timings)))
 
 
-# path = 'measurements/out.txt'
-# extract_measurements(unify_binary_trees(parse_values(path)))
+def get_timings(path):
+    return unify_binary_trees(parse_values(path))
 
 
-run_binary_trees()
-run_fannkuch_bench()
+import numpy as np
+import matplotlib.pyplot as plt
+from os import walk
+
+
+def fannkuch():
+    prefix = 'saved-measurements/20-07-20/'
+    php = '2020-07-20T02:38:05.827873-fannkuch-php.txt'
+    graalphp = '2020-07-20T02:38:05.827873-fannkuch-graalphp.txt'
+    graalphp_native = '2020-07-20T02:38:05.827873-fannkuch-graalphp-native.txt'
+    warmup_thres = 10
+
+    php_val = get_timings(os.path.join(prefix, php))
+    php_mean = statistics.mean(php_val)
+
+    graalphp_val = get_timings(os.path.join(prefix, graalphp))[warmup_thres:]
+    graalphp_native_val = get_timings(os.path.join(prefix, graalphp_native))[warmup_thres:]
+
+    graalphp_val = graalphp_val / php_mean
+    graalphp_native_val = graalphp_native_val / php_mean
+
+    php_val = php_val / php_mean
+
+    php_mean = statistics.mean(php_val)
+    graalphp_mean = statistics.mean(graalphp_val)
+    graalphp_native_mean = statistics.mean(graalphp_native_val)
+
+    speedup = [php_mean, php_mean / graalphp_mean, php_mean / graalphp_native_mean]
+
+    # Calculate the standard deviation
+    php_std = statistics.stdev(php_val)
+    graalphp_std = statistics.stdev(graalphp_val)
+    graalphp_nat_std = statistics.stdev(graalphp_native_val)
+
+    # Define labels, positions, bar heights and error bar heights
+    labels = ['php', 'graalphp', 'graalphp-native']
+    x_pos = np.arange(len(labels))
+    CTEs = speedup
+    # CTEs = [fk_php_mean, fk_graalphp_mean, fk_graalphp_nat_mean]
+    error = [php_std, graalphp_std, graalphp_nat_std]
+
+    # Build the plot
+    fig, ax = plt.subplots()
+    ax.bar(x_pos, CTEs,
+           yerr=error,
+           align='center',
+           alpha=0.5,
+           ecolor='black',
+           capsize=10)
+    ax.set_ylabel('Speedup After Warmup')
+    ax.set_xticks(x_pos)
+    ax.set_xticklabels(labels)
+    ax.set_title('Fannkuch Benchmark')
+    ax.yaxis.grid(True)
+
+    # Save the figure and show
+    plt.tight_layout()
+    plt.savefig('fannkuch.png')
+    plt.show()
+
+
+def binary_trees():
+    prefix = 'saved-measurements/20-07-20/'
+    php = '2020-07-19T22:03:31.585475-binary-trees-php.txt'
+    graalphp = '2020-07-19T22:03:31.585475-binary-trees-graalphp.txt'
+    graalphp_native = '2020-07-19T22:03:31.585475-binary-trees-graalphp-native.txt'
+    warmup_thres = 10
+
+    php_val = get_timings(os.path.join(prefix, php))
+    php_mean = statistics.mean(php_val)
+
+    graalphp_val = get_timings(os.path.join(prefix, graalphp))[warmup_thres:]
+    graalphp_native_val = get_timings(os.path.join(prefix, graalphp_native))[warmup_thres:]
+
+    graalphp_val = graalphp_val / php_mean
+    graalphp_native_val = graalphp_native_val / php_mean
+
+    php_val = php_val / php_mean
+
+    php_mean = statistics.mean(php_val)
+    graalphp_mean = statistics.mean(graalphp_val)
+    graalphp_native_mean = statistics.mean(graalphp_native_val)
+
+    speedup = [php_mean, php_mean / graalphp_mean, php_mean / graalphp_native_mean]
+
+    # Calculate the standard deviation
+    php_std = statistics.stdev(php_val)
+    graalphp_std = statistics.stdev(graalphp_val)
+    graalphp_nat_std = statistics.stdev(graalphp_native_val)
+
+    # Define labels, positions, bar heights and error bar heights
+    labels = ['php', 'graalphp', 'graalphp-native']
+    x_pos = np.arange(len(labels))
+    CTEs = speedup
+    # CTEs = [fk_php_mean, fk_graalphp_mean, fk_graalphp_nat_mean]
+    error = [php_std, graalphp_std, graalphp_nat_std]
+
+    # Build the plot
+    fig, ax = plt.subplots()
+    ax.bar(x_pos, CTEs,
+           yerr=error,
+           align='center',
+           alpha=0.5,
+           ecolor='black',
+           capsize=10)
+    ax.set_ylabel('Speedup After Warmup')
+    ax.set_xticks(x_pos)
+    ax.set_xticklabels(labels)
+    ax.set_title('Binary Tree Benchmark (copy by ref)')
+    ax.yaxis.grid(True)
+
+    # Save the figure and show
+    plt.tight_layout()
+    plt.savefig('binary-trees.png')
+    plt.show()
+
+def boxplot_fannkuchen():
+    prefix = 'saved-measurements/20-07-20/'
+    php = '2020-07-20T02:38:05.827873-fannkuch-php.txt'
+    graalphp = '2020-07-20T02:38:05.827873-fannkuch-graalphp.txt'
+    graalphp_native = '2020-07-20T02:38:05.827873-fannkuch-graalphp-native.txt'
+    warmup_thres = 10
+
+    php_val = get_timings(os.path.join(prefix, php))
+    php_mean = statistics.mean(php_val)
+
+    graalphp_val = get_timings(os.path.join(prefix, graalphp))[warmup_thres:]
+    graalphp_native_val = get_timings(os.path.join(prefix, graalphp_native))[warmup_thres:]
+
+    graalphp_val = graalphp_val / php_mean
+    graalphp_native_val = graalphp_native_val / php_mean
+
+    php_val = php_val / php_mean
+
+    labels = ['php', 'graalphp', 'graalphp-native']
+    times = [1/ php_val, 1/ graalphp_val, 1/ graalphp_native_val]
+
+    fig = plt.figure()
+    ax = fig.gca()
+    boxplot = ax.boxplot(times, vert=True, patch_artist=False)
+
+    # cmap = plt.cm.get_cmap("rainbow")
+    # colors = [cmap(val / len(times)) for val in range(len(times))]
+
+    # for patch, color in zip(boxplot["boxes"], colors):
+    #     patch.set_facecolor(color)
+
+    # plt.title('Benchmark Binary Trees after Warmup')
+    # plt.legend(handles=boxplot["boxes"], labels=labels, fontsize="small")
+    # plt.ylabel("Speedup")
+
+
+
+    ax.set_ylabel('Speedup After Warmup')
+    ax.set_xticklabels(labels)
+    ax.set_title('Fannkuch Benchmark')
+    ax.yaxis.grid(True)
+    ax.set_axisbelow(True)
+    plt.savefig('fannkuch.boxplot.png')
+    plt.show()
+
+
+
+def boxplot_binary_trees():
+    prefix = 'saved-measurements/20-07-20/'
+    php = '2020-07-19T22:03:31.585475-binary-trees-php.txt'
+    graalphp = '2020-07-19T22:03:31.585475-binary-trees-graalphp.txt'
+    graalphp_native = '2020-07-19T22:03:31.585475-binary-trees-graalphp-native.txt'
+    warmup_thres = 10
+
+    php_val = get_timings(os.path.join(prefix, php))
+    php_mean = statistics.mean(php_val)
+
+    graalphp_val = get_timings(os.path.join(prefix, graalphp))[warmup_thres:]
+    graalphp_native_val = get_timings(os.path.join(prefix, graalphp_native))[warmup_thres:]
+
+    graalphp_val = graalphp_val / php_mean
+    graalphp_native_val = graalphp_native_val / php_mean
+
+    php_val = php_val / php_mean
+
+    labels = ['php', 'graalphp', 'graalphp-native']
+    times = [1/ php_val, 1/ graalphp_val, 1/ graalphp_native_val]
+
+    fig = plt.figure()
+    ax = fig.gca()
+    boxplot = ax.boxplot(times, vert=True, patch_artist=False)
+
+    # cmap = plt.cm.get_cmap("rainbow")
+    # colors = [cmap(val / len(times)) for val in range(len(times))]
+
+    # for patch, color in zip(boxplot["boxes"], colors):
+    #     patch.set_facecolor(color)
+
+    # plt.title('Benchmark Binary Trees after Warmup')
+    # plt.legend(handles=boxplot["boxes"], labels=labels, fontsize="small")
+    # plt.ylabel("Speedup")
+
+
+
+    ax.set_ylabel('Speedup After Warmup')
+    ax.set_xticklabels(labels)
+    ax.set_title('Binary Tree Benchmark (copy by ref)')
+    ax.yaxis.grid(True)
+    ax.set_axisbelow(True)
+    plt.savefig('binary-trees.boxplot.png')
+    plt.show()
+
+
+boxplot_binary_trees()
+boxplot_fannkuchen()
+fannkuch()
+binary_trees()
