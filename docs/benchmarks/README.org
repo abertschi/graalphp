@@ -1,8 +1,10 @@
-## -*- coding: utf-8;mode: org; fill-column: 80; -*- ## This file is best viewed with GNU Emacs Org-mode: http://orgmode.org/.
+## -*- coding: utf-8;mode: org; fill-column: 80; -*- ## This file is best viewed with GNU Emacs Org-mode: http://orgmode.org/. 
 #+SEQ_TODO: TODO USE OPTIONAL | IMPLEMENTED CANCELLED DEFERRED
 
 This file lists the implemented feature set to run our benchmarks. In order to
 see all metadata browse in Emacs or as plain text.
+Benchmark scripts can be found in ./benchmarks/ in the project root directory.
+
 
 * IMPLEMENTED Feature set for fannkuchredux.php-1.php
 :properties:
@@ -34,9 +36,9 @@ see all metadata browse in Emacs or as plain text.
   - [X] + operator
 
 *** Modifications
-- Have script arguments already in file
-- Assign variables explicitly, do not use list builtin
-- Simplified version of printf; print values without text
+- Define command line arguments within script already (argv)
+- Assign variables explicitly, do not use list builtin (syntactic sugar)
+- Simplified version of printf; print values without additional text
 
 * IMPLEMENTED Feature set for binarytrees.php-3.php
 :properties:
@@ -68,8 +70,8 @@ see all metadata browse in Emacs or as plain text.
 - [X] addition of numbers
 
 *** Modifications
-- Have script arguments in file already (argv)
-- Simplified version of printf, print values without comments
+- Define command line arguments within script already (argv)
+- Simplified version of printf; print values without additional text
 - === operator (identity) replaced with == (equality)
 *** Notes
 - binarytrees.php-1.php is the same benchmark but uses classes instead of arrays
@@ -112,6 +114,6 @@ see all metadata browse in Emacs or as plain text.
 *** Modifications:
 - Pass global variable by reference instead of declaring it as global
 - Pass integer variables by value instead of by reference (default behavior)
-- replace for-each keyword by for keyword
+- replace for-each keyword by for keyword (syntactic sugar)
 - Define command line arguments within script already (argv)
-- Print result value without additional text
+- Simplified version of printf; print values without additional text
