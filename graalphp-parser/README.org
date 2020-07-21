@@ -7,6 +7,9 @@ WORK IN PROGRESS
 This piece of software provides the PHP Parser used by the [[https://projects.eclipse.org/projects/tools.pdt][Eclipse PHP
 Development Tools (PDT)]] project as a dependency-free standalone binary.
 
+The upstream parser comes with many dependencies making it impractical to be used by other projects.
+graalphp-parser is a fork of [[https://projects.eclipse.org/projects/tools.pdt][Eclipse PHP Development Tools (PDT)]] project.
+
 It's a fast, [[http://www2.cs.tum.edu/projects/cup/][java-cup]] and [[https://jflex.de/][JFlex]] based, LALR parser supporting PHP 7+ grammar.
 
 ** Features
