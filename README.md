@@ -6,8 +6,8 @@
 [![](https://img.shields.io/github/last-commit/abertschi/graalphp)]()
 
 # A PHP implementation built on GraalVM
-    
-Thesis project at ETH Zurich, work in progress
+Graalphp is an experimental just-in-time (JIT) compiler and Runtime for the PHP
+Programming Language. It is based on GraalVM. This is a thesis project at ETH Zurich. Work in progress.
 
 ### Build
 ```shell
