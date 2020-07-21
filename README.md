@@ -6,19 +6,21 @@
 [![](https://img.shields.io/github/last-commit/abertschi/graalphp)]()
 
 # A PHP implementation built on GraalVM
-    
-Thesis project at ETH Zurich, work in progress
+Graalphp is an experimental just-in-time (JIT) compiler and Runtime for the PHP
+Programming Language. It is based on GraalVM. This is a thesis project at ETH Zurich. Work in progress.
 
-### Build
+### Build and run
 ```shell
+$ export JAVA_HOME=/path/to/graalvm
 $ mvn package
+$ ./graalphp <php-file.php>
 ```
 
 ```sh
 # build native image:
 $ export JAVA_HOME=/path/to/graalvm
 $ export GRAALPHP_BUILD_NATIVE="true"
-$ ./tools/build-local.sh
+$ mvn package
 ```
 
 ### Feature Set
@@ -39,7 +41,7 @@ High Level Overview of implemented features, current runtime code base. ca. 4000
 ### Benchmarks
 - Performance is going to be evaluated based on benchmarks by [The Computer Language
 Benchmarks Game](https://benchmarksgame-team.pages.debian.net/benchmarksgame/index.html)
-- See [benchmarks](./docs/benchmarks/) at ./docs/benchmarks
+- See [benchmarks](https://github.com/abertschi/graalphp/tree/feature/benchmark-scripts/docs/benchmarks). We list the implemented feature set and current benchmark results. 
 
 ### More Resources
 - Graal Github Issue :: https://github.com/oracle/graal/issues/361
