@@ -9,17 +9,18 @@
 Graalphp is an experimental just-in-time (JIT) compiler and Runtime for the PHP
 Programming Language. It is based on GraalVM. This is a thesis project at ETH Zurich. Work in progress.
 
-### Build
+### Build and run
 ```shell
-export JAVA_HOME=/path/to/graalvm
+$ export JAVA_HOME=/path/to/graalvm
 $ mvn package
+$ ./graalphp <php-file.php>
 ```
 
 ```sh
 # build native image:
 $ export JAVA_HOME=/path/to/graalvm
 $ export GRAALPHP_BUILD_NATIVE="true"
-$ ./tools/build-local.sh
+$ mvn package
 ```
 
 ### Feature Set
