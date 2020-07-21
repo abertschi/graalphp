@@ -11,6 +11,7 @@ Programming Language. It is based on GraalVM. This is a thesis project at ETH Zu
 
 ### Build
 ```shell
+export JAVA_HOME=/path/to/graalvm
 $ mvn package
 ```
 
