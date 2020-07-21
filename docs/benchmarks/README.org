@@ -86,6 +86,11 @@ Work in progress...
 - Define command line arguments within script already (argv)
 - Simplified version of printf; print values without additional text
 - === operator (identity) replaced with == (equality)
+- We run this benchmark twice. Once with explicit copy-by-ref semantics for
+  arrays, and one version without. By-reference results show what a
+  more sophisticated array implementation which may implement copy-on-write
+  can theoretically achieve.
+
 *** Notes
 - binarytrees.php-1.php is the same benchmark but uses classes instead of arrays
 - https://benchmarksgame-team.pages.debian.net/benchmarksgame/program/binarytrees-php-1.html
