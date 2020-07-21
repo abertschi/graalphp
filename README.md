@@ -39,7 +39,7 @@ High Level Overview of implemented features, current runtime code base. ca. 4000
 ### Benchmarks
 - Performance is going to be evaluated based on benchmarks by [The Computer Language
 Benchmarks Game](https://benchmarksgame-team.pages.debian.net/benchmarksgame/index.html)
-- See [benchmarks](./docs/benchmarks/) at ./docs/benchmarks
+- See [benchmarks](https://github.com/abertschi/graalphp/tree/feature/benchmark-scripts/docs/benchmarks). We list the implemented feature set and current benchmark results. 
 
 ### More Resources
 - Graal Github Issue :: https://github.com/oracle/graal/issues/361
