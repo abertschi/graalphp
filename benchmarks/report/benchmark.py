@@ -105,7 +105,7 @@ def run_spectral():
 
     # gphp
     gphp_src = join(folder, "spectralnorm.php-2.graalphp")
-    gphp_src_pass_by_val = join(folder, 'spectralnorm.php-2-pass-by-val.gphp')
+    gphp_src_pass_by_val = join(folder, 'spectralnorm.php-2-pass-by-val.graalphp')
 
     # run
     run_graalphp(prefix, gphp_src, '')
