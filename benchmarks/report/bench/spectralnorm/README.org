@@ -1,6 +1,6 @@
 * spectralnorm.php-2
 
-https://benchmarksgame-team.pages.debian.net/benchmarksgame/program/spectralnorm.php-2.html
+https://benchmarksgame-team.pages.debian.net/benchmarksgame/program/spectralnorm-php-2.html
 
 - spectralnorm.php-2.original :: Original untouched benchmark
 - spectralnorm.php-2.graalphp :: Benchmark graalphp pass Arrays by reference (explicit)
