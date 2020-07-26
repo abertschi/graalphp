@@ -95,8 +95,6 @@ public class GraalPhpTestRunner extends ParentRunner<TestCase> {
     private static final String INPUT_SUFFIX = ".input";
     private static final String OUTPUT_SUFFIX = ".output";
 
-    private static final String LF = System.getProperty("line.separator");
-
     static class TestCase {
         protected final Description name;
         protected final Path path;
@@ -325,7 +323,7 @@ public class GraalPhpTestRunner extends ParentRunner<TestCase> {
             byte[] bytes = out.toByteArray();
             String actualOutput = "";
             if (bytes.length != 0) {
-             actualOutput= readLinesUniformNewline(new String(bytes));
+                actualOutput = readLinesUniformNewline(new String(bytes));
             }
             System.out.println(String.format("expect:\n'%s'", testCase.expectedOutput));
             System.out.println(String.format("actual:\n'%s'", actualOutput));
@@ -347,7 +345,7 @@ public class GraalPhpTestRunner extends ParentRunner<TestCase> {
         StringBuilder result = new StringBuilder("");
         try {
             String line = reader.readLine();
-            while (line != null){
+            while (line != null) {
                 result.append(line).append("\n");
                 line = reader.readLine();
             }
