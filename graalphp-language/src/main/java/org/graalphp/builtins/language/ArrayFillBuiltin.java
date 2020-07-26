@@ -28,10 +28,11 @@ public abstract class ArrayFillBuiltin extends PhpBuiltinNode {
     protected PhpArray arrayFillLong(long startIndex, long num, long val,
                                      @CachedLibrary(limit = "1") ArrayLibrary libs) {
         int arraySize = toInt(num);
+        int start = toInt(startIndex);
         Object backend = LongArrayAllocator.ALLOCATOR.allocate(arraySize);
         PhpArray phpArray = ArrayFactory.newArray(backend, arraySize);
 
-        for (int i = 0; i < arraySize; i++) {
+        for (int i = start; i < arraySize; i++) {
             libs.write(backend, i, val);
         }
         return phpArray;
@@ -41,10 +42,11 @@ public abstract class ArrayFillBuiltin extends PhpBuiltinNode {
     protected PhpArray arrayFillDouble(long startIndex, long num, double val,
                                        @CachedLibrary(limit = "1") ArrayLibrary libs) {
         int arraySize = toInt(num);
-        Object backend = ArrayLibrary.getAllocatorForValue(val);
+        int start = toInt(startIndex);
+        Object backend = ArrayLibrary.getAllocatorForValue(val).allocate(arraySize);
         PhpArray phpArray = ArrayFactory.newArray(backend, arraySize);
 
-        for (int i = 0; i < arraySize; i++) {
+        for (int i = start; i < arraySize; i++) {
             libs.write(backend, i, val);
         }
         return phpArray;
@@ -54,10 +56,11 @@ public abstract class ArrayFillBuiltin extends PhpBuiltinNode {
     protected PhpArray arrayFillObject(long startIndex, long num, Object val,
                                        @CachedLibrary(limit = "1") ArrayLibrary libs) {
         int arraySize = toInt(num);
+        int start = toInt(startIndex);
         Object backend = ObjectArrayAllocator.ALLOCATOR.allocate(arraySize);
         PhpArray phpArray = ArrayFactory.newArray(backend, arraySize);
 
-        for (int i = 0; i < arraySize; i++) {
+        for (int i = start; i < arraySize; i++) {
             libs.write(backend, i, val);
         }
         return phpArray;
