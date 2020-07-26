@@ -1,0 +1,9 @@
+* binarytrees-php-3
+
+https://benchmarksgame-team.pages.debian.net/benchmarksgame/program/binarytrees-php-3.html
+
+- binarytrees.php-3.original :: Original Benchmark
+- binarytrees.php-3.graalphp :: Benchmark graalphp pass Arrays by-value (default)
+- binarytrees.php-3.php :: Benchmark php pass Arrays by-value (default)
+- binarytrees.php-3-ref.graalphp :: Benchmark graalphp pass Arrays by-reference (explicit)
+- binarytrees.php-3-ref.php :: Benchmark php pass Arrays by-reference (explicit)
