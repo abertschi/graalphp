@@ -34,6 +34,18 @@ def run_single_test(file_prefix, exec_name, exec_binary, exec_args, exec_src):
     subprocess.call(exec, shell=True)
     return log_file
 
+def run_php(prefix, src, args = ''):
+    return run_single_test(prefix, 'php', PHP_BINARY, args, src)
+
+def run_graalphp(prefix, src,  args = ''):
+    return run_single_test(prefix, 'graalphp', GRAALPHP_BINARY, args, src)
+
+def run_graalphp_and_native(prefix, src, args = ''):
+    run_graalphp(prefix, args, src)
+    run_graalphp_native(prefix, args, src)
+
+def run_graalphp_native(prefix, src, args = ''):
+    return run_single_test(prefix, 'graalphp', GRAALPHP_NATIVE_BINARY, args, src)
 
 def save_file(source, dest):
     file1 = open(source, "r")
@@ -45,14 +57,11 @@ def save_file(source, dest):
     file1.close()
     file2.close()
 
-
 def get_bench_time():
     return datetime.now().isoformat()
 
-
 def get_test_prefix(name):
     return '{}-{}'.format(get_bench_time(), name)
-
 
 def run_fannkuch_bench():
     prefix = get_test_prefix('fannkuch')
@@ -64,7 +73,6 @@ def run_fannkuch_bench():
     graalphp_result = run_single_test(prefix, 'graalphp', GRAALPHP_BINARY, '', graalphp_src)
     graalphp_native_result = run_single_test(prefix, 'graalphp-native', GRAALPHP_NATIVE_BINARY, '', graalphp_src)
     php_result = run_single_test(prefix, 'php', PHP_BINARY, '', php_src)
-
 
 def run_binary_trees():
     prefix = get_test_prefix('binary-trees')
@@ -83,6 +91,32 @@ def run_binary_trees():
     graalphp_ref_result = run_single_test(prefix, 'graalphp-ref', GRAALPHP_BINARY, '', graalphp_ref_src)
     graalphp_native_ref_result = run_single_test(prefix, 'graalphp-native-ref', GRAALPHP_NATIVE_BINARY, '',
                                                  graalphp_ref_src)
+
+from os.path import join
+
+def run_spectral():
+    prefix = get_test_prefix('spectralnorm')
+    folder = os.path.join(DIR, 'bench/spectralnorm')
+
+    # php
+    php_src = join(folder, "spectralnorm.php-2.php")
+    php_src_unmod = join(folder, "spectralnorm.php-2-php-unmodified.php")
+    php_src_pass_by_val = join(folder, 'spectralnorm.php-2-pass-by-val.php')
+
+    # gphp
+    gphp_src = join(folder, "spectralnorm.php-2.graalphp")
+    gphp_src_pass_by_val = join(folder, 'spectralnorm.php-2-pass-by-val.gphp')
+
+    # run
+    run_graalphp(prefix, gphp_src, '')
+    run_graalphp_native(prefix, gphp_src, '')
+
+    run_graalphp(prefix, gphp_src_pass_by_val, '')
+    run_graalphp_native(prefix, gphp_src_pass_by_val, '')
+
+    run_php(prefix, php_src, '')
+    run_php(prefix, php_src_unmod, '')
+    run_php(prefix, php_src_pass_by_val, '')
 
 def parse_values(path):
     pd.set_option('display.max_rows', None)
@@ -286,7 +320,6 @@ def boxplot_fannkuchen():
     plt.show()
 
 
-
 def boxplot_binary_trees():
     prefix = 'saved-measurements/20-07-20/'
     php = '2020-07-19T22:03:31.585475-binary-trees-php.txt'
@@ -333,7 +366,8 @@ def boxplot_binary_trees():
     plt.show()
 
 
-boxplot_binary_trees()
-boxplot_fannkuchen()
-fannkuch()
-binary_trees()
+# boxplot_binary_trees()
+# boxplot_fannkuchen()
+# fannkuch()
+# binary_trees()
+run_spectral()
