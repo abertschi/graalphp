@@ -10,8 +10,12 @@ import org.graalphp.builtins.MaxBuiltinFactory;
 import org.graalphp.builtins.MinBuiltin;
 import org.graalphp.builtins.MinBuiltinFactory;
 import org.graalphp.builtins.PhpBuiltinNode;
+import org.graalphp.builtins.SqrtBuiltin;
+import org.graalphp.builtins.SqrtBuiltinFactory;
 import org.graalphp.builtins.TimeNsBuiltin;
 import org.graalphp.builtins.TimeNsBuiltinFactory;
+import org.graalphp.builtins.language.ArrayFillBuiltin;
+import org.graalphp.builtins.language.ArrayFillBuiltinFactory;
 import org.graalphp.builtins.language.PrintBuiltin;
 import org.graalphp.builtins.language.PrintBuiltinFactory;
 import org.graalphp.builtins.language.PrintlnBuiltin;
@@ -27,6 +31,9 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
+/**
+ * @author abertschi
+ */
 public final class PhpContext {
 
     private final BufferedReader input;
@@ -56,6 +63,8 @@ public final class PhpContext {
         installBuiltin(TimeNsBuiltin.NAME, TimeNsBuiltinFactory.getInstance());
         installBuiltin(MinBuiltin.NAME, MinBuiltinFactory.getInstance());
         installBuiltin(MaxBuiltin.NAME, MaxBuiltinFactory.getInstance());
+        installBuiltin(ArrayFillBuiltin.NAME, ArrayFillBuiltinFactory.getInstance());
+        installBuiltin(SqrtBuiltin.NAME, SqrtBuiltinFactory.getInstance());
     }
 
     public void installBuiltin(String name, NodeFactory<? extends PhpBuiltinNode> factory) {
