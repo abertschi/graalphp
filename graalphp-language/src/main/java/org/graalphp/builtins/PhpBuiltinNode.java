@@ -11,4 +11,6 @@ import org.graalphp.nodes.PhpExprNode;
 @NodeChild(value = "arguments", type = PhpExprNode[].class)
 public abstract class PhpBuiltinNode extends PhpExprNode {
 
+    protected abstract PhpExprNode[] getArguments();
+
 }

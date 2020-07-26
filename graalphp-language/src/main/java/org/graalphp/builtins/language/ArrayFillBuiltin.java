@@ -1,5 +1,6 @@
 package org.graalphp.builtins.language;
 
+import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.dsl.Specialization;
 import com.oracle.truffle.api.library.CachedLibrary;
 import com.oracle.truffle.api.nodes.NodeInfo;
@@ -10,6 +11,8 @@ import org.graalphp.runtime.array.ArrayLibrary;
 import org.graalphp.runtime.array.LongArrayAllocator;
 import org.graalphp.runtime.array.ObjectArrayAllocator;
 import org.graalphp.runtime.array.PhpArray;
+
+import java.util.Arrays;
 
 /**
  * Implementation of the array_fill builtin in PHP
@@ -73,5 +76,11 @@ public abstract class ArrayFillBuiltin extends PhpBuiltinNode {
             throw new ArrayCapacityExceededException(
                     "Array size must be of long domain, got: " + val, this);
         }
+    }
+
+    @Override
+    @TruffleBoundary
+    public String toString() {
+        return "ArrayFillBuiltin{" + Arrays.toString(getArguments()) + "}";
     }
 }
