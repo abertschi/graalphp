@@ -10,6 +10,8 @@ import org.graalphp.builtins.MaxBuiltinFactory;
 import org.graalphp.builtins.MinBuiltin;
 import org.graalphp.builtins.MinBuiltinFactory;
 import org.graalphp.builtins.PhpBuiltinNode;
+import org.graalphp.builtins.SqrtBuiltin;
+import org.graalphp.builtins.SqrtBuiltinFactory;
 import org.graalphp.builtins.TimeNsBuiltin;
 import org.graalphp.builtins.TimeNsBuiltinFactory;
 import org.graalphp.builtins.language.ArrayFillBuiltin;
@@ -62,6 +64,7 @@ public final class PhpContext {
         installBuiltin(MinBuiltin.NAME, MinBuiltinFactory.getInstance());
         installBuiltin(MaxBuiltin.NAME, MaxBuiltinFactory.getInstance());
         installBuiltin(ArrayFillBuiltin.NAME, ArrayFillBuiltinFactory.getInstance());
+        installBuiltin(SqrtBuiltin.NAME, SqrtBuiltinFactory.getInstance());
     }
 
     public void installBuiltin(String name, NodeFactory<? extends PhpBuiltinNode> factory) {
