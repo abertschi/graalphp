@@ -7,6 +7,8 @@
    *reset*
 */
 
+// this version of the benchmark passes all arrays by reference where possible
+
 function &bottomUpTree($depth)
 {
    if (!$depth) {
