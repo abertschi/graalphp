@@ -358,7 +358,7 @@ def plot_speedup(title, save_name, php_val, gphp_val, gphp_native_val, warmup_th
     plt.show()
 
 
-def spectralnorm_speedup():
+def spectralnorm_speedup_ref():
     prefix = 'saved-measurements/20-07-27/2020-07-26T22:24:05.785564-spectralnorm-'
     php = 'spectralnorm.php-2.php-php.txt'
     graalphp = 'spectralnorm.php-2.graalphp-graalphp.txt'
@@ -369,8 +369,41 @@ def spectralnorm_speedup():
     graalphp_val = get_timings(prefix + graalphp)[warmup_thres:]
     graalphp_native_val = get_timings(prefix + graalphp_native)[warmup_thres:]
 
-    plot_speedup('Spectral Norm Benchmark', 'spectral-norm.png', php_val, graalphp_val, graalphp_native_val)
-    plot_speedup_box('Spectral Norm Benchmark', 'spectral-norm-boxplot.png', php_val, graalphp_val, graalphp_native_val)
+    plot_speedup('Spectral Norm (Arrays copy by Reference)', 'spectral-norm-ref.png', php_val, graalphp_val, graalphp_native_val)
+    plot_speedup_box('Spectral Norm (Arrays copy by Reference)', 'spectral-norm-ref-boxplot.png', php_val, graalphp_val, graalphp_native_val)
+
+
+def spectralnorm_speedup_value():
+    prefix = 'saved-measurements/20-07-27/2020-07-26T22:24:05.785564-spectralnorm-'
+
+    # php = 'spectralnorm.php-2-php-unmodified.php-php.txt'
+
+    php =              'spectralnorm.php-2-pass-by-val.php-php.txt'
+    graalphp =         'spectralnorm.php-2-pass-by-val.graalphp-graalphp.txt'
+    graalphp_native =  'spectralnorm.php-2-pass-by-val.graalphp-graalphp-native.txt'
+    warmup_thres = 10
+
+    php_val = get_timings(prefix + php)
+    graalphp_val = get_timings(prefix + graalphp)[warmup_thres:]
+    graalphp_native_val = get_timings(prefix + graalphp_native)[warmup_thres:]
+
+    plot_speedup('Spectral Norm (Arrays copy by Value)', 'spectral-norm-val.png', php_val, graalphp_val, graalphp_native_val)
+    plot_speedup_box('Spectral Norm (Arrays copy by Value)', 'spectral-norm-val-boxplot.png', php_val, graalphp_val, graalphp_native_val)
+
+def spectralnorm_speedup_untouched():
+    prefix = 'saved-measurements/20-07-27/2020-07-26T22:24:05.785564-spectralnorm-'
+
+    php = 'spectralnorm.php-2-php-unmodified.php-php.txt'
+    graalphp =         'spectralnorm.php-2-pass-by-val.graalphp-graalphp.txt'
+    graalphp_native =  'spectralnorm.php-2-pass-by-val.graalphp-graalphp-native.txt'
+    warmup_thres = 10
+
+    php_val = get_timings(prefix + php)
+    graalphp_val = get_timings(prefix + graalphp)[warmup_thres:]
+    graalphp_native_val = get_timings(prefix + graalphp_native)[warmup_thres:]
+
+    plot_speedup('Spectral Norm (Global Variables)', 'spectral-norm-glob.png', php_val, graalphp_val, graalphp_native_val)
+    plot_speedup_box('Spectral Norm (Global Variables', 'spectral-norm-glob-boxplot.png', php_val, graalphp_val, graalphp_native_val)
 
 
 def boxplot_fannkuchen():
@@ -466,4 +499,6 @@ def boxplot_binary_trees():
 # fannkuch()
 # binary_trees()
 # run_spectral()
-spectralnorm_speedup()
+spectralnorm_speedup_ref()
+spectralnorm_speedup_value()
+spectralnorm_speedup_untouched()
