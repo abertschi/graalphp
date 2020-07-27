@@ -149,3 +149,17 @@ Work in progress...
 - Define command line arguments within script already (argv)
 - Simplified version of printf; print values without additional text
 
+*** Current Benchmark Results (20-07-27)
+Work in progress...
+
+#+CAPTION: Pass Arrays by value (default)
+#+NAME:
+[[./assets/20-07-27-spectral-norm-val.png]]
+
+#+CAPTION: Pass Arrays with the & Operator (by reference)
+#+NAME:
+[[./assets/20-07-27-spectral-norm-ref.png]]
+
+#+CAPTION:
+#+NAME: Pass Arrays by value in graalphp and use global variables for PHP
+[[./assets/20-07-27-spectral-norm-glob.png]]

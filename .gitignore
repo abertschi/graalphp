@@ -32,3 +32,15 @@ graal_dumps
 /graalphp-component/jartmp7318173110672002863.tmp
 /vendor/
 tmp/
+/benchmarks/report/binary-trees-copy-by-ref-box.png
+/benchmarks/report/binary-trees-copy-by-ref.png
+/benchmarks/report/fannkuch-box.png
+/benchmarks/report/fannkuch.png
+/benchmarks/report/spectral-norm-boxplot.png
+/benchmarks/report/spectral-norm-glob-boxplot.png
+/benchmarks/report/spectral-norm-glob.png
+/benchmarks/report/spectral-norm-ref-boxplot.png
+/benchmarks/report/spectral-norm-ref.png
+/benchmarks/report/spectral-norm-val-boxplot.png
+/benchmarks/report/spectral-norm-val.png
+/benchmarks/report/spectral-norm.png
