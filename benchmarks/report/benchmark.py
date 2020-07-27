@@ -25,8 +25,9 @@ MEASUREMENT_DIR = os.path.join(DIR, 'measurements')
 
 
 def run_single_test(file_prefix, exec_name, exec_binary, exec_args, exec_src):
-    log_file = os.path.join(MEASUREMENT_DIR, '{}-{}.txt'.format(file_prefix, exec_name))
-    src_file = os.path.join(MEASUREMENT_DIR, '{}-{}-source.txt'.format(file_prefix, exec_name))
+    name = os.path.basename(exec_src)
+    log_file = os.path.join(MEASUREMENT_DIR, '{}-{}-{}.txt'.format(file_prefix, name, exec_name))
+    src_file = os.path.join(MEASUREMENT_DIR, '{}-{}-{}-source.txt'.format(file_prefix, name, exec_name))
     save_file(exec_src, src_file)
 
     exec = '{} {} {} | tee {}'.format(exec_binary, exec_args, exec_src, log_file)
@@ -34,18 +35,23 @@ def run_single_test(file_prefix, exec_name, exec_binary, exec_args, exec_src):
     subprocess.call(exec, shell=True)
     return log_file
 
-def run_php(prefix, src, args = ''):
+
+def run_php(prefix, src, args=''):
     return run_single_test(prefix, 'php', PHP_BINARY, args, src)
 
-def run_graalphp(prefix, src,  args = ''):
+
+def run_graalphp(prefix, src, args=''):
     return run_single_test(prefix, 'graalphp', GRAALPHP_BINARY, args, src)
 
-def run_graalphp_and_native(prefix, src, args = ''):
+
+def run_graalphp_and_native(prefix, src, args=''):
     run_graalphp(prefix, args, src)
     run_graalphp_native(prefix, args, src)
 
-def run_graalphp_native(prefix, src, args = ''):
-    return run_single_test(prefix, 'graalphp', GRAALPHP_NATIVE_BINARY, args, src)
+
+def run_graalphp_native(prefix, src, args=''):
+    return run_single_test(prefix, 'graalphp-native', GRAALPHP_NATIVE_BINARY, args, src)
+
 
 def save_file(source, dest):
     file1 = open(source, "r")
@@ -57,11 +63,14 @@ def save_file(source, dest):
     file1.close()
     file2.close()
 
+
 def get_bench_time():
     return datetime.now().isoformat()
 
+
 def get_test_prefix(name):
     return '{}-{}'.format(get_bench_time(), name)
+
 
 def run_fannkuch_bench():
     prefix = get_test_prefix('fannkuch')
@@ -73,6 +82,7 @@ def run_fannkuch_bench():
     graalphp_result = run_single_test(prefix, 'graalphp', GRAALPHP_BINARY, '', graalphp_src)
     graalphp_native_result = run_single_test(prefix, 'graalphp-native', GRAALPHP_NATIVE_BINARY, '', graalphp_src)
     php_result = run_single_test(prefix, 'php', PHP_BINARY, '', php_src)
+
 
 def run_binary_trees():
     prefix = get_test_prefix('binary-trees')
@@ -92,7 +102,9 @@ def run_binary_trees():
     graalphp_native_ref_result = run_single_test(prefix, 'graalphp-native-ref', GRAALPHP_NATIVE_BINARY, '',
                                                  graalphp_ref_src)
 
+
 from os.path import join
+
 
 def run_spectral():
     prefix = get_test_prefix('spectralnorm')
@@ -117,6 +129,7 @@ def run_spectral():
     run_php(prefix, php_src, '')
     run_php(prefix, php_src_unmod, '')
     run_php(prefix, php_src_pass_by_val, '')
+
 
 def parse_values(path):
     pd.set_option('display.max_rows', None)
@@ -274,6 +287,92 @@ def binary_trees():
     plt.savefig('binary-trees.png')
     plt.show()
 
+
+
+def plot_speedup_box(title, save_name, php_val, gphp_val, gphp_native_val, warmup_thres=0):
+    php_mean = statistics.mean(php_val)
+    graalphp_val = gphp_val / php_mean
+    graalphp_native_val = gphp_native_val / php_mean
+
+    php_val = php_val / php_mean
+
+    labels = ['php', 'graalphp', 'graalphp-native']
+    times = [1 / php_val, 1 / graalphp_val, 1 / graalphp_native_val]
+
+    fig = plt.figure()
+    ax = fig.gca()
+    boxplot = ax.boxplot(times, vert=True, patch_artist=False)
+
+    ax.set_ylabel('Speedup After Warmup')
+    ax.set_xticklabels(labels)
+    ax.set_title(title)
+    ax.yaxis.grid(True)
+    ax.set_axisbelow(True)
+    plt.savefig(save_name)
+    plt.show()
+    pass
+
+def plot_speedup(title, save_name, php_val, gphp_val, gphp_native_val, warmup_thres=0):
+    php_mean = statistics.mean(php_val)
+
+    graalphp_val = gphp_val / php_mean
+    graalphp_native_val = gphp_native_val / php_mean
+
+    php_val = php_val / php_mean
+
+    php_mean = statistics.mean(php_val)
+    graalphp_mean = statistics.mean(graalphp_val)
+    graalphp_native_mean = statistics.mean(graalphp_native_val)
+
+    speedup = [php_mean, php_mean / graalphp_mean, php_mean / graalphp_native_mean]
+
+    # Calculate the standard deviation
+    php_std = statistics.stdev(php_val)
+    graalphp_std = statistics.stdev(graalphp_val)
+    graalphp_nat_std = statistics.stdev(graalphp_native_val)
+
+    # Define labels, positions, bar heights and error bar heights
+    labels = ['php', 'graalphp', 'graalphp-native']
+    x_pos = np.arange(len(labels))
+    CTEs = speedup
+    # CTEs = [fk_php_mean, fk_graalphp_mean, fk_graalphp_nat_mean]
+    error = [php_std, graalphp_std, graalphp_nat_std]
+
+    # Build the plot
+    fig, ax = plt.subplots()
+    ax.bar(x_pos, CTEs,
+           yerr=error,
+           align='center',
+           alpha=0.5,
+           ecolor='black',
+           capsize=10)
+    ax.set_ylabel('Speedup After Warmup')
+    ax.set_xticks(x_pos)
+    ax.set_xticklabels(labels)
+    ax.set_title(title)
+    ax.yaxis.grid(True)
+
+    # Save the figure and show
+    plt.tight_layout()
+    plt.savefig(save_name)
+    plt.show()
+
+
+def spectralnorm_speedup():
+    prefix = 'saved-measurements/20-07-27/2020-07-26T22:24:05.785564-spectralnorm-'
+    php = 'spectralnorm.php-2.php-php.txt'
+    graalphp = 'spectralnorm.php-2.graalphp-graalphp.txt'
+    graalphp_native = 'spectralnorm.php-2.graalphp-graalphp-native.txt'
+    warmup_thres = 10
+
+    php_val = get_timings(prefix + php)
+    graalphp_val = get_timings(prefix + graalphp)[warmup_thres:]
+    graalphp_native_val = get_timings(prefix + graalphp_native)[warmup_thres:]
+
+    plot_speedup('Spectral Norm Benchmark', 'spectral-norm.png', php_val, graalphp_val, graalphp_native_val)
+    plot_speedup_box('Spectral Norm Benchmark', 'spectral-norm-boxplot.png', php_val, graalphp_val, graalphp_native_val)
+
+
 def boxplot_fannkuchen():
     prefix = 'saved-measurements/20-07-20/'
     php = '2020-07-20T02:38:05.827873-fannkuch-php.txt'
@@ -293,7 +392,7 @@ def boxplot_fannkuchen():
     php_val = php_val / php_mean
 
     labels = ['php', 'graalphp', 'graalphp-native']
-    times = [1/ php_val, 1/ graalphp_val, 1/ graalphp_native_val]
+    times = [1 / php_val, 1 / graalphp_val, 1 / graalphp_native_val]
 
     fig = plt.figure()
     ax = fig.gca()
@@ -308,8 +407,6 @@ def boxplot_fannkuchen():
     # plt.title('Benchmark Binary Trees after Warmup')
     # plt.legend(handles=boxplot["boxes"], labels=labels, fontsize="small")
     # plt.ylabel("Speedup")
-
-
 
     ax.set_ylabel('Speedup After Warmup')
     ax.set_xticklabels(labels)
@@ -339,7 +436,7 @@ def boxplot_binary_trees():
     php_val = php_val / php_mean
 
     labels = ['php', 'graalphp', 'graalphp-native']
-    times = [1/ php_val, 1/ graalphp_val, 1/ graalphp_native_val]
+    times = [1 / php_val, 1 / graalphp_val, 1 / graalphp_native_val]
 
     fig = plt.figure()
     ax = fig.gca()
@@ -355,8 +452,6 @@ def boxplot_binary_trees():
     # plt.legend(handles=boxplot["boxes"], labels=labels, fontsize="small")
     # plt.ylabel("Speedup")
 
-
-
     ax.set_ylabel('Speedup After Warmup')
     ax.set_xticklabels(labels)
     ax.set_title('Binary Tree Benchmark (copy by ref)')
@@ -370,4 +465,5 @@ def boxplot_binary_trees():
 # boxplot_fannkuchen()
 # fannkuch()
 # binary_trees()
-run_spectral()
+# run_spectral()
+spectralnorm_speedup()
