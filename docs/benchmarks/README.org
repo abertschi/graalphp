@@ -108,7 +108,7 @@ Work in progress...
 [[./assets/20-07-20-binary-trees.png]]
 
 
-* USE Feature set for spectralnorm.php-2.php
+* IMPLEMENTED Feature set for spectralnorm.php-2.php
 :properties:
 :file: [[file:spectralnorm.php-2.php][file:spectralnorm.php-2.php]]
 :file-original: [[file:spectralnorm.php-2.php][file:spectralnorm.php-2.orig.php]]
@@ -122,9 +122,9 @@ Work in progress...
     - [X] arrays
     - [ ] +integer+
     - [X] does not assign value, only read
-- [-] arrays
+- [X] arrays
   - [X] $A[ind] = val
-  - [ ] array_fill
+  - [X] array_fill
 - [X] arithmetic/ logical ops
   - [X] >>
   - [X] +
@@ -136,10 +136,10 @@ Work in progress...
   - $v is array
 - [ ] +argc+
 - [ ] +argv[] integer only+
-- [ ] builtins
-  - [ ] intval
-  - [ ] array_fill(int, int, double)
-  - [ ] sqrt
+- [-] builtins
+  - [ ] +intval+
+  - [X] array_fill(int, int, double)
+  - [X] sqrt
 - [ ] +printf with string val+
 
 *** Modifications:
