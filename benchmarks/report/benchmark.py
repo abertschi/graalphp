@@ -134,7 +134,7 @@ def run_spectral():
 def parse_values(path):
     pd.set_option('display.max_rows', None)
     file = open(path, "r")
-    l = file.readline()
+    l = True
     buffer = ""
     while l:
         l = file.readline()
@@ -146,6 +146,7 @@ def parse_values(path):
                       error_bad_lines=False,
                       quoting=csv.QUOTE_NONE)
 
+    print(res)
     return res
 
 
@@ -298,13 +299,17 @@ def plot_speedup_box(title, save_name, php_val, gphp_val, gphp_native_val, warmu
 
     labels = ['php', 'graalphp', 'graalphp-native']
     times = [1 / php_val, 1 / graalphp_val, 1 / graalphp_native_val]
+    vals = [php_val, gphp_val, gphp_native_val]
 
     fig = plt.figure()
     ax = fig.gca()
     boxplot = ax.boxplot(times, vert=True, patch_artist=False)
 
     ax.set_ylabel('Speedup After Warmup')
-    ax.set_xticklabels(labels)
+    xticklabels = []
+    for i, l in enumerate(labels):
+        xticklabels.append((l, vals[i]))
+    ax.set_xticklabels(['%s\n$n$=%d' % (label, len(v)) for label, v in xticklabels])
     ax.set_title(title)
     ax.yaxis.grid(True)
     ax.set_axisbelow(True)
@@ -324,6 +329,7 @@ def plot_speedup(title, save_name, php_val, gphp_val, gphp_native_val, warmup_th
     graalphp_mean = statistics.mean(graalphp_val)
     graalphp_native_mean = statistics.mean(graalphp_native_val)
 
+    vals = [php_val, graalphp_val, graalphp_native_val]
     speedup = [php_mean, php_mean / graalphp_mean, php_mean / graalphp_native_mean]
 
     # Calculate the standard deviation
@@ -348,8 +354,13 @@ def plot_speedup(title, save_name, php_val, gphp_val, gphp_native_val, warmup_th
            capsize=10)
     ax.set_ylabel('Speedup After Warmup')
     ax.set_xticks(x_pos)
-    ax.set_xticklabels(labels)
+    # ax.set_xticklabels(labels)
     ax.set_title(title)
+
+    xticklabels = []
+    for i, l in enumerate(labels):
+        xticklabels.append((l, vals[i]))
+    ax.set_xticklabels(['%s\n$n$=%d' % (label, len(v)) for label, v in xticklabels])
     ax.yaxis.grid(True)
 
     # Save the figure and show
@@ -364,8 +375,9 @@ def spectralnorm_speedup_ref():
     graalphp = 'spectralnorm.php-2.graalphp-graalphp.txt'
     graalphp_native = 'spectralnorm.php-2.graalphp-graalphp-native.txt'
     warmup_thres = 10
-
     php_val = get_timings(prefix + php)
+    print(php_val)
+
     graalphp_val = get_timings(prefix + graalphp)[warmup_thres:]
     graalphp_native_val = get_timings(prefix + graalphp_native)[warmup_thres:]
 
