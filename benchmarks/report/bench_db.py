@@ -162,4 +162,3 @@ class DbStorage:
 if __name__ == '__main__':
     d = DbStorage()
     d.show()
-    print(d.get_timings_with_prefix('2020-07-27'))
