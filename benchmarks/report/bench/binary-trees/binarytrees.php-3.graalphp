@@ -63,7 +63,7 @@ function doAlgorithm($n) {
 }
 
 $N = 21;
-$iter = 30;
+$iter = 20;
 
 for($i = 0; $i < $iter; $i ++) {
     $start=graalphp_time_ns();

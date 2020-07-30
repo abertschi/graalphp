@@ -351,10 +351,11 @@ def spectralnorm_speedup_untouched():
 # fannkuch()
 # binary_trees()
 # run_spectral()
-
-fannkuch()
-binary_trees()
-spectralnorm_speedup_ref()
-spectralnorm_speedup_value()
-spectralnorm_speedup_untouched()
+run_binary_trees()
+run_fannkuch_bench()
+# fannkuch()
+# binary_trees()
+# spectralnorm_speedup_ref()
+# spectralnorm_speedup_value()
+# spectralnorm_speedup_untouched()
 #
