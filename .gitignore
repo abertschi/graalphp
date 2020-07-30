@@ -32,3 +32,5 @@ graal_dumps
 /graalphp-component/jartmp7318173110672002863.tmp
 /vendor/
 tmp/
+pom.xml.versionsBackup
+**/__pychache__
