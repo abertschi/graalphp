@@ -75,6 +75,10 @@ class Bench:
     def __init__(self):
         pass
 
+
+    def get_git_revision_hash(self):
+        return subprocess.check_output(['git', 'rev-parse', 'HEAD'])
+
     def run_single_test(self, bench_name, file_prefix, exec_name, exec_binary, exec_args, exec_src):
         name = os.path.basename(exec_src)
 
