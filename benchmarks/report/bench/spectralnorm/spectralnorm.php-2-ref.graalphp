@@ -11,7 +11,7 @@ modifications:
  - pass integer by value not by reference
  - pass global variable as argument instead of using global keyword
  - do not print additional text beside result value
- - replace for each by for keyworod
+ - replace for each by for keyword
 */
 
 function A($i, $j){

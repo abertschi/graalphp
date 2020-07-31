@@ -6,7 +6,7 @@ import csv
 from io import StringIO
 import statistics
 from os.path import join
-from bench_db import DbStorage
+from bench_db import store_measurements
 
 GRAALPHP_HOME = os.environ.get('GRAALPHP_HOME')
 if not GRAALPHP_HOME:
@@ -31,6 +31,14 @@ os.makedirs(MEASUREMENT_DIR, exist_ok=True)
 
 
 class BenchMeasurement():
+    test_name = ''
+    prefix = ''
+    out_file = ''
+    src_file = ''
+    binary = ''
+    command = ''
+    comment = ''
+    timings = []
 
     def __init__(self,
                  test_name,
@@ -39,6 +47,7 @@ class BenchMeasurement():
                  src_file='',
                  binary='',
                  command='',
+                 comment='',
                  timings=None):
         self.test_name = test_name
         self.out_file = out_file
@@ -47,25 +56,28 @@ class BenchMeasurement():
         self.command = command
         self.prefix = prefix
         self.timings = timings
+        self.comment = comment
+
+
+def verify_file(path):
+    if not os.path.exists(path):
+        print("[!] file does not exist: " + path, flush=True)
+        exit(1)
+
+
+def verify_files(files):
+    for f in files:
+        verify_file(f)
 
 
 class Bench:
 
     def __init__(self):
-        self.db = DbStorage()
         pass
-
-    def verify_file(self, path):
-        if not os.path.exists(path):
-            print("[!] file does not exist: " + path, flush=True)
-            exit(1)
-
-    def verify_files(self, files):
-        for f in files:
-            self.verify_file(f)
 
     def run_single_test(self, bench_name, file_prefix, exec_name, exec_binary, exec_args, exec_src):
         name = os.path.basename(exec_src)
+
         log_file = join(MEASUREMENT_DIR, '{}-{}-{}.txt'.format(file_prefix, name, exec_name))
         src_file = join(MEASUREMENT_DIR, '{}-{}-{}-source.txt'.format(file_prefix, name, exec_name))
         self._save_file(exec_src, src_file)
@@ -104,8 +116,8 @@ class Bench:
     def get_bench_time(self):
         return datetime.now().isoformat()
 
-    def get_test_prefix(self, name):
-        return '{}-{}'.format(self.get_bench_time(), name)
+    def get_test_prefix(self):
+        return '{}'.format(self.get_bench_time())
 
     def read_file(self, path):
         file = open(path, "r")
@@ -135,7 +147,8 @@ class Bench:
         return res
 
     def extract_timings(self, lines, data_item: BenchMeasurement = None):
-        return []
+        timings = lines.iloc[:, 4].to_numpy()
+        return timings
 
     def extrat_data(self, data: BenchMeasurement):
         file = data.out_file
@@ -145,18 +158,48 @@ class Bench:
         data.timings = timings
         return data
 
+    def extract_and_store_data_array(self, data_arr: [BenchMeasurement]):
+        for b in data_arr:
+            self.extract_and_store_data(b)
+
     def extract_and_store_data(self, data: BenchMeasurement):
         self.extrat_data(data)
         self.store_measurment(data)
 
+    def import_data(self,
+                    path,
+                    test_name='',
+                    prefix='',
+                    src_file_path=None,
+                    out_file_path=None,
+                    command='',
+                    comment='',
+                    binary=''):
+        verify_file(path)
+        lines = self.parse_values(path)
+        timings = self.extract_timings(lines, None)
+        src_file = self.read_file(src_file_path) if src_file_path else ''
+        out_file = self.read_file(out_file_path) if out_file_path else ''
+
+        store_measurements(test_name=test_name,
+                           prefix=prefix,
+                           timings=timings,
+                           src_file=src_file,
+                           out_file=out_file,
+                           command=command,
+                           comment=comment,
+                           binary=binary)
+
+        self.print_statistics(timings)
+
     def store_measurment(self, data: BenchMeasurement):
-        self.db.store_measurements(test_name=data.test_name,
-                                   prefix=data.prefix,
-                                   timings=data.timings,
-                                   src_file=data.src_file,
-                                   out_file=data.out_file,
-                                   command=data.command,
-                                   binary=data.binary)
+        store_measurements(test_name=data.test_name,
+                           prefix=data.prefix,
+                           timings=data.timings,
+                           src_file=data.src_file,
+                           out_file=data.out_file,
+                           command=data.command,
+                           binary=data.binary)
 
     def get_db(self):
         return self.db

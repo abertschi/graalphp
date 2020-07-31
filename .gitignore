@@ -46,3 +46,4 @@ tmp/
 /benchmarks/report/spectral-norm.png
 /benchmarks/report/__pycache__/
 /benchmarks/report/database.sqlite
+**/.versionsBackup

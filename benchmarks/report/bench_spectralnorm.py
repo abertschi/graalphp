@@ -1,70 +1,78 @@
 import os
 from os.path import join
 
-from bench import BenchMeasurement, Bench
+from bench import BenchMeasurement, Bench, verify_files, verify_file
 
 DIR = os.path.dirname(os.path.realpath(__file__))
 SRC_FOLDER = os.path.join(DIR, 'bench/spectralnorm')
 
-SRC_PHP = join(SRC_FOLDER, "spectralnorm.php-2.php")
-SRC_PHP_UNMOD = join(SRC_FOLDER, "spectralnorm.php-2-php-unmodified.php")
-SRC_PHP_BY_VAL = join(SRC_FOLDER, 'spectralnorm.php-2-pass-by-val.php')
+# php
+SRC_PHP_VAL = join(SRC_FOLDER, "spectralnorm.php-2-val.php")
+SRC_PHP_REF = join(SRC_FOLDER, "spectralnorm.php-2-ref.php")
+SRC_PHP_UNMOD = join(SRC_FOLDER, "spectralnorm.php-2-unmodified.php")
 
 # gphp
-SRC_GPHP = join(SRC_FOLDER, "spectralnorm.php-2.graalphp")
-SRC_GPHP_BY_VAL = join(SRC_FOLDER, 'spectralnorm.php-2-pass-by-val.graalphp')
+SRC_GPHP_VAL = join(SRC_FOLDER, "spectralnorm.php-2-val.graalphp")
+SRC_GPHP_REF = join(SRC_FOLDER, "spectralnorm.php-2-ref.graalphp")
+
+TEST_BY_VAL = 'spectralnorm-by-val'
+TEST_BY_REF = 'spectralnorm-by-ref'
+TEST_BY_UNMOD = 'spectralnorm-unmod'
+
+verify_files([SRC_PHP_VAL, SRC_PHP_REF, SRC_PHP_UNMOD])
+verify_files([SRC_GPHP_VAL, SRC_GPHP_REF])
 
 
-class BenchSpectralNorm(Bench):
+class BenchmarkSpectralNorm(Bench):
 
-    def _create_tmp_data(self):
-        bm0_gphp = ''
-        lines = self.parse_values(bm0_gphp)
-        timings = self.extract_timings(lines, None)
-        print(timings)
-        b = BenchMeasurement(
-            test_name='spectralnorm-default',
-            prefix=self.get_test_prefix('spectralnorm-default'),
-            out_file='output',
-            src_file='test',
-            binary='php',
-            command='commadn here',
-            timings=timings)
-        self.store_measurment(b)
+    def run_by_ref(self):
+        prefix = self.get_test_prefix()
+        res = []
+
+        res.append(self.run_php(TEST_BY_REF, prefix, SRC_PHP_REF, ''))
+        res.append(self.run_graalphp(TEST_BY_REF, prefix, SRC_GPHP_REF, ''))
+        res.append(self.run_graalphp_native(TEST_BY_REF, prefix, SRC_GPHP_REF, ''))
+
+        self.extract_and_store_data_array(res)
+
+    def run_by_val(self):
+        prefix = self.get_test_prefix()
+        res = []
+
+        res.append(self.run_php(TEST_BY_VAL, prefix, SRC_PHP_VAL, ''))
+        res.append(self.run_graalphp(TEST_BY_VAL, prefix, SRC_GPHP_VAL, ''))
+        res.append(self.run_graalphp_native(TEST_BY_VAL, prefix, SRC_GPHP_VAL, ''))
+        res.append(self.run_php(TEST_BY_UNMOD, prefix, SRC_PHP_UNMOD, ''))
+
+        self.extract_and_store_data_array(res)
 
     def run(self):
-        prefix = self.get_test_prefix('spectralnorm')
-
-        self.verify_files([SRC_PHP, SRC_PHP_UNMOD, SRC_PHP_BY_VAL,
-                           SRC_GPHP, SRC_GPHP_BY_VAL])
-
-        # bm 0, normal
-        name = 'spectralnorm-by-ref'
-        bm0_gphp = self.run_graalphp(name, prefix, SRC_GPHP)
-        bm0_gphpn = self.run_graalphp_native(name, prefix, SRC_GPHP)
-        bm0_php = self.run_php(name, prefix, SRC_PHP)
-        self.extract_and_store_data(bm0_gphp)
-        self.extract_and_store_data(bm0_gphpn)
-        self.extract_and_store_data(bm0_php)
-
-        # copy by value
-        name = 'spectralnorm-by-val'
-        bm1_gphp = self.run_graalphp(name, prefix, SRC_GPHP_BY_VAL)
-        bm1_gphpn = self.run_graalphp_native(name, prefix, SRC_GPHP_BY_VAL)
-        bm1_php = self.run_php(name, prefix, SRC_PHP_BY_VAL)
-        self.extract_and_store_data(bm1_gphp)
-        self.extract_and_store_data(bm1_gphpn)
-        self.extract_and_store_data(bm1_php)
-
-        # run unmodified source
-        name = 'spectralnorm-unmod'
-        bm2_php_unmod = self.run_php(name, prefix, SRC_PHP_UNMOD)
-        self.extract_and_store_data(bm2_php_unmod)
+        self.run_by_ref()
+        self.run_by_val()
 
     def extract_timings(self, lines, data_item: BenchMeasurement = None):
         timings = lines.iloc[:, 4].to_numpy()
         return timings
 
+    def _import_data_manually(self):
+        pref = '2020-07-26T22:24:05.785564'
+        pref = pref + '-spectralnorm-spectralnorm.php-2-'
+        path = DIR + '/saved-measurements/20-07-27/' + pref
+
+
+        self.import_data(path + 'php-unmodified.php-php.txt',
+                         # src_file_path= path + 'php-unmodified.php-php-source.txt',
+                         test_name=TEST_BY_UNMOD,
+                         prefix=pref,
+                         comment='graal 20.0.0',
+                         binary='php',
+                         )
+
 
 if __name__ == '__main__':
-    BenchSpectralNorm().run()
+    bm = BenchmarkSpectralNorm()
+    # bm.run_by_val()
+    # bm.run_by_ref()
+
+    bm._import_data_manually()
+    pass

@@ -70,7 +70,7 @@ function doAlgorithm($n) {
 // benchmark
 
 $N = 21;
-$iter = 100;
+$iter = 50;
 
 for($i = 0; $i < $iter; $i ++) {
     $start=hrtime(true);
