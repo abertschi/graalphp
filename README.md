@@ -19,6 +19,7 @@ $ ./graalphp <php-file.php>
 ```sh
 # build native image:
 $ export JAVA_HOME=/path/to/graalvm
+$ $JAVA_HOME/bin/gu install native-image
 $ export GRAALPHP_BUILD_NATIVE="true"
 $ mvn package
 ```
