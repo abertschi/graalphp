@@ -32,6 +32,8 @@ graal_dumps
 /graalphp-component/jartmp7318173110672002863.tmp
 /vendor/
 tmp/
+pom.xml.versionsBackup
+**/__pychache__
 /benchmarks/report/binary-trees-copy-by-ref-box.png
 /benchmarks/report/binary-trees-copy-by-ref.png
 /benchmarks/report/fannkuch-box.png
