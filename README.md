@@ -11,6 +11,7 @@ Programming Language. It is based on GraalVM. This is a thesis project at ETH Zu
 
 ### Build and run
 ```shell
+# download graalvm from https://github.com/graalvm/graalvm-ce-builds/releases
 $ export JAVA_HOME=/path/to/graalvm
 $ mvn package
 $ ./graalphp <php-file.php>
