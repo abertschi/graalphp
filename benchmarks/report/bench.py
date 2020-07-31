@@ -1,5 +1,6 @@
 import os
 import subprocess
+import sys
 from datetime import datetime
 import pandas as pd
 import csv
@@ -38,6 +39,7 @@ class BenchMeasurement():
     binary = ''
     command = ''
     comment = ''
+    commit = ''
     timings = []
 
     def __init__(self,
@@ -48,6 +50,7 @@ class BenchMeasurement():
                  binary='',
                  command='',
                  comment='',
+                 commit='',
                  timings=None):
         self.test_name = test_name
         self.out_file = out_file
@@ -57,6 +60,7 @@ class BenchMeasurement():
         self.prefix = prefix
         self.timings = timings
         self.comment = comment
+        self.commit = commit
 
 
 def verify_file(path):
@@ -75,9 +79,13 @@ class Bench:
     def __init__(self):
         pass
 
+    def get_git_hash(self):
+        hash = subprocess.check_output(['git', 'rev-parse', 'HEAD']).decode(sys.stdout.encoding).rstrip()
+        dirty = subprocess.check_output(['git', 'status', '--short']).decode(sys.stdout.encoding).rstrip()
+        if dirty != "":
+            hash += "-dirty"
 
-    def get_git_revision_hash(self):
-        return subprocess.check_output(['git', 'rev-parse', 'HEAD'])
+        return hash
 
     def run_single_test(self, bench_name, file_prefix, exec_name, exec_binary, exec_args, exec_src):
         name = os.path.basename(exec_src)
@@ -96,6 +104,7 @@ class Bench:
                                 out_file=self.read_file(log_file),
                                 src_file=self.read_file(src_file),
                                 binary=exec_name,
+                                commit=self.get_git_hash(),
                                 timings=[])
 
     def run_php(self, bench, prefix, src, args=''):
@@ -203,6 +212,7 @@ class Bench:
                            src_file=data.src_file,
                            out_file=data.out_file,
                            command=data.command,
+                           commit=data.commit,
                            binary=data.binary)
 
     def get_db(self):
@@ -216,3 +226,7 @@ class Bench:
         print("variance: {}".format(statistics.variance(timings)))
         print("min: {}".format(min(timings)))
         print("max: {}".format(max(timings)))
+
+
+if __name__ == '__main__':
+    print(Bench().get_git_hash())
