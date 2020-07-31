@@ -57,7 +57,7 @@ class BenchmarkSpectralNorm(Bench):
     def _import_data_manually(self):
         pref = '2020-07-26T22:24:05.785564'
         pref = pref + '-spectralnorm-spectralnorm.php-2-'
-        path = DIR + '/saved-measurements/20-07-27/' + pref
+        path = DIR + '/saved-measurements/20-07-20/' + pref
 
 
         self.import_data(path + 'php-unmodified.php-php.txt',

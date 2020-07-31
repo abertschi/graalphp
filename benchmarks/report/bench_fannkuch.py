@@ -29,19 +29,19 @@ class BenchmarkFannkuch(Bench):
         self.extract_and_store_data_array(res)
 
     def _import_data_manually(self):
-        pref = '2020-07-31T01:08:00.473402-binary-trees'
-        pref = pref + '-binarytrees.php-3-ref.'
-        path = 'saved-measurements/20-07-31-graal-20.0.0-binary-trees/' + pref
+        pref = '2020-07-20T02:38:05.827873-fannkuch-'
+        path = 'saved-measurements/20-07-20/' + pref
 
-        self.import_data(path + 'php-php.txt',
+        self.import_data(path + 'php.txt',
+                         src_file_path=path + 'php-source.txt',
                          test_name=TEST,
                          prefix=pref,
                          comment='graal 20.0.0',
-                         binary='php')
-
+                         binary='php'
+                         )
 
 if __name__ == '__main__':
     bm = BenchmarkFannkuch()
-    bm.run()
+    # bm._import_data_manually()
 
     pass
