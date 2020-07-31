@@ -229,4 +229,4 @@ class Bench:
 
 
 if __name__ == '__main__':
-    print(Bench().get_git_hash())
+    pass

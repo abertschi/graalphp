@@ -4,6 +4,6 @@ from bench_spectralnorm import BenchmarkSpectralNorm
 
 
 if __name__ == '__main__':
-    BenchmarkFannkuch.run()
-    BenchBinaryTrees.run()
-    BenchmarkSpectralNorm.run()
+    BenchmarkFannkuch().run()
+    BenchBinaryTrees().run()
+    BenchmarkSpectralNorm().run()
