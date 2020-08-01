@@ -44,8 +44,8 @@ class BenchMeasurement():
                  commit='',
                  timings=None):
         self.test_name = test_name
-        self.out_file = out_file
-        self.src_file = src_file
+        self.out_file = out_file # path
+        self.src_file = src_file #path
         self.binary = binary
         self.command = command
         self.prefix = prefix
@@ -70,6 +70,9 @@ class Bench:
     skip_php = False
     skip_graalphp = False
     skip_graalphp_native = False
+
+    # set the comment used when inserting data into db
+    comment = None
 
     def __init__(self):
         pass
@@ -140,7 +143,6 @@ class Bench:
         while l:
             l = file.readline()
             buffer += l
-        print(buffer)
         return buffer
 
     # parse ; seperated values into array of arrays
@@ -211,17 +213,27 @@ class Bench:
         self.print_statistics(timings)
 
     def store_measurment(self, data: BenchMeasurement):
+        src_data = self.try_to_read_or_return_path(data.src_file) if data.src_file else ''
+        out_data = self.try_to_read_or_return_path(data.out_file) if data.out_file else ''
+
         store_measurements(test_name=data.test_name,
                            prefix=data.prefix,
                            timings=data.timings,
-                           src_file=data.src_file,
-                           out_file=data.out_file,
+                           src_file=src_data,
+                           out_file=out_data,
                            command=data.command,
                            commit=data.commit,
+                           comment=Bench.comment if Bench.comment else data.comment,
                            binary=data.binary)
 
     def get_db(self):
         return self.db
+
+    def try_to_read_or_return_path(self, path):
+        try:
+            return self.read_file(path)
+        except Exception as e:
+            return path
 
     def print_statistics(self, timings):
         print(timings)

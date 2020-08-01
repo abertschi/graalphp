@@ -5,7 +5,8 @@ from bench_spectralnorm import BenchmarkSpectralNorm
 
 
 if __name__ == '__main__':
-    Bench.skip_php = True
+    # Bench.skip_php = True
+    Bench.comment = "intel turbo disabled, graal 20.1.0"
 
     BenchmarkFannkuch().run()
     BenchBinaryTrees().run()
