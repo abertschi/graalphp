@@ -1,7 +1,7 @@
 * Container Image for graalphp development
 
-Image provides environment to build and run graalphp, as well as to
-execute benchmarks
+Container image to provide an environment to build and run graalphp,
+as well as to execute benchmarks.
 
 ** Build and Run
 - Ensure to have either docker or podman installed, if both are
