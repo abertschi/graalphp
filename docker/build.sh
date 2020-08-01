@@ -1,11 +1,15 @@
 #!/bin/bash
 
 script_dir=$(readlink -f `dirname $0`)
-bin=podman
 
-$bin build -f Dockerfile --label graalphp:dev
+bin="docker"
+podman=$(which podman)
+if [ -x "$podman" ] ; then
+    bin=$podman
+fi
 
-# $bin run -it graalphp:dev /bin/bash
+$bin build -f Dockerfile --tag graalphp:dev
+
 $script_dir/shell.sh
 
 

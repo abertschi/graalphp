@@ -1,7 +1,6 @@
 * Container Image for graalphp development
 
-Container image to provide an environment to build and run graalphp,
-as well as to execute benchmarks.
+Container image to provide an environment to build and run graalphp
 
 ** Build and Run
 - Ensure to have either docker or podman installed, if both are
@@ -21,4 +20,21 @@ $ ./shell.sh <command>
 # build image and build graalphp
 $ ./build.sh
 $ mvn package
+#+end_src
+
+
+** Benchmarks Setup
+Alternative implementations of PHP
+
+#+begin_src sh
+$ ./shell.sh
+
+# install jphp
+/graalphp-source/docker/install-jphp.sh
+
+# php 8
+$ /graalphp-source/docker/install-php8.sh
+
+# hhvm
+$ /graalphp-source/docker/install-hhvm.sh
 #+end_src
