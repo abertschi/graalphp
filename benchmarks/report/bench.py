@@ -32,15 +32,6 @@ os.makedirs(MEASUREMENT_DIR, exist_ok=True)
 
 
 class BenchMeasurement():
-    test_name = ''
-    prefix = ''
-    out_file = ''
-    src_file = ''
-    binary = ''
-    command = ''
-    comment = ''
-    commit = ''
-    timings = []
 
     def __init__(self,
                  test_name,
@@ -74,7 +65,11 @@ def verify_files(files):
         verify_file(f)
 
 
+
 class Bench:
+    skip_php = False
+    skip_graalphp = False
+    skip_graalphp_native = False
 
     def __init__(self):
         pass
@@ -101,19 +96,25 @@ class Bench:
         return BenchMeasurement(test_name=bench_name,
                                 prefix=file_prefix,
                                 command=exec,
-                                out_file=self.read_file(log_file),
-                                src_file=self.read_file(src_file),
+                                out_file=log_file,
+                                src_file=src_file,
                                 binary=exec_name,
                                 commit=self.get_git_hash(),
                                 timings=[])
 
     def run_php(self, bench, prefix, src, args=''):
+        if Bench.skip_php:
+            return None
         return self.run_single_test(bench, prefix, 'php', PHP_BINARY, args, src)
 
     def run_graalphp(self, bench, prefix, src, args=''):
+        if Bench.skip_graalphp:
+            return None
         return self.run_single_test(bench, prefix, 'graalphp', GRAALPHP_BINARY, args, src)
 
     def run_graalphp_native(self, bench, prefix, src, args=''):
+        if Bench.skip_graalphp_native:
+            return None
         return self.run_single_test(bench, prefix, 'graalphp-native', GRAALPHP_NATIVE_BINARY, args, src)
 
     def _save_file(self, source, dest):
@@ -173,7 +174,8 @@ class Bench:
 
     def extract_and_store_data_array(self, data_arr: [BenchMeasurement]):
         for b in data_arr:
-            self.extract_and_store_data(b)
+            if b:
+                self.extract_and_store_data(b)
 
     def extract_and_store_data(self, data: BenchMeasurement):
         self.extrat_data(data)
@@ -185,6 +187,7 @@ class Bench:
                     prefix='',
                     src_file_path=None,
                     out_file_path=None,
+                    date = None,
                     command='',
                     comment='',
                     binary=''):
@@ -199,8 +202,10 @@ class Bench:
                            timings=timings,
                            src_file=src_file,
                            out_file=out_file,
+                           date = date,
                            command=command,
                            comment=comment,
+                           confirm_store=True,
                            binary=binary)
 
         self.print_statistics(timings)

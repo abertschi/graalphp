@@ -25,19 +25,19 @@ class BenchmarkFannkuch(Bench):
 
         res.append(self.run_php(TEST, prefix, SRC_PHP, ''))
         res.append(self.run_graalphp(TEST, prefix, SRC_GPHP, ''))
+        res.append(self.run_graalphp_native(TEST, prefix, SRC_GPHP, ''))
 
         self.extract_and_store_data_array(res)
 
     def _import_data_manually(self):
-        pref = '2020-07-20T02:38:05.827873-fannkuch-'
-        path = 'saved-measurements/20-07-20/' + pref
+        pref = '2020-07-31T19:18:04.649613'
+        path = 'measurements/' + pref + '-fannkuchredux.php-1.graalphp-graalphp.txt'
 
-        self.import_data(path + 'php.txt',
-                         src_file_path=path + 'php-source.txt',
+        self.import_data(path,
                          test_name=TEST,
                          prefix=pref,
-                         comment='graal 20.0.0',
-                         binary='php'
+                         comment='graal 20.1.0',
+                         binary='graalphp'
                          )
 
 if __name__ == '__main__':

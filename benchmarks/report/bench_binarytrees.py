@@ -1,3 +1,4 @@
+import datetime
 import os
 from os.path import join
 
@@ -52,21 +53,25 @@ class BenchBinaryTrees(Bench):
         self.run_by_val()
 
     def _import_data_manually(self):
-        pref = '2020-07-31T01:08:00.473402-binary-trees'
-        pref = pref + '-binarytrees.php-3-ref.'
-        path = 'saved-measurements/20-07-31-graal-20.0.0-binary-trees/' + pref
-
-        self.import_data(path + 'php-php.txt',
-                         test_name='binary-trees-by-ref',
+        pref = '2020-07-19T22:03:31.585475'
+        path = 'measurements/' + pref + '-binary-trees-php-ref.txt'
+        date = datetime.datetime(2020, 7, 19)
+        self.import_data(path,
+                         test_name=TEST_BY_REF,
                          prefix=pref,
-                         comment='graal 20.0.0',
+                         out_file_path=path,
+                         src_file_path=path.replace('.txt', '-source.txt'),
+                         date=date,
+                         comment='',
                          binary='php')
 
 
 if __name__ == '__main__':
     bm = BenchBinaryTrees()
-    bm.run_by_val()
-    bm.run_by_ref()
+    # bm.skip_graalphp = True
+    # bm.skip_graalphp_native = True
+    # bm.run_by_val()
+    # bm.run_by_ref()
 
-    # bm_import_data_manually()
+    bm._import_data_manually()
     pass

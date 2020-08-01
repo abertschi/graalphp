@@ -81,10 +81,15 @@ def store_measurements(test_name,
                        binary='',
                        command='',
                        comment='',
-                       commit=''):
-    print('storing measurements: testname: {}, timings: {}, src_file: {}, out_file: {}'
+                       date = None,
+                       commit='',
+                       confirm_store=False):
+    print('storing measurements: testname: {}, timings: {}, '
           'prefix: {}, binary: {}, command: {}, comment: {}, commit: {}'
-          .format(test_name, timings, src_file, out_file, prefix, binary, command, comment, commit))
+          .format(test_name, timings, prefix, binary, command, comment, commit))
+
+    if confirm_store:
+        input("Press Enter to continue...")
 
     name = test_name
 
@@ -93,7 +98,7 @@ def store_measurements(test_name,
         bm = Benchmark(name=name)
 
     run = Run(src_file=src_file,
-              date=datetime.datetime.now(),
+              date=date if date else datetime.datetime.now(),
               command=command,
               commit=commit,
               binary=binary,
