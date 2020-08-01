@@ -37,8 +37,9 @@
 	</target>
 
 	<target name="downloadAndUnpack" unless="jarExists">
-		<get src="http://jflex.de/jflex-${jflexVersion}.zip" dest="${jflex.work.dir}/jflex-${jflexVersion}.zip" verbose="true" usetimestamp="true" />
-		<unzip src="${jflex.work.dir}/jflex-${jflexVersion}.zip" dest="${jflex.work.dir}" />
+        <!-- <get src="http://jflex.de/jflex-${jflexVersion}.zip" dest="${jflex.work.dir}/jflex-${jflexVersion}.zip" verbose="true" usetimestamp="true" />-->
+		<!-- get zip from parser dir instead of downloading-->
+        <unzip src="${ant.file}/../../../../../../org.eclipse.php.core.parser/lib/jflex-1.6.1.zip" dest="${jflex.work.dir}" />
 	</target>
 
 </project>
