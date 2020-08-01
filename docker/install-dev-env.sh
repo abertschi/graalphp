@@ -45,3 +45,7 @@ echo "installing jphp"
 git clone https://github.com/jphp-compiler/jphp.git
 cd jphp
 ./gradlew packager:install --no-daemon
+
+
+# more dependencies
+apt-get -y install python3 python3-pip

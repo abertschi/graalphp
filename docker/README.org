@@ -8,7 +8,7 @@ execute benchmarks
   available, podman is used
 - Take a look at the shell scripts used below
 
-#+begin_src 
+#+begin_src sh
 # build image and open interactive shell
 $ ./build.sh
 
