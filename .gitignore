@@ -27,7 +27,6 @@ graalphp-native/graalphp-native
 /graalphp-language/src/main/java/com/oracle/truffle/sl/parser/SimpleLanguageLexer.tokens
 graalvm.tar.gz
 .#*
-/graalphp-parser/org.eclipse.php.core.parser/lib/jflex-1.6.1.zip
 graal_dumps
 /graalphp-component/jartmp7318173110672002863.tmp
 /vendor/
