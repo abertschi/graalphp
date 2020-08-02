@@ -19,4 +19,4 @@ ENV JAVA_HOME=/graalphp-build/graalvm
 ENV PATH="/graalphp-build/graalvm/bin:${PATH}"
 ENV GRAALPHP=/graalphp-source/graalphp
 ENV GRAALPHP_NATIVE=/graalphp-source/graalphp-native/graalphp-native
-ENV GRAALPHP_BUILD_NATIVE=true
+ENV GRAALPHP_BUILD_NATIVE=false

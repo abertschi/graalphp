@@ -19,6 +19,6 @@ fi
 
 # -u $(id -u)
 # set -x;
-$bin run -i -t \
+$bin run -i -t --privileged \
 	--mount type=bind,source=$graalphp_src,target=/graalphp-source \
 	$image /bin/bash -c "cd /graalphp-source && $cmd"
