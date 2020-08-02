@@ -8,6 +8,7 @@ from io import StringIO
 import statistics
 from os.path import join
 from bench_db import store_measurements
+import shutil
 
 GRAALPHP_HOME = os.environ.get('GRAALPHP_HOME')
 if not GRAALPHP_HOME:
@@ -27,6 +28,12 @@ if not os.path.exists(GRAALPHP_NATIVE_BINARY):
 PHP_BINARY = 'php'
 
 HHVM_BINARY = 'hhvm'
+
+# symlink created in docker image
+PHP8_BINARY = 'php8'
+
+# symlink created in docker image
+JPHP_BINARY = 'jppm'
 
 DIR = os.path.dirname(os.path.realpath(__file__))
 MEASUREMENT_DIR = join(DIR, 'measurements')
@@ -68,33 +75,61 @@ def verify_files(files):
 
 
 class Bench:
-    skip_php = False
-    skip_hack = False
+    skip_php = True
+    skip_php8 = True
+    skip_hack = True
+    skip_jphp = True
+
     skip_graalphp = False
     skip_graalphp_native = False
 
+
     # set the comment used when inserting data into db
     comment = None
+
+    @staticmethod
+    def _get_php_version(exec):
+        try:
+            cmd = exec + ' --version | cut -d\( -f1 | head -n 1'
+            out = subprocess.Popen(cmd,
+                               stdout=subprocess.PIPE,
+                               stderr=subprocess.STDOUT, shell=True)
+            stdout, stderr = out.communicate()
+            return stdout.decode(sys.stdout.encoding).rstrip()
+        except Exception as e:
+            print('ignoring exception')
+            print(e)
+            return ''
+
+    def _binary_exists(self, bin_name):
+        return shutil.which(bin_name) is not None
 
     @staticmethod
     def skip_all():
         Bench.skip_graalphp = True
         Bench.skip_graalphp_native = True
         Bench.skip_php = True
+        Bench.skip_php8 = True
         Bench.skip_hack = True
+        Bench.skip_jphp = True
 
     def __init__(self):
         pass
 
     def get_git_hash(self):
-        hash = subprocess.check_output(['git', 'rev-parse', 'HEAD']).decode(sys.stdout.encoding).rstrip()
-        dirty = subprocess.check_output(['git', 'status', '--short']).decode(sys.stdout.encoding).rstrip()
-        if dirty != "":
-            hash += "-dirty"
+        hash = ''
+        try:
+            hash = subprocess.check_output(['git', 'rev-parse', 'HEAD']).decode(sys.stdout.encoding).rstrip()
+            dirty = subprocess.check_output(['git', 'status', '--short']).decode(sys.stdout.encoding).rstrip()
+            if dirty != "":
+                hash += "-dirty"
+        except Exception as e:
+            print('ignoring exception')
+            print(e)
 
         return hash
 
-    def run_single_test(self, bench_name, file_prefix, exec_name, exec_binary, exec_args, exec_src):
+    def run_single_test(self, bench_name, file_prefix, exec_name, exec_binary, exec_args, exec_src, comment= ''):
         name = os.path.basename(exec_src)
 
         log_file = join(MEASUREMENT_DIR, '{}-{}-{}.txt'.format(file_prefix, name, exec_name))
@@ -112,7 +147,8 @@ class Bench:
                                 src_file=src_file,
                                 binary=exec_name,
                                 commit=self.get_git_hash(),
-                                timings=[])
+                                timings=[],
+                                comment=comment + ' ')
 
     def run_php(self, bench, prefix, src, args=''):
         if Bench.skip_php:
@@ -120,10 +156,24 @@ class Bench:
             return None
         return self.run_single_test(bench, prefix, 'php', PHP_BINARY, args, src)
 
+    def run_php8(self, bench, prefix, src, args=''):
+        if Bench.skip_php8:
+            print("skip_php8=True")
+            return None
+        if not self._binary_exists(PHP8_BINARY):
+            print(PHP8_BINARY + " binary not found, skipping execution")
+
+        php_version = Bench._get_php_version(PHP8_BINARY)
+        return self.run_single_test(bench, prefix, 'php8', PHP8_BINARY, args, src, comment=php_version)
+
     def run_hack(self, bench, prefix, src, args=''):
         if Bench.skip_hack:
             print("skip_hack=True")
             return None
+        if not self._binary_exists(HHVM_BINARY):
+            print(HHVM_BINARY + " binary not found, skipping execution")
+            return None
+
         a = ' -vEval.Jit=1 '
         args = a + args if args else a
         return self.run_single_test(bench, prefix, 'hhvm', HHVM_BINARY, args, src)
@@ -139,6 +189,13 @@ class Bench:
             print("skip_graalphp_native=True")
             return None
         return self.run_single_test(bench, prefix, 'graalphp-native', GRAALPHP_NATIVE_BINARY, args, src)
+
+    def run_jphp(self, bench, prefix, src, args=''):
+        if Bench.skip_jphp:
+            print("skip_jphp=True")
+            return None
+        cmd_args = 'start ' + args
+        return self.run_single_test(bench, prefix, 'jphp', JPHP_BINARY, cmd_args, src)
 
     def _save_file(self, source, dest):
         file1 = open(source, "r")
@@ -235,7 +292,7 @@ class Bench:
     def store_measurment(self, data: BenchMeasurement):
         src_data = self.try_to_read_or_return_path(data.src_file) if data.src_file else ''
         out_data = self.try_to_read_or_return_path(data.out_file) if data.out_file else ''
-
+        comment = data.comment + ' ' + Bench.comment if Bench.comment else data.comment
         store_measurements(test_name=data.test_name,
                            prefix=data.prefix,
                            timings=data.timings,
@@ -243,7 +300,7 @@ class Bench:
                            out_file=out_data,
                            command=data.command,
                            commit=data.commit,
-                           comment=Bench.comment if Bench.comment else data.comment,
+                           comment=comment,
                            binary=data.binary)
 
     def get_db(self):
@@ -264,6 +321,6 @@ class Bench:
         print("min: {}".format(min(timings)))
         print("max: {}".format(max(timings)))
 
-
 if __name__ == '__main__':
+    Bench._get_php_version()
     pass

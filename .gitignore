@@ -48,3 +48,5 @@ pom.xml.versionsBackup
 /benchmarks/report/__pycache__/
 /benchmarks/report/database.sqlite
 **/.versionsBackup
+/benchmarks/report/venv-docker/
+/benchmarks/report/measurements.bak.sqlite

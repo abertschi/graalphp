@@ -34,6 +34,8 @@ class BenchmarkSpectralNorm(Bench):
         res = []
 
         res.append(self.run_php(TEST_BY_REF, prefix, SRC_PHP_REF, ''))
+        res.append(self.run_php8(TEST_BY_REF, prefix, SRC_PHP_REF, ''))
+
         res.append(self.run_graalphp(TEST_BY_REF, prefix, SRC_GPHP_REF, ''))
         res.append(self.run_graalphp_native(TEST_BY_REF, prefix, SRC_GPHP_REF, ''))
 
@@ -44,11 +46,14 @@ class BenchmarkSpectralNorm(Bench):
         res = []
 
         res.append(self.run_php(TEST_BY_VAL, prefix, SRC_PHP_VAL, ''))
+        res.append(self.run_php8(TEST_BY_VAL, prefix, SRC_PHP_VAL, ''))
+
         res.append(self.run_hack(TEST_BY_VAL, prefix, SRC_HACK_VAL, ''))
         res.append(self.run_graalphp(TEST_BY_VAL, prefix, SRC_GPHP_VAL, ''))
         res.append(self.run_graalphp_native(TEST_BY_VAL, prefix, SRC_GPHP_VAL, ''))
 
         res.append(self.run_php(TEST_BY_UNMOD, prefix, SRC_PHP_UNMOD, ''))
+        res.append(self.run_php8(TEST_BY_UNMOD, prefix, SRC_PHP_UNMOD, ''))
 
         self.extract_and_store_data_array(res)
 

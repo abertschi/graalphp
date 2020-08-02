@@ -1,5 +1,4 @@
 #!/bin/sh
-# apt-get -y update
 
 #hhvm
 echo "installing hhvm"

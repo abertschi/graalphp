@@ -27,7 +27,9 @@ class BenchmarkFannkuch(Bench):
         res = []
 
         res.append(self.run_php(TEST, prefix, SRC_PHP, ''))
+        res.append(self.run_php8(TEST, prefix, SRC_PHP, ''))
         res.append(self.run_hack(TEST, prefix, SRC_HACK, ''))
+
         res.append(self.run_graalphp(TEST, prefix, SRC_GPHP, ''))
         res.append(self.run_graalphp_native(TEST, prefix, SRC_GPHP, ''))
 
