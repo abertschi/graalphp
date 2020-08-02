@@ -1,0 +1,11 @@
+name: binarytrees.php-3-val.jphp
+version: 1.0.0
+deps:
+  jphp-core: '*'
+  jphp-zend-ext: '*'
+plugins:
+- App
+sources:
+- src
+includes:
+- index.php
