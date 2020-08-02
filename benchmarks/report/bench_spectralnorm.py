@@ -55,16 +55,15 @@ class BenchmarkSpectralNorm(Bench):
         return timings
 
     def _import_data_manually(self):
-        pref = '2020-07-26T22:24:05.785564'
-        pref = pref + '-spectralnorm-spectralnorm.php-2-'
-        path = DIR + '/saved-measurements/20-07-20/' + pref
+        pref = '2020-08-02T18:40:49.444647'
+        pref = pref + '-spectralnorm.php-2-unmodified.php-php.txt'
+        path = DIR + '/measurements/' + pref
 
 
-        self.import_data(path + 'php-unmodified.php-php.txt',
-                         # src_file_path= path + 'php-unmodified.php-php-source.txt',
+        self.import_data(path,
                          test_name=TEST_BY_UNMOD,
                          prefix=pref,
-                         comment='graal 20.0.0',
+                         comment='intel turbo disabled, graal 20.1.0',
                          binary='php',
                          )
 
