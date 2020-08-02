@@ -63,9 +63,10 @@ for($i = 0; $i < $iter; $i ++) {
 
     $res = ($stop - $start) / 1000.0 / 1000.0;
     output($N, $iter, $i, $res);
+    println($A[0]); println($A[1]);
 }
 
 function output($N, $iters, $iter, $val) {
-    graalphp_print_args("fannkuchredux N/iters/iter/val", $N , $iters ,  $iter, $val);
+    graalphp_print_args("fannkuchredux-gphp N/iters/iter/val", $N , $iters ,  $iter, $val);
 }
 ?>

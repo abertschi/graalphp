@@ -1,19 +1,9 @@
-<?php /* The Computer Language Benchmarks Game
-         https://salsa.debian.org/benchmarksgame-team/benchmarksgame/
-
-         contributed by Isaac Gouy, transliterated from Mike Pall's Lua program
-      */
-
-// modifications to version on benchmarksgame website
-// remove list() builtin and assign variables explicitly
-// remove strings from printf and print result values directly
-// use a fixed N instead of command line argument
-// introduce warm up and timing
+// changes: replace array with vec
 
 function Fannkuch($n){
-    $p = $q = $s = array();
+    $p = $q = $s = vec[];
     $sign = 1; $maxflips = $sum = 0; $m = $n-1;
-    for ($i=0; $i<$n; $i++){ $p[$i] = $i; $q[$i] = $i; $s[$i] = $i; }
+    for ($i=0; $i<$n; $i++){ $p[] = $i; $q[] = $i; $s[] = $i; }
     do {
         // Copy and flip.
         $q0 = $p[0];                                          // Cache 0th element.
@@ -43,7 +33,10 @@ function Fannkuch($n){
             for($i=2; $i<$n; $i++){
                 $sx = $s[$i];
                 if ($sx != 0){ $s[$i] = $sx-1; break; }
-                if ($i == $m) return array($sum,$maxflips);     // Out of permutations.
+                if ($i == $m) {
+                $res = vec[$sum, $maxflips];
+                return $res;    // Out of permutations.
+                }
                 $s[$i] = $i;
                 // Rotate 0<-...<-i+1.
                 $t = $p[0]; for($j=0; $j<=$i; $j++){ $p[$j] = $p[$j+1]; } $p[$i+1] = $t;
@@ -53,20 +46,24 @@ function Fannkuch($n){
 }
 
 
-$N = 12;
-$iter = 40;
+<<__EntryPoint>>
+function main(): void {
+
+$N = 21;
+$iter = 50;
 
 for($i = 0; $i < $iter; $i ++) {
-    $start=hrtime(true);
-    $A = Fannkuch($N);
-    $stop=hrtime(true);
+$start=clock_gettime_ns(1);
+$A = Fannkuch($N);
+$stop=clock_gettime_ns(1);
 
-    $res = ($stop - $start) / 1000.0 / 1000.0;
-    output($N, $iter, $i, $res);
-    echo $A[0] . "/" + $A[1] . "\n";
+$res = ($stop - $start) / 1000.0 / 1000.0;
+output($N, $iter, $i, $res);
+echo $A[0] . "/" + $A[1] . "\n";
+}
 }
 
 function output($N, $iters, $iter, $val) {
-    echo "fannkuchredux-php N/iters/iter/val;" . $N . ";" . $iters . ";" . $iter . ";" . $val . ";" . "\n";
+    echo "fannkuchredux-hack N/iters/iter/val;" . $N . ";" . $iters . ";" . $iter . ";" . $val . ";" . "\n";
 }
-?>
+

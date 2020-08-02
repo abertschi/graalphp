@@ -26,6 +26,8 @@ if not os.path.exists(GRAALPHP_NATIVE_BINARY):
 
 PHP_BINARY = 'php'
 
+HHVM_BINARY = 'hhvm'
+
 DIR = os.path.dirname(os.path.realpath(__file__))
 MEASUREMENT_DIR = join(DIR, 'measurements')
 os.makedirs(MEASUREMENT_DIR, exist_ok=True)
@@ -44,8 +46,8 @@ class BenchMeasurement():
                  commit='',
                  timings=None):
         self.test_name = test_name
-        self.out_file = out_file # path
-        self.src_file = src_file #path
+        self.out_file = out_file  # path
+        self.src_file = src_file  # path
         self.binary = binary
         self.command = command
         self.prefix = prefix
@@ -65,14 +67,21 @@ def verify_files(files):
         verify_file(f)
 
 
-
 class Bench:
     skip_php = False
+    skip_hack = False
     skip_graalphp = False
     skip_graalphp_native = False
 
     # set the comment used when inserting data into db
     comment = None
+
+    @staticmethod
+    def skip_all():
+        Bench.skip_graalphp = True
+        Bench.skip_graalphp_native = True
+        Bench.skip_php = True
+        Bench.skip_hack = True
 
     def __init__(self):
         pass
@@ -107,16 +116,27 @@ class Bench:
 
     def run_php(self, bench, prefix, src, args=''):
         if Bench.skip_php:
+            print("skip_php=True")
             return None
         return self.run_single_test(bench, prefix, 'php', PHP_BINARY, args, src)
 
+    def run_hack(self, bench, prefix, src, args=''):
+        if Bench.skip_hack:
+            print("skip_hack=True")
+            return None
+        a = ' -vEval.Jit=1 '
+        args = a + args if args else a
+        return self.run_single_test(bench, prefix, 'hhvm', HHVM_BINARY, args, src)
+
     def run_graalphp(self, bench, prefix, src, args=''):
         if Bench.skip_graalphp:
+            print("skip_graalphp=True")
             return None
         return self.run_single_test(bench, prefix, 'graalphp', GRAALPHP_BINARY, args, src)
 
     def run_graalphp_native(self, bench, prefix, src, args=''):
         if Bench.skip_graalphp_native:
+            print("skip_graalphp_native=True")
             return None
         return self.run_single_test(bench, prefix, 'graalphp-native', GRAALPHP_NATIVE_BINARY, args, src)
 
@@ -189,7 +209,7 @@ class Bench:
                     prefix='',
                     src_file_path=None,
                     out_file_path=None,
-                    date = None,
+                    date=None,
                     command='',
                     comment='',
                     binary=''):
@@ -204,7 +224,7 @@ class Bench:
                            timings=timings,
                            src_file=src_file,
                            out_file=out_file,
-                           date = date,
+                           date=date,
                            command=command,
                            comment=comment,
                            confirm_store=True,

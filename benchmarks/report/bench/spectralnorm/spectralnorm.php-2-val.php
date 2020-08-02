@@ -84,8 +84,9 @@ for($i = 0; $i < $iter; $i ++) {
 
     $res = ($stop - $start) / 1000.0 / 1000.0;
     output($N, $iter, $i, $res);
+    echo $A . "\n";
 }
 
 function output($N, $iters, $iter, $val) {
-    echo "spectralnorm-val;" . $N . ";" . $iters . ";" . $iter . ";" . $val . ";" . "\n";
+    echo "spectralnorm-val-php;" . $N . ";" . $iters . ";" . $iter . ";" . $val . ";" . "\n";
 }

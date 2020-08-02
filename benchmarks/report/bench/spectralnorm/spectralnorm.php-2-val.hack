@@ -1,26 +1,9 @@
-<?php
-/* The Computer Language Benchmarks Game
-https://salsa.debian.org/benchmarksgame-team/benchmarksgame/
-
-contributed by Isaac Gouy
-modified by anon
-*/
-
-/*
-modifications:
- - pass integer by value not by reference
- - pass global variable as argument instead of using global keyword
- - do not print additional text beside result value
- - replace for each by for keyword
- - add timing measurements
-*/
-
 function A($i, $j){
     return 1.0 / ( ( ( ($i+$j) * ($i+$j+1) ) >> 1 ) + $i + 1 );
 }
 
-function Av($n, &$v, &$_tpl){
-    $Av = $_tpl; // assign by value
+function Av($n, $v, $Av){
+    // $Av = $_tpl; // assign by value
     for ($i = 0; $i < $n; ++$i) {
         $sum = 0.0;
         for($j = 0; $j < $n; $j++) {
@@ -32,8 +15,8 @@ function Av($n, &$v, &$_tpl){
     return $Av;
 }
 
-function Atv($n, &$v, &$_tpl){
-    $Atv = $_tpl;
+function Atv($n, $v, $Atv){
+//     $Atv = $_tpl;
     for($i = 0; $i < $n; ++$i) {
         $sum = 0.0;
         for($j = 0; $j < $n; $j++) {
@@ -45,7 +28,7 @@ function Atv($n, &$v, &$_tpl){
     return $Atv;
 }
 
-function AtAv($n, &$v, &$_tpl){
+function AtAv($n, $v, $_tpl){
     $tmp = Av($n,$v, $_tpl);
     return Atv($n, $tmp, $_tpl);
 }
@@ -72,19 +55,27 @@ for($i = 0; $i < $n; $i ++) {
 return sqrt($vBv/$vv);
 }
 
+
+
+<<__EntryPoint>>
+function main(): void {
+
 $N = 5500;
 $iter = 30;
 
 for($i = 0; $i < $iter; $i ++) {
-    $start=hrtime(true);
+    $start=clock_gettime_ns(1);
     $A = doIteration($N);
-    $stop=hrtime(true);
+    $stop=clock_gettime_ns(1);
+    
 
     $res = ($stop - $start) / 1000.0 / 1000.0;
     output($N, $iter, $i, $res);
     echo $A . "\n";
 }
+}
+
 
 function output($N, $iters, $iter, $val) {
-    echo "spectralnorm-ref;" . $N . ";" . $iters . ";" . $iter . ";" . $val . ";" . "\n";
+    echo "spectralnorm-val-hack;" . $N . ";" . $iters . ";" . $iter . ";" . $val . ";" . "\n";
 }

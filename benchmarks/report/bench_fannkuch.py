@@ -12,9 +12,12 @@ SRC_PHP = join(SRC_FOLDER, "fannkuchredux.php-1.php")
 # gphp
 SRC_GPHP = join(SRC_FOLDER, "fannkuchredux.php-1.graalphp")
 
+# hack
+SRC_HACK = join(SRC_FOLDER, "fannkuchredux.php-1.hack")
+
 TEST = 'fannkuchredux-1'
 
-verify_files([SRC_PHP, SRC_GPHP])
+verify_files([SRC_PHP, SRC_GPHP, SRC_HACK])
 
 
 class BenchmarkFannkuch(Bench):
@@ -24,6 +27,7 @@ class BenchmarkFannkuch(Bench):
         res = []
 
         res.append(self.run_php(TEST, prefix, SRC_PHP, ''))
+        res.append(self.run_hack(TEST, prefix, SRC_HACK, ''))
         res.append(self.run_graalphp(TEST, prefix, SRC_GPHP, ''))
         res.append(self.run_graalphp_native(TEST, prefix, SRC_GPHP, ''))
 

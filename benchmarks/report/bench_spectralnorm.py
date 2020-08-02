@@ -15,12 +15,16 @@ SRC_PHP_UNMOD = join(SRC_FOLDER, "spectralnorm.php-2-unmodified.php")
 SRC_GPHP_VAL = join(SRC_FOLDER, "spectralnorm.php-2-val.graalphp")
 SRC_GPHP_REF = join(SRC_FOLDER, "spectralnorm.php-2-ref.graalphp")
 
+# hack
+SRC_HACK_VAL = join(SRC_FOLDER, "spectralnorm.php-2-val.hack")
+
 TEST_BY_VAL = 'spectralnorm-by-val'
 TEST_BY_REF = 'spectralnorm-by-ref'
 TEST_BY_UNMOD = 'spectralnorm-unmod'
 
 verify_files([SRC_PHP_VAL, SRC_PHP_REF, SRC_PHP_UNMOD])
 verify_files([SRC_GPHP_VAL, SRC_GPHP_REF])
+verify_files([SRC_HACK_VAL])
 
 
 class BenchmarkSpectralNorm(Bench):
@@ -40,8 +44,10 @@ class BenchmarkSpectralNorm(Bench):
         res = []
 
         res.append(self.run_php(TEST_BY_VAL, prefix, SRC_PHP_VAL, ''))
+        res.append(self.run_hack(TEST_BY_VAL, prefix, SRC_HACK_VAL, ''))
         res.append(self.run_graalphp(TEST_BY_VAL, prefix, SRC_GPHP_VAL, ''))
         res.append(self.run_graalphp_native(TEST_BY_VAL, prefix, SRC_GPHP_VAL, ''))
+
         res.append(self.run_php(TEST_BY_UNMOD, prefix, SRC_PHP_UNMOD, ''))
 
         self.extract_and_store_data_array(res)
@@ -58,7 +64,6 @@ class BenchmarkSpectralNorm(Bench):
         pref = '2020-08-02T18:40:49.444647'
         pref = pref + '-spectralnorm.php-2-unmodified.php-php.txt'
         path = DIR + '/measurements/' + pref
-
 
         self.import_data(path,
                          test_name=TEST_BY_UNMOD,
