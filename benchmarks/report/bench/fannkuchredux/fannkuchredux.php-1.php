@@ -66,6 +66,6 @@ for($i = 0; $i < $iter; $i ++) {
 }
 
 function output($N, $iters, $iter, $val) {
-    echo "fannkuch N/iters/iter/val;" . $N . ";" . $iters . ";" . $iter . ";" . $val . ";" . "\n";
+    echo "fannkuchredux N/iters/iter/val;" . $N . ";" . $iters . ";" . $iter . ";" . $val . ";" . "\n";
 }
 ?>

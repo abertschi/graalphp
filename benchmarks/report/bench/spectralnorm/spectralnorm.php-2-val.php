@@ -87,5 +87,5 @@ for($i = 0; $i < $iter; $i ++) {
 }
 
 function output($N, $iters, $iter, $val) {
-    echo "spectralnorm;" . $N . ";" . $iters . ";" . $iter . ";" . $val . ";" . "\n";
+    echo "spectralnorm-val;" . $N . ";" . $iters . ";" . $iter . ";" . $val . ";" . "\n";
 }

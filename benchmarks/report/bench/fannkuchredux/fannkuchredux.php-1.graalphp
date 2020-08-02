@@ -54,7 +54,7 @@ function Fannkuch($n){
 
 
 $N = 12;
-$iter = 60;
+$iter = 40;
 
 for($i = 0; $i < $iter; $i ++) {
     $start=graalphp_time_ns();
@@ -66,6 +66,6 @@ for($i = 0; $i < $iter; $i ++) {
 }
 
 function output($N, $iters, $iter, $val) {
-    graalphp_print_args("fannkuch N/iters/iter/val", $N , $iters ,  $iter, $val);
+    graalphp_print_args("fannkuchredux N/iters/iter/val", $N , $iters ,  $iter, $val);
 }
 ?>
