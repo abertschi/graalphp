@@ -1,4 +1,4 @@
-* Container Image for graalphp development
+* Container Image graalphp
 
 Container image to provide an environment to build and run graalphp
 
