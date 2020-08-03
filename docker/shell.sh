@@ -17,8 +17,15 @@ if [ $# == 0 ]; then
     cmd="/bin/bash"
 fi
 
-# -u $(id -u)
-# set -x;
-$bin run -i -t \
-	--mount type=bind,source=$graalphp_src,target=/graalphp-source \
+# we mount the m2 folder into container to reduce download time
+mvn=~/.m2/
+
+
+
+set -x;
+$bin run -i -t --privileged \
+     --mount type=bind,source=$graalphp_src,target=/graalphp-source \
+     --mount type=bind,source="$mvn",target="/root/.m2" \
 	$image /bin/bash -c "cd /graalphp-source && $cmd"
+
+set +x;

@@ -9,7 +9,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 # run install script
 RUN mkdir -p /graalphp-build
-COPY install-dev-env.sh /graalphp-build/install-dev-env.sh
+COPY . /graalphp-build/
 WORKDIR /graalphp-build
 RUN chmod +x install-dev-env.sh
 RUN /graalphp-build/install-dev-env.sh
@@ -18,5 +18,12 @@ RUN /graalphp-build/install-dev-env.sh
 ENV JAVA_HOME=/graalphp-build/graalvm
 ENV PATH="/graalphp-build/graalvm/bin:${PATH}"
 ENV GRAALPHP=/graalphp-source/graalphp
+ENV GRAALPHP_HOME=/graalphp-source
 ENV GRAALPHP_NATIVE=/graalphp-source/graalphp-native/graalphp-native
-ENV GRAALPHP_BUILD_NATIVE=true
+ENV GRAALPHP_BUILD_NATIVE=false
+
+
+# optional alternative environments
+RUN /graalphp-build/install-hhvm.sh
+RUN /graalphp-build/install-jphp.sh
+RUN /graalphp-build/install-php8.sh
