@@ -112,6 +112,15 @@ class Bench:
         Bench.skip_hack = True
         Bench.skip_jphp = True
 
+    @staticmethod
+    def skip_none():
+        Bench.skip_graalphp = False
+        Bench.skip_graalphp_native = False
+        Bench.skip_php = False
+        Bench.skip_php8 = False
+        Bench.skip_hack = False
+        Bench.skip_jphp = False
+
     def __init__(self):
         pass
 
