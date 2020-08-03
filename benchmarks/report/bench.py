@@ -174,8 +174,9 @@ class Bench:
             print(HHVM_BINARY + " binary not found, skipping execution")
             return None
 
-        a = ' -vEval.Jit=1 '
-        args = a + args if args else a
+        # should be on already
+        # a = ' -v Eval.Jit=1 '
+        # args = a + args if args else a
         return self.run_single_test(bench, prefix, 'hhvm', HHVM_BINARY, args, src)
 
     def run_graalphp(self, bench, prefix, src, args=''):

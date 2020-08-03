@@ -25,11 +25,11 @@ make -j $(nproc)
 make install
 
 ini="/graalphp-build/php8/build/php/php.ini"
-echo "echozend_extension=opcache.so" >> $ini
+echo "zend_extension=opcache.so" >> $ini
 echo "opcache.enable=1" >> $ini
 echo "opcache.enable_cli=1" >> $ini
 
-echo "opcache.jit_buffer_size=32M" >> $ini
+echo "opcache.jit_buffer_size=512M" >> $ini
 echo "opcache.jit=1235" >> $ini
 
 ln -s /graalphp-build/php8/build/bin/php /bin/php8

@@ -18,6 +18,7 @@ RUN /graalphp-build/install-dev-env.sh
 ENV JAVA_HOME=/graalphp-build/graalvm
 ENV PATH="/graalphp-build/graalvm/bin:${PATH}"
 ENV GRAALPHP=/graalphp-source/graalphp
+ENV GRAALPHP_HOME=/graalphp-source
 ENV GRAALPHP_NATIVE=/graalphp-source/graalphp-native/graalphp-native
 ENV GRAALPHP_BUILD_NATIVE=false
 

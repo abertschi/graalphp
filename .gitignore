@@ -50,3 +50,4 @@ pom.xml.versionsBackup
 **/.versionsBackup
 /benchmarks/report/venv-docker/
 /benchmarks/report/measurements.bak.sqlite
+/benchmarks/report/docker/

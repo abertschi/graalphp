@@ -8,8 +8,8 @@ if __name__ == '__main__':
     Bench.skip_all()
     Bench.skip_hack = False
     Bench.skip_php8 = False
-    Bench.skip_php = True
+    Bench.skip_php = False
 
-    BenchmarkFannkuch().run()
     BenchmarkSpectralNorm().run()
-    BenchBinaryTrees().run_by_ref()
+    BenchmarkFannkuch().run()
+    BenchBinaryTrees().run()

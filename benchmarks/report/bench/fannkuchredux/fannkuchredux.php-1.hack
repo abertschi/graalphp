@@ -1,6 +1,6 @@
 // changes: replace array with vec
 
-function Fannkuch($n){
+function Fannkuch(int $n): vec {
     $p = $q = $s = vec[];
     $sign = 1; $maxflips = $sum = 0; $m = $n-1;
     for ($i=0; $i<$n; $i++){ $p[] = $i; $q[] = $i; $s[] = $i; }
@@ -49,21 +49,21 @@ function Fannkuch($n){
 <<__EntryPoint>>
 function main(): void {
 
-$N = 21;
-$iter = 50;
+    $N = 21;
+    $iter = 50;
 
-for($i = 0; $i < $iter; $i ++) {
-$start=clock_gettime_ns(1);
-$A = Fannkuch($N);
-$stop=clock_gettime_ns(1);
+    for($i = 0; $i < $iter; $i ++) {
+        $start=clock_gettime_ns(1);
+        $A = Fannkuch($N);
+        $stop=clock_gettime_ns(1);
 
-$res = ($stop - $start) / 1000.0 / 1000.0;
-output($N, $iter, $i, $res);
-echo $A[0] . "/" + $A[1] . "\n";
+        $res = ($stop - $start) / 1000.0 / 1000.0;
+        output($N, $iter, $i, $res);
+        echo $A[0] . "/" + $A[1] . "\n";
+    }
 }
-}
 
-function output($N, $iters, $iter, $val) {
+function output(int $N, int $iters, int $iter, int $val): void {
     echo "fannkuchredux-hack N/iters/iter/val;" . $N . ";" . $iters . ";" . $iter . ";" . $val . ";" . "\n";
 }
 

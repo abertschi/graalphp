@@ -33,8 +33,8 @@ class BenchBinaryTrees(Bench):
         res = []
 
         # run benchmark by reference (quick)
-        res.append(self.run_php(TEST_BY_REF, prefix, SRC_PHP_REF, args_php))
         res.append(self.run_php8(TEST_BY_REF, prefix, SRC_PHP_REF, args_php))
+        res.append(self.run_php(TEST_BY_REF, prefix, SRC_PHP_REF, args_php))
 
         res.append(self.run_graalphp(TEST_BY_REF, prefix, SRC_GPHP_REF, ''))
         res.append(self.run_graalphp_native(TEST_BY_REF, prefix, SRC_GPHP_REF, ''))
@@ -47,10 +47,10 @@ class BenchBinaryTrees(Bench):
         res = []
 
         # run benchmark by val
-        res.append(self.run_php(TEST_BY_VAL, prefix, SRC_PHP_VAL, args_php))
-        res.append(self.run_php8(TEST_BY_VAL, prefix, SRC_PHP_VAL, args_php))
-
         res.append(self.run_hack(TEST_BY_VAL, prefix, SRC_HACK_VAL, ''))
+        res.append(self.run_php8(TEST_BY_VAL, prefix, SRC_PHP_VAL, args_php))
+        res.append(self.run_php(TEST_BY_VAL, prefix, SRC_PHP_VAL, args_php))
+
         res.append(self.run_graalphp(TEST_BY_VAL, prefix, SRC_GPHP_VAL, ''))
         res.append(self.run_graalphp_native(TEST_BY_VAL, prefix, SRC_GPHP_VAL, ''))
 
