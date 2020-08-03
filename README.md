@@ -11,8 +11,8 @@ Programming Language. It is based on GraalVM. This is a thesis project at ETH Zu
 
 ### Build and Run
 ```shell
-# use a Linux environment
-# download graalvm from https://github.com/graalvm/graalvm-ce-builds/releases
+# Build Dependencies: Linux environment, maven, ant, GraalVM
+# download GraalVM from https://github.com/graalvm/graalvm-ce-builds/releases
 $ export JAVA_HOME=/path/to/graalvm
 $ mvn package
 $ ./graalphp <php-file.php>
@@ -25,6 +25,8 @@ $ $JAVA_HOME/bin/gu install native-image
 $ export GRAALPHP_BUILD_NATIVE="true"
 $ mvn package
 ```
+
+For a container image with all development dependencies see ./docker/.
 
 ### Feature Set
 High Level Overview of implemented features, current runtime code base. ca. 4000 LOC.
