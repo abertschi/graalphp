@@ -15,7 +15,6 @@ apt-get -y install curl tar
 GRAAL_VM="https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-20.1.0/graalvm-ce-java11-linux-amd64-20.1.0.tar.gz"
  
 cd $build_dir
-
 curl -LJ $GRAAL_VM --output graalvm.tar.gz
 tar -xzf graalvm.tar.gz
 
@@ -30,6 +29,6 @@ apt-get -y install maven ant git
 mkdir -p ~/.m2
 
 # more dependencies
-apt-get -y install python3 python3-pip python3-venv
+apt-get -y install python3 python3-pip python3-venv emacs
 
 
