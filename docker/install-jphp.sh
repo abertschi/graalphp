@@ -7,12 +7,10 @@ cd $build_dir
 # jphp
 echo "installing jphp"
 
-mkdir -p $build_dir/jphp-src
-cd $build_dir/jphp-src
+branch="jppm-0.6.7"
 
-wget -O - https://github.com/jphp-group/jphp/releases/download/jppm-0.6.7/jppm-setup-0.6.7.sh | bash
+wget -O jphp.zip https://github.com/jphp-group/jphp/archive/$branch.zip
+unzip jphp.zip
+cd jphp-$branch
 
-
-# git clone https://github.com/jphp-compiler/jphp.git
-# cd jphp
-# ./gradlew packager:install --no-daemon
+./gradlew packager:install --no-daemon
