@@ -83,7 +83,6 @@ class Bench:
     skip_graalphp = False
     skip_graalphp_native = False
 
-
     # set the comment used when inserting data into db
     comment = None
 
@@ -92,8 +91,8 @@ class Bench:
         try:
             cmd = exec + ' --version | cut -d\( -f1 | head -n 1'
             out = subprocess.Popen(cmd,
-                               stdout=subprocess.PIPE,
-                               stderr=subprocess.STDOUT, shell=True)
+                                   stdout=subprocess.PIPE,
+                                   stderr=subprocess.STDOUT, shell=True)
             stdout, stderr = out.communicate()
             return stdout.decode(sys.stdout.encoding).rstrip()
         except Exception as e:
@@ -129,16 +128,38 @@ class Bench:
 
         return hash
 
-    def run_single_test(self, bench_name, file_prefix, exec_name, exec_binary, exec_args, exec_src, comment= ''):
+    def run_single_test(self, bench_name, file_prefix, exec_name, exec_binary, exec_args, exec_src, comment='',
+                        cwd=None, save_input_file=True):
+        """
+        Run a single benchmark
+
+        :param bench_name: Name of benchmark
+        :param file_prefix: prefix to group multiple tests with the same prefix
+        :param exec_name: name of the exec binary
+        :param exec_binary: exec binary to use
+        :param exec_args: args for exec binary
+        :param exec_src: src to execute
+        :param comment: comment to write to database
+        :param cwd: if not None, used as cwd when executing test
+        :param save_input_file: (def: true) save exec_src to file for backup purpose
+        :return: BenchMeasurement
+        """
+
         name = os.path.basename(exec_src)
 
         log_file = join(MEASUREMENT_DIR, '{}-{}-{}.txt'.format(file_prefix, name, exec_name))
         src_file = join(MEASUREMENT_DIR, '{}-{}-{}-source.txt'.format(file_prefix, name, exec_name))
-        self._save_file(exec_src, src_file)
+
+        if save_input_file:
+            print('saving input file: ' + exec_src)
+            self._save_file(exec_src, src_file)
 
         exec = '{} {} {} | tee {}'.format(exec_binary, exec_args, exec_src, log_file)
-        print("[i] - running: " + exec, flush=True)
-        subprocess.call(exec, shell=True)
+        print("[i] - running {} (cwd: {})".format(exec, cwd if cwd else 'not-set'), flush=True)
+        if cwd:
+            subprocess.call(exec, shell=True, cwd=cwd)
+        else:
+            subprocess.call(exec, shell=True)
 
         return BenchMeasurement(test_name=bench_name,
                                 prefix=file_prefix,
@@ -191,12 +212,20 @@ class Bench:
             return None
         return self.run_single_test(bench, prefix, 'graalphp-native', GRAALPHP_NATIVE_BINARY, args, src)
 
+    # XXX: we dont execute the script directly. we call jphp start in the directory where package.php.yml is
     def run_jphp(self, bench, prefix, src, args=''):
         if Bench.skip_jphp:
             print("skip_jphp=True")
             return None
+        if not self._binary_exists(JPHP_BINARY):
+            print(JPHP_BINARY + " binary not found, skipping execution")
+            return None
+
         cmd_args = 'start ' + args
-        return self.run_single_test(bench, prefix, 'jphp', JPHP_BINARY, cmd_args, src)
+        return self.run_single_test(bench, prefix, 'jphp', JPHP_BINARY, cmd_args,
+                                    exec_src='',
+                                    cwd=src,
+                                    save_input_file=False)
 
     def _save_file(self, source, dest):
         file1 = open(source, "r")
@@ -321,6 +350,7 @@ class Bench:
         print("variance: {}".format(statistics.variance(timings)))
         print("min: {}".format(min(timings)))
         print("max: {}".format(max(timings)))
+
 
 if __name__ == '__main__':
     Bench._get_php_version()

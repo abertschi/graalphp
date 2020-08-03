@@ -51,12 +51,12 @@ class Benchmark(db.Entity):
     unused1 = Optional(str)
     runs = Set('Run', reverse='benchmark')
 
+FILE_NAME = 'measurements.sqlite'
 
 script_dir = os.path.dirname(os.path.realpath(__file__))
-tmp_dir = os.path.join(tempfile.gettempdir(), 'graalphp')
+tmp_dir = os.path.join(script_dir, FILE_NAME + '.backups')
 os.makedirs(tmp_dir, exist_ok=True)
 
-FILE_NAME = 'measurements.sqlite'
 tmp_dir_copy_from = os.path.join(script_dir, FILE_NAME)
 tmp_dir_copy_to = os.path.join(tmp_dir,
                                datetime.datetime.now().isoformat() + '-' + FILE_NAME)
@@ -67,7 +67,7 @@ try:
 except Exception as e:
     print(e)
 
-print("loading db: " + FILE_NAME)
+print("loading db: " + os.path.join(script_dir, FILE_NAME))
 db.bind(provider='sqlite', filename=FILE_NAME, create_db=True)
 db.generate_mapping()
 

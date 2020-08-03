@@ -15,9 +15,12 @@ SRC_GPHP = join(SRC_FOLDER, "fannkuchredux.php-1.graalphp")
 # hack
 SRC_HACK = join(SRC_FOLDER, "fannkuchredux.php-1.hack")
 
+# jphp
+SRC_JPHP = join(SRC_FOLDER, "fannkuchredux.php-1.jphp")
+
 TEST = 'fannkuchredux-1'
 
-verify_files([SRC_PHP, SRC_GPHP, SRC_HACK])
+verify_files([SRC_PHP, SRC_GPHP, SRC_HACK, SRC_JPHP])
 
 
 class BenchmarkFannkuch(Bench):
@@ -28,6 +31,7 @@ class BenchmarkFannkuch(Bench):
         res.append(self.run_hack(TEST, prefix, SRC_HACK, ''))
         res.append(self.run_php8(TEST, prefix, SRC_PHP, ''))
         res.append(self.run_php(TEST, prefix, SRC_PHP, ''))
+        res.append(self.run_jphp(TEST, prefix, SRC_JPHP, ''))
 
 
         res.append(self.run_graalphp(TEST, prefix, SRC_GPHP, ''))
@@ -48,6 +52,9 @@ class BenchmarkFannkuch(Bench):
 
 if __name__ == '__main__':
     bm = BenchmarkFannkuch()
+    Bench.skip_all()
+    Bench.skip_jphp = False
+    bm.run_jphp(TEST, 'ref', SRC_JPHP, '')
     # bm._import_data_manually()
 
     pass

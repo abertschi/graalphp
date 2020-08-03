@@ -16,7 +16,12 @@ SRC_GPHP_VAL = join(SRC_FOLDER, "spectralnorm.php-2-val.graalphp")
 SRC_GPHP_REF = join(SRC_FOLDER, "spectralnorm.php-2-ref.graalphp")
 
 # hack
+# no by ref test needed
 SRC_HACK_VAL = join(SRC_FOLDER, "spectralnorm.php-2-val.hack")
+
+# jphp
+SRC_JPHP_REF = join(SRC_FOLDER, "spectralnorm.php-2-ref.jphp")
+SRC_JPHP_VAL = join(SRC_FOLDER, "spectralnorm.php-2-val.jphp")
 
 TEST_BY_VAL = 'spectralnorm-by-val'
 TEST_BY_REF = 'spectralnorm-by-ref'
@@ -25,6 +30,8 @@ TEST_BY_UNMOD = 'spectralnorm-unmod'
 verify_files([SRC_PHP_VAL, SRC_PHP_REF, SRC_PHP_UNMOD])
 verify_files([SRC_GPHP_VAL, SRC_GPHP_REF])
 verify_files([SRC_HACK_VAL])
+verify_files([SRC_JPHP_VAL, SRC_JPHP_REF])
+
 
 
 class BenchmarkSpectralNorm(Bench):
@@ -36,6 +43,7 @@ class BenchmarkSpectralNorm(Bench):
         res.append(self.run_php8(TEST_BY_REF, prefix, SRC_PHP_REF, ''))
         res.append(self.run_php(TEST_BY_REF, prefix, SRC_PHP_REF, ''))
 
+        res.append(self.run_jphp(TEST_BY_REF, prefix, SRC_JPHP_REF, ''))
 
         res.append(self.run_graalphp(TEST_BY_REF, prefix, SRC_GPHP_REF, ''))
         res.append(self.run_graalphp_native(TEST_BY_REF, prefix, SRC_GPHP_REF, ''))
@@ -50,6 +58,8 @@ class BenchmarkSpectralNorm(Bench):
         
         res.append(self.run_php8(TEST_BY_VAL, prefix, SRC_PHP_VAL, ''))
         res.append(self.run_php(TEST_BY_VAL, prefix, SRC_PHP_VAL, ''))
+
+        res.append(self.run_jphp(TEST_BY_VAL, prefix, SRC_JPHP_VAL, ''))
         
         res.append(self.run_graalphp(TEST_BY_VAL, prefix, SRC_GPHP_VAL, ''))
         res.append(self.run_graalphp_native(TEST_BY_VAL, prefix, SRC_GPHP_VAL, ''))
@@ -82,8 +92,11 @@ class BenchmarkSpectralNorm(Bench):
 
 if __name__ == '__main__':
     bm = BenchmarkSpectralNorm()
+    Bench.skip_all()
+    Bench.skip_jphp = False
+    bm.run_by_ref()
     # bm.run_by_val()
     # bm.run_by_ref()
 
-    bm._import_data_manually()
+    # bm._import_data_manually()
     pass

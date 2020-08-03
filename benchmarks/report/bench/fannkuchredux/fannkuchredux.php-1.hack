@@ -59,7 +59,8 @@ function main(): void {
 
         $res = ($stop - $start) / 1000.0 / 1000.0;
         output($N, $iter, $i, $res);
-        echo $A[0] . "/" + $A[1] . "\n";
+        echo $A[0] . "\n";
+        echo $A[1] . "\n";
     }
 }
 

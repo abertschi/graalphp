@@ -85,5 +85,5 @@ for($i = 0; $i < $iter; $i ++) {
 }
 
 function output($N, $iters, $iter, $val) {
-    graalphp_print_args("spectralnorm-ref", $N , $iters ,  $iter, $val);
+    graalphp_print_args("spectralnorm-ref-gphp", $N , $iters ,  $iter, $val);
 }

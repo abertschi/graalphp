@@ -18,6 +18,9 @@ SRC_GPHP_REF = join(SRC_FOLDER, "binarytrees.php-3-ref.graalphp")
 # hack
 SRC_HACK_VAL = join(SRC_FOLDER, "binarytrees.php-3-val.hack")
 
+# jphp
+SRC_JPHP_VAL = join(SRC_FOLDER, "binarytrees.php-3-val.jphp")
+
 TEST_BY_VAL = 'binary-trees-by-val'
 TEST_BY_REF = 'binary-trees-by-ref'
 
@@ -51,6 +54,8 @@ class BenchBinaryTrees(Bench):
         res.append(self.run_php8(TEST_BY_VAL, prefix, SRC_PHP_VAL, args_php))
         res.append(self.run_php(TEST_BY_VAL, prefix, SRC_PHP_VAL, args_php))
 
+        res.append(self.run_jphp(TEST_BY_VAL, prefix, SRC_JPHP_VAL, ''))
+
         res.append(self.run_graalphp(TEST_BY_VAL, prefix, SRC_GPHP_VAL, ''))
         res.append(self.run_graalphp_native(TEST_BY_VAL, prefix, SRC_GPHP_VAL, ''))
 
@@ -80,6 +85,7 @@ if __name__ == '__main__':
     # bm.skip_graalphp_native = True
     # bm.run_by_val()
     # bm.run_by_ref()
+    # bm.run_jphp(TEST_BY_VAL, 'test', SRC_JPHP_VAL, '')
 
-    bm._import_data_manually()
+    # bm._import_data_manually()
     pass

@@ -1,0 +1,11 @@
+name: fannkuchredux.php-1.jphp
+version: 1.0.0
+deps:
+  jphp-core: '*'
+  jphp-zend-ext: '*'
+plugins:
+- App
+sources:
+- src
+includes:
+- index.php
