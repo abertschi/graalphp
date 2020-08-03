@@ -21,20 +21,3 @@ $ ./shell.sh <command>
 $ ./build.sh
 $ mvn package
 #+end_src
-
-
-** Benchmarks Setup
-Alternative implementations of PHP
-
-#+begin_src sh
-$ ./shell.sh
-
-# install jphp
-/graalphp-source/docker/install-jphp.sh
-
-# php 8
-$ /graalphp-source/docker/install-php8.sh
-
-# hhvm
-$ /graalphp-source/docker/install-hhvm.sh
-#+end_src
