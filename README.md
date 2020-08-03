@@ -26,6 +26,8 @@ $ export GRAALPHP_BUILD_NATIVE="true"
 $ mvn package
 ```
 
+For a container image with all development dependencies see ./docker/.
+
 ### Feature Set
 High Level Overview of implemented features, current runtime code base. ca. 4000 LOC.
 
