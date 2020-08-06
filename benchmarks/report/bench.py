@@ -136,7 +136,7 @@ class Bench:
                         exec_args,
                         exec_src,
                         comment='',
-                        env_vars=None,
+                        env_vars='',
                         binary_version='',
                         cwd=None,
                         save_input_file=True):
@@ -156,9 +156,7 @@ class Bench:
         :param env_vars: commands to prefix before executing binary
         :return: BenchMeasurement
         """
-
         name = os.path.basename(exec_src)
-
         log_file = join(MEASUREMENT_DIR, '{}-{}-{}.txt'.format(file_prefix, name, exec_name))
         src_file = join(MEASUREMENT_DIR, '{}-{}-{}-source.txt'.format(file_prefix, name, exec_name))
 
@@ -166,18 +164,19 @@ class Bench:
             print('saving input file: ' + exec_src)
             self._save_file(exec_src, src_file)
 
-        if env_vars and env_vars != '':
+        if env_vars != '':
             env_vars = env_vars + ' '
 
         exec = '{}{} {} {} | tee {}'.format(env_vars, exec_binary, exec_args, exec_src, log_file)
         print("[i] - running {} (cwd: {}, env_vars: {}, version: {})".
-              format(exec, cwd if cwd else 'not-set',
-                     env_vars,
-                     binary_version), flush=True)
-        if cwd:
-            subprocess.call(exec, shell=True, cwd=cwd)
-        else:
-            subprocess.call(exec, shell=True)
+              format(exec, cwd if cwd else 'not-set', env_vars, binary_version), flush=True)
+        try:
+            if cwd:
+                subprocess.call(exec, shell=True, cwd=cwd)
+            else:
+                subprocess.call(exec, shell=True)
+        except KeyboardInterrupt as e:
+            print("capturing ctrl-c, continuing execution.\n\n")
 
         return BenchMeasurement(test_name=bench_name,
                                 prefix=file_prefix,
