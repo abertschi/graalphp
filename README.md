@@ -25,8 +25,8 @@ $ $JAVA_HOME/bin/gu install native-image
 $ export GRAALPHP_BUILD_NATIVE="true"
 $ mvn package
 ```
-
-For a container image with all development dependencies see ./docker/.
+**Container Image**:  
+For a container image with all development and benchmark dependencies see See [./docker/](./docker/).
 
 ### Feature Set
 High Level Overview of implemented features, current runtime code base. ca. 4000 LOC.
