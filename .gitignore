@@ -51,3 +51,8 @@ pom.xml.versionsBackup
 /benchmarks/report/venv-docker/
 /benchmarks/report/measurements.bak.sqlite
 /benchmarks/report/docker/
+/benchmarks/report/measurement-dump.txt
+/php_info.php
+/php_info.txt
+/docs/benchmarks/README.tex
+/docs/benchmarks/auto/

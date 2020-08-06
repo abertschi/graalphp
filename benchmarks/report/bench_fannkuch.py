@@ -28,8 +28,8 @@ class BenchmarkFannkuch(Bench):
     def run(self):
         prefix = self.get_test_prefix()
         res = []
-        res.append(self.run_hack(TEST, prefix, SRC_HACK, ''))
         res.append(self.run_php8(TEST, prefix, SRC_PHP, ''))
+        res.append(self.run_hack(TEST, prefix, SRC_HACK, ''))
         res.append(self.run_php(TEST, prefix, SRC_PHP, ''))
         res.append(self.run_jphp(TEST, prefix, SRC_JPHP, ''))
 
@@ -40,21 +40,19 @@ class BenchmarkFannkuch(Bench):
         self.extract_and_store_data_array(res)
 
     def _import_data_manually(self):
-        pref = '2020-07-31T19:18:04.649613'
-        path = 'measurements/' + pref + '-fannkuchredux.php-1.graalphp-graalphp.txt'
+        pref = '2020-08-04T22:17:40.611217'
+        path = 'measurements/' + pref + '-fannkuchredux.php-1.php-php8.txt'
 
         self.import_data(path,
                          test_name=TEST,
                          prefix=pref,
-                         comment='graal 20.1.0',
-                         binary='graalphp'
+                         comment='docker, turbo, 4ghz',
+                         binary='php8'
                          )
 
 if __name__ == '__main__':
     bm = BenchmarkFannkuch()
-    Bench.skip_all()
     Bench.skip_jphp = False
-    bm.run_jphp(TEST, 'ref', SRC_JPHP, '')
-    # bm._import_data_manually()
+    bm.run_jphp(TEST, 'test', SRC_JPHP, '')
 
     pass

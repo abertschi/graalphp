@@ -34,7 +34,9 @@ function Fannkuch(int $n): vec {
                 $sx = $s[$i];
                 if ($sx != 0){ $s[$i] = $sx-1; break; }
                 if ($i == $m) {
-                $res = vec[$sum, $maxflips];
+                $res = vec[];
+                $res[] = $sum;
+                $res[] = $maxflips;
                 return $res;    // Out of permutations.
                 }
                 $s[$i] = $i;
@@ -49,8 +51,8 @@ function Fannkuch(int $n): vec {
 <<__EntryPoint>>
 function main(): void {
 
-    $N = 21;
-    $iter = 50;
+    $N = 12; // 21
+    $iter = 15;
 
     for($i = 0; $i < $iter; $i ++) {
         $start=clock_gettime_ns(1);
@@ -64,7 +66,7 @@ function main(): void {
     }
 }
 
-function output(int $N, int $iters, int $iter, int $val): void {
+function output(int $N, int $iters, int $iter, float $val): void {
     echo "fannkuchredux-hack N/iters/iter/val;" . $N . ";" . $iters . ";" . $iter . ";" . $val . ";" . "\n";
 }
 

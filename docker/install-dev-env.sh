@@ -29,6 +29,6 @@ apt-get -y install maven ant git
 mkdir -p ~/.m2
 
 # more dependencies
-apt-get -y install python3 python3-pip python3-venv emacs
+apt-get -y install python3 python3-pip python3-venv emacs openjdk-14-jre openjdk-14-jdk htop
 
 

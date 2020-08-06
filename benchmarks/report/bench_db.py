@@ -51,6 +51,7 @@ class Benchmark(db.Entity):
     unused1 = Optional(str)
     runs = Set('Run', reverse='benchmark')
 
+
 FILE_NAME = 'measurements.sqlite'
 
 script_dir = os.path.dirname(os.path.realpath(__file__))
@@ -81,12 +82,13 @@ def store_measurements(test_name,
                        binary='',
                        command='',
                        comment='',
-                       date = None,
+                       date=None,
                        commit='',
+                       binary_version='',
                        confirm_store=False):
     print('storing measurements: testname: {}, timings: {}, '
-          'prefix: {}, binary: {}, command: {}, comment: {}, commit: {}'
-          .format(test_name, timings, prefix, binary, command, comment, commit))
+          'prefix: {}, binary: {}, command: {}, comment: {}, commit: {}, binary_version: {}'
+          .format(test_name, timings, prefix, binary, command, comment, commit, binary_version))
 
     if confirm_store:
         input("Press Enter to continue...")
@@ -105,7 +107,8 @@ def store_measurements(test_name,
               prefix=prefix,
               comment=comment,
               out_file=out_file,
-              benchmark=bm)
+              benchmark=bm,
+              unused1=binary_version)
 
     i = 1
     measurements = []
@@ -132,6 +135,7 @@ def query_results_with_prefix(prefix):
         result.append([run.benchmark.name, run.binary, run.command, run.prefix, measurements])
 
     return result
+
 
 @db_session
 def query_results_with_run_id(id):
@@ -176,6 +180,8 @@ def show_all_curated(warmup=8):
                                  'Warmup Count',
                                  'Prefix',
                                  'Comment',
+                                 'Unused1',
+                                 'Unused2',
                                  'Raw'], float_format='.2')
 
     bms = select(b for b in Benchmark)
@@ -210,6 +216,8 @@ def show_all_curated(warmup=8):
                    0,
                    run.prefix,
                    comment,
+                   run.unused1,
+                   run.unused2,
                    ''
                    ]
 
@@ -230,6 +238,8 @@ def show_all_curated(warmup=8):
                         warmup,
                         run.prefix,
                         comment,
+                        run.unused1,
+                        run.unused2,
                         ''
                         ]
                 t.add_row(row2)
