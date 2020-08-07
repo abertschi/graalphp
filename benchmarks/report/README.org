@@ -1,0 +1,4 @@
+** Results
+*** Performance, No-Turbo, 2.7 GHz
+**** Fannkuchredux-1
+ +  67, 68, 69 (same as 70, 71, 72 which was manally imported, new scripts auto import on ctrl-c)

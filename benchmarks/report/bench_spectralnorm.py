@@ -1,7 +1,7 @@
 import os
 from os.path import join
 
-from bench import BenchMeasurement, Bench, verify_files, verify_file
+from bench import Bench, BenchMeasurement, verify_files
 
 DIR = os.path.dirname(os.path.realpath(__file__))
 SRC_FOLDER = os.path.join(DIR, 'bench/spectralnorm')
@@ -33,13 +33,11 @@ verify_files([SRC_HACK_VAL])
 verify_files([SRC_JPHP_VAL, SRC_JPHP_REF])
 
 
-
 class BenchmarkSpectralNorm(Bench):
-
     def run_by_ref(self):
         prefix = self.get_test_prefix()
         res = []
-        
+
         res.append(self.run_php8(TEST_BY_REF, prefix, SRC_PHP_REF, ''))
         res.append(self.run_php(TEST_BY_REF, prefix, SRC_PHP_REF, ''))
 
@@ -55,12 +53,12 @@ class BenchmarkSpectralNorm(Bench):
         res = []
 
         res.append(self.run_hack(TEST_BY_VAL, prefix, SRC_HACK_VAL, ''))
-        
+
         res.append(self.run_php8(TEST_BY_VAL, prefix, SRC_PHP_VAL, ''))
         res.append(self.run_php(TEST_BY_VAL, prefix, SRC_PHP_VAL, ''))
 
         res.append(self.run_jphp(TEST_BY_VAL, prefix, SRC_JPHP_VAL, ''))
-        
+
         res.append(self.run_graalphp(TEST_BY_VAL, prefix, SRC_GPHP_VAL, ''))
         res.append(self.run_graalphp_native(TEST_BY_VAL, prefix, SRC_GPHP_VAL, ''))
 
@@ -97,6 +95,5 @@ if __name__ == '__main__':
     bm.run_by_ref()
     # bm.run_by_val()
     # bm.run_by_ref()
-
     # bm._import_data_manually()
     pass

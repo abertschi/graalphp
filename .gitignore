@@ -56,3 +56,4 @@ pom.xml.versionsBackup
 /php_info.txt
 /docs/benchmarks/README.tex
 /docs/benchmarks/auto/
+/benchmarks/report/dump.txt

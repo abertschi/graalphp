@@ -1,8 +1,7 @@
 import statistics
 
-import numpy as np
 import matplotlib.pyplot as plt
-from os import walk
+import numpy as np
 
 import bench
 
@@ -172,7 +171,6 @@ def spectralnorm_val_plot():
     prefix = 'saved-measurements/20-07-27/2020-07-26T22:24:05.785564-spectralnorm-'
 
     # php = 'spectralnorm.php-2-php-unmodified.php-php.txt'
-
     php = 'spectralnorm.php-2-pass-by-val.php-php.txt'
     graalphp = 'spectralnorm.php-2-pass-by-val.graalphp-graalphp.txt'
     graalphp_native = 'spectralnorm.php-2-pass-by-val.graalphp-graalphp-native.txt'

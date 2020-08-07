@@ -32,7 +32,6 @@ HHVM_BINARY = 'hhvm'
 # symlink created in docker image
 PHP8_BINARY = 'php8'
 
-# symlink created in docker image
 JPHP_BINARY = 'jppm'
 
 # JDK 14 path on graalphp-dev container image
@@ -44,7 +43,6 @@ os.makedirs(MEASUREMENT_DIR, exist_ok=True)
 
 
 class BenchMeasurement():
-
     def __init__(self,
                  test_name,
                  prefix,
@@ -176,7 +174,9 @@ class Bench:
             else:
                 subprocess.call(exec, shell=True)
         except KeyboardInterrupt as e:
-            print("capturing ctrl-c, continuing execution.\n\n")
+            print("capturing ctrl-c, skipping current execution"
+                  ".\n\n")
+            return None
 
         return BenchMeasurement(test_name=bench_name,
                                 prefix=file_prefix,

@@ -2,7 +2,7 @@ import datetime
 import os
 from os.path import join
 
-from bench import BenchMeasurement, Bench, verify_files
+from bench import Bench, verify_files
 
 DIR = os.path.dirname(os.path.realpath(__file__))
 SRC_FOLDER = os.path.join(DIR, 'bench/binary-trees')
@@ -27,8 +27,8 @@ TEST_BY_REF = 'binary-trees-by-ref'
 verify_files([SRC_PHP_REF, SRC_GPHP_REF])
 verify_files([SRC_PHP_VAL, SRC_GPHP_VAL, SRC_HACK_VAL])
 
-class BenchBinaryTrees(Bench):
 
+class BenchBinaryTrees(Bench):
     def run_by_ref(self):
         prefix = self.get_test_prefix()
         args_php = '-n -d memory_limit=4096M'
@@ -86,6 +86,5 @@ if __name__ == '__main__':
     # bm.run_by_val()
     # bm.run_by_ref()
     # bm.run_jphp(TEST_BY_VAL, 'test', SRC_JPHP_VAL, '')
-
     # bm._import_data_manually()
     pass

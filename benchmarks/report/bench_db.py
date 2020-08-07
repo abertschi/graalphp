@@ -1,15 +1,13 @@
 #!/bin/env python3
+import datetime
 import os
 import statistics
-
-from pony.orm import *
-import time, datetime
 import sys
 from shutil import copyfile
+from prettytable import PrettyTable
+from pony.orm import *
 
 db = Database()
-from prettytable import PrettyTable
-import tempfile
 
 
 class Statistics(db.Entity):
@@ -220,7 +218,6 @@ def show_all_curated(warmup=8):
                    run.unused2,
                    ''
                    ]
-
             t.add_row(row)
             if warmup != 0 and warmup < len(timings):
                 timings = timings[warmup:]
@@ -243,7 +240,6 @@ def show_all_curated(warmup=8):
                         ''
                         ]
                 t.add_row(row2)
-
         print(t)
         print('\n')
         t.clear_rows()
