@@ -35,7 +35,7 @@ PHP8_BINARY = 'php8'
 JPHP_BINARY = 'jppm'
 
 # JDK 14 path on graalphp-dev container image
-JDK_14_HOME = '/usr/lib/jvm/java-14-openjdk-amd64/'
+JDK_14_HOME = 'lib/jvm/java-14-openjdk-amd64'
 
 DIR = os.path.dirname(os.path.realpath(__file__))
 MEASUREMENT_DIR = join(DIR, 'measurements')
@@ -251,7 +251,7 @@ class Bench:
                                     cwd=src,
                                     save_input_file=False,
                                     env_vars=env_vars,
-                                    binary_version=Bench._get_jphp_version())
+                                    binary_version=Bench._get_jphp_version(env_vars))
 
     @staticmethod
     def _get_shell_cmd_result(cmd, remove_linebreaks=False):
@@ -275,8 +275,8 @@ class Bench:
         return Bench._get_shell_cmd_result(cmd)
 
     @staticmethod
-    def _get_jphp_version():
-        return Bench._get_shell_cmd_result(JPHP_BINARY + ' version', remove_linebreaks=True)
+    def _get_jphp_version(prefix = ''):
+        return Bench._get_shell_cmd_result(prefix + JPHP_BINARY + ' version', remove_linebreaks=True)
 
     @staticmethod
     def _get_hhvm_version():

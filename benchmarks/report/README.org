@@ -1,4 +1,47 @@
+* Run benchmarks
++ set cpu to performance governor, fix clock rate
++ source venv for benchmark (requirements.txt)
++ set which benchmark to run (bench_run_all.py)
+
+** Other files
++ bench.py: common functions to run benchmarks
++ bench_export_csv.py: export db results to csv
++ bench_graphs.py: helpers to create graphs
++ bench_db.py: access and print db results
+
+Benchmarks:
++ bench_run_all.py: all benchmarks
++ bench_binarytrees.py: binary trees
++ bench_fannkuch.py: fannkuch redux
++ bench_spectralnorm.py: spectralnorm
+
+
 ** Results
 *** Performance, No-Turbo, 2.7 GHz
 **** Fannkuchredux-1
- +  67, 68, 69 (same as 70, 71, 72 which was manally imported, new scripts auto import on ctrl-c)
++ info: 67, 68, 69 (same as 70, 71, 72 which was manally imported, new scripts auto import on ctrl-c)
++ PHP: 69
++ PHP8: 67
++ HHVM: 68
++ JPHP (jdk11): 73
+**** Binary-trees-by-val
++ JPHP(jdk11): 79
++ PHP: 78
++ PHP8: 77
++ HHVM: 76
+**** Binary-trees-by-ref
++ PHP: 75
++ PHP8: 74
+**** Spectralnorm-by-val
++ JPHP(JDK11): 83
++ PHP: 82
++ PHP8: 81
++ HHVM: 80
+**** Spectralnorm-by-ref
++ PHP: 87
++ PHP8: 86
++ JPHP: 88
++ HHVM: no
+**** Spectralnorm-unmod
++ PHP: 85
++ PHP8: 84

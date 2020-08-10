@@ -1,11 +1,13 @@
 #!/bin/env python3
+import csv
 import datetime
 import os
 import statistics
 import sys
 from shutil import copyfile
-from prettytable import PrettyTable
+
 from pony.orm import *
+from prettytable import PrettyTable
 
 db = Database()
 
@@ -163,7 +165,7 @@ def show_all_dump():
 
 
 @db_session
-def show_all_curated(warmup=8):
+def show_all_curated(warmup=5):
     t = PrettyTable(field_names=['ID',
                                  'Benchmark Name',
                                  'Type',
@@ -243,6 +245,83 @@ def show_all_curated(warmup=8):
         print(t)
         print('\n')
         t.clear_rows()
+
+
+# orders by measurement run
+@db_session
+def get_timings_by_id(id, warmup = 5):
+    measurements = list(select(m for m in Measurement
+                               if m.run.id == id).order_by(Measurement.iteration))
+    filtered = measurements[warmup:]
+    timings = []
+    for m in filtered:
+        timings.append(m.timing_ms / 1000)  # vals in secods
+
+    return timings
+
+@db_session
+def export_to_csv(ids=[], warmup=5,
+                  export_dir=os.path.dirname(os.path.realpath(__file__)),
+                  file_prefix='',
+                  sort=True,
+                  limit=True,
+                  write_file = True):
+    rows = [
+        ["implementation", "benchmark", "n", "warmup", "mean", "median", "min", "max", "stdev", "variance", "db-id"]]
+
+    for i in ids:
+        r = list(select(r for r in Run if r.id == i))
+        if len(r) != 1:
+            print('error, ID not unique: ' + i)
+            exit(1)
+        r = r[0]
+
+        measurements = list(select(m for m in Measurement
+                                   if m.run.id == r.id).order_by(Measurement.iteration))
+
+        filtered = measurements[warmup:]
+
+        timings = []
+        for m in filtered:
+            timings.append(m.timing_ms / 1000)  # vals in secods
+
+        def f(val):
+            # return '{:.2E}'.format(val)
+            if val < 0.1:
+                return '$<$ 0.1'
+            return '{:.1f}'.format(val)
+
+        row = [
+            r.binary,
+            r.benchmark.name,
+            len(timings),
+            warmup,
+            f(statistics.mean(timings)),
+            f(statistics.median(timings)),
+            f(min(timings)),
+            f(max(timings)),
+            f(statistics.stdev(timings)),
+            f(statistics.variance(timings)),
+            r.id
+        ]
+        print(row)
+        rows.append(row)
+
+    if sort:
+        sorting = rows[1:]
+        rows_sorted = sorted(sorting, key=lambda x: float(x[4]), reverse=False)
+        rows = [rows[0]] + rows_sorted
+
+    if file_prefix:
+        file_prefix += '-'
+    file_name = os.path.join(export_dir, "export-" + file_prefix + str(datetime.datetime.now()) + ".csv.txt")
+    file_name = file_name.replace(' ', '-').replace(':', '-')
+
+    if write_file:
+        print('writing file' + file_name)
+        with open(file_name, 'w', newline='\n') as file:
+            writer = csv.writer(file)
+            writer.writerows(rows)
 
 
 if __name__ == '__main__':

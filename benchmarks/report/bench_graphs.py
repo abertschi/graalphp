@@ -1,17 +1,7 @@
+import datetime
 import statistics
 
-import matplotlib.pyplot as plt
-import numpy as np
-
-import bench
-
-
-def get_timings(path):
-    bm = bench.Bench()
-    vals = bm.parse_values(path)
-    timings = bm.extract_timings(vals, None)
-    bm.print_statistics(timings)
-    return timings
+from bench_db import export_to_csv, get_timings_by_id
 
 
 def plot_speedup_box(title, save_name, php_val, gphp_val, gphp_native_val, warmup_thres=0):
@@ -94,115 +84,297 @@ def plot_speedup(title, save_name, php_val, gphp_val, gphp_native_val, warmup_th
     plt.show()
 
 
-def fannkuch_plot():
-    prefix = 'saved-measurements/20-07-20/'
-    php = '2020-07-20T02:38:05.827873-fannkuch-php.txt'
-    graalphp = '2020-07-20T02:38:05.827873-fannkuch-graalphp.txt'
-    graalphp_native = '2020-07-20T02:38:05.827873-fannkuch-graalphp-native.txt'
-    warmup_thres = 10
-
-    php_val = get_timings(os.path.join(prefix, php))
-
-    graalphp_val = get_timings(os.path.join(prefix, graalphp))[warmup_thres:]
-    graalphp_native_val = get_timings(os.path.join(prefix, graalphp_native))[warmup_thres:]
-    plot_speedup("Fannkuch Benchmark", 'fannkuch.png',
-                 php_val, graalphp_val, graalphp_native_val)
-
-    plot_speedup_box("Fannkuch Benchmark", 'fannkuch-box.png',
-                     php_val, graalphp_val, graalphp_native_val)
+import numpy as np
+import seaborn as sns
+import matplotlib.patches as mpatches
+import matplotlib.pyplot as plt
 
 
-def binary_trees_val_plot():
-    folder = 'saved-measurements/20-07-31-graal-20.0.0-binary-trees/'
+def binary_trees_report_plot():
+    vals_php = get_timings_by_id(78)
+    vals_php8 = get_timings_by_id(77)
 
-    prefix = folder + '2020-07-31T01:08:00.473402-binary-trees-binarytrees.php-3.'
+    vals_php_ref = get_timings_by_id(75)
+    vals_php8_ref = get_timings_by_id(74)
 
-    php = prefix + 'php-php.txt'
-    graalphp = prefix + 'graalphp-graalphp.txt'
-    graalphp_native = prefix + 'graalphp-graalphp-native.txt'
-    warmup_thres = 5
+    vals_gphp_ref = get_timings_by_id(91)
+    vals_gphp_nat_ref = get_timings_by_id(92)
 
-    php_val = get_timings(php)
-    graalphp_val = get_timings(graalphp)[warmup_thres:]
-    graalphp_native_val = get_timings(graalphp_native)[warmup_thres:]
-    plot_speedup("Binary Tree Benhmark (copy by value)", 'binary-trees-copy-by-value.png',
-                 php_val, graalphp_val, graalphp_native_val)
+    vals_gphp_val = get_timings_by_id(93)
+    vals_gphp_nat_val = get_timings_by_id(94)
 
-    plot_speedup_box("Binary Tree Benhmark (copy by value)", 'binary-trees-copy-by-value-box.png',
-                     php_val, graalphp_val, graalphp_native_val)
+    vals_jphp = get_timings_by_id(79)
+    vals_hhvm = get_timings_by_id(76)
+
+    impl_txt = (
+        # by val
+        'PHP 7 \n(baseline)',
+        'PHP 8 Alpha',
+        'JPHP',
+        'HHVM',
+        'graalphp-native',
+        'graalphp',
+        # by ref
+        'PHP 7',
+        'PHP 8 Alpha',
+        'graalphp-native',
+        'graalphp'
+    )
+
+    vals = [
+        # val
+        vals_php
+        , vals_php8
+        , vals_jphp
+        , vals_hhvm
+        , vals_gphp_val
+        , vals_gphp_nat_val
+        # ref
+        , vals_php_ref
+        , vals_php8_ref
+        , vals_gphp_nat_ref
+        , vals_gphp_ref
+    ]
+
+    avg_baseline = statistics.mean(vals_php)
+    avgs = [statistics.mean(v) for v in vals]
+
+    def do_variance(vals, baseline):
+        return statistics.variance([v / baseline for v in vals])
+
+    def do_speedup(val, baseline):
+        return baseline / val
+
+    speedups = [do_speedup(v, avg_baseline) for v in avgs]
+    variance = [do_variance(v, avg_baseline) for v in vals]
+
+    plt.rcParams.update({
+        "text.usetex": True,
+        "font.family": "serif",
+        "font.serif": ["Palatino"],
+    })
+
+    plt.rcParams.update({
+        "text.usetex": True,
+        "font.family": "serif",
+    })
+
+    title = 'Binary-Trees'
+    xlabel = 'Speedup (larger is better)'
+    ylabel = 'Implementation'
+
+    impl_indices = np.arange(len(impl_txt))
+
+    print(speedups)
+    print(variance)
+
+    color_by_val = 'blue'
+    color_by_ref = 'green'
+
+    fig, ax = plt.subplots()
+    ax.barh(impl_indices, speedups,
+            # xerr=variance,
+            align='center', alpha=.9
+            , color=color_by_val)
+    plt.yticks(impl_indices, impl_txt)
+    plt.xlabel(xlabel)
+    plt.title(title)
+    sns.despine()
+
+    ax.get_children()[9].set_color(color_by_ref)
+    ax.get_children()[8].set_color(color_by_ref)
+    ax.get_children()[7].set_color(color_by_ref)
+    ax.get_children()[6].set_color(color_by_ref)
+
+    for i, v in enumerate(speedups):
+        ax.text(v + .2, i, '{:.2f}'.format(v), va='center', color='gray')
+
+    patch_by_val = mpatches.Patch(color=color_by_val, label='copy by value (default)')
+    patch_by_ref = mpatches.Patch(color=color_by_ref, label='copy by reference (explicit)')
+
+    plt.legend(handles=[patch_by_ref, patch_by_val], loc='lower right')
+    plt.draw()
+    plt.tight_layout()
+
+    date = str(datetime.datetime.now()).replace(':', '-').replace(' ', '-')
+    plt.savefig("binary-trees-" + date + '.svg')
+    plt.show()
 
 
-def binary_trees_ref_plot():
-    prefix = 'saved-measurements/20-07-20/'
-    php = '2020-07-19T22:03:31.585475-binary-trees-php.txt'
-    graalphp = '2020-07-19T22:03:31.585475-binary-trees-graalphp.txt'
-    graalphp_native = '2020-07-19T22:03:31.585475-binary-trees-graalphp-native.txt'
-    warmup_thres = 10
+def spectralnorm_report_plot():
+    php_baseline = 82
 
-    php_val = get_timings(os.path.join(prefix, php))
-    graalphp_val = get_timings(os.path.join(prefix, graalphp))[warmup_thres:]
-    graalphp_native_val = get_timings(os.path.join(prefix, graalphp_native))[warmup_thres:]
-    plot_speedup("Binary Tree Benhmark (copy by ref)", 'binary-trees-copy-by-ref.png',
-                 php_val, graalphp_val, graalphp_native_val)
+    ids = [
+        # by val
+        php_baseline,  # php val
+        81,  # php 8 val
+        83,  # jpnp val
+        80,  # hhvm
+        96,  # gpnpn, val
+        95,  # gpnp, val
+        # by ref
+        87,  # PHP ref
+        86,  # PHP 8 ref
+        88,  # jphp ref
+        98,  # gphp native
+        97  # gpnp
+    ]
+    impl_txt = (
+        # by val
+        'PHP 7 \n(baseline)',
+        'PHP 8 Alpha',
+        'JPHP',
+        'HHVM',
+        'graalphp-native',
+        'graalphp',
+        # by ref
+        'PHP 7',
+        'PHP 8 Alpha',
+        'JPHP',
+        'graalphp-native',
+        'graalphp'
+    )
 
-    plot_speedup_box("Binary Tree Benhmark (copy by ref)", 'binary-trees-copy-by-ref-box.png',
-                     php_val, graalphp_val, graalphp_native_val)
+    vals = [get_timings_by_id(i) for i in ids]
+    print(export_to_csv(ids, write_file=False))
+    avg_baseline = statistics.mean(get_timings_by_id(php_baseline))
+
+    avgs = [statistics.mean(v) for v in vals]
+
+    def do_variance(vals, baseline):
+        return statistics.variance([v / baseline for v in vals])
+
+    def do_speedup(val, baseline):
+        return baseline / val
+
+    speedups = [do_speedup(v, avg_baseline) for v in avgs]
+    variance = [do_variance(v, avg_baseline) for v in vals]
+
+    plt.rcParams.update({
+        "text.usetex": True,
+        "font.family": "serif",
+        "font.serif": ["Palatino"],
+    })
+
+    title = 'Spectralnorm Benchmark'
+    xlabel = 'Speedup (larger is better)'
+
+    impl_indices = np.arange(len(impl_txt))
+
+    print(speedups)
+    print(variance)
+
+    color_by_val = 'blue'
+    color_by_ref = 'green'
+
+    fig, ax = plt.subplots()
+    ax.barh(impl_indices, speedups,
+            xerr=variance,
+            align='center', alpha=.9
+            , color=color_by_val)
+    plt.yticks(impl_indices, impl_txt)
+    plt.xlabel(xlabel)
+    plt.title(title)
+    sns.despine()
+
+    ax.get_children()[10].set_color(color_by_ref)
+    ax.get_children()[9].set_color(color_by_ref)
+    ax.get_children()[8].set_color(color_by_ref)
+    ax.get_children()[7].set_color(color_by_ref)
+    ax.get_children()[6].set_color(color_by_ref)
+
+    for i, v in enumerate(speedups):
+        ax.text(v + .2, i, '{:.2f}'.format(v), va='center', color='gray')
+
+    patch_by_val = mpatches.Patch(color=color_by_val, label='copy by value (default)')
+    patch_by_ref = mpatches.Patch(color=color_by_ref, label='copy by reference (explicit)')
+
+    plt.legend(handles=[patch_by_ref, patch_by_val], loc='lower right')
+    plt.draw()
+    plt.tight_layout()
+
+    date = str(datetime.datetime.now()).replace(':', '-').replace(' ', '-')
+    plt.savefig("spectralnorm-" + date + '.svg')
+
+    print(plt.rcParams)
+    plt.show()
 
 
-def spectralnorm_ref_plot():
-    prefix = 'saved-measurements/20-07-27/2020-07-26T22:24:05.785564-spectralnorm-'
-    php = 'spectralnorm.php-2.php-php.txt'
-    graalphp = 'spectralnorm.php-2.graalphp-graalphp.txt'
-    graalphp_native = 'spectralnorm.php-2.graalphp-graalphp-native.txt'
-    warmup_thres = 10
-    php_val = get_timings(prefix + php)
-    print(php_val)
+def fannkuchredux():
+    php_baseline = 72
 
-    graalphp_val = get_timings(prefix + graalphp)[warmup_thres:]
-    graalphp_native_val = get_timings(prefix + graalphp_native)[warmup_thres:]
+    ids = [
+        php_baseline,
+        70,  # php 8
+        73,  # jphp
+        71,  # hhvm
+        90,  # gphp native
+        89,  # gphp
+    ]
+    impl_txt = (
+        # by val
+        'PHP 7 \n(baseline)',
+        'PHP 8 Alpha',
+        'JPHP',
+        'HHVM',
+        'graalphp-native',
+        'graalphp',
+    )
 
-    plot_speedup('Spectral Norm (Arrays copy by Reference)', 'spectral-norm-ref.png', php_val, graalphp_val,
-                 graalphp_native_val)
-    plot_speedup_box('Spectral Norm (Arrays copy by Reference)', 'spectral-norm-ref-boxplot.png', php_val, graalphp_val,
-                     graalphp_native_val)
+    vals = [get_timings_by_id(i) for i in ids]
+    print(export_to_csv(ids, write_file=False))
 
+    avg_baseline = statistics.mean(get_timings_by_id(php_baseline))
 
-def spectralnorm_val_plot():
-    prefix = 'saved-measurements/20-07-27/2020-07-26T22:24:05.785564-spectralnorm-'
+    avgs = [statistics.mean(v) for v in vals]
 
-    # php = 'spectralnorm.php-2-php-unmodified.php-php.txt'
-    php = 'spectralnorm.php-2-pass-by-val.php-php.txt'
-    graalphp = 'spectralnorm.php-2-pass-by-val.graalphp-graalphp.txt'
-    graalphp_native = 'spectralnorm.php-2-pass-by-val.graalphp-graalphp-native.txt'
-    warmup_thres = 10
+    def do_variance(vals, baseline):
+        return statistics.variance([v / baseline for v in vals])
 
-    php_val = get_timings(prefix + php)
-    graalphp_val = get_timings(prefix + graalphp)[warmup_thres:]
-    graalphp_native_val = get_timings(prefix + graalphp_native)[warmup_thres:]
+    def do_speedup(val, baseline):
+        return baseline / val
 
-    plot_speedup('Spectral Norm (Arrays copy by Value)', 'spectral-norm-val.png', php_val, graalphp_val,
-                 graalphp_native_val)
-    plot_speedup_box('Spectral Norm (Arrays copy by Value)', 'spectral-norm-val-boxplot.png', php_val, graalphp_val,
-                     graalphp_native_val)
+    speedups = [do_speedup(v, avg_baseline) for v in avgs]
+    variance = [do_variance(v, avg_baseline) for v in vals]
 
+    plt.rcParams.update({
+        "text.usetex": True,
+        "font.family": "serif",
+        "font.serif": ["Palatino"],
+    })
 
-def spectralnorm_untouched_plot():
-    prefix = 'saved-measurements/20-07-27/2020-07-26T22:24:05.785564-spectralnorm-'
+    title = 'Fannkuchredux Benchmark'
+    xlabel = 'Speedup (larger is better)'
 
-    php = 'spectralnorm.php-2-php-unmodified.php-php.txt'
-    graalphp = 'spectralnorm.php-2-pass-by-val.graalphp-graalphp.txt'
-    graalphp_native = 'spectralnorm.php-2-pass-by-val.graalphp-graalphp-native.txt'
-    warmup_thres = 10
+    impl_indices = np.arange(len(impl_txt))
 
-    php_val = get_timings(prefix + php)
-    graalphp_val = get_timings(prefix + graalphp)[warmup_thres:]
-    graalphp_native_val = get_timings(prefix + graalphp_native)[warmup_thres:]
+    print(speedups)
+    print(variance)
 
-    plot_speedup('Spectral Norm (Global Variables)', 'spectral-norm-glob.png', php_val, graalphp_val,
-                 graalphp_native_val)
-    plot_speedup_box('Spectral Norm (Global Variables', 'spectral-norm-glob-boxplot.png', php_val, graalphp_val,
-                     graalphp_native_val)
+    color_by_val = 'blue'
+
+    fig, ax = plt.subplots(figsize=(6, 3))
+    ax.barh(impl_indices, speedups,
+            xerr=variance,
+            align='center', alpha=.9
+            , color=color_by_val)
+
+    plt.yticks(impl_indices, impl_txt)
+    plt.xlabel(xlabel)
+    plt.title(title)
+    sns.despine()
+
+    for i, v in enumerate(speedups):
+        ax.text(v + .2, i, '{:.2f}'.format(v), va='center', color='gray')
+
+    plt.draw()
+    plt.tight_layout()
+
+    date = str(datetime.datetime.now()).replace(':', '-').replace(' ', '-')
+    plt.savefig("fannkuchredux-" + date + '.svg')
+
+    plt.show()
 
 
 if __name__ == '__main__':
-    spectralnorm_ref_plot()
+    fannkuchredux()
