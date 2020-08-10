@@ -159,7 +159,7 @@ def binary_trees_report_plot():
         "font.family": "serif",
     })
 
-    title = 'Binary-Trees'
+    title = 'Binary-Trees Benchmark'
     xlabel = 'Speedup (larger is better)'
     ylabel = 'Implementation'
 
@@ -377,4 +377,4 @@ def fannkuchredux():
 
 
 if __name__ == '__main__':
-    fannkuchredux()
+    binary_trees_report_plot()
