@@ -114,7 +114,7 @@
                     <configuration>
                         <source>1.8</source>
                         <target>1.8</target>
-                        <generatedSourcesDirectory>${project.build.directory}/generated-sources/</generatedSourcesDirectory>
+                        <generatedSourcesDirectory>${project.build.directory}/generated-sources/java-templates</generatedSourcesDirectory>
                     </configuration>
                 </plugin>
             </plugins>
