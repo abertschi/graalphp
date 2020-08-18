@@ -139,7 +139,7 @@ public class StmtVisitor extends HierarchicalVisitor {
 
     @Override
     public boolean visit(FunctionDeclaration fnParse) {
-        // TODO: langauge feature: parameter hints
+        // TODO: language feature: parameter hints
 
         final String fnName = fnParse.getFunctionName().getName();
         this.currFunctionArgumentCount = 0;

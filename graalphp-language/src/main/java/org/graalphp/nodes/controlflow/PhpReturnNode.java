@@ -14,8 +14,6 @@ import org.graalphp.types.PhpNull;
 @NodeInfo(shortName = "return")
 public final class PhpReturnNode extends PhpStmtNode {
 
-    // TODO: profiling
-
     @Child
     private PhpExprNode exec;
 
@@ -31,7 +29,6 @@ public final class PhpReturnNode extends PhpStmtNode {
         } else {
             returnVal = PhpNull.SINGLETON;
         }
-
         throw new PhpReturnException(returnVal);
     }
 }

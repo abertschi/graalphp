@@ -1,6 +1,8 @@
 ## -*- coding: utf-8;mode: org; fill-column: 80;  -*-
 ## This file is best viewed with GNU Emacs Org-mode: http://orgmode.org/
 
+This file summarizes TODOs. Some TODOs are already filed as Issues on github.
+
 * Parsing
 ** DONE Add error listener
 CLOSED: [2020-05-02 Sat 21:51]
@@ -8,16 +10,21 @@ CLOSED: [2020-05-02 Sat 21:51]
 CLOSED: [2020-05-02 Sat 21:49]
 ** DONE Add CI and compare against upstream
 CLOSED: [2020-05-02 Sat 21:50]
-** TODO Add Benchmarks
+** DONE Add Benchmarks
+CLOSED: [2020-08-18 Tue 13:34]
  - https://github.com/abertschi/graalphp/issues/12
 ** TODO Add support for PHP 5 - 7.3
 ** TODO Remove IBindings from codebase
 * Graal
-** TODO TCL test compatibility kit is not enabled
+** DONE TCL test compatibility kit is not enabled
+CLOSED: [2020-08-18 Tue 13:34]
 
 * Truffle
-** TODO Find out if using with int instead of long can increase performance
-** TODO Unclear when to use @TruffleBoundary annotation
+** DONE Find out if using with int instead of long can increase performance
+For 64 bit architecture little impact
+CLOSED: [2020-08-18 Tue 13:34]
+** DONE Unclear when to use @TruffleBoundary annotation
+CLOSED: [2020-08-18 Tue 13:35]
 ** TODO Decide if we create source section while parsing or lazy loading
 - pro for eager: we may implement phpdoc semantics into parsing (types)
 - however, new versions of php support type hints and dont have to rely on comments

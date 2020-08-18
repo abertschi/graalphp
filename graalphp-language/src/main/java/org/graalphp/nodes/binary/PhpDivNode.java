@@ -11,7 +11,7 @@ public abstract class PhpDivNode extends PhpBinaryNode {
 
     @Specialization(rewriteOn = ArithmeticException.class)
     protected long div(long left, long right) {
-        // TODO: can this be done with guards and removed from this specialization
+        // XXX: can this be done with guards and removed from this specialization?
         if (right == 0) {
             throw new RuntimeException("div by 0");
         }
