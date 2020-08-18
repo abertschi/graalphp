@@ -10,7 +10,14 @@
     <graalvm.version>20.1.0</graalvm.version>
   </properties>
   <packaging>pom</packaging>
-  <modules>
+
+
+    <scm>
+        <connection>scm:git:https://github.com/abertschi/graalphp.git</connection>
+        <url>https://github.com/abertschi/graalphp</url>
+    </scm>
+
+    <modules>
     <module>graalphp-parser</module>
     <module>graalphp-language</module>
     <module>graalphp-launcher</module>

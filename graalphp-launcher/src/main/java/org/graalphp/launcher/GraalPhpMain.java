@@ -57,6 +57,8 @@ import java.util.Map;
 public final class GraalPhpMain {
 
     private static final String PHP = "php";
+    private static final String REPL = "repl";
+    private static final String VERSION = "version";
 
     /**
      * The main entry point.
@@ -74,8 +76,13 @@ public final class GraalPhpMain {
                 }
             }
         }
-        if (options.containsKey("repl")) {
-            options.remove("repl");
+        if (options.containsKey(VERSION)) {
+            // version generated with src/main/java-templates
+            System.out.println(LauncherVersion.getCuratedVersion());
+            System.exit(0);
+        }
+        if (options.containsKey(REPL)) {
+            options.remove(REPL);
             System.exit(executeRepl(options));
         }
 
