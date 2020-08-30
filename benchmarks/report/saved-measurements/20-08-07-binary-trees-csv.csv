@@ -1,0 +1,9 @@
+Implementation, Sample Size, Mean,Min,Max, Stdev, Variance
+PHP 7.4 ,1,2,3,,4,5
+Graalphp (by-val),,,,,,
+Graalphp (by-ref),,,,,,
+Graaphp-native (by-val),,,,,,
+Graalphp-native (by-ref),,,,,,
+PHP 8 Alpha,,,,,,
+HHVM,,,,,,
+JPHP,,,,,,

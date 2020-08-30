@@ -1,0 +1,7 @@
+* fannkuchredux-php-1
+
+https://benchmarksgame-team.pages.debian.net/benchmarksgame/program/fannkuchredux-php-1.html
+
+- fannkuchredux.php-1.original :: Original (untouched) Benchmark
+- fannkuchredux.php-1.graalphp :: Benchmark graalphp
+- fannkuchredux.php-1.php ::  Benchmark php

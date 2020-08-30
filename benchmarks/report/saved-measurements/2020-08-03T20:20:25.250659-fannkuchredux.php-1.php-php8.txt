@@ -1,0 +1,120 @@
+fannkuchredux-php N/iters/iter/val;12;40;0;320380.145623;
+3968050
+65
+fannkuchredux-php N/iters/iter/val;12;40;1;319351.055025;
+3968050
+65
+fannkuchredux-php N/iters/iter/val;12;40;2;318870.687676;
+3968050
+65
+fannkuchredux-php N/iters/iter/val;12;40;3;318741.798965;
+3968050
+65
+fannkuchredux-php N/iters/iter/val;12;40;4;318596.81933;
+3968050
+65
+fannkuchredux-php N/iters/iter/val;12;40;5;318661.789964;
+3968050
+65
+fannkuchredux-php N/iters/iter/val;12;40;6;318746.929951;
+3968050
+65
+fannkuchredux-php N/iters/iter/val;12;40;7;320115.501457;
+3968050
+65
+fannkuchredux-php N/iters/iter/val;12;40;8;319159.596889;
+3968050
+65
+fannkuchredux-php N/iters/iter/val;12;40;9;319228.602879;
+3968050
+65
+fannkuchredux-php N/iters/iter/val;12;40;10;318852.326883;
+3968050
+65
+fannkuchredux-php N/iters/iter/val;12;40;11;318692.910463;
+3968050
+65
+fannkuchredux-php N/iters/iter/val;12;40;12;319009.929801;
+3968050
+65
+fannkuchredux-php N/iters/iter/val;12;40;13;318801.177824;
+3968050
+65
+fannkuchredux-php N/iters/iter/val;12;40;14;318886.666329;
+3968050
+65
+fannkuchredux-php N/iters/iter/val;12;40;15;318913.299087;
+3968050
+65
+fannkuchredux-php N/iters/iter/val;12;40;16;318739.40036;
+3968050
+65
+fannkuchredux-php N/iters/iter/val;12;40;17;318782.484519;
+3968050
+65
+fannkuchredux-php N/iters/iter/val;12;40;18;318999.910714;
+3968050
+65
+fannkuchredux-php N/iters/iter/val;12;40;19;318933.513711;
+3968050
+65
+fannkuchredux-php N/iters/iter/val;12;40;20;318960.69731;
+3968050
+65
+fannkuchredux-php N/iters/iter/val;12;40;21;318949.026131;
+3968050
+65
+fannkuchredux-php N/iters/iter/val;12;40;22;318812.072501;
+3968050
+65
+fannkuchredux-php N/iters/iter/val;12;40;23;318841.432587;
+3968050
+65
+fannkuchredux-php N/iters/iter/val;12;40;24;319021.075361;
+3968050
+65
+fannkuchredux-php N/iters/iter/val;12;40;25;319751.989767;
+3968050
+65
+fannkuchredux-php N/iters/iter/val;12;40;26;318802.802162;
+3968050
+65
+fannkuchredux-php N/iters/iter/val;12;40;27;319087.388685;
+3968050
+65
+fannkuchredux-php N/iters/iter/val;12;40;28;318625.762644;
+3968050
+65
+fannkuchredux-php N/iters/iter/val;12;40;29;318450.752875;
+3968050
+65
+fannkuchredux-php N/iters/iter/val;12;40;30;318367.640396;
+3968050
+65
+fannkuchredux-php N/iters/iter/val;12;40;31;318096.374477;
+3968050
+65
+fannkuchredux-php N/iters/iter/val;12;40;32;318180.085819;
+3968050
+65
+fannkuchredux-php N/iters/iter/val;12;40;33;318273.403449;
+3968050
+65
+fannkuchredux-php N/iters/iter/val;12;40;34;318058.798131;
+3968050
+65
+fannkuchredux-php N/iters/iter/val;12;40;35;318138.612973;
+3968050
+65
+fannkuchredux-php N/iters/iter/val;12;40;36;318313.45425;
+3968050
+65
+fannkuchredux-php N/iters/iter/val;12;40;37;318137.530821;
+3968050
+65
+fannkuchredux-php N/iters/iter/val;12;40;38;318186.438085;
+3968050
+65
+fannkuchredux-php N/iters/iter/val;12;40;39;318227.348745;
+3968050
+65

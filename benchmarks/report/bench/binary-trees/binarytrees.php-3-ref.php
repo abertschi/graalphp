@@ -70,7 +70,7 @@ function doAlgorithm($n) {
 // benchmark
 
 $N = 21;
-$iter = 10;
+$iter = 50;
 
 for($i = 0; $i < $iter; $i ++) {
     $start=hrtime(true);
@@ -82,7 +82,7 @@ for($i = 0; $i < $iter; $i ++) {
 }
 
 function output($N, $iters, $iter, $val) {
-    echo "binary-trees N/iters/iter/val;" . $N . ";" . $iters . ";" . $iter . ";" . $val . ";" . "\n";
+    echo "binary-trees-ref N/iters/iter/val;" . $N . ";" . $iters . ";" . $iter . ";" . $val . ";" . "\n";
 }
 
 ?>

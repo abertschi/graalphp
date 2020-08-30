@@ -1,0 +1,10 @@
+* spectralnorm.php-2
+
+https://benchmarksgame-team.pages.debian.net/benchmarksgame/program/spectralnorm-php-2.html
+
+- spectralnorm.php-2.original :: Original untouched benchmark
+- spectralnorm.php-2-ref.graalphp :: Benchmark graalphp pass Arrays by reference (explicit)
+- spectralnorm.php-2-ref.php :: Benchmark php pass Arrays by reference (explicit)
+- spectralnorm.php-2-val.graalphp :: Benchmark graalphp pass Arrays by value
+- spectralnorm.php-2-val.php :: Benchmark php pass Arrays by value
+- spectralnorm.php-2-unmodified.php :: Benchmark php untouched with measurements

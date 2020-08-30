@@ -32,5 +32,7 @@ echo "opcache.enable_cli=1" >> $ini
 echo "opcache.jit_buffer_size=512M" >> $ini
 echo "opcache.jit=1235" >> $ini
 
+echo "php ini configs: "
+cat $ini
 ln -s /graalphp-build/php8/build/bin/php /bin/php8
 

@@ -95,4 +95,5 @@ def do_binarytrees_benchmark():
 
 # do_fib_benchmark()
 # do_fannkuchredux_benchmark()
-do_binarytrees_benchmark()
+# do_binarytrees_benchmark()
+do_fib_benchmark()

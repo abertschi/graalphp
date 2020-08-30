@@ -23,8 +23,9 @@ public class BuiltinTest {
         TestCommons.compareStdout("1337.0", "print 1337.0;");
     }
 
-    @Test
-    public void testEcho() {
-//        TestCommons.compareStdout("1337.0", "echo 1337.0, 1;");
-    }
+    // we dont support echo yet
+    // @Test(expected = Exception.class)
+    // public void testEcho() {
+        // TestCommons.compareStdout("1337.0", "echo 1337.0, 1;");
+    // }
 }
