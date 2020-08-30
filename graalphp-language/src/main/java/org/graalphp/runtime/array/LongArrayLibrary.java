@@ -46,8 +46,8 @@ public class LongArrayLibrary {
     }
 
     @ExportMessage
-    protected static LongArrayAllocator allocator(long[] receiver) {
-        return LongArrayAllocator.ALLOCATOR;
+    protected static LongArrayAllocator getArrayAllocator(long[] receiver) {
+        return LongArrayAllocator.INSTANCE;
     }
 
     @ExportMessage
@@ -60,12 +60,12 @@ public class LongArrayLibrary {
     static class GeneralizeForValue {
         @Specialization
         protected static ArrayAllocator generalizeForValue(long[] receiver, long newValue) {
-            return LongArrayAllocator.ALLOCATOR;
+            return LongArrayAllocator.INSTANCE;
         }
 
         @Specialization
         protected static ArrayAllocator generalizeForValue(long[] receiver, Object newValue) {
-            return ObjectArrayAllocator.ALLOCATOR;
+            return ObjectArrayAllocator.INSTANCE;
         }
     }
 

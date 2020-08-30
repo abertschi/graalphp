@@ -37,6 +37,7 @@ public final class PhpReturnBodyNode extends PhpExprNode {
         return PhpNull.SINGLETON;
     }
 
+
     @Override
     public String toString() {
         return "PhpReturnBodyNode{" +

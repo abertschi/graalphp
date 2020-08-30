@@ -25,13 +25,13 @@ $ $JAVA_HOME/bin/gu install native-image
 $ export GRAALPHP_BUILD_NATIVE="true"
 $ mvn package
 ```
-
-For a container image with all development dependencies see ./docker/.
+**Container Image**:  
+For a container image with all development and benchmark dependencies see [./docker/](./docker/).
 
 ### Feature Set
 High Level Overview of implemented features, current runtime code base. ca. 4000 LOC.
 
-- Implemented features are chosen to support execution of Benchmark Game Benchmarks.
+- Implemented features are chosen to support execution of the Computer Language Benchmark Game.
 
 + [x] Functions
 + [X] Arrays of integer, float, Arrays of Arrays

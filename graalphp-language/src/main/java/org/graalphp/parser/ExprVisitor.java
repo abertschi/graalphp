@@ -559,6 +559,20 @@ public class ExprVisitor extends HierarchicalVisitor {
         // XXX: We currently only support A ? B : C; conditional expressions
         // XXX: B may not exist, in that case we have a coalesce like operator
 
+        // XXX: Important, PHP's conditional expression is left-associative
+        // this causes a lot of confusion.
+        // True ? 1 : False ? 2 : 3 will return 2 not 1!
+        // this is due to the left associativity;
+        // (True ? 1 : False) ? 2 : 3
+        // as opposite to right to left associativity:
+        // True ? 1 : (False ? 2 : 3)
+
+        // :: XXX: Behavior, print a warning and force user to add ()
+        // https://wiki.php.net/rfc/ternary_associativity
+        // The feature will drop in the next release
+        // behavior is very un-intuitive which is why we throw error
+        // and force user to use parenthesis
+
         if (expr.getOperatorType() != ConditionalExpression.OP_TERNARY) {
             String msg = "Conditional Expression not supported: " + expr;
             throw new UnsupportedOperationException(msg);
@@ -567,10 +581,16 @@ public class ExprVisitor extends HierarchicalVisitor {
             String msg = "Conditional Expression with coalesce behavior not supported: " + expr;
             throw new UnsupportedOperationException(msg);
         }
+        if (expr.getIfFalse() instanceof ConditionalExpression) {
+            String msg = "PHP Deprecated:  Unparenthesized `a ? b : c ? d : e` is deprecated. " +
+                    "Use either `(a ? b : c) ? d : e` or `a ? b : (c ? d : e) in " + expr;
+            throw new UnsupportedOperationException(msg);
+        }
         final PhpIfInlineNode node = new PhpIfInlineNode(
                 initAndAcceptExpr(expr.getCondition()),
                 initAndAcceptExpr(expr.getIfTrue()),
                 initAndAcceptExpr(expr.getIfFalse()));
+
         setSource(node, expr);
         currExpr = node;
         return false;

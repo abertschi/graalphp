@@ -26,6 +26,12 @@ public class ParseUnaryTest {
         // TestCommons.evalInteger(0, String.format("-%d ", Long.MIN_VALUE));
     }
 
+
+    @Test
+    public void testNegUnderflow2() {
+        TestCommons.compareStdout("9.223372036854776E18", "$a = -9223372036854775807; $a = $a - 1; $a = -$a; print $a;");
+    }
+
     @Test
     public void testOverflowUnary() {
         System.out.println(Long.MIN_VALUE);

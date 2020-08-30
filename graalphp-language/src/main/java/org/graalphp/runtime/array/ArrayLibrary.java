@@ -16,7 +16,7 @@ import com.oracle.truffle.api.library.LibraryFactory;
  * Important! If we add a new interface method here, truffle currently throws generic null pointer
  * exception if not all default exports implement the new method. There is currently no more
  * meaningful compile error.
- * Better implement default behavior and throw exception for newly added methods in here.
+ * We Better implement default behavior and throw exception for newly added methods in here.
  *
  * @author abertschi
  */
@@ -85,7 +85,7 @@ public abstract class ArrayLibrary extends Library {
     /**
      * allocator to create new receiver
      **/
-    public ArrayAllocator allocator(Object receiver) {
+    public ArrayAllocator getArrayAllocator(Object receiver) {
         throw new UnsupportedOperationException();
     }
 
@@ -116,17 +116,17 @@ public abstract class ArrayLibrary extends Library {
     }
 
     /**
-     * grow receiver by to new size
+     * grow receiver to new size, create a copy
      **/
     public Object grow(Object receiver, int newSize) {
         throw new UnsupportedOperationException();
     }
 
-    public static ArrayAllocator getAllocatorForValue(Object obj) {
+    public static ArrayAllocator getArrayCreatorForValue(Object obj) {
         if (obj instanceof Long) {
-            return LongArrayAllocator.ALLOCATOR;
+            return LongArrayAllocator.INSTANCE;
         } else {
-            return ObjectArrayAllocator.ALLOCATOR;
+            return ObjectArrayAllocator.INSTANCE;
         }
     }
 

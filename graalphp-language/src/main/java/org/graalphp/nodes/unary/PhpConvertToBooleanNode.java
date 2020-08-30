@@ -2,6 +2,7 @@ package org.graalphp.nodes.unary;
 
 import com.oracle.truffle.api.dsl.Specialization;
 import org.graalphp.nodes.PhpExprNode;
+import org.graalphp.runtime.array.PhpArray;
 
 /**
  * In PHP, a value used in a condition is automatically converted to boolean
@@ -32,6 +33,13 @@ public abstract class PhpConvertToBooleanNode extends PhpUnaryNode {
     @Specialization
     protected boolean doDouble(double val) {
         return val != 0.0;
+    }
+
+    @Specialization
+    protected boolean doArray(PhpArray array) {
+        // XXX: Depending on the backend, a capacity may be higher than what is already stored
+        // see ArrayLibrary
+        return array.getCapacity() == 0;
     }
 
     @Override
