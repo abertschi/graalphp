@@ -1,7 +1,12 @@
 import datetime
+import os
 import statistics
 
 from bench_db import export_to_csv, get_timings_by_id
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 
 def plot_speedup_box(title, save_name, php_val, gphp_val, gphp_native_val, warmup_thres=0):
@@ -159,7 +164,7 @@ def binary_trees_report_plot():
         "font.family": "serif",
     })
 
-    title = 'Binary-Trees Benchmark'
+    title = 'Binary-Trees'
     xlabel = 'Speedup (larger is better)'
     ylabel = 'Implementation'
 
@@ -256,7 +261,7 @@ def spectralnorm_report_plot():
         "font.serif": ["Palatino"],
     })
 
-    title = 'Spectralnorm Benchmark'
+    title = 'Spectralnorm'
     xlabel = 'Speedup (larger is better)'
 
     impl_indices = np.arange(len(impl_txt))
@@ -277,11 +282,12 @@ def spectralnorm_report_plot():
     plt.title(title)
     sns.despine()
 
+    ax.get_children()[11].set_color(color_by_ref)
     ax.get_children()[10].set_color(color_by_ref)
     ax.get_children()[9].set_color(color_by_ref)
     ax.get_children()[8].set_color(color_by_ref)
     ax.get_children()[7].set_color(color_by_ref)
-    ax.get_children()[6].set_color(color_by_ref)
+    # ax.get_children()[6].set_color(color_by_ref)
 
     for i, v in enumerate(speedups):
         ax.text(v + .2, i, '{:.2f}'.format(v), va='center', color='gray')
@@ -343,7 +349,7 @@ def fannkuchredux():
         "font.serif": ["Palatino"],
     })
 
-    title = 'Fannkuchredux Benchmark'
+    title = 'Fannkuchredux'
     xlabel = 'Speedup (larger is better)'
 
     impl_indices = np.arange(len(impl_txt))
@@ -380,7 +386,91 @@ def fannkuchredux():
     plt.show()
 
 
+num_iter = 7
+def warmup_all_plots():
+    warmup_plot_fannkuch()
+    warmup_plot_spectralnorm()
+    warmup_plot_bintree()
+
+def warmup_plot_fannkuch():
+    runs=[]
+
+    runs.append(get_timings_by_id(89, warmup=0))
+    do_warmup_plot('fannkuchredux \ncopy-by-val', runs, num_iter=num_iter, subtitle='')
+    pass
+
+def warmup_plot_spectralnorm():
+    runs=[]
+
+    runs.append(get_timings_by_id(89, warmup=0))
+    do_warmup_plot('spectralnorm \ncopy-by-val', runs, num_iter=num_iter)
+
+    do_warmup_plot('spectralnorm \ncopy-by-ref', runs, num_iter=num_iter)
+    pass
+
+def warmup_plot_bintree():
+    runs=[]
+
+    runs.append(get_timings_by_id(89, warmup=0))
+    do_warmup_plot('binary-trees \ncopy-by-val', runs, num_iter=num_iter)
+
+    do_warmup_plot('binary-trees \ncopy-by-ref', runs, num_iter=num_iter)
+    pass
+
+def do_warmup_plot(name, runs, num_iter, subtitle=''):
+    values = []
+    groups = []
+
+    for i in range(num_iter):
+        for r in runs:
+            print(r)
+            values.append(r[i])
+            groups.append(i + 1)
+
+    df = pd.DataFrame({'value': values, 'group': groups})
+    print(df)
+
+    plt.rcParams.update({
+        "text.usetex": True,
+        "font.family": "serif",
+        "font.serif": ["Palatino"],
+    })
+    sns.set_color_codes()
+    sns.despine()
+
+
+    ax = df.boxplot(column='value', by='group', showfliers=True,
+                    positions=range(df.group.unique().shape[0]), color="blue")
+
+    g = sns.pointplot(x='group', y='value', data=df.groupby('group', as_index=False).mean(), ax=ax, color="black", linestyles='--', scale=0.5)
+
+    plt.suptitle(subtitle, fontsize=15)
+    plt.ylabel("execution time (s)")
+    plt.xlabel("iteration")
+    plt.title('')
+
+    vals = df[["value"]].to_numpy()
+    # plt.yticks(np.arange(min(vals) - 10, max(vals) + 10, 5))
+
+    fig = plt.gcf()
+    fig.set_size_inches(7, 2)
+
+    ax2 = ax.twinx()
+    ax2.set_ylabel(name, rotation=270, labelpad=30) # fontsize=12)
+    ax2.set_yticklabels([])
+    ax2.set_yticks([])
+
+    date = str(datetime.datetime.now()).replace(':', '-').replace(' ', '-')
+    sns.despine(bottom=True, left=True)
+    os.makedirs('render', exist_ok=True)
+    plt.savefig("render/warmum-" + name.split(' ')[0] + date + '.svg')
+    plt.show()
+
+    pass
+
 if __name__ == '__main__':
-    fannkuchredux()
+    # warmup_plot_fannkuch()
+    warmup_all_plots()
+    # fannkuchredux()
     # binary_trees_report_plot()
     # spectralnorm_report_plot()
