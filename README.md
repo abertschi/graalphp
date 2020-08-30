@@ -44,12 +44,16 @@ base. ca. 4000 LOC.
 
 - Implemented features are chosen to support execution of the Computer
   Language Benchmark Game.
-
+  
+Non exhaustive list of features:
 + [x] Functions
 + [X] Arrays of integer, float, Arrays of Arrays
 + [X] Variable Scoped Variables, unset, assign
 + [X] Binary Operators
 + [X] Unary Operators
++ [ ] Classes
++ [ ] Namespaces
++ [ ] Exceptions
 
 
 ### More Resources
