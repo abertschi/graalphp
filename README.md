@@ -35,8 +35,6 @@ $ $JAVA_HOME/bin/gu install native-image
 $ export GRAALPHP_BUILD_NATIVE="true"
 $ mvn package
 ```
-**Container Image**:  
-
 
 ### Feature Set
 High Level Overview of implemented features, current runtime code
