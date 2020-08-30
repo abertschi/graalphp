@@ -10,10 +10,10 @@ public interface ArrayAllocator {
     /**
      * Allocate array of given capacity
      **/
-    Object allocate(int capacity);
+    Object createArray(int capacity);
 
     /**
      * can store value?
      **/
-    boolean accepts(Object value);
+    boolean acceptsValue(Object value);
 }

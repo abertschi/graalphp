@@ -24,7 +24,7 @@ public final class PhpFunction implements TruffleObject {
     private String name;
 
     /**
-     * Truffle Call Target
+     * Truffle Call Target, represents the current implementation of this function
      */
     private RootCallTarget target;
 
@@ -38,6 +38,7 @@ public final class PhpFunction implements TruffleObject {
      */
     private boolean returnReference = false;
 
+    /** utility to assume that the implementation (rootcalltarget) does not change **/
     private final CyclicAssumption callTargetStable;
 
     // is true if target is set properly

@@ -13,7 +13,7 @@ public final class ArrayFactory {
     }
 
     public static PhpArray newArray(int capacity) {
-        return new PhpArray(LongArrayAllocator.ALLOCATOR.allocate(capacity), capacity);
+        return new PhpArray(LongArrayAllocator.INSTANCE.createArray(capacity), capacity);
     }
 
     public static PhpArray newArray(Object backend, int cap) {

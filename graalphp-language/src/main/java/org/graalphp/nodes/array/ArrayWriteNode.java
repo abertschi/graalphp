@@ -63,7 +63,7 @@ public abstract class ArrayWriteNode extends PhpExprNode {
                     , "isArrayInBounds(array, index)"
             },
             limit = LIMIT)
-    protected Object writeInBoundsWrongType(
+    protected Object writeInBoundsTypeMismatch(
             PhpArray array,
             long index,
             Object value,
@@ -73,7 +73,7 @@ public abstract class ArrayWriteNode extends PhpExprNode {
         final int newLength = getIncreasedCapacity(array, index);
         final Object oldBackend = array.getBackend();
         final Object newBackend = library
-                .generalizeForValue(array.getBackend(), value).allocate(newLength);
+                .generalizeForValue(array.getBackend(), value).createArray(newLength);
         library.copyContents(oldBackend, newBackend, array.getCapacity());
         array.setBackend(newBackend);
         array.setCapacity(newLength);
@@ -121,7 +121,7 @@ public abstract class ArrayWriteNode extends PhpExprNode {
                     , "isOutOfBounds(array, index)"
             },
             limit = LIMIT)
-    protected Object outOfBoundsDifferentType(
+    protected Object outOfBoundsTypeMismatch(
             PhpArray array,
             long index,
             Object value,
@@ -153,7 +153,7 @@ public abstract class ArrayWriteNode extends PhpExprNode {
                                        ArrayLibrary library) {
         final Object oldBackend = array.getBackend();
         final Object newBackend = library
-                .generalizeForValue(array.getBackend(), value).allocate(newLength);
+                .generalizeForValue(array.getBackend(), value).createArray(newLength);
         library.copyContents(oldBackend, newBackend, array.getCapacity());
         array.setBackend(newBackend);
         array.setCapacity(newLength);
