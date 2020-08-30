@@ -1,0 +1,6 @@
+venv
+venv-docker
+tmp
+measurements.sqlite.backups
+.idea
+docker

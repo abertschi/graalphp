@@ -15,7 +15,7 @@ Benchmarks:
 + bench_fannkuch.py: fannkuch redux
 + bench_spectralnorm.py: spectralnorm
 
-
+#+BEGIN_COMMENT
 ** Results
 *** Performance, No-Turbo, 2.7 GHz
 **** Fannkuchredux-1
@@ -45,3 +45,5 @@ Benchmarks:
 **** Spectralnorm-unmod
 + PHP: 85
 + PHP8: 84
+
+#+END_COMMENT

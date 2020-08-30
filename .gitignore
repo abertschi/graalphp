@@ -57,3 +57,4 @@ pom.xml.versionsBackup
 /docs/benchmarks/README.tex
 /docs/benchmarks/auto/
 /benchmarks/report/dump.txt
+.idea.*

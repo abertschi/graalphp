@@ -6,10 +6,20 @@
 [![](https://img.shields.io/github/last-commit/abertschi/graalphp)]()
 
 # A PHP implementation built on GraalVM
-Graalphp is an experimental just-in-time (JIT) compiler and runtime for the PHP
-Programming Language. It is based on GraalVM. This is a thesis project at ETH Zurich. Work in progress.
+Graalphp is an experimental just-in-time (JIT) compiler and runtime
+for PHP 7.4+. It is hosted on Truffle and GraalVM. This is a thesis
+project at ETH Zurich.
+
+### Benchmarks
+- Performance is evaluated on benchmarks by [The Computer Language
+Benchmarks Game](https://benchmarksgame-team.pages.debian.net/benchmarksgame/index.html)
+- See [benchmarks](https://github.com/abertschi/graalphp/tree/master/benchmarks/evaluation). We
+  list the implemented feature set and current benchmark results.
 
 ### Build and Run
+For a container image with development and benchmark dependencies see
+[./docker/](./docker/).
+
 ```shell
 # Build Dependencies: Linux environment, maven, ant, GraalVM
 # download GraalVM from https://github.com/graalvm/graalvm-ce-builds/releases
@@ -26,28 +36,22 @@ $ export GRAALPHP_BUILD_NATIVE="true"
 $ mvn package
 ```
 **Container Image**:  
-For a container image with all development and benchmark dependencies see [./docker/](./docker/).
+
 
 ### Feature Set
-High Level Overview of implemented features, current runtime code base. ca. 4000 LOC.
+High Level Overview of implemented features, current runtime code
+base. ca. 4000 LOC.
 
-- Implemented features are chosen to support execution of the Computer Language Benchmark Game.
+- Implemented features are chosen to support execution of the Computer
+  Language Benchmark Game.
 
 + [x] Functions
 + [X] Arrays of integer, float, Arrays of Arrays
 + [X] Variable Scoped Variables, unset, assign
 + [X] Binary Operators
 + [X] Unary Operators
-+ [ ] try/ catch
-+ [ ] Classes
-+ [ ] Namespaces
-+ [ ] PHP Runtime
 
-### Benchmarks
-- Performance is going to be evaluated based on benchmarks by [The Computer Language
-Benchmarks Game](https://benchmarksgame-team.pages.debian.net/benchmarksgame/index.html)
-- See [benchmarks](https://github.com/abertschi/graalphp/tree/feature/benchmark-scripts/docs/benchmarks). We list the implemented feature set and current benchmark results. 
 
 ### More Resources
-- Graal Github Issue :: https://github.com/oracle/graal/issues/361
-- Truffle Simplelanguage :: https://www.graalvm.org/docs/graalvm-as-a-platform/implement-language/
+- Graal Github Issue for PHP support :: https://github.com/oracle/graal/issues/361
+- GraalVM :: https://graalvm.org
