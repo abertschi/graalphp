@@ -6,7 +6,6 @@ import com.oracle.truffle.api.library.CachedLibrary;
 import com.oracle.truffle.api.nodes.Node;
 import org.graalphp.exception.ArrayCapacityExceededException;
 import org.graalphp.nodes.PhpExprNode;
-import org.graalphp.runtime.PhpRuntime;
 import org.graalphp.runtime.array.ArrayLibrary;
 import org.graalphp.runtime.array.PhpArray;
 
@@ -29,7 +28,7 @@ import org.graalphp.runtime.array.PhpArray;
 public abstract class ArrayWriteNode extends PhpExprNode {
 
     public static final String LIMIT = ArrayLibrary.SPECIALIZATION_LIMIT;
-    private static final int DEFAULT_CAPACITY_INCREASE = PhpRuntime.INITIAL_ARRAY_CAPACITY;
+    private static final int INCREASE_FACTOR = 2;
 
     public static ArrayWriteNode create() {
         return ArrayWriteNodeGen.create(null, null, null);
@@ -51,7 +50,6 @@ public abstract class ArrayWriteNode extends PhpExprNode {
             long index,
             Object value,
             @CachedLibrary("array.getBackend()") ArrayLibrary library) {
-
         library.write(array.getBackend(), convertToInt(index), value);
         return value;
     }
@@ -65,74 +63,73 @@ public abstract class ArrayWriteNode extends PhpExprNode {
                     , "isArrayInBounds(array, index)"
             },
             limit = LIMIT)
-    protected Object writeInBoundsWrongType(
+    protected Object writeInBoundsTypeMismatch(
             PhpArray array,
             long index,
             Object value,
             @CachedLibrary("array.getBackend()") ArrayLibrary library,
-            @CachedLibrary(limit = LIMIT) ArrayLibrary newLibrary) {
+            @CachedLibrary(limit = LIMIT) ArrayLibrary libraryNewBackend) {
 
-        final int len = array.getCapacity();
+        final int newLength = getIncreasedCapacity(array, index);
         final Object oldBackend = array.getBackend();
         final Object newBackend = library
-                .generalizeForValue(array.getBackend(), value).allocate(len);
-
-        library.copyContents(oldBackend, newBackend, len);
-        newLibrary.write(newBackend, convertToInt(index), value);
+                .generalizeForValue(array.getBackend(), value).createArray(newLength);
+        library.copyContents(oldBackend, newBackend, array.getCapacity());
         array.setBackend(newBackend);
+        array.setCapacity(newLength);
 
+        libraryNewBackend.write(array.getBackend(), convertToInt(index), value);
         return value;
     }
 
     /**
-     * Capacity is too little by one, we grow array, same type
+     * Capacity is too little, we grow array, same type
+     * <p>
+     * XXX: This may be inefficient if index is too large
+     * Ideally we distinguish between to more cases once we implement map data structures
+     *   1. do we insert at the end of the array (index: backend.capacity)
+     *   2. do we insert somewhere else -> convert to map structure
      */
     @Specialization(
             guards = {
                     "library.acceptsValue(array.getBackend(), value)"
-                    , "canAppendByOne(array, index)"
+                    , "isOutOfBounds(array, index)"
             },
             limit = LIMIT)
-    protected Object appendByOneSameType(
-            PhpArray array,
-            long index,
-            Object value,
-            @CachedLibrary("array.getBackend()") ArrayLibrary library) {
-
-        final int newLength = array.getCapacity() + DEFAULT_CAPACITY_INCREASE;
-        array.setBackend(library.grow(array.getBackend(), newLength));
-        array.setCapacity(newLength);
-
-        library.write(array.getBackend(), convertToInt(index), value);
-        return value;
-    }
-
-    /**
-     * Capacity is too little by one, we grow array, different type
-     */
-    @Specialization(
-            guards = {
-                    "!library.acceptsValue(array.getBackend(), value)"
-                    , "canAppendByOne(array, index)"
-            },
-            limit = LIMIT)
-    protected Object appendByOneDifferentType(
+    protected Object outOfBoundsSameType(
             PhpArray array,
             long index,
             Object value,
             @CachedLibrary("array.getBackend()") ArrayLibrary library,
-            @CachedLibrary(limit = LIMIT) ArrayLibrary newLibrary) {
-
-        final int oldLength = array.getCapacity();
-        final int newLength = oldLength + DEFAULT_CAPACITY_INCREASE;
-        final Object oldBackend = array.getBackend();
-        final Object newBackend = library
-                .generalizeForValue(array.getBackend(), value).allocate(newLength);
-
-        library.copyContents(oldBackend, newBackend, oldLength);
-        newLibrary.write(newBackend, convertToInt(index), value);
-        array.setBackend(newBackend);
+            @CachedLibrary(limit = LIMIT) ArrayLibrary libraryNewBackend) {
+        int newLength = getIncreasedCapacity(array, index);
+        array.setBackend(library.grow(array.getBackend(), newLength));
         array.setCapacity(newLength);
+
+        libraryNewBackend.write(array.getBackend(), convertToInt(index), value);
+        return value;
+    }
+
+    /**
+     * Capacity is too little, we grow array, different type
+     *
+     * XXX: This may be inefficient if index is too large
+     */
+    @Specialization(
+            guards = {
+                    "!library.acceptsValue(array.getBackend(), value)"
+                    , "isOutOfBounds(array, index)"
+            },
+            limit = LIMIT)
+    protected Object outOfBoundsTypeMismatch(
+            PhpArray array,
+            long index,
+            Object value,
+            @CachedLibrary("array.getBackend()") ArrayLibrary library,
+            @CachedLibrary(limit = LIMIT) ArrayLibrary libraryNewBackend) {
+
+        growBackendGeneralize(array, value, getIncreasedCapacity(array, index), library);
+        libraryNewBackend.write(array.getBackend(), convertToInt(index), value);
         return value;
     }
 
@@ -140,8 +137,34 @@ public abstract class ArrayWriteNode extends PhpExprNode {
         return index >= 0 && index < array.getCapacity();
     }
 
-    protected static boolean canAppendByOne(PhpArray array, long index) {
-        return array.getCapacity() == index;
+    protected static boolean isOutOfBounds(PhpArray array, long index) {
+        return array.getCapacity() <= index;
+    }
+
+    protected abstract Node getReceiver();
+
+    protected abstract Node getIndex();
+
+    protected abstract Node getValue();
+
+    private void growBackendGeneralize(PhpArray array,
+                                       Object value,
+                                       int newLength,
+                                       ArrayLibrary library) {
+        final Object oldBackend = array.getBackend();
+        final Object newBackend = library
+                .generalizeForValue(array.getBackend(), value).createArray(newLength);
+        library.copyContents(oldBackend, newBackend, array.getCapacity());
+        array.setBackend(newBackend);
+        array.setCapacity(newLength);
+    }
+
+    private int getIncreasedCapacity(PhpArray array, long index) {
+        int newLength = array.getCapacity() * INCREASE_FACTOR;
+        if (newLength < index) {
+            newLength = convertToInt(index) * INCREASE_FACTOR;
+        }
+        return newLength;
     }
 
     private int convertToInt(long val) {
@@ -152,12 +175,6 @@ public abstract class ArrayWriteNode extends PhpExprNode {
                     , this);
         }
     }
-
-    protected abstract Node getReceiver();
-
-    protected abstract Node getIndex();
-
-    protected abstract Node getValue();
 
     @Override
     public String toString() {

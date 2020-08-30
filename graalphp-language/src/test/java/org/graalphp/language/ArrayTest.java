@@ -112,4 +112,15 @@ public class ArrayTest {
                 "print($C[1]);  print($a);";
         TestCommons.compareStdout("2020-1", code, true);
     }
+
+    @Test
+    public void testOutOfBounds() {
+        TestCommons.compareStdout("1", "$A = array(); $A[1000] = 1; print($A[1000]);");
+    }
+
+    @Test
+    public void testOutOfBoundsDifferentType() {
+        TestCommons.compareStdout("1.2", "$A = array(); $A[1000] = 1.2; print($A[1000]);");
+    }
+
 }

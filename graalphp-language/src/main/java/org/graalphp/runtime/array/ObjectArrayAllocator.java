@@ -7,18 +7,18 @@ package org.graalphp.runtime.array;
  */
 public class ObjectArrayAllocator implements ArrayAllocator {
 
-    public static final ObjectArrayAllocator ALLOCATOR = new ObjectArrayAllocator();
+    public static final ObjectArrayAllocator INSTANCE = new ObjectArrayAllocator();
 
     private ObjectArrayAllocator() {
     }
 
     @Override
-    public Object allocate(int capacity) {
+    public Object createArray(int capacity) {
         return new Object[capacity];
     }
 
     @Override
-    public boolean accepts(Object value) {
+    public boolean acceptsValue(Object value) {
         return true;
     }
 }

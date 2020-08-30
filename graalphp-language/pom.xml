@@ -128,6 +128,7 @@
                         <source>1.8</source>
                         <target>1.8</target>
                         <generatedSourcesDirectory>${project.build.directory}/generated-sources/annotations</generatedSourcesDirectory>
+<!--                        <generatedTestSourcesDirectory>${project.build.directory}/generated-sources/annotations</generatedTestSourcesDirectory>-->
                     </configuration>
                 </plugin>
             </plugins>

@@ -42,8 +42,8 @@ public abstract class AssignByValueNode extends AssignSemanticNode {
             PhpArray array,
             @CachedLibrary(limit = ArrayLibrary.SPECIALIZATION_LIMIT) ArrayLibrary lib) {
 
-        ArrayAllocator allocator = lib.allocator(array.getBackend());
-        Object newBackend = allocator.allocate(array.getCapacity());
+        ArrayAllocator allocator = lib.getArrayAllocator(array.getBackend());
+        Object newBackend = allocator.createArray(array.getCapacity());
         lib.copyDeepContents(array.getBackend(), newBackend, array.getCapacity());
         return ArrayFactory.newArray(newBackend, array.getCapacity());
     }

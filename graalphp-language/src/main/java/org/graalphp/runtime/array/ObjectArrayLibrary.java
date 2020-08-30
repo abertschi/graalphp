@@ -45,15 +45,15 @@ public class ObjectArrayLibrary {
     }
 
     @ExportMessage
-    protected static ObjectArrayAllocator allocator(Object[] receiver) {
-        return ObjectArrayAllocator.ALLOCATOR;
+    protected static ObjectArrayAllocator getArrayAllocator(Object[] receiver) {
+        return ObjectArrayAllocator.INSTANCE;
     }
 
     @ExportMessage
     static class GeneralizeForValue {
         @Specialization
         protected static ArrayAllocator generalizeForValue(Object[] receiver, Object newValue) {
-            return ObjectArrayAllocator.ALLOCATOR;
+            return ObjectArrayAllocator.INSTANCE;
         }
     }
 
@@ -117,8 +117,8 @@ public class ObjectArrayLibrary {
                 if (receiver[i] instanceof PhpArray) {
                     final PhpArray array = (PhpArray) receiver[i];
                     final Object backendCopy =
-                            helpers.allocator(array.getBackend())
-                                    .allocate(array.getCapacity());
+                            helpers.getArrayAllocator(array.getBackend())
+                                    .createArray(array.getCapacity());
 
                     final PhpArray arrayCopy = ArrayFactory
                             .newArray(backendCopy, array.getCapacity());
