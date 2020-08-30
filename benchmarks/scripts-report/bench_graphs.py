@@ -112,13 +112,13 @@ def binary_trees_report_plot():
         'PHP 8 Alpha',
         'JPHP',
         'HHVM',
-        'graalphp-native',
-        'graalphp',
+        '\\textbf{graalphp-native}',
+        '\\textbf{graalphp}',
         # by ref
         'PHP 7',
         'PHP 8 Alpha',
-        'graalphp-native',
-        'graalphp'
+        '\\textbf{graalphp-native}',
+        '\\textbf{graalphp}'
     )
 
     vals = [
@@ -189,8 +189,8 @@ def binary_trees_report_plot():
     for i, v in enumerate(speedups):
         ax.text(v + .2, i, '{:.2f}'.format(v), va='center', color='gray')
 
-    patch_by_val = mpatches.Patch(color=color_by_val, label='copy by value (default)')
-    patch_by_ref = mpatches.Patch(color=color_by_ref, label='copy by reference (explicit)')
+    patch_by_val = mpatches.Patch(color=color_by_val, label='copy-by-value (default)')
+    patch_by_ref = mpatches.Patch(color=color_by_ref, label='copy-by-reference (explicit)')
 
     plt.legend(handles=[patch_by_ref, patch_by_val], loc='lower right')
     plt.draw()
@@ -225,14 +225,14 @@ def spectralnorm_report_plot():
         'PHP 8 Alpha',
         'JPHP',
         'HHVM',
-        'graalphp-native',
-        'graalphp',
+        '\\textbf{graalphp-native}',
+        '\\textbf{graalphp}',
         # by ref
         'PHP 7',
         'PHP 8 Alpha',
         'JPHP',
-        'graalphp-native',
-        'graalphp'
+        '\\textbf{graalphp-native}',
+        '\\textbf{graalphp}'
     )
 
     vals = [get_timings_by_id(i) for i in ids]
@@ -286,8 +286,8 @@ def spectralnorm_report_plot():
     for i, v in enumerate(speedups):
         ax.text(v + .2, i, '{:.2f}'.format(v), va='center', color='gray')
 
-    patch_by_val = mpatches.Patch(color=color_by_val, label='copy by value (default)')
-    patch_by_ref = mpatches.Patch(color=color_by_ref, label='copy by reference (explicit)')
+    patch_by_val = mpatches.Patch(color=color_by_val, label='copy-by-value (default)')
+    patch_by_ref = mpatches.Patch(color=color_by_ref, label='copy-by-reference (explicit)')
 
     plt.legend(handles=[patch_by_ref, patch_by_val], loc='lower right')
     plt.draw()
@@ -317,8 +317,8 @@ def fannkuchredux():
         'PHP 8 Alpha',
         'JPHP',
         'HHVM',
-        'graalphp-native',
-        'graalphp',
+        '\\textbf{graalphp-native}',
+        '\\textbf{graalphp}',
     )
 
     vals = [get_timings_by_id(i) for i in ids]
@@ -367,6 +367,10 @@ def fannkuchredux():
     for i, v in enumerate(speedups):
         ax.text(v + .2, i, '{:.2f}'.format(v), va='center', color='gray')
 
+    patch_by_val = mpatches.Patch(color=color_by_val, label='copy-by-value (default)')
+
+    plt.legend(handles=[patch_by_val], loc='lower right')
+
     plt.draw()
     plt.tight_layout()
 
@@ -377,4 +381,6 @@ def fannkuchredux():
 
 
 if __name__ == '__main__':
-    binary_trees_report_plot()
+    fannkuchredux()
+    # binary_trees_report_plot()
+    # spectralnorm_report_plot()

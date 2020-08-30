@@ -1,3 +1,8 @@
 venv
 measurements/
 measurements.sqlite.backups/
+fannkuchredux-2020*
+binary-trees-2020*
+spectralnorm-2020*
+__pychache__/*
+__pycache__/
