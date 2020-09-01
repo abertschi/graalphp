@@ -1,7 +1,11 @@
 import datetime
+import os
 import statistics
+from time import strftime, gmtime
 
+import pandas as pd
 from bench_db import export_to_csv, get_timings_by_id
+# from datetime import datetime
 
 
 def plot_speedup_box(title, save_name, php_val, gphp_val, gphp_native_val, warmup_thres=0):
@@ -112,13 +116,13 @@ def binary_trees_report_plot():
         'PHP 8 Alpha',
         'JPHP',
         'HHVM',
-        'graalphp-native',
-        'graalphp',
+        '\\textbf{graalphp-native}',
+        '\\textbf{graalphp}',
         # by ref
         'PHP 7',
         'PHP 8 Alpha',
-        'graalphp-native',
-        'graalphp'
+        '\\textbf{graalphp-native}',
+        '\\textbf{graalphp}'
     )
 
     vals = [
@@ -159,7 +163,7 @@ def binary_trees_report_plot():
         "font.family": "serif",
     })
 
-    title = 'Binary-Trees Benchmark'
+    title = 'Binary-Trees'
     xlabel = 'Speedup (larger is better)'
     ylabel = 'Implementation'
 
@@ -189,8 +193,8 @@ def binary_trees_report_plot():
     for i, v in enumerate(speedups):
         ax.text(v + .2, i, '{:.2f}'.format(v), va='center', color='gray')
 
-    patch_by_val = mpatches.Patch(color=color_by_val, label='copy by value (default)')
-    patch_by_ref = mpatches.Patch(color=color_by_ref, label='copy by reference (explicit)')
+    patch_by_val = mpatches.Patch(color=color_by_val, label='copy-by-value (default)')
+    patch_by_ref = mpatches.Patch(color=color_by_ref, label='copy-by-reference (explicit)')
 
     plt.legend(handles=[patch_by_ref, patch_by_val], loc='lower right')
     plt.draw()
@@ -225,14 +229,14 @@ def spectralnorm_report_plot():
         'PHP 8 Alpha',
         'JPHP',
         'HHVM',
-        'graalphp-native',
-        'graalphp',
+        '\\textbf{graalphp-native}',
+        '\\textbf{graalphp}',
         # by ref
         'PHP 7',
         'PHP 8 Alpha',
         'JPHP',
-        'graalphp-native',
-        'graalphp'
+        '\\textbf{graalphp-native}',
+        '\\textbf{graalphp}'
     )
 
     vals = [get_timings_by_id(i) for i in ids]
@@ -256,7 +260,7 @@ def spectralnorm_report_plot():
         "font.serif": ["Palatino"],
     })
 
-    title = 'Spectralnorm Benchmark'
+    title = 'Spectralnorm'
     xlabel = 'Speedup (larger is better)'
 
     impl_indices = np.arange(len(impl_txt))
@@ -277,17 +281,17 @@ def spectralnorm_report_plot():
     plt.title(title)
     sns.despine()
 
+    ax.get_children()[11].set_color(color_by_ref)
     ax.get_children()[10].set_color(color_by_ref)
     ax.get_children()[9].set_color(color_by_ref)
     ax.get_children()[8].set_color(color_by_ref)
     ax.get_children()[7].set_color(color_by_ref)
-    ax.get_children()[6].set_color(color_by_ref)
-
+    # ax.get_children()[6].set_color(color_by_ref)
     for i, v in enumerate(speedups):
         ax.text(v + .2, i, '{:.2f}'.format(v), va='center', color='gray')
 
-    patch_by_val = mpatches.Patch(color=color_by_val, label='copy by value (default)')
-    patch_by_ref = mpatches.Patch(color=color_by_ref, label='copy by reference (explicit)')
+    patch_by_val = mpatches.Patch(color=color_by_val, label='copy-by-value (default)')
+    patch_by_ref = mpatches.Patch(color=color_by_ref, label='copy-by-reference (explicit)')
 
     plt.legend(handles=[patch_by_ref, patch_by_val], loc='lower right')
     plt.draw()
@@ -317,8 +321,8 @@ def fannkuchredux():
         'PHP 8 Alpha',
         'JPHP',
         'HHVM',
-        'graalphp-native',
-        'graalphp',
+        '\\textbf{graalphp-native}',
+        '\\textbf{graalphp}',
     )
 
     vals = [get_timings_by_id(i) for i in ids]
@@ -343,7 +347,7 @@ def fannkuchredux():
         "font.serif": ["Palatino"],
     })
 
-    title = 'Fannkuchredux Benchmark'
+    title = 'Fannkuchredux'
     xlabel = 'Speedup (larger is better)'
 
     impl_indices = np.arange(len(impl_txt))
@@ -367,6 +371,10 @@ def fannkuchredux():
     for i, v in enumerate(speedups):
         ax.text(v + .2, i, '{:.2f}'.format(v), va='center', color='gray')
 
+    patch_by_val = mpatches.Patch(color=color_by_val, label='copy-by-value (default)')
+
+    plt.legend(handles=[patch_by_val], loc='lower right')
+
     plt.draw()
     plt.tight_layout()
 
@@ -376,5 +384,65 @@ def fannkuchredux():
     plt.show()
 
 
+
+def do_warmup_plot(name, runs, num_iter, subtitle='', color='blue', file_prefix=''):
+    values = []
+    groups = []
+
+    N = len(runs)
+    for i in range(num_iter):
+        for r in runs:
+            print(r)
+            values.append(r[i])
+            groups.append(i + 1)
+
+    df = pd.DataFrame({'value': values, 'group': groups})
+    print(df)
+
+    plt.rcParams.update({
+        "text.usetex": True,
+        "font.family": "serif",
+        "font.serif": ["Palatino"],
+    })
+    sns.set_color_codes()
+    sns.despine()
+
+    ax = df.boxplot(column='value', by='group', showfliers=True,
+                    positions=range(df.group.unique().shape[0]), color="black")
+
+    g = sns.pointplot(x='group', y='value', data=df.groupby('group', as_index=False).mean(), ax=ax, color=color,
+                      linestyles='--', scale=0.5)
+
+    plt.suptitle(subtitle, fontsize=15)
+    plt.ylabel("execution time (s)")
+    plt.xlabel("iteration")
+    plt.title('')
+
+    vals = df[["value"]].to_numpy()
+    # plt.yticks(np.arange(min(vals) - 10, max(vals) + 10, 5))
+    fig = plt.gcf()
+    fig.set_size_inches(7, 2)
+
+    ax2 = ax.twinx()
+    ax2.set_ylabel('{} (N={})'.format(name, N)
+                   , rotation=270, labelpad=30)  # fontsize=12)
+    ax2.set_yticklabels([])
+    ax2.set_yticks([])
+
+    date = str(datetime.datetime.now()).replace(':', '-').replace(' ', '-').replace('.', '-')
+    sns.despine(bottom=True, left=True)
+    os.makedirs('render', exist_ok=True)
+    plt.savefig("render/warmum-" + file_prefix + name.split(' ')[0] + date + '.svg')
+    plt.show()
+
+    pass
+
+
 if __name__ == '__main__':
-    binary_trees_report_plot()
+    pass
+    # warmup_plot_fannkuch()
+
+    # warmup_plot_fannkuch()
+    # fannkuchredux()
+    # binary_trees_report_plot()
+    # spectralnorm_report_plot()

@@ -190,7 +190,7 @@ def show_all_curated(warmup=5):
         type = bm.type
 
         for run in list(select(r for r in Run
-                               if r.benchmark.name == name).order_by(Run.date)):
+                               if r.benchmark.name == name).order_by(Run.binary, Run.date)):
             date = run.date
             binary = run.binary
             cmd = run.command
@@ -249,7 +249,7 @@ def show_all_curated(warmup=5):
 
 # orders by measurement run
 @db_session
-def get_timings_by_id(id, warmup = 5):
+def get_timings_by_id(id, warmup=5):
     measurements = list(select(m for m in Measurement
                                if m.run.id == id).order_by(Measurement.iteration))
     filtered = measurements[warmup:]
@@ -259,13 +259,29 @@ def get_timings_by_id(id, warmup = 5):
 
     return timings
 
+
+# @db_session
+# def get_timings_in_range(bench_name, binary, from_date, to_date, warmup=0):
+#     measurements = list(select(m for m in Measurement
+#                                if m.run.benchmark.name == bench_name and \
+#                                m.run.binary == binary and \
+#                                from_date <= m.run.date <= to_date).order_by(Measurement.iteration))
+#     filtered = measurements[warmup:]
+#     timings = []
+#     for m in filtered:
+#         timings.append(m.timing_ms / 1000)  # vals in secods
+#         print(str(m.timing_ms / 1000) + '/' +  m.run.binary + '/' + m.benchmark.name)
+#
+#     return timings
+#
+
 @db_session
 def export_to_csv(ids=[], warmup=5,
                   export_dir=os.path.dirname(os.path.realpath(__file__)),
                   file_prefix='',
                   sort=True,
                   limit=True,
-                  write_file = True):
+                  write_file=True):
     rows = [
         ["implementation", "benchmark", "n", "warmup", "mean", "median", "min", "max", "stdev", "variance", "db-id"]]
 

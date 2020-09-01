@@ -223,13 +223,15 @@ class Bench:
         if Bench.skip_graalphp:
             print("skip_graalphp=True")
             return None
-        return self.run_single_test(bench, prefix, 'graalphp', GRAALPHP_BINARY, args, src)
+        return self.run_single_test(bench, prefix, 'graalphp', GRAALPHP_BINARY, args, src,
+                                    binary_version=Bench._get_graalphp_version(GRAALPHP_BINARY))
 
     def run_graalphp_native(self, bench, prefix, src, args=''):
         if Bench.skip_graalphp_native:
             print("skip_graalphp_native=True")
             return None
-        return self.run_single_test(bench, prefix, 'graalphp-native', GRAALPHP_NATIVE_BINARY, args, src)
+        return self.run_single_test(bench, prefix, 'graalphp-native', GRAALPHP_NATIVE_BINARY, args, src,
+                                    binary_version=Bench._get_graalphp_version(GRAALPHP_NATIVE_BINARY))
 
     # XXX: we dont execute the script directly. we call jphp start in the directory where package.php.yml is
     def run_jphp(self, bench, prefix, src, args=''):
@@ -272,6 +274,11 @@ class Bench:
     @staticmethod
     def _get_php_version(exec):
         cmd = exec + ' --version | cut -d\( -f1 | head -n 1'
+        return Bench._get_shell_cmd_result(cmd)
+
+    @staticmethod
+    def _get_graalphp_version(exec):
+        cmd = exec + ' --version'
         return Bench._get_shell_cmd_result(cmd)
 
     @staticmethod
