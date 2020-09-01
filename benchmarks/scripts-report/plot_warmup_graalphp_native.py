@@ -67,12 +67,29 @@ def warmup_plot_spectralnorm():
 
 
 def warmup_plot_bintree():
-    runs = []
+    ids_by_val = [
+          156  # binary-trees-by-val, 2020-09-01 01:57:02, graalphp-native
+        , 160  # binary-trees-by-val, 2020-09-01 07:20:34, graalphp-native
+        , 164  # binary-trees-by-val, 2020-09-01 12:48:38, graalphp-native
+    ]
 
-    runs.append(get_timings_by_id(89, warmup=0))
+    runs = [get_timings_by_id(i, warmup=0) for i in ids_by_val]
     do_warmup_plot('binary-trees \ncopy-by-val', runs, num_iter=num_iter,
                    file_prefix=name)
 
+
+    ids_by_ref = [
+          169  # binary-trees-by-ref, 2020-09-01 14:40:30, graalphp-native
+        , 171  # binary-trees-by-ref, 2020-09-01 14:48:10, graalphp-native
+        , 173  # binary-trees-by-ref, 2020-09-01 14:55:38, graalphp-native
+        , 175  # binary-trees-by-ref, 2020-09-01 15:03:06, graalphp-native
+        , 177  # binary-trees-by-ref, 2020-09-01 15:10:40, graalphp-native
+        , 179  # binary-trees-by-ref, 2020-09-01 15:18:15, graalphp-native
+        , 181  # binary-trees-by-ref, 2020-09-01 15:25:48, graalphp-native
+        , 183  # binary-trees-by-ref, 2020-09-01 15:33:23, graalphp-native
+        , 185  # binary-trees-by-ref, 2020-09-01 15:40:56, graalphp-native
+    ]
+    runs = [get_timings_by_id(i, warmup=0) for i in ids_by_ref]
     do_warmup_plot('binary-trees \ncopy-by-ref', runs, num_iter=num_iter,
                    color=color_copy_by_ref,
                    file_prefix=name)
@@ -82,4 +99,4 @@ def warmup_plot_bintree():
 if __name__ == '__main__':
     warmup_plot_fannkuch()
     warmup_plot_spectralnorm()
-    # warmup_plot_bintree()
+    warmup_plot_bintree()
