@@ -66,17 +66,19 @@ class BenchBinaryTrees(Bench):
         self.run_by_val()
 
     def _import_data_manually(self):
-        pref = '2020-07-19T22:03:31.585475'
-        path = 'measurements/' + pref + '-binary-trees-php-ref.txt'
-        date = datetime.datetime(2020, 7, 19)
+        '/graalphp-source/benchmarks/scripts-report/measurements/2020-09-02T01:10:36.070622-binarytrees.php-3-val.graalphp-graalphp-native.txt'
+        pref = '2020-09-02T01:10:36.070622'
+        path = 'measurements/' + pref + '-binarytrees.php-3-val.graalphp-graalphp-native.txt'
+        date = datetime.datetime(2020, 9, 2)
         self.import_data(path,
-                         test_name=TEST_BY_REF,
+                         test_name=TEST_BY_VAL,
                          prefix=pref,
                          out_file_path=path,
                          src_file_path=path.replace('.txt', '-source.txt'),
                          date=date,
-                         comment='',
-                         binary='php')
+                         comment='manually imported, docker, no-turbo-2.7GHz-performance, report',
+                         binary_version='graalphp 20.1.0-SNAPSHOT based on git cb59d053633d80b built at 2020-08-30-20:40:42.547.',
+                         binary='graalphp-native')
 
 
 if __name__ == '__main__':
@@ -86,5 +88,5 @@ if __name__ == '__main__':
     # bm.run_by_val()
     # bm.run_by_ref()
     # bm.run_jphp(TEST_BY_VAL, 'test', SRC_JPHP_VAL, '')
-    # bm._import_data_manually()
+    bm._import_data_manually()
     pass
