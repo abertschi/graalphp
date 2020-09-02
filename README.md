@@ -11,10 +11,8 @@ for PHP 7.4+. It is hosted on Truffle and GraalVM. This is a thesis
 project at ETH Zurich.
 
 ### Benchmarks
-- Performance is evaluated on benchmarks by [The Computer Language
+Performance is evaluated on benchmarks by [The Computer Language
 Benchmarks Game](https://benchmarksgame-team.pages.debian.net/benchmarksgame/index.html)
-- See [benchmarks](https://github.com/abertschi/graalphp/tree/master/benchmarks/evaluation). We
-  list the implemented feature set and current benchmark results.
 
 ### Build and Run
 For a container image with development and benchmark dependencies see

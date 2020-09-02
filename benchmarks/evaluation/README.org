@@ -3,8 +3,6 @@
 
 This file lists the implemented feature set to run our benchmarks. In order to
 see all metadata browse in Emacs or as plain text.
-Benchmark scripts can be found in ./benchmarks/ in the project root directory.
-
 
 * IMPLEMENTED Feature set for fannkuchredux.php-1.php
 :properties:
@@ -39,18 +37,6 @@ Benchmark scripts can be found in ./benchmarks/ in the project root directory.
 - Define command line arguments within script already (argv)
 - Assign variables explicitly, do not use list builtin (syntactic sugar)
 - Simplified version of printf; print values without additional text
-
-*** Current Benchmark Results (20-07-20)
-Work in progress...
-
-#+CAPTION: 
-#+NAME:
-[[./assets/20-07-20-fannkuch.png]]
-
-#+CAPTION: 
-#+NAME:
-[[./assets/20-07-20-fannkuch.boxplot.png]]
-
 
  
 * IMPLEMENTED Feature set for binarytrees.php-3.php
@@ -96,17 +82,6 @@ Work in progress...
 - binarytrees.php-1.php is the same benchmark but uses classes instead of arrays
 - https://benchmarksgame-team.pages.debian.net/benchmarksgame/program/binarytrees-php-1.html
 
-*** Current Benchmark Results (20-07-20)
-Work in progress...
-
-#+CAPTION: 
-#+NAME:
-[[./assets/20-07-20-binary-trees.boxplot.png]]
-
-#+CAPTION: 
-#+NAME:
-[[./assets/20-07-20-binary-trees.png]]
-
 
 * IMPLEMENTED Feature set for spectralnorm.php-2.php
 :properties:
@@ -148,18 +123,3 @@ Work in progress...
 - replace for-each keyword by for keyword (syntactic sugar)
 - Define command line arguments within script already (argv)
 - Simplified version of printf; print values without additional text
-
-*** Current Benchmark Results (20-07-27)
-Work in progress...
-
-#+CAPTION: Pass Arrays by value (default)
-#+NAME:
-[[./assets/20-07-27-spectral-norm-val.png]]
-
-#+CAPTION: Pass Arrays with the & Operator (by reference)
-#+NAME:
-[[./assets/20-07-27-spectral-norm-ref.png]]
-
-#+CAPTION:
-#+NAME: Pass Arrays by value in graalphp and use global variables for PHP
-[[./assets/20-07-27-spectral-norm-glob.png]]

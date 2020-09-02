@@ -8,11 +8,14 @@ if __name__ == '__main__':
     Bench.skip_all()
     Bench.skip_graalphp_native = False
     Bench.skip_graalphp = False
-    # pending measurements
-    # again: we only collected 11 samples, BenchBinaryTrees().run_by_val()
-
-    # BenchmarkSpectralNorm().run_by_ref()
-    # BenchmarkSpectralNorm().run_by_val()
     BenchBinaryTrees().run_by_val()
+    Bench.skip_none()
+
+    Bench.skip_graalphp_native = True
+    Bench.skip_graalphp = True
+
+    BenchmarkFannkuch().run()
+    BenchmarkSpectralNorm().run()
+    BenchBinaryTrees().run()
 
 
