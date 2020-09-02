@@ -8,7 +8,7 @@ if __name__ == '__main__':
     Bench.skip_none()
     
     BenchmarkFannkuch().run()
+    BenchmarkSpectralNorm().run()
     BenchBinaryTrees().run()
-    BenchmarkSpectralNorm().run_by_ref()
 
 
