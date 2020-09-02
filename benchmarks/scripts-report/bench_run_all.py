@@ -11,8 +11,8 @@ if __name__ == '__main__':
     # pending measurements
     # again: we only collected 11 samples, BenchBinaryTrees().run_by_val()
 
-    BenchmarkSpectralNorm().run_by_ref()
-    BenchmarkSpectralNorm().run_by_val()
+    # BenchmarkSpectralNorm().run_by_ref()
+    # BenchmarkSpectralNorm().run_by_val()
     BenchBinaryTrees().run_by_val()
 
 
