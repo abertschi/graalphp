@@ -62,26 +62,105 @@ def binary_trees():
         , [75, 210]  # php by ref
     ]
 
+    # todo: add jphp by ref benchmark
     export_to_csv_nested(ids, warmup=5,
                          file_prefix='binary-trees')
 
 
 def spectralnorm():
     ids = [
-        96,  # gpnpn, val
-        95,  # gpnp, val
-        83,  # jpnp val
-        82,  # php val
-        81,  # pnp 8 val
-        80,  # hhvm
-        88,  # jphp ref
-        87,  # PHP ref
-        86,  # PHP 8 ref
-        98,  # gphp native
-        97  # gpnp
+        # by val
+        # php
+        [
+            82  # spectralnorm-by-val, 2020-08-08 07:55:, php
+            , 204  # spectralnorm-by-val, 2020-09-03 16:18:, php
+        ],
+        # pnp 8 val
+        [
+            81  # spectralnorm-by-val, 2020-08-08 07:55, php8
+            , 203  # spectralnorm-by-val, 2020-09-03 16:18, php8
+        ],
+        # hhvm
+        [
+            80  # spectralnorm-by-val, 2020-08-08 07:55, hhvm
+            , 202  # spectralnorm-by-val, 2020-09-03 16:18, hhvm
+        ],
+        # jphp
+        [
+            83  # spectralnorm-by-val, 2020-08-08 07:55, jphp
+            , 215  # spectralnorm-by-val, 2020-09-04 03:56, jphp
+        ],
+        # graalphp val
+        [
+            117  # spectralnorm-by-val, 2020-08-31 00:31, graalphp,
+            , 121  # spectralnorm-by-val, 2020-08-31 00:37, graalphp,
+            , 125  # spectralnorm-by-val, 2020-08-31 00:43, graalphp,
+            , 129  # spectralnorm-by-val, 2020-08-31 00:49, graalphp,
+            , 133  # spectralnorm-by-val, 2020-08-31 00:55, graalphp,
+            , 137  # spectralnorm-by-val, 2020-08-31 01:01, graalphp,
+            , 141  # spectralnorm-by-val, 2020-08-31 01:07, graalphp,
+            , 145  # spectralnorm-by-val, 2020-08-31 01:13, graalphp,
+            , 149  # spectralnorm-by-val, 2020-08-31 01:19, graalphp,
+            , 194  # spectralnorm-by-val, 2020-09-02 13:20, graalphp,
+        ],
+        # graalphp native val
+        [
+            118  # spectralnorm-by-val, 2020-08-31 00:31, graalphp-native
+            , 122  # spectralnorm-by-val, 2020-08-31 00:37, graalphp-native
+            , 126  # spectralnorm-by-val, 2020-08-31 00:43, graalphp-native
+            , 130  # spectralnorm-by-val, 2020-08-31 00:49, graalphp-native
+            , 134  # spectralnorm-by-val, 2020-08-31 00:55, graalphp-native
+            , 138  # spectralnorm-by-val, 2020-08-31 01:01, graalphp-native
+            , 142  # spectralnorm-by-val, 2020-08-31 01:07, graalphp-native
+            , 146  # spectralnorm-by-val, 2020-08-31 01:13, graalphp-native
+            , 150  # spectralnorm-by-val, 2020-08-31 01:19, graalphp-native
+            , 195  # spectralnorm-by-val, 2020-09-02 13:20, graalphp-native
+        ],
+        # by ref
+        # php ref
+        [
+            87  # spectralnorm-by-ref, 2020-08-08 10:20, php
+            , 208  # spectralnorm-by-ref, 2020-09-03 17:17, php
+        ],
+        # php 8 by ref
+        [
+            86  # spectralnorm-by-ref, 2020-08-08 10:20, php8
+            , 207  # spectralnorm-by-ref, 2020-09-03 17:17, php8
+        ],
+        # jphp by ref
+        [
+            88  # spectralnorm-by-ref, 2020-08-08 10:20:56.755619 ,  jphp
+            , 216  # spectralnorm-by-ref, 2020-09-04 05:24:26.827737 ,  jphp
+        ],
+        # graalphp by ref
+        [
+            119  # spectralnorm-by-ref, 2020-08-31 00:34, graalphp
+            , 123  # spectralnorm-by-ref, 2020-08-31 00:40, graalphp
+            , 127  # spectralnorm-by-ref, 2020-08-31 00:46, graalphp
+            , 131  # spectralnorm-by-ref, 2020-08-31 00:52, graalphp
+            , 135  # spectralnorm-by-ref, 2020-08-31 00:58, graalphp
+            , 139  # spectralnorm-by-ref, 2020-08-31 01:04, graalphp
+            , 143  # spectralnorm-by-ref, 2020-08-31 01:10, graalphp
+            , 147  # spectralnorm-by-ref, 2020-08-31 01:16, graalphp
+            , 151  # spectralnorm-by-ref, 2020-08-31 01:22, graalphp
+            , 192  # spectralnorm-by-ref, 2020-09-02 12:51, graalphp
+        ],
+        # graalphp-native by ref
+        [
+            120  # spectralnorm-by-ref, 2020-08-31 00:34, graalphp-native
+            , 124  # spectralnorm-by-ref, 2020-08-31 00:40, graalphp-native
+            , 128  # spectralnorm-by-ref, 2020-08-31 00:46, graalphp-native
+            , 132  # spectralnorm-by-ref, 2020-08-31 00:52, graalphp-native
+            , 136  # spectralnorm-by-ref, 2020-08-31 00:58, graalphp-native
+            , 140  # spectralnorm-by-ref, 2020-08-31 01:04, graalphp-native
+            , 144  # spectralnorm-by-ref, 2020-08-31 01:10, graalphp-native
+            , 148  # spectralnorm-by-ref, 2020-08-31 01:16, graalphp-native
+            , 152  # spectralnorm-by-ref, 2020-08-31 01:22, graalphp-native
+            , 193  # spectralnorm-by-ref, 2020-09-02 12:51, graalphp-native
+        ]
     ]
 
-    export_to_csv(ids, warmup=5,
+    export_to_csv_nested(ids, warmup=5,
                   file_prefix='spectralnorm')
 
 
@@ -136,25 +215,12 @@ def fannkuchredux():
         ]
     ]
 
+    # todo: run php again, we currently have 23 samples
     export_to_csv_nested(ids, warmup=5,
                          file_prefix='fannkuchredux', sort=True, limit=True)
 
 
-# def fannkuchredux():
-#     ids = [
-#         90,  # gphp native
-#         89,  # gphp
-#         73,  # jphp
-#         72,  # php
-#         71,  # hhvm
-#         70  # php 8
-#     ]
-#
-#     export_to_csv(ids, warmup=5,
-#                   file_prefix='fannkuchredux', sort=True, limit=True)
-#
-#
 if __name__ == '__main__':
     binary_trees()
-    # spectralnorm()
+    spectralnorm()
     fannkuchredux()
