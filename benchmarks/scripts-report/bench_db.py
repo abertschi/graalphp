@@ -6,8 +6,10 @@ import statistics
 import sys
 from shutil import copyfile
 
+import scipy
 from pony.orm import *
 from prettytable import PrettyTable
+import scipy.stats as st
 
 db = Database()
 
@@ -263,14 +265,15 @@ def export_to_csv_nested(nested_ids, warmup=5,
                          file_prefix='',
                          sort=True,
                          limit=True,
-                         write_file=True):
+                         write_file=True,
+                         confidence=0.95):
     """
     :param nested_ids: nested array, result is grouped by first layer.
                        this allows to aggregate results of same implementation across multiple runs
     """
     rows = [
         ["implementation", "benchmark", "type", "n", "warmup", "mean", "median", "min", "max", "stdev", "variance",
-         "db-id", "number-of-restarts"]]
+         "db-id", "number-of-restarts", 'CI-' + str(confidence)]]
 
     for ids_to_same_bench in nested_ids:
         filtered = []
@@ -300,6 +303,15 @@ def export_to_csv_nested(nested_ids, warmup=5,
                 return '$<$ 0.1'
             return '{:.1f}'.format(val)
 
+        def format_interval(i):
+            if '{:.1f}'.format(i[0]) == '{:.1f}'.format(i[1]):
+                return ('$\sim\$ {:.1f}'.format(i[0]), '$\sim\$ {:.1f}'.format(i[0]))
+            else:
+                return (f(interval[0]), f(interval[1]))
+
+        interval = st.norm.interval(confidence, loc=statistics.mean(timings), scale=st.sem(timings))
+        interval = format_interval(interval)
+
         row = [
             bench_run.binary,
             bench_run.benchmark.name,
@@ -313,9 +325,9 @@ def export_to_csv_nested(nested_ids, warmup=5,
             f(statistics.stdev(timings)),
             f(statistics.variance(timings)),
             ids_to_same_bench,
-            len(ids_to_same_bench)
+            len(ids_to_same_bench),
+            '[{},{}]'.format(interval[0], interval[1])
         ]
-        print(row)
         rows.append(row)
 
     if sort:
