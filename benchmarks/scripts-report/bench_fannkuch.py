@@ -37,14 +37,14 @@ class BenchmarkFannkuch(Bench):
         self.extract_and_store_data_array(res)
 
     def _import_data_manually(self):
-        # '/graalphp-source/benchmarks/report/measurements/2020-08-06T22:27:57.180710-fannkuchredux.php-1.hack-hhvm.txt'
-        pref = '2020-08-06T22:27:57.180710'
+        '/graalphp-source/benchmarks/scripts-report/measurements/2020-09-04T07:14:19.014445-fannkuchredux.php-1.php-php.txt'
+        pref = '2020-09-04T07:14:19.014445'
         path = 'measurements/' + pref + '-fannkuchredux.php-1.php-php.txt'
 
         self.import_data(path,
                          test_name=TEST,
                          prefix=pref,
-                         comment='php 7.4, docker, no-turbo, 2.7Ghz, performance',
+                         comment='manually imported, report, php 7.4, docker, no-turbo, 2.7Ghz, performance',
                          binary='php',
                          binary_version='php 7.4.3',
                          )

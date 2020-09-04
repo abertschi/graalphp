@@ -7,3 +7,4 @@ spectralnorm-2020*
 __pychache__/*
 __pycache__/
 render
+export/

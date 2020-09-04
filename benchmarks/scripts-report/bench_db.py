@@ -178,7 +178,6 @@ def show_all_curated(warmup=5):
                                  'Min',
                                  'Max',
                                  'Warmup Count',
-                                 'Prefix',
                                  'Comment',
                                  'Unused1',
                                  'Unused2',
@@ -214,10 +213,9 @@ def show_all_curated(warmup=5):
                    round(min(timings), 2),
                    round(max(timings), 2),
                    0,
-                   run.prefix,
-                   comment,
-                   run.unused1,
-                   run.unused2,
+                   comment[:80],
+                   run.unused1[:50],
+                   run.unused2[:50],
                    ''
                    ]
             t.add_row(row)
@@ -235,10 +233,9 @@ def show_all_curated(warmup=5):
                         round(min(timings), 2),
                         round(max(timings), 2),
                         warmup,
-                        run.prefix,
-                        comment,
-                        run.unused1,
-                        run.unused2,
+                        comment[:80],
+                        run.unused1[:50],
+                        run.unused2[:50],
                         ''
                         ]
                 t.add_row(row2)
@@ -260,20 +257,84 @@ def get_timings_by_id(id, warmup=5):
     return timings
 
 
-# @db_session
-# def get_timings_in_range(bench_name, binary, from_date, to_date, warmup=0):
-#     measurements = list(select(m for m in Measurement
-#                                if m.run.benchmark.name == bench_name and \
-#                                m.run.binary == binary and \
-#                                from_date <= m.run.date <= to_date).order_by(Measurement.iteration))
-#     filtered = measurements[warmup:]
-#     timings = []
-#     for m in filtered:
-#         timings.append(m.timing_ms / 1000)  # vals in secods
-#         print(str(m.timing_ms / 1000) + '/' +  m.run.binary + '/' + m.benchmark.name)
-#
-#     return timings
-#
+@db_session
+def export_to_csv_nested(nested_ids, warmup=5,
+                         export_dir=os.path.dirname(os.path.realpath(__file__)) + '/export',
+                         file_prefix='',
+                         sort=True,
+                         limit=True,
+                         write_file=True):
+    """
+    :param nested_ids: nested array, result is grouped by first layer.
+                       this allows to aggregate results of same implementation across multiple runs
+    """
+    rows = [
+        ["implementation", "benchmark", "type", "n", "warmup", "mean", "median", "min", "max", "stdev", "variance",
+         "db-id", "number-of-restarts"]]
+
+    for ids_to_same_bench in nested_ids:
+        filtered = []
+        bench_run = None
+        for i in ids_to_same_bench:
+            r = list(select(r for r in Run if r.id == i))
+            if len(r) != 1:
+                print('error, ID not unique: ' + i)
+                exit(1)
+            r = r[0]
+
+            assert (bench_run is None) or (r.benchmark.name == bench_run.benchmark.name)
+            bench_run = r
+
+            mes = list(select(m for m in Measurement
+                              if m.run.id == r.id).order_by(Measurement.iteration))
+            filtered = filtered + mes[warmup:]
+
+        timings = []
+        for m in filtered:
+            timings.append(m.timing_ms / 1000)  # vals in secods
+        print('samples for ids: {}: {}', ids_to_same_bench, filtered)
+
+        def f(val):
+            # return '{:.2E}'.format(val)
+            if val < 0.1:
+                return '$<$ 0.1'
+            return '{:.1f}'.format(val)
+
+        row = [
+            bench_run.binary,
+            bench_run.benchmark.name,
+            '',
+            len(timings),
+            warmup,
+            f(statistics.mean(timings)),
+            f(statistics.median(timings)),
+            f(min(timings)),
+            f(max(timings)),
+            f(statistics.stdev(timings)),
+            f(statistics.variance(timings)),
+            ids_to_same_bench,
+            len(ids_to_same_bench)
+        ]
+        print(row)
+        rows.append(row)
+
+    if sort:
+        sorting = rows[1:]
+        rows_sorted = sorted(sorting, key=lambda x: float(x[5]), reverse=False)
+        rows = [rows[0]] + rows_sorted
+
+    if file_prefix:
+        file_prefix += '-'
+
+    file_name = os.path.join(export_dir, "export-" + file_prefix + str(datetime.datetime.now()) + ".csv.txt")
+    file_name = file_name.replace(' ', '-').replace(':', '-')
+    os.makedirs(export_dir, exist_ok=True)
+    if write_file:
+        print('writing file' + file_name)
+        with open(file_name, 'w', newline='\n') as file:
+            writer = csv.writer(file)
+            writer.writerows(rows)
+
 
 @db_session
 def export_to_csv(ids=[], warmup=5,

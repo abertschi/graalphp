@@ -6,16 +6,16 @@ from bench_spectralnorm import BenchmarkSpectralNorm
 if __name__ == '__main__':
     Bench.comment = "docker, no-turbo-2.7GHz-performance, report"
     Bench.skip_all()
-    Bench.skip_graalphp_native = False
-    Bench.skip_graalphp = False
-    BenchBinaryTrees().run_by_val()
-    Bench.skip_none()
-
-    Bench.skip_graalphp_native = True
-    Bench.skip_graalphp = True
-
+    Bench.skip_jphp = False
     BenchmarkFannkuch().run()
     BenchmarkSpectralNorm().run()
     BenchBinaryTrees().run()
+
+    Bench.skip_all()
+    Bench.skip_php = False
+    BenchmarkFannkuch().run()
+    BenchmarkSpectralNorm().run()
+    BenchBinaryTrees().run()
+    
 
 
