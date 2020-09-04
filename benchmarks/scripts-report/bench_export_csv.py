@@ -87,19 +87,74 @@ def spectralnorm():
 
 def fannkuchredux():
     ids = [
-        90,  # gphp native
-        89,  # gphp
-        73,  # jphp
-        72,  # php
-        71,  # hhvm
-        70  # php 8
+        # php
+        [
+            72  # | fannkuchredux-1, 2020-08-07 10:15, php
+            , 201  # | fannkuchredux-1, 2020-09-03 13:38, php
+            , 218  # | fannkuchredux-1, 2020-09-04 10:45, php
+        ],
+        # php 8
+        [
+            70  # fannkuchredux-1, 2020-08-07 10:13:01 php8      |  15 |  178.13
+            , 199  # fannkuchredux-1, 2020-09-03 13:38:36 php8      |  15 |  187.91
+        ],
+        # hhvm
+        [
+            71  # fannkuchredux-1 2020-08-07 10:14, hhvm
+            , 200  # fannkuchredux-1 2020-09-03 13:38, hhvm
+        ],
+        # jphp
+        [
+            73  # fannkuchredux-1, 2020-08-07 20:18, jphp
+            , 214  # fannkuchredux-1, 2020-09-04 02:33, jphp
+        ],
+        # graalphp native
+        [
+            100  # fannkuchredux-1, 2020-08-30 21:14, graalphp-native
+            , 102  # fannkuchredux-1, 2020-08-30 21:39, graalphp-native
+            , 104  # fannkuchredux-1, 2020-08-30 22:03, graalphp-native
+            , 106  # fannkuchredux-1, 2020-08-30 22:28, graalphp-native
+            , 108  # fannkuchredux-1, 2020-08-30 22:52, graalphp-native
+            , 110  # fannkuchredux-1, 2020-08-30 23:16, graalphp-native
+            , 112  # fannkuchredux-1, 2020-08-30 23:40, graalphp-native
+            , 114  # fannkuchredux-1, 2020-08-31 00:04, graalphp-native
+            , 116  # fannkuchredux-1, 2020-08-31 00:28, graalphp-native
+            , 187  # fannkuchredux-1, 2020-09-02 00:16, graalphp-native
+        ],
+        # graalphp
+        [
+            99  # fannkuchredux-1, 2020-08-30 21:14, graalphp
+            , 101  # fannkuchredux-1, 2020-08-30 21:39, graalphp
+            , 103  # fannkuchredux-1, 2020-08-30 22:03, graalphp
+            , 105  # fannkuchredux-1, 2020-08-30 22:28, graalphp
+            , 107  # fannkuchredux-1, 2020-08-30 22:52, graalphp
+            , 109  # fannkuchredux-1, 2020-08-30 23:16, graalphp
+            , 111  # fannkuchredux-1, 2020-08-30 23:40, graalphp
+            , 113  # fannkuchredux-1, 2020-08-31 00:04, graalphp
+            , 115  # fannkuchredux-1, 2020-08-31 00:28, graalphp
+            , 186  # fannkuchredux-1, 2020-09-02 00:16, graalphp
+        ]
     ]
 
-    export_to_csv(ids, warmup=5,
-                  file_prefix='fannkuchredux', sort=True, limit=True)
+    export_to_csv_nested(ids, warmup=5,
+                         file_prefix='fannkuchredux', sort=True, limit=True)
 
 
+# def fannkuchredux():
+#     ids = [
+#         90,  # gphp native
+#         89,  # gphp
+#         73,  # jphp
+#         72,  # php
+#         71,  # hhvm
+#         70  # php 8
+#     ]
+#
+#     export_to_csv(ids, warmup=5,
+#                   file_prefix='fannkuchredux', sort=True, limit=True)
+#
+#
 if __name__ == '__main__':
     binary_trees()
     # spectralnorm()
-    # fannkuchredux()
+    fannkuchredux()
