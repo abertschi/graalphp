@@ -303,9 +303,15 @@ def export_to_csv_nested(nested_ids, warmup=5,
                 return '$<$ 0.1'
             return '{:.1f}'.format(val)
 
+        def format_list(list):
+            res = ''
+            for l in list:
+                res += str(l) + ';'
+            return res
+
         def format_interval(i):
             if '{:.1f}'.format(i[0]) == '{:.1f}'.format(i[1]):
-                return ('$\sim\$ {:.1f}'.format(i[0]), '$\sim\$ {:.1f}'.format(i[0]))
+                return ('$\sim\ ${:.1f}'.format(i[0]), '$\sim\ ${:.1f}'.format(i[0]))
             else:
                 return (f(interval[0]), f(interval[1]))
 
@@ -324,9 +330,9 @@ def export_to_csv_nested(nested_ids, warmup=5,
             f(max(timings)),
             f(statistics.stdev(timings)),
             f(statistics.variance(timings)),
-            ids_to_same_bench,
+            format_list(ids_to_same_bench),
             len(ids_to_same_bench),
-            '[{},{}]'.format(interval[0], interval[1])
+            '[{}; {}]'.format(interval[0], interval[1])
         ]
         rows.append(row)
 

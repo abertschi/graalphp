@@ -69,10 +69,11 @@ class BenchBinaryTrees(Bench):
         self.run_by_val()
 
     def _import_data_manually(self):
+        '/2020-09-05T08:41:13.134421-binarytrees.php-3-val.php-php.txt'
         '/graalphp-source/benchmarks/scripts-report/measurements/2020-09-02T13:20:38.480351-binarytrees.php-3-val.graalphp-graalphp.txt'
-        pref = '2020-09-02T13:20:38.480351'
-        path = 'measurements/' + pref + '-binarytrees.php-3-val.graalphp-graalphp.txt'
-        date = datetime.datetime(2020, 9, 2)
+        pref = '/2020-09-05T08:41:13.134421'
+        path = 'measurements/' + pref + '-binarytrees.php-3-val.php-php.txt'
+        date = datetime.datetime(2020, 9, 5)
         self.import_data(path,
                          test_name=TEST_BY_VAL,
                          prefix=pref,
@@ -80,8 +81,8 @@ class BenchBinaryTrees(Bench):
                          src_file_path=path.replace('.txt', '-source.txt'),
                          date=date,
                          comment='manually imported, docker, no-turbo-2.7GHz-performance, report',
-                         binary_version='graalphp 20.1.0-SNAPSHOT based on git cb59d053633d80b built at 2020-08-30-20:40:42.547.',
-                         binary='graalphp')
+                         binary_version='PHP 7.4',
+                         binary='php')
 
 
 if __name__ == '__main__':

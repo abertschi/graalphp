@@ -54,7 +54,7 @@ function Fannkuch($n){
 
 
 $N = 12;
-$iter = 15;
+$iter = 20;
 
 for($i = 0; $i < $iter; $i ++) {
     $start=hrtime(true);

@@ -1,5 +1,4 @@
-from bench_db import export_to_csv, export_to_csv_nested
-
+from bench_db import export_to_csv_nested
 
 def binary_trees():
     ids = [
@@ -7,10 +6,17 @@ def binary_trees():
         [
             78  # binary-trees-by-val 2020-08-08 03:50,  php
             , 213  # binary-trees-by-val 2020-09-03 23:04,  php
+            , 225  #  binary-trees-by-val, 2020-09-05 00:00: 00 | php
         ]
         , [77, 212]  # php 8
         , [76, 211]  # hhvm
         , [79, 217]  # jphp by val
+        #
+        # jphp by ref
+        , [
+            219,  # binary-trees-by-ref |      | 2020-09-04 17:09:55.844551 |       jphp
+            220  # binary-trees-by-ref |      | 2020-09-04 22:53:54.055114 |       jphp
+        ]
         # gphpn val
         , [198, 191, 156, 160, 164]
         # graalphp val
@@ -74,6 +80,7 @@ def spectralnorm():
         [
             82  # spectralnorm-by-val, 2020-08-08 07:55:, php
             , 204  # spectralnorm-by-val, 2020-09-03 16:18:, php
+            , 222  # | spectralnorm-by-val2020 - 09-05 03:26: 50.476972 | php
         ],
         # pnp 8 val
         [
@@ -121,6 +128,7 @@ def spectralnorm():
         [
             87  # spectralnorm-by-ref, 2020-08-08 10:20, php
             , 208  # spectralnorm-by-ref, 2020-09-03 17:17, php
+            , 224  # spectralnorm - by - ref | | 2020 - 09 - 05 04:05: 11.811245 | php
         ],
         # php 8 by ref
         [
@@ -161,7 +169,7 @@ def spectralnorm():
     ]
 
     export_to_csv_nested(ids, warmup=5,
-                  file_prefix='spectralnorm')
+                         file_prefix='spectralnorm')
 
 
 def fannkuchredux():
@@ -171,6 +179,7 @@ def fannkuchredux():
             72  # | fannkuchredux-1, 2020-08-07 10:15, php
             , 201  # | fannkuchredux-1, 2020-09-03 13:38, php
             , 218  # | fannkuchredux-1, 2020-09-04 10:45, php
+            , 221  # | fannkuchredux - 1 | | 2020 - 09 - 05 02:13: 04.699473 | php
         ],
         # php 8
         [
