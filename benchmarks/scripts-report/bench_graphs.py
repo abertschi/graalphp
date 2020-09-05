@@ -131,8 +131,8 @@ def binary_trees_report_plot():
         , vals_php8
         , vals_jphp
         , vals_hhvm
-        , vals_gphp_val
         , vals_gphp_nat_val
+        , vals_gphp_val
         # ref
         , vals_php_ref
         , vals_php8_ref

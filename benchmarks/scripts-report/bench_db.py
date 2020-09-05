@@ -6,10 +6,9 @@ import statistics
 import sys
 from shutil import copyfile
 
-import scipy
+import scipy.stats as st
 from pony.orm import *
 from prettytable import PrettyTable
-import scipy.stats as st
 
 db = Database()
 
@@ -271,6 +270,7 @@ def export_to_csv_nested(nested_ids, warmup=5,
     :param nested_ids: nested array, result is grouped by first layer.
                        this allows to aggregate results of same implementation across multiple runs
     """
+    validate_nested_ids(nested_ids)
     rows = [
         ["implementation", "benchmark", "type", "n", "warmup", "mean", "median", "min", "max", "stdev", "variance",
          "db-id", "number-of-restarts", 'CI-' + str(confidence)]]
@@ -284,7 +284,6 @@ def export_to_csv_nested(nested_ids, warmup=5,
                 print('error, ID not unique: ' + i)
                 exit(1)
             r = r[0]
-
             assert (bench_run is None) or (r.benchmark.name == bench_run.benchmark.name)
             bench_run = r
 
@@ -417,6 +416,52 @@ def export_to_csv(ids=[], warmup=5,
         with open(file_name, 'w', newline='\n') as file:
             writer = csv.writer(file)
             writer.writerows(rows)
+
+
+# validation logic to ensure that ids are unique
+@db_session
+def validate_nested_ids(nested_ids):
+    tmp = []
+    for ids in nested_ids:
+        for i in ids:
+            if i in tmp:
+                print("Error! Same id in nested_ids: {} / {}".format(i, nested_ids))
+                exit(-1)
+            tmp.append(i)
+
+        bench_run = None
+        for i in ids:
+            r = list(select(r for r in Run if r.id == i))
+            if len(r) != 1:
+                print('error, ID not unique: ' + i)
+                exit(1)
+            r = r[0]
+            if bench_run is None:
+                bench_run = r
+            else:
+                assert (r.benchmark.name == bench_run.benchmark.name)
+                assert (r.binary == bench_run.binary)
+
+    def format_footprint(id):
+        r = list(select(r for r in Run if r.id == id))
+        if len(r) != 1:
+            print('error, ID not unique: ' + id)
+            exit(1)
+        r = r[0]
+        mes = list(select(m for m in Measurement
+                          if m.run.id == r.id).order_by(Measurement.iteration))
+        sum = 0
+        for m in mes:
+            sum += m.timing_ms
+        return sum
+
+    footprints = []
+    for ids in nested_ids:
+        for i in ids:
+            if format_footprint(i) in footprints:
+                print("error footprint not unique")
+                exit(1)
+            footprints.append(format_footprint(i))
 
 
 if __name__ == '__main__':
