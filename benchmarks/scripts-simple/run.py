@@ -69,7 +69,7 @@ def do_fib_benchmark():
     fib_benchmark = os.path.join(dir, 'fib')
     out(datetime.now())
 
-    run_php(fib_benchmark)
+    # run_php(fib_benchmark)
     run_graalphp(fib_benchmark)
     run_sl(fib_benchmark)
 

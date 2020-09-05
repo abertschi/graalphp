@@ -54,7 +54,7 @@ function Fannkuch($n){
 
 
 $N = 12;
-$iter = 30;
+$iter = 50;
 
 for($i = 0; $i < $iter; $i ++) {
     $start=graalphp_time_ns();

@@ -35,7 +35,7 @@ PHP8_BINARY = 'php8'
 JPHP_BINARY = 'jppm'
 
 # JDK 14 path on graalphp-dev container image
-JDK_14_HOME = 'lib/jvm/java-14-openjdk-amd64'
+JDK_14_HOME = '/lib/jvm/java-14-openjdk-amd64'
 
 DIR = os.path.dirname(os.path.realpath(__file__))
 MEASUREMENT_DIR = join(DIR, 'measurements')

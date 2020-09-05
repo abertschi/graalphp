@@ -72,7 +72,7 @@ return sqrt($vBv/$vv);
 }
 
 $N = 5500;
-$iter = 50;
+$iter = 100;
 
 for($i = 0; $i < $iter; $i ++) {
     $start=graalphp_time_ns();

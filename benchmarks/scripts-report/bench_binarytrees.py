@@ -20,13 +20,14 @@ SRC_HACK_VAL = join(SRC_FOLDER, "binarytrees.php-3-val.hack")
 
 # jphp
 SRC_JPHP_VAL = join(SRC_FOLDER, "binarytrees.php-3-val.jphp")
+SRC_JPHP_REF = join(SRC_FOLDER, "binarytrees.php-3-ref.jphp")
 
 TEST_BY_VAL = 'binary-trees-by-val'
 TEST_BY_REF = 'binary-trees-by-ref'
 
 verify_files([SRC_PHP_REF, SRC_GPHP_REF])
 verify_files([SRC_PHP_VAL, SRC_GPHP_VAL, SRC_HACK_VAL])
-
+verify_files([SRC_JPHP_REF, SRC_JPHP_VAL])
 
 class BenchBinaryTrees(Bench):
     def run_by_ref(self):
@@ -41,6 +42,8 @@ class BenchBinaryTrees(Bench):
 
         res.append(self.run_graalphp(TEST_BY_REF, prefix, SRC_GPHP_REF, ''))
         res.append(self.run_graalphp_native(TEST_BY_REF, prefix, SRC_GPHP_REF, ''))
+
+        res.append(self.run_jphp(TEST_BY_REF, prefix, SRC_JPHP_REF, ''))
 
         self.extract_and_store_data_array(res)
 
@@ -66,16 +69,19 @@ class BenchBinaryTrees(Bench):
         self.run_by_val()
 
     def _import_data_manually(self):
-        pref = '2020-07-19T22:03:31.585475'
-        path = 'measurements/' + pref + '-binary-trees-php-ref.txt'
-        date = datetime.datetime(2020, 7, 19)
+        '/2020-09-05T08:41:13.134421-binarytrees.php-3-val.php-php.txt'
+        '/graalphp-source/benchmarks/scripts-report/measurements/2020-09-02T13:20:38.480351-binarytrees.php-3-val.graalphp-graalphp.txt'
+        pref = '/2020-09-05T08:41:13.134421'
+        path = 'measurements/' + pref + '-binarytrees.php-3-val.php-php.txt'
+        date = datetime.datetime(2020, 9, 5)
         self.import_data(path,
-                         test_name=TEST_BY_REF,
+                         test_name=TEST_BY_VAL,
                          prefix=pref,
                          out_file_path=path,
                          src_file_path=path.replace('.txt', '-source.txt'),
                          date=date,
-                         comment='',
+                         comment='manually imported, docker, no-turbo-2.7GHz-performance, report',
+                         binary_version='PHP 7.4',
                          binary='php')
 
 
@@ -86,5 +92,5 @@ if __name__ == '__main__':
     # bm.run_by_val()
     # bm.run_by_ref()
     # bm.run_jphp(TEST_BY_VAL, 'test', SRC_JPHP_VAL, '')
-    # bm._import_data_manually()
+    bm._import_data_manually()
     pass
