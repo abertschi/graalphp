@@ -4,11 +4,17 @@ from bench_binarytrees import BenchBinaryTrees
 from bench_spectralnorm import BenchmarkSpectralNorm
 
 if __name__ == '__main__':
-    Bench.comment = "docker, no-turbo-2.7GHz-performance"
+    Bench.comment = "docker, no-turbo-2.7GHz-performance, report"
     Bench.skip_none()
-    
-    BenchmarkFannkuch().run()
+    # Bench.skip_php = False
     BenchBinaryTrees().run()
-    BenchmarkSpectralNorm().run_by_ref()
+    BenchmarkFannkuch().run()
+    BenchmarkSpectralNorm().run()
+
+
+
+
+
+    
 
 
