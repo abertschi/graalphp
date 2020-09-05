@@ -4,8 +4,16 @@ import statistics
 from time import strftime, gmtime
 
 import pandas as pd
-from bench_db import export_to_csv, get_timings_by_id
+from bench_db import export_to_csv, get_timings_by_id, export_to_csv_nested
 # from datetime import datetime
+from bench_export_csv import bintree_ids_php_by_val, bintree_ids_php8_by_val, bintree_ids_jphp_by_val, bintree_ids_hhvm, \
+    bintree_ids_graalphp_native_by_val, bintree_ids_graalphp_by_val, bintree_ids_php_by_ref, bintree_ids_php8_by_ref, \
+    bintree_ids_jphp_by_ref, bintree_ids_graalphp_native_by_ref, bintree_ids_graalphp_by_ref, fannkuch_ids_php_by_val, \
+    fannkuch_ids_php8_by_val, fannkuch_ids_jphp_by_val, fannkuch_ids_hhvm, fannkuch_ids_graalphp_native_by_val, \
+    fannkuch_ids_graalphp_by_val, spectral_ids_php_by_ref, spectral_ids_php8_by_ref, spectral_ids_jphp_by_ref, \
+    spectral_ids_graalphp_native_by_ref, spectral_ids_graalphp_by_ref, spectral_ids_graalphp_by_val, \
+    spectral_ids_graalphp_native_by_val, spectral_ids_hhvm, spectral_ids_jphp_by_val, spectral_ids_php8_by_val, \
+    spectral_ids_php_by_val
 
 
 def plot_speedup_box(title, save_name, php_val, gphp_val, gphp_native_val, warmup_thres=0):
@@ -95,20 +103,27 @@ import matplotlib.pyplot as plt
 
 
 def binary_trees_report_plot():
-    vals_php = get_timings_by_id(78)
-    vals_php8 = get_timings_by_id(77)
-
-    vals_php_ref = get_timings_by_id(75)
-    vals_php8_ref = get_timings_by_id(74)
-
-    vals_gphp_ref = get_timings_by_id(91)
-    vals_gphp_nat_ref = get_timings_by_id(92)
-
-    vals_gphp_val = get_timings_by_id(93)
-    vals_gphp_nat_val = get_timings_by_id(94)
-
-    vals_jphp = get_timings_by_id(79)
-    vals_hhvm = get_timings_by_id(76)
+    ids = [
+        # by val
+        bintree_ids_php_by_val  # php 7
+        , bintree_ids_php8_by_val  # php 8
+        , bintree_ids_jphp_by_val  # jphp
+        , bintree_ids_hhvm  # hhvm
+        , bintree_ids_graalphp_native_by_val  # gphp native
+        , bintree_ids_graalphp_by_val  # gphp
+        # by ref
+        , bintree_ids_php_by_ref
+        , bintree_ids_php8_by_ref
+        , bintree_ids_jphp_by_ref
+        , bintree_ids_graalphp_native_by_ref
+        , bintree_ids_graalphp_by_ref
+    ]
+    vals = []
+    for ids_bench in ids:
+        val_ids = []
+        for i in ids_bench:
+            val_ids += get_timings_by_id(i, warmup=5)
+        vals.append(val_ids)
 
     impl_txt = (
         # by val
@@ -121,25 +136,12 @@ def binary_trees_report_plot():
         # by ref
         'PHP 7',
         'PHP 8 Alpha',
+        'JPHP',
         '\\textbf{graalphp-native}',
         '\\textbf{graalphp}'
     )
 
-    vals = [
-        # val
-        vals_php
-        , vals_php8
-        , vals_jphp
-        , vals_hhvm
-        , vals_gphp_nat_val
-        , vals_gphp_val
-        # ref
-        , vals_php_ref
-        , vals_php8_ref
-        , vals_gphp_nat_ref
-        , vals_gphp_ref
-    ]
-
+    vals_php = vals[0]
     avg_baseline = statistics.mean(vals_php)
     avgs = [statistics.mean(v) for v in vals]
 
@@ -169,6 +171,7 @@ def binary_trees_report_plot():
 
     impl_indices = np.arange(len(impl_txt))
 
+    print(impl_indices)
     print(speedups)
     print(variance)
 
@@ -185,6 +188,7 @@ def binary_trees_report_plot():
     plt.title(title)
     sns.despine()
 
+    ax.get_children()[10].set_color(color_by_ref)
     ax.get_children()[9].set_color(color_by_ref)
     ax.get_children()[8].set_color(color_by_ref)
     ax.get_children()[7].set_color(color_by_ref)
@@ -206,23 +210,6 @@ def binary_trees_report_plot():
 
 
 def spectralnorm_report_plot():
-    php_baseline = 82
-
-    ids = [
-        # by val
-        php_baseline,  # php val
-        81,  # php 8 val
-        83,  # jpnp val
-        80,  # hhvm
-        96,  # gpnpn, val
-        95,  # gpnp, val
-        # by ref
-        87,  # PHP ref
-        86,  # PHP 8 ref
-        88,  # jphp ref
-        98,  # gphp native
-        97  # gpnp
-    ]
     impl_txt = (
         # by val
         'PHP 7 \n(baseline)',
@@ -239,9 +226,30 @@ def spectralnorm_report_plot():
         '\\textbf{graalphp}'
     )
 
-    vals = [get_timings_by_id(i) for i in ids]
-    print(export_to_csv(ids, write_file=False))
-    avg_baseline = statistics.mean(get_timings_by_id(php_baseline))
+    ids = [
+        # by val
+          spectral_ids_php_by_val  # php 7
+        , spectral_ids_php8_by_val  # php 8
+        , spectral_ids_jphp_by_val  # jphp
+        , spectral_ids_hhvm  # hhvm
+        , spectral_ids_graalphp_native_by_val  # gphp native
+        , spectral_ids_graalphp_by_val  # gphp
+        # by ref
+        , spectral_ids_php_by_ref
+        , spectral_ids_php8_by_ref
+        , spectral_ids_jphp_by_ref
+        , spectral_ids_graalphp_native_by_ref
+        , spectral_ids_graalphp_by_ref
+    ]
+    vals = []
+    for ids_bench in ids:
+        val_ids = []
+        for i in ids_bench:
+            val_ids += get_timings_by_id(i, warmup=5)
+        vals.append(val_ids)
+
+    print(export_to_csv_nested(ids, write_file=False))
+    avg_baseline = statistics.mean(vals[0])
 
     avgs = [statistics.mean(v) for v in vals]
 
@@ -305,16 +313,22 @@ def spectralnorm_report_plot():
 
 
 def fannkuchredux():
-    php_baseline = 72
-
     ids = [
-        php_baseline,
-        70,  # php 8
-        73,  # jphp
-        71,  # hhvm
-        90,  # gphp native
-        89,  # gphp
+        # by val
+          fannkuch_ids_php_by_val  # php 7
+        , fannkuch_ids_php8_by_val  # php 8
+        , fannkuch_ids_jphp_by_val  # jphp
+        , fannkuch_ids_hhvm  # hhvm
+        , fannkuch_ids_graalphp_native_by_val  # gphp native
+        , fannkuch_ids_graalphp_by_val  # gphp
     ]
+    vals = []
+    for ids_bench in ids:
+        val_ids = []
+        for i in ids_bench:
+            val_ids += get_timings_by_id(i, warmup=5)
+        vals.append(val_ids)
+
     impl_txt = (
         # by val
         'PHP 7 \n(baseline)',
@@ -325,10 +339,10 @@ def fannkuchredux():
         '\\textbf{graalphp}',
     )
 
-    vals = [get_timings_by_id(i) for i in ids]
-    print(export_to_csv(ids, write_file=False))
 
-    avg_baseline = statistics.mean(get_timings_by_id(php_baseline))
+    print(export_to_csv_nested(ids, write_file=False))
+
+    avg_baseline = statistics.mean(vals[0])
 
     avgs = [statistics.mean(v) for v in vals]
 
@@ -439,10 +453,13 @@ def do_warmup_plot(name, runs, num_iter, subtitle='', color='blue', file_prefix=
 
 
 if __name__ == '__main__':
+    binary_trees_report_plot()
+    fannkuchredux()
+    spectralnorm_report_plot()
     pass
     # warmup_plot_fannkuch()
 
     # warmup_plot_fannkuch()
     # fannkuchredux()
     # binary_trees_report_plot()
-    # spectralnorm_report_plot()
+
