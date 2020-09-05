@@ -22,21 +22,18 @@ project at ETH Zurich.
   Truffle. GraalVM uses Graal as its JIT compiler to compile
   frequently executed code fragments to machine code.  We implement a
   subset of the PHP language to run synthetic benchmarks by
-  \textit{The Computer Language Benchmarks Game}. We compare peak
-  performance of our implementation against PHP~7 as well as
+  The Computer Language Benchmarks Game. We compare peak
+  performance of our implementation against PHP 7 as well as
   alternative implementations such as HHVM, JPHP and an early alpha
   version of PHP 8. Experimental results indicate that our runtime
   reaches competitive results with performance gains of up to 943%
   compared to PHP 7. These preliminary results
   suggest that a Truffle-hosted PHP implementation might be
   significantly faster than existing language implementations.
-  
 
-### Benchmarks
-- Performance is evaluated on benchmarks by [The Computer Language
-Benchmarks Game](https://benchmarksgame-team.pages.debian.net/benchmarksgame/index.html)
-- See [benchmarks](https://github.com/abertschi/graalphp/tree/master/benchmarks/evaluation). We
-  list the implemented feature set and current benchmark results.
+ - Report: 
+ - More Benchmarks: 
+
 
 ### Build and Run
 For a container image with development and benchmark dependencies see
