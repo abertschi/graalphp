@@ -10,7 +10,7 @@ Graalphp is an experimental just-in-time (JIT) compiler and runtime
 for PHP 7.4+. This is a thesis project at ETH Zurich.
 
 ### Abstract
-  PHP is a popular, weakly typed, general purpose programming
+  _PHP is a popular, weakly typed, general purpose programming
   language. Originally designed for building dynamic web pages, the
   language has since gained wide adoption in server-side web
   development.  In this work, we describe the design and
@@ -25,16 +25,17 @@ for PHP 7.4+. This is a thesis project at ETH Zurich.
   performance of our implementation against PHP 7 as well as
   alternative implementations such as HHVM, JPHP and an early alpha
   version of PHP 8. Experimental results indicate that our runtime
-  reaches competitive results with performance gains of up to 943%
+  reaches competitive results with performance gains of up to 859%
   compared to PHP 7. These preliminary results
   suggest that a Truffle-hosted PHP implementation might be
-  significantly faster than existing language implementations.
+  significantly faster than existing language implementations._
 
-<img src="./benchmarks/evaluation/assets/report/image_2020-09-06_12-36-43.png" alt="fannkuchredux" width="300"/>
+<p align="center">
+    <img src="./benchmarks/evaluation/assets/report/image_2020-09-06_12-36-43.png" alt="fannkuchredux" width="600"/>
+</p>
 
- - Report: [./report.md/](./report-thesis.md/).
- - Benchmarks: [./results.md/](./results.md/).
-
+- Thesis document: [./report.md/](./report-thesis.md/).
+- Benchmarks: [./results.md/](./results.md/).
 
 ### Build and Run
 For a container image with development and benchmark dependencies see
