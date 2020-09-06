@@ -7,8 +7,7 @@
 
 # A PHP implementation built on GraalVM
 Graalphp is an experimental just-in-time (JIT) compiler and runtime
-for PHP 7.4+. It is hosted on Truffle and GraalVM. This is a thesis
-project at ETH Zurich.
+for PHP 7.4+. This is a thesis project at ETH Zurich.
 
 ### Abstract
   PHP is a popular, weakly typed, general purpose programming
@@ -31,8 +30,10 @@ project at ETH Zurich.
   suggest that a Truffle-hosted PHP implementation might be
   significantly faster than existing language implementations.
 
- - Report: 
- - More Benchmarks: 
+<img src="./benchmarks/evaluation/assets/report/image_2020-09-06_12-36-43.png" alt="fannkuchredux" width="300"/>
+
+ - Report: [./report.md/](./report-thesis.md/).
+ - Benchmarks: [./results.md/](./results.md/).
 
 
 ### Build and Run
