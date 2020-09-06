@@ -298,9 +298,9 @@ def export_to_csv_nested(nested_ids, warmup=5,
 
         def f(val):
             # return '{:.2E}'.format(val)
-            if val < 0.1:
-                return '$<$ 0.1'
-            return '{:.1f}'.format(val)
+            if val < 0.01:
+                return '$<$ 0.01'
+            return '{:.2f}'.format(val)
 
         def format_list(list):
             res = ''
@@ -309,8 +309,8 @@ def export_to_csv_nested(nested_ids, warmup=5,
             return res
 
         def format_interval(i):
-            if '{:.1f}'.format(i[0]) == '{:.1f}'.format(i[1]):
-                return ('$\sim\ ${:.1f}'.format(i[0]), '$\sim\ ${:.1f}'.format(i[0]))
+            if '{:.2f}'.format(i[0]) == '{:.2f}'.format(i[1]):
+                return ('$\sim\ ${:.2f}'.format(i[0]), '$\sim\ ${:.2f}'.format(i[0]))
             else:
                 return (f(interval[0]), f(interval[1]))
 
@@ -381,9 +381,9 @@ def export_to_csv(ids=[], warmup=5,
 
         def f(val):
             # return '{:.2E}'.format(val)
-            if val < 0.1:
-                return '$<$ 0.1'
-            return '{:.1f}'.format(val)
+            if val < 0.01:
+                return '$<$ 0.01'
+            return '{:.2f}'.format(val)
 
         row = [
             r.binary,

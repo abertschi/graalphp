@@ -456,10 +456,5 @@ if __name__ == '__main__':
     binary_trees_report_plot()
     fannkuchredux()
     spectralnorm_report_plot()
-    pass
-    # warmup_plot_fannkuch()
 
-    # warmup_plot_fannkuch()
-    # fannkuchredux()
-    # binary_trees_report_plot()
 
