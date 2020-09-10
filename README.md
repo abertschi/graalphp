@@ -35,7 +35,6 @@ for PHP 7.4+ hosted on GraalVM.
 </p>
 
 - Benchmarks: [./results.md/](./results.md/)
-- Thesis document: [./report.md/](./report-thesis.md/)
 
 ### Build and Run
 For a container image with development and benchmark dependencies see
