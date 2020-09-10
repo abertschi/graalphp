@@ -6,11 +6,11 @@
 [![](https://img.shields.io/github/last-commit/abertschi/graalphp)]()
 
 # A PHP implementation built on GraalVM
-Graalphp is an experimental just-in-time (JIT) compiler and runtime
-for PHP 7.4+. This is a thesis project at ETH Zurich.
+>>> Graalphp is an experimental just-in-time (JIT) compiler and runtime
+for PHP 7.4+ hosted on GraalVM.
 
 ### Abstract
-  _PHP is a popular, weakly typed, general purpose programming
+  PHP is a popular, weakly typed, general purpose programming
   language. Originally designed for building dynamic web pages, the
   language has since gained wide adoption in server-side web
   development.  In this work, we describe the design and
@@ -28,7 +28,7 @@ for PHP 7.4+. This is a thesis project at ETH Zurich.
   reaches competitive results with performance gains of up to 859%
   compared to PHP 7. These preliminary results
   suggest that a Truffle-hosted PHP implementation might be
-  significantly faster than existing language implementations._
+  significantly faster than existing language implementations.
 
 <p align="center">
     <img src="./benchmarks/evaluation/assets/report/image_2020-09-06_12-36-43.png" alt="design" width="600"/>
