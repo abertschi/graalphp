@@ -34,11 +34,7 @@ for PHP 7.4+ hosted on GraalVM.
     <img src="./benchmarks/evaluation/assets/report/image_2020-09-06_12-36-43.png" alt="design" width="600"/>
 </p>
 
-<p align="center">
-  <img src="./benchmarks/evaluation/assets/report/image_2020-09-06_12-35-34.png" alt="fannkuchredux" width="600"/>
-</p>
-
-- More Benchmarks: [./results.md/](./results.md/)
+- Benchmarks: [./results.md/](./results.md/)
 - Thesis document: [./report.md/](./report-thesis.md/)
 
 ### Build and Run
