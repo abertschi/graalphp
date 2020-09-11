@@ -32,7 +32,8 @@ for PHP 7.4+ hosted on GraalVM.
     <img src="./benchmarks/evaluation/assets/report/image_2020-09-06_12-36-43.png" alt="design" width="600"/>
 </p>
 
-- Benchmarks: [./results.md/](./results.md/)
+- Benchmarks: [./results.md/](./results.md/)  
+This project was launched as a undergraduate thesis at ETH Zurich.
 
 ### Build and Run
 For a container image with development and benchmark dependencies see
