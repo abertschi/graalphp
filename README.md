@@ -33,7 +33,7 @@ for PHP 7.4+ hosted on GraalVM.
 </p>
 
 - Benchmarks: [./results.md/](./results.md/)  
-This project was launched as a undergraduate thesis at ETH Zurich.
+This project was launched as an undergraduate thesis at ETH Zurich.
 
 ### Build and Run
 For a container image with development and benchmark dependencies see
