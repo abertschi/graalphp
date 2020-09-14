@@ -4,7 +4,7 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/0f1a558135e241aeb94b650db93ff714)](https://www.codacy.com/manual/abertschi/graalphp?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=abertschi/graalphp&amp;utm_campaign=Badge_Grade)
 
 # A PHP implementation built on GraalVM
->>> Graalphp is an experimental just-in-time (JIT) compiler and runtime
+> Graalphp is an experimental just-in-time (JIT) compiler and runtime
 for PHP 7.4+ hosted on GraalVM.
 
 ### Abstract
@@ -32,8 +32,8 @@ for PHP 7.4+ hosted on GraalVM.
     <img src="./benchmarks/evaluation/assets/report/image_2020-09-06_12-36-43.png" alt="design" width="600"/>
 </p>
 
-- Benchmarks: [./results.md/](./results.md/)  
-This project was launched as an undergraduate thesis at ETH Zurich.
+- Benchmarks: [./results.md/](./results.md/)
+- [Download Report](https://abertschi.ch/default_public/ethz/graalphp/download.php)  
 
 ### Build and Run
 For a container image with development and benchmark dependencies see
