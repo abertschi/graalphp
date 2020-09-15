@@ -35,6 +35,8 @@ for PHP 7.4+ hosted on GraalVM.
 - Benchmarks: [./results.md/](./results.md/)
 - [Download Report](https://abertschi.ch/default_public/ethz/graalphp/download.php)  
 
+This project was launched as an undergraduate thesis at ETHZ.
+
 ### Build and Run
 For a container image with development and benchmark dependencies see
 [./docker/](./docker/).
