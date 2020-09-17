@@ -151,8 +151,12 @@ def binary_trees_report_plot():
     def do_speedup(val, baseline):
         return baseline / val
 
+    def do_stdev(vals, baseline):
+        return statistics.stdev([v / baseline for v in vals])
+
     speedups = [do_speedup(v, avg_baseline) for v in avgs]
     variance = [do_variance(v, avg_baseline) for v in vals]
+    error = [do_stdev(v, avg_baseline) for v in vals]
 
     plt.rcParams.update({
         "text.usetex": True,
@@ -180,9 +184,10 @@ def binary_trees_report_plot():
 
     fig, ax = plt.subplots()
     ax.barh(impl_indices, speedups,
-            # xerr=variance,
-            align='center', alpha=.9
-            , color=color_by_val)
+            xerr=error,
+            align='center', alpha=.9,
+            error_kw = dict(lw=5, capsize=5, capthick=2),
+            color=color_by_val)
     plt.yticks(impl_indices, impl_txt)
     plt.xlabel(xlabel)
     plt.title(title)
@@ -259,8 +264,13 @@ def spectralnorm_report_plot():
     def do_speedup(val, baseline):
         return baseline / val
 
+    def do_stdev(vals, baseline):
+        return statistics.stdev([v / baseline for v in vals])
+
     speedups = [do_speedup(v, avg_baseline) for v in avgs]
     variance = [do_variance(v, avg_baseline) for v in vals]
+    error = [do_stdev(v, avg_baseline) for v in vals]
+
 
     plt.rcParams.update({
         "text.usetex": True,
@@ -281,7 +291,8 @@ def spectralnorm_report_plot():
 
     fig, ax = plt.subplots()
     ax.barh(impl_indices, speedups,
-            xerr=variance,
+            xerr=error,
+            error_kw=dict(lw=5, capsize=5, capthick=3),
             align='center', alpha=.9
             , color=color_by_val)
     plt.yticks(impl_indices, impl_txt)
@@ -349,11 +360,14 @@ def fannkuchredux():
     def do_variance(vals, baseline):
         return statistics.variance([v / baseline for v in vals])
 
+    def do_stdev(vals, baseline):
+        return statistics.stdev([v / baseline for v in vals])
+
     def do_speedup(val, baseline):
         return baseline / val
 
     speedups = [do_speedup(v, avg_baseline) for v in avgs]
-    variance = [do_variance(v, avg_baseline) for v in vals]
+    error = [do_stdev(v, avg_baseline) for v in vals]
 
     plt.rcParams.update({
         "text.usetex": True,
@@ -367,13 +381,14 @@ def fannkuchredux():
     impl_indices = np.arange(len(impl_txt))
 
     print(speedups)
-    print(variance)
+    print(error)
 
     color_by_val = 'blue'
 
     fig, ax = plt.subplots(figsize=(6, 3))
     ax.barh(impl_indices, speedups,
-            xerr=variance,
+            xerr=error,
+               error_kw=dict(lw=5, capsize=5, capthick=3),
             align='center', alpha=.9
             , color=color_by_val)
 
