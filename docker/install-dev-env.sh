@@ -12,13 +12,13 @@ apt-get -y install php7.4 git
 echo "installing graalvm"
 apt-get -y install curl tar
 
-GRAAL_VM="https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-20.1.0/graalvm-ce-java11-linux-amd64-20.1.0.tar.gz"
+GRAAL_VM="https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-20.2.0/graalvm-ce-java11-linux-amd64-20.2.0.tar.gz"
  
 cd $build_dir
 curl -LJ $GRAAL_VM --output graalvm.tar.gz
 tar -xzf graalvm.tar.gz
 
-mv graalvm-ce-java11-20.1.0 graalvm
+mv graalvm-ce-java11-20.2.0 graalvm
 export JAVA_HOME=$(pwd)/graalvm
 $JAVA_HOME/bin/gu install native-image
 export PATH="$build_dir/graalvm/bin:${PATH}"
