@@ -83,7 +83,7 @@ class BenchmarkSpectralNorm(Bench):
         self.import_data(path,
                          test_name=TEST_BY_UNMOD,
                          prefix=pref,
-                         comment='intel turbo disabled, graal 20.1.0',
+                         comment='intel turbo disabled, graal 20.2.0',
                          binary='php',
                          )
 

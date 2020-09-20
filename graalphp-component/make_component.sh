@@ -41,8 +41,8 @@ mkdir -p "$COMPONENT_DIR/META-INF"
 {
     echo "Bundle-Name: Graal PHP";
     echo "Bundle-Symbolic-Name: org.graalphp";
-    echo "Bundle-Version: 20.1.0";
-    echo 'Bundle-RequireCapability: org.graalvm; filter:="(&(graalvm_version=20.1.0)(os_arch=amd64))"';
+    echo "Bundle-Version: 20.2.0";
+    echo 'Bundle-RequireCapability: org.graalvm; filter:="(&(graalvm_version=20.2.0)(os_arch=amd64))"';
     echo "x-GraalVM-Polyglot-Part: True"
 } > "$COMPONENT_DIR/META-INF/MANIFEST.MF"
 
