@@ -34,6 +34,15 @@ PHP 8.0.0alpha3 (cli) (built: Aug  6 2020 12:31:02) ( NTS )
 Copyright (c) The PHP Group
 Zend Engine v4.0.0-dev, Copyright (c) Zend Technologies
     with Zend OPcache v8.0.0alpha3, Copyright (c), by Zend Technologies
+    
+
+ini="/graalphp-build/php8/build/php/php.ini"
+echo "zend_extension=opcache.so" >> $ini
+echo "opcache.enable=1" >> $ini
+echo "opcache.enable_cli=1" >> $ini
+
+echo "opcache.jit_buffer_size=512M" >> $ini
+echo "opcache.jit=1235" >> $ini
 ```
 
 ```
@@ -50,5 +59,5 @@ Repo schema: d1ae8e21bf3419a65f12a010527485564e719d07
 Intel® Xeon® E-2176M CPU clocked at 2.7GHz - 4.4GHz and 16GB DDR4RAM. The device has Hyper-Threading disabled, Turbo Boost disabled, and CPU frequency driver intel pstate is used with governor performance manually set at a fixed clock rate of 2.7 GHz.
 ```
 
-See docker file for reproducibility: https://github.com/abertschi/graalphp/tree/2d536e40b77b7f8601ad72dfe878c09cfbc1d4e0/docker
+See docker file for a reproducible setup.
 
