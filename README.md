@@ -60,10 +60,8 @@ $ mvn package
 
 ### Feature Set
 High Level Overview of implemented features, current runtime code
-base. ca. 4000 LOC.
-
-- Implemented features are chosen to support execution of the Computer
-  Language Benchmark Game.
+base. ca. 4000 LOC. Implemented features are chosen to support execution of the Computer Language Benchmark Game.
+https://github.com/abertschi/graalphp/tree/master/benchmarks/evaluation
   
 Non exhaustive list of features:
 + Datatypes: int, float, boolean, arrays (sequences) of these types
