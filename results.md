@@ -59,5 +59,5 @@ Repo schema: d1ae8e21bf3419a65f12a010527485564e719d07
 Intel® Xeon® E-2176M CPU clocked at 2.7GHz - 4.4GHz and 16GB DDR4RAM. The device has Hyper-Threading disabled, Turbo Boost disabled, and CPU frequency driver intel pstate is used with governor performance manually set at a fixed clock rate of 2.7 GHz.
 ```
 
-See docker file for a reproducible setup.
+See docker file for a reproducible setup and technical report for more information.
 
