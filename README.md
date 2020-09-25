@@ -66,14 +66,11 @@ base. ca. 4000 LOC.
   Language Benchmark Game.
   
 Non exhaustive list of features:
-+ [x] Functions
-+ [X] Arrays of integer, float, Arrays of Arrays
-+ [X] Variable Scoped Variables, unset, assign
-+ [X] Binary Operators
-+ [X] Unary Operators
-+ [ ] Classes
-+ [ ] Namespaces
-+ [ ] Exceptions
++ Datatypes: int, float, boolean, arrays (sequences) of these types
++ Uncoditionally defined functions
++ Variables in function scope, global scope
++ Binary, unary, operations
++ while, do while, for, if
 
 
 ### More Resources
