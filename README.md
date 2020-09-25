@@ -65,7 +65,7 @@ https://github.com/abertschi/graalphp/tree/master/benchmarks/evaluation
   
 Non exhaustive list of features:
 + Datatypes: int, float, boolean, arrays (sequences) of these types
-+ Uncoditionally defined functions
++ Unconditionally defined functions
 + Variables in function scope, global scope
 + Binary, unary, operations
 + while, do while, for, if
