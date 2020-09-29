@@ -36,6 +36,12 @@ public abstract class PrintlnBuiltin extends PhpBuiltinNode {
     }
 
     @Specialization
+    public String doPrintString(String val, @CachedContext(PhpLanguage.class) PhpContext ctx) {
+        printString(ctx.getOutput(), val);
+        return val;
+    }
+
+    @Specialization
     public PhpArray doPrintArray(PhpArray val,
                                  @CachedLibrary(limit = ArrayLibrary.SPECIALIZATION_LIMIT) ArrayLibrary library,
                                  @CachedContext(PhpLanguage.class) PhpContext ctx) {

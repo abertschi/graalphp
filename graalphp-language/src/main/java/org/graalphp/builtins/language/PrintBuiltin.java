@@ -32,6 +32,18 @@ public abstract class PrintBuiltin extends PhpBuiltinNode {
         return val;
     }
 
+    @Specialization
+    public String doPrintString(String val, @CachedContext(PhpLanguage.class) PhpContext ctx) {
+        printString(ctx.getOutput(), val);
+        return val;
+    }
+
+    @TruffleBoundary
+    private static void printString(PrintWriter out, String value) {
+        out.print(value);
+        out.flush(); // TODO: increase performance
+    }
+
     @TruffleBoundary
     private static void printLong(PrintWriter out, long value) {
         out.print(value);

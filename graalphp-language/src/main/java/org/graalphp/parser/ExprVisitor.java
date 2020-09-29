@@ -50,6 +50,7 @@ import org.graalphp.nodes.controlflow.PhpIfInlineNode;
 import org.graalphp.nodes.function.PhpFunctionLookupNode;
 import org.graalphp.nodes.function.PhpInvokeNode;
 import org.graalphp.nodes.literal.PhpBooleanNode;
+import org.graalphp.nodes.literal.PhpStringNode;
 import org.graalphp.nodes.localvar.ReadLocalVarNodeGen;
 import org.graalphp.nodes.unary.PhpNegNodeGen;
 import org.graalphp.nodes.unary.PhpNotNode;
@@ -283,7 +284,8 @@ public class ExprVisitor extends HierarchicalVisitor {
                 if (NumberLiteralFactory.isBooleanLiteral(v)) {
                     currExpr = new PhpBooleanNode(NumberLiteralFactory.booleanLiteralToValue(v));
                 } else {
-                    throw new UnsupportedOperationException("Strings not yet supported: " + scalar);
+                    currExpr = new PhpStringNode(scalar.getStringValue());
+                    //throw new UnsupportedOperationException("Strings not yet supported: " + scalar);
                 }
                 break;
             default:
