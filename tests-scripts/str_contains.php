@@ -1,6 +1,6 @@
 <?php
 
 $dd="2";
-$x="ddw$dd+sdsdd";
+$x='sdd9'.'p';
 
 println($x);

@@ -32,12 +32,7 @@ import org.graalphp.nodes.array.ExecuteValuesNode;
 import org.graalphp.nodes.array.NewArrayInitialValuesNodeGen;
 import org.graalphp.nodes.array.NewArrayNode;
 import org.graalphp.nodes.assign.FunctionAssignmentBehaviorNode;
-import org.graalphp.nodes.binary.PhpAddNodeGen;
-import org.graalphp.nodes.binary.PhpDivNodeGen;
-import org.graalphp.nodes.binary.PhpMulNodeGen;
-import org.graalphp.nodes.binary.PhpRightShiftNodeGen;
-import org.graalphp.nodes.binary.PhpShiftLeftNodeGen;
-import org.graalphp.nodes.binary.PhpSubNodeGen;
+import org.graalphp.nodes.binary.*;
 import org.graalphp.nodes.binary.logical.PhpAndNode;
 import org.graalphp.nodes.binary.logical.PhpEqNodeGen;
 import org.graalphp.nodes.binary.logical.PhpGeNodeGen;
@@ -226,6 +221,9 @@ public class ExprVisitor extends HierarchicalVisitor {
                 break;
             case OP_SR:
                 result = PhpRightShiftNodeGen.createAndConvertToLong(left, right);
+                break;
+            case OP_CONCAT:
+                result =  PhpConcatNodeGen.create(left, right);
                 break;
             case OP_NOT_IMPLEMENTED:
                 // XXX: Not yet all operators implemented

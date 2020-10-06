@@ -18,7 +18,11 @@ public final class PhpStringNode extends PhpExprNode {
     private final String val;
 
     public PhpStringNode(String v) {
-        this.val = v;
+        if(v.startsWith("'") && v.endsWith("'")){
+            this.val = v.substring(1,v.length()-1);
+        }else {
+            this.val = v;
+        }
     }
 
     @Override
