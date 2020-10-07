@@ -7,7 +7,8 @@ import com.oracle.truffle.api.nodes.NodeInfo;
 import java.util.Arrays;
 
 /**
- * @author abertschi
+ * @author Avinash D'Silva <avinash.roshan.dsilva@gmail.com>
+ * https://wiki.php.net/rfc/str_contains
  */
 @NodeInfo(shortName = StrContainsBuiltin.NAME)
 public abstract class StrContainsBuiltin extends PhpBuiltinNode {

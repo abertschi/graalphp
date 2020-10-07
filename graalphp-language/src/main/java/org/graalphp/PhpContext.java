@@ -5,15 +5,7 @@ import com.oracle.truffle.api.Truffle;
 import com.oracle.truffle.api.TruffleLanguage;
 import com.oracle.truffle.api.dsl.NodeFactory;
 import com.oracle.truffle.api.frame.FrameDescriptor;
-import org.graalphp.builtins.MaxBuiltin;
-import org.graalphp.builtins.MaxBuiltinFactory;
-import org.graalphp.builtins.MinBuiltin;
-import org.graalphp.builtins.MinBuiltinFactory;
-import org.graalphp.builtins.PhpBuiltinNode;
-import org.graalphp.builtins.SqrtBuiltin;
-import org.graalphp.builtins.SqrtBuiltinFactory;
-import org.graalphp.builtins.TimeNsBuiltin;
-import org.graalphp.builtins.TimeNsBuiltinFactory;
+import org.graalphp.builtins.*;
 import org.graalphp.builtins.language.ArrayFillBuiltin;
 import org.graalphp.builtins.language.ArrayFillBuiltinFactory;
 import org.graalphp.builtins.language.PrintBuiltin;
@@ -65,6 +57,7 @@ public final class PhpContext {
         installBuiltin(MaxBuiltin.NAME, MaxBuiltinFactory.getInstance());
         installBuiltin(ArrayFillBuiltin.NAME, ArrayFillBuiltinFactory.getInstance());
         installBuiltin(SqrtBuiltin.NAME, SqrtBuiltinFactory.getInstance());
+        installBuiltin(StrContainsBuiltin.NAME, StrContainsBuiltinFactory.getInstance());
     }
 
     public void installBuiltin(String name, NodeFactory<? extends PhpBuiltinNode> factory) {

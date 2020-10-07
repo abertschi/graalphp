@@ -8,7 +8,7 @@ import org.graalphp.nodes.literal.PhpStringNode;
 import org.graalphp.nodes.unary.ConvertToLongNode;
 
 /**
- * @author abertschi
+ * @author Avinash D'Silva <avinash.roshan.dsilva@gmail.com>
  */
 @NodeInfo(shortName = ".")
 public abstract class PhpConcatNode extends PhpBinaryNode {

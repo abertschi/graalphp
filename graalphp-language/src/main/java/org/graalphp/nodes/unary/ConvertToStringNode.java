@@ -4,9 +4,9 @@ import com.oracle.truffle.api.dsl.Specialization;
 import org.graalphp.nodes.PhpExprNode;
 
 /**
- * Convert to long number
+ * Convert to string
  *
- * @author abertschi
+ * @author Avinash D'Silva <avinash.roshan.dsilva@gmail.com>
  */
 public abstract class ConvertToStringNode extends PhpUnaryNode {
 

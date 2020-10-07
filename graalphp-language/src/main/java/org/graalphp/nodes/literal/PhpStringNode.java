@@ -5,12 +5,9 @@ import com.oracle.truffle.api.nodes.NodeInfo;
 import org.graalphp.nodes.PhpExprNode;
 
 /**
- * Represents floats in graalphp
- * <p>
- * Must support at least the range and precision of IEEE 754 64-bit double-precision representation.
- * Hence is based on double in java
+ * Represents string in graalphp
  *
- * @author abertschi
+ * @author Avinash D'Silva <avinash.roshan.dsilva@gmail.com>
  */
 @NodeInfo(shortName = "string")
 public final class PhpStringNode extends PhpExprNode {
