@@ -32,12 +32,7 @@ import org.graalphp.nodes.array.ExecuteValuesNode;
 import org.graalphp.nodes.array.NewArrayInitialValuesNodeGen;
 import org.graalphp.nodes.array.NewArrayNode;
 import org.graalphp.nodes.assign.FunctionAssignmentBehaviorNode;
-import org.graalphp.nodes.binary.PhpAddNodeGen;
-import org.graalphp.nodes.binary.PhpDivNodeGen;
-import org.graalphp.nodes.binary.PhpMulNodeGen;
-import org.graalphp.nodes.binary.PhpRightShiftNodeGen;
-import org.graalphp.nodes.binary.PhpShiftLeftNodeGen;
-import org.graalphp.nodes.binary.PhpSubNodeGen;
+import org.graalphp.nodes.binary.*;
 import org.graalphp.nodes.binary.logical.PhpAndNode;
 import org.graalphp.nodes.binary.logical.PhpEqNodeGen;
 import org.graalphp.nodes.binary.logical.PhpGeNodeGen;
@@ -50,6 +45,7 @@ import org.graalphp.nodes.controlflow.PhpIfInlineNode;
 import org.graalphp.nodes.function.PhpFunctionLookupNode;
 import org.graalphp.nodes.function.PhpInvokeNode;
 import org.graalphp.nodes.literal.PhpBooleanNode;
+import org.graalphp.nodes.literal.PhpStringNode;
 import org.graalphp.nodes.localvar.ReadLocalVarNodeGen;
 import org.graalphp.nodes.unary.PhpNegNodeGen;
 import org.graalphp.nodes.unary.PhpNotNode;
@@ -226,6 +222,9 @@ public class ExprVisitor extends HierarchicalVisitor {
             case OP_SR:
                 result = PhpRightShiftNodeGen.createAndConvertToLong(left, right);
                 break;
+            case OP_CONCAT:
+                result =  PhpConcatNodeGen.create(left, right);
+                break;
             case OP_NOT_IMPLEMENTED:
                 // XXX: Not yet all operators implemented
             default:
@@ -283,7 +282,7 @@ public class ExprVisitor extends HierarchicalVisitor {
                 if (NumberLiteralFactory.isBooleanLiteral(v)) {
                     currExpr = new PhpBooleanNode(NumberLiteralFactory.booleanLiteralToValue(v));
                 } else {
-                    throw new UnsupportedOperationException("Strings not yet supported: " + scalar);
+                    currExpr = new PhpStringNode(scalar.getStringValue());
                 }
                 break;
             default:
