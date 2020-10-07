@@ -18,6 +18,35 @@ public abstract class PhpConcatNode extends PhpBinaryNode {
         return a + b;
     }
 
+    @Specialization
+    public String doOpStringLong(VirtualFrame f, String a, Long b) {
+        return a + b;
+    }
+
+    @Specialization
+    public String doOpStringLong(VirtualFrame f, Long a, String b) {
+        return a + b;
+    }
+
+    @Specialization
+    public String doOpStringDouble(VirtualFrame f, String a, Double b) {
+        return a + b;
+    }
+
+    @Specialization
+    public String doOpStringDouble(VirtualFrame f, Double a, String b) {
+        return a + b;
+    }
+
+    @Specialization
+    public String doOpStringDouble(VirtualFrame f, String a, Boolean b) {
+        return a + (b ? "1":"");
+    }
+
+    @Specialization
+    public String doOpStringDouble(VirtualFrame f, Boolean a, String b) {
+        return (a ? "1":"") + b;
+    }
 
     @Override
     public String toString() {
