@@ -6,7 +6,7 @@ matplotlib==3.3.0
 np==1.0.2
 numpy==1.19.0
 pandas==1.0.5
-Pillow==7.2.0
+Pillow==9.0.1
 pony==0.7.13
 prettytable==0.7.2
 pyparsing==2.4.7
