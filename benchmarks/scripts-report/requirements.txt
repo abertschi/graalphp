@@ -4,7 +4,7 @@ cycler==0.10.0
 kiwisolver==1.2.0
 matplotlib==3.3.0
 np==1.0.2
-numpy==1.19.0
+numpy==1.22.0
 pandas==1.0.5
 Pillow==7.2.0
 pony==0.7.13
